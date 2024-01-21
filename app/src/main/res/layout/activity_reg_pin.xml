@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".RegPinActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAlignment="textStart"
+            android:layout_marginVertical="10dp"
+            android:textSize="20dp"
+            android:textAllCaps="false"
+            android:drawableLeft="@drawable/left_arrow"
+            android:background="@color/transparent"
+            android:textColor="@color/gray"
+            android:text="Назад"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginHorizontal="20dp"
+            android:orientation="vertical">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black"
+                android:text="Введите код из письма"
+                android:textSize="32dp"
+                android:layout_marginVertical="10dp"
+                android:textAlignment="textStart"
+                android:textStyle="bold"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black"
+                android:text="Код подтверждения отправлен на почту example@gmail.com"
+                android:textSize="20dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="10dp"
+                android:textAlignment="textStart"/>
+
+            <com.chaos.view.PinView
+                android:id="@+id/firstPinView"
+                style="@style/PinWidget.PinView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:cursorVisible="true"
+                android:inputType="number"
+                android:layout_gravity="center"
+                android:textColor="@color/black"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                app:cursorColor="@color/blue"
+                app:cursorWidth="2dp"
+                android:itemBackground="@color/lightgray"
+                app:itemCount="4"
+                app:itemHeight="60dp"
+                app:itemRadius="7dp"
+                app:itemSpacing="20dp"
+                app:itemWidth="60dp"
+                app:lineColor="@color/gray"
+                app:lineWidth="0.5dp"
+                app:viewType="rectangle"/>
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Получить новый код"
+                android:textColor="#5047B5"
+                android:textSize="22dp"
+                android:layout_marginTop="20dp"
+                android:textAllCaps="false"
+                android:layout_gravity="center"
+                android:background="@color/transparent"/>
+            />
+
+
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/button_asset"
+        android:padding="10dp"
+        android:layout_marginHorizontal="20dp"
+        android:text="Продолжить"
+        android:textAllCaps="false"
+        android:layout_gravity="bottom"
+        android:layout_marginBottom="55dp"
+        android:textColor="@color/white"
+        android:layout_alignParentBottom="true"
+        android:textSize="20dp" />
+
+
+</RelativeLayout>
