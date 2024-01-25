@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".RegGenderActivity">
+    tools:context=".RegBirthdayActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -32,7 +32,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textColor="@color/black"
-                android:text="Выберите пол"
+                android:text="Введите дату рождения"
                 android:textSize="32dp"
                 android:layout_marginVertical="10dp"
                 android:textAlignment="textStart"
@@ -42,59 +42,36 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textColor="@color/black"
-                android:text="Это поможет настроить необходимые рекомендации"
+                android:text="Это поможет точнее анализировать ваше состояние и подбирать рекомендации"
                 android:textSize="20dp"
                 android:layout_marginTop="5dp"
                 android:layout_marginBottom="10dp"
                 android:textAlignment="textStart"/>
 
-            <RadioGroup
+            <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginVertical="30dp"
-                android:orientation="horizontal"
-                >
-                <RadioButton
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/gender_asset"
-                    android:text="Женский"
-                    android:textAlignment="center"
-                    android:layout_weight="0.4"
-                    android:drawablePadding="7dp"
-                    android:textSize="20dp"
-                    android:padding="10dp"
-                    android:button="@null"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="5dp"
+                android:text="Дата рождения"
+                android:textAlignment="textStart"
+                android:textColor="@color/darkgray"
+                android:textSize="20dp" />
 
-                    android:drawableTop="@drawable/woman"
-                    />
-
-                <View
-                    android:layout_width="0dp"
-                    android:layout_height="0dp"
-                    android:layout_weight="0.05"
-                    />
-
-                <RadioButton
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:checked="false"
-                    android:text="Мужской"
-                    android:textAlignment="center"
-                    android:padding="10dp"
-                    android:layout_weight="0.4"
-                    android:drawablePadding="7dp"
-                    android:button="@null"
-                    android:textSize="20dp"
-                    android:background="@drawable/gender_asset"
-                    android:drawableTop="@drawable/man"
-                    />
-
-            </RadioGroup>
-
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/pickDate"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginVertical="5dp"
+                android:padding="10dp"
+                android:textAlignment="textStart"
+                android:background="@drawable/edit_text_asset"
+                android:hint="ДД.ММ.ГГГГ"/>
 
         </LinearLayout>
     </LinearLayout>
+
+
 
     <androidx.appcompat.widget.AppCompatButton
         android:layout_width="match_parent"
