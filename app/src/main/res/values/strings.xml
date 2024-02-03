@@ -1,5 +1,9 @@
 <resources>
     <string name="app_name">Health_Care</string>
     <string name="user_acess"><u>Пользовательским соглашением</u></string>
+    <string name="title_activity_home">HomeActivity</string>
+    <string name="title_home">Home</string>
+    <string name="title_dashboard">Dashboard</string>
+    <string name="title_notifications">Notifications</string>
 
 </resources>

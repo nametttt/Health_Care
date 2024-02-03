@@ -76,14 +76,33 @@
             android:textSize="20dp"
             android:textAlignment="textStart"/>
 
-        <EditText
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginVertical="5dp"
-            android:padding="10dp"
             android:background="@drawable/edit_text_asset"
-            android:hint="Пароль"
-            android:drawableRight="@drawable/eye"/>
+            android:layout_marginVertical="5dp"
+            >
+
+            <EditText
+                android:id="@+id/password"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.9"
+                android:hint="Пароль"
+                android:padding="10dp"
+                android:backgroundTint="@color/lightgray"
+                />
+
+            <ImageButton
+                android:id="@+id/eye"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.1"
+                android:src="@drawable/eye"
+                />
+
+
+        </LinearLayout>
     </LinearLayout>
     </LinearLayout>
 
