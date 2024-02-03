@@ -11,44 +11,35 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.TextView;
-import android.widget.Toast;
 
-public class LoginActivity extends AppCompatActivity {
+public class ResetPasswordActivity extends AppCompatActivity {
 
-    private ImageButton imgBtn;
-    private EditText password;
     private Button btn;
-    private TextView txt;
-
-    private boolean isVisible = false;
+    private ImageButton imgBtn, imageBut;
+    private EditText password, firstpassword;
+    private boolean isVisible = false, isVis = false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login);
+        setContentView(R.layout.activity_reset_password);
 
         init();
+
     }
-
     private void init(){
-        imgBtn = findViewById(R.id.eye);
-        password = findViewById(R.id.password);
-        password.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
-        btn = findViewById(R.id.back);
-        txt = findViewById(R.id.forget);
 
+        imgBtn = findViewById(R.id.eye);
+        imageBut = findViewById(R.id.firsteye);
+        password = findViewById(R.id.password);
+        firstpassword = findViewById(R.id.firstpassword);
+        firstpassword.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+        password.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+
+        btn = findViewById(R.id.back);
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                startActivity(intent);
-            }
-        });
-
-        txt.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(LoginActivity.this, ResetEmailActivity.class);
+                Intent intent = new Intent(ResetPasswordActivity.this, ResetPinActivity.class);
                 startActivity(intent);
             }
         });
@@ -59,8 +50,35 @@ public class LoginActivity extends AppCompatActivity {
                 togglePassVisability();
             }
         });
+
+        imageBut.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                togglePasswordVisability();
+            }
+        });
     }
 
+
+    private void togglePasswordVisability() {
+        if (isVis) {
+            String pass = firstpassword.getText().toString();
+            firstpassword.setTransformationMethod(PasswordTransformationMethod.getInstance());
+            firstpassword.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+            firstpassword.setText(pass);
+            imageBut.setImageResource(R.drawable.eye);
+            firstpassword.setSelection(pass.length());
+        } else {
+            String pass = firstpassword.getText().toString();
+            firstpassword.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
+            firstpassword.setInputType(InputType.TYPE_CLASS_TEXT);
+            firstpassword.setText(pass);
+            imageBut.setImageResource(R.drawable.eye_off);
+
+            firstpassword.setSelection(pass.length());
+        }
+        isVis= !isVis;
+    }
 
     private void togglePassVisability() {
         if (isVisible) {

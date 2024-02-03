@@ -27,7 +27,6 @@
             android:textSize="32dp"
             android:textStyle="bold"
             android:textColor="#4E8151"
-
             android:text="С заботой к здоровому будущему!"/>
     </LinearLayout>
 

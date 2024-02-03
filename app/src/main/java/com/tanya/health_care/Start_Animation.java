@@ -27,14 +27,12 @@ public class Start_Animation extends AppCompatActivity {
             @Override
             public void run() {
 
-                Intent mainIntent = new Intent(Start_Animation.this, LoginActivity.class);
+                Intent mainIntent = new Intent(Start_Animation.this, MainActivity.class);
                 Start_Animation.this.startActivity(mainIntent);
 
                 Start_Animation.this.finish();
 
                     overridePendingTransition(R.anim.exiting, R.anim.entering);
-
-
 
             }
         }, splash_screen_delay);

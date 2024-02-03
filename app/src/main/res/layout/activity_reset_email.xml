@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".RegBirthdayActivity">
+    tools:context=".ResetEmailActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -14,8 +14,8 @@
         <androidx.appcompat.widget.AppCompatButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textAlignment="textStart"
             android:id="@+id/back"
+            android:textAlignment="textStart"
             android:layout_marginVertical="10dp"
             android:textSize="20dp"
             android:textAllCaps="false"
@@ -33,7 +33,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textColor="@color/black"
-                android:text="Введите дату рождения"
+                android:text="Введите адрес электронной почты"
                 android:textSize="32dp"
                 android:layout_marginVertical="10dp"
                 android:textAlignment="textStart"
@@ -43,7 +43,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textColor="@color/black"
-                android:text="Это поможет точнее анализировать ваше состояние и подбирать рекомендации"
+                android:text="Для восстановления профиля"
                 android:textSize="20dp"
                 android:layout_marginVertical="10dp"
                 android:textAlignment="textStart"/>
@@ -53,20 +53,19 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
                 android:layout_marginBottom="5dp"
-                android:text="Дата рождения"
+                android:text="Адрес электронной почты"
                 android:textAlignment="textStart"
                 android:textColor="@color/darkgray"
                 android:textSize="20dp" />
 
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/pickDate"
+            <EditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginVertical="5dp"
-                android:padding="10dp"
-                android:textAlignment="textStart"
+                android:padding="12dp"
                 android:background="@drawable/edit_text_asset"
-                android:hint="ДД.ММ.ГГГГ"/>
+                android:hint="example@gmail.com"/>
+
 
         </LinearLayout>
     </LinearLayout>
@@ -74,6 +73,7 @@
 
 
     <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/continu"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/button_asset"
@@ -81,7 +81,6 @@
         android:layout_marginHorizontal="20dp"
         android:textAlignment="center"
         android:text="Продолжить"
-        android:id="@+id/continu"
         android:textAllCaps="false"
         android:layout_alignParentBottom="true"
         android:layout_marginBottom="55dp"

@@ -15,6 +15,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAlignment="textStart"
+            android:id="@+id/back"
             android:layout_marginVertical="10dp"
             android:textSize="20dp"
             android:textAllCaps="false"
@@ -44,8 +45,7 @@
                 android:textColor="@color/black"
                 android:text="Это поможет настроить необходимые рекомендации"
                 android:textSize="20dp"
-                android:layout_marginTop="5dp"
-                android:layout_marginBottom="10dp"
+                android:layout_marginVertical="10dp"
                 android:textAlignment="textStart"/>
 
             <RadioGroup
@@ -104,6 +104,7 @@
         android:layout_marginHorizontal="20dp"
         android:textAlignment="center"
         android:text="Продолжить"
+        android:id="@+id/continu"
         android:textAllCaps="false"
         android:layout_alignParentBottom="true"
         android:layout_marginBottom="55dp"

@@ -7,21 +7,22 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
-public class RegPinActivity extends AppCompatActivity {
+public class ResetEmailActivity extends AppCompatActivity {
 
     private Button btn, bb;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_reg_pin);
+        setContentView(R.layout.activity_reset_email);
+
         btn = findViewById(R.id.continu);
         bb = findViewById(R.id.back);
 
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(RegPinActivity.this, RegGenderActivity.class);
+                Intent intent = new Intent(ResetEmailActivity.this, ResetPinActivity.class);
                 startActivity(intent);
             }
         });
@@ -29,7 +30,7 @@ public class RegPinActivity extends AppCompatActivity {
         bb.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(RegPinActivity.this, RegActivityEmail.class);
+                Intent intent = new Intent(ResetEmailActivity.this, LoginActivity.class);
                 startActivity(intent);
             }
         });
