@@ -62,7 +62,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginVertical="5dp"
-                android:padding="10dp"
+                android:padding="12dp"
+                android:textSize="18dp"
+                android:maxLines="1"
                 android:background="@drawable/edit_text_asset"
                 android:hint="example@gmail.com"/>
 
