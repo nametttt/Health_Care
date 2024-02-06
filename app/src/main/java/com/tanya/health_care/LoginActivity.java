@@ -18,7 +18,7 @@ public class LoginActivity extends AppCompatActivity {
 
     private ImageButton imgBtn;
     private EditText password;
-    private Button btn;
+    private Button btn, auth;
     private TextView txt;
 
     private boolean isVisible = false;
@@ -36,11 +36,21 @@ public class LoginActivity extends AppCompatActivity {
         password.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
         btn = findViewById(R.id.back);
         txt = findViewById(R.id.forget);
+        auth = findViewById(R.id.auth);
 
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        auth.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
+                Toast.makeText(LoginActivity.this, "ЛЛЯЛЯЛЛЯ", Toast.LENGTH_SHORT).show();
                 startActivity(intent);
             }
         });
