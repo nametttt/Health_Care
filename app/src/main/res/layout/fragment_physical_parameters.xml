@@ -216,6 +216,7 @@
                     </LinearLayout>
                 </LinearLayout>
 
+
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -338,6 +339,17 @@
                             android:src="@drawable/next" />
                     </LinearLayout>
                 </LinearLayout>
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/continu"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/button_asset"
+                    android:padding="10dp"
+                    android:layout_marginTop="20dp"
+                    android:text="Добавить параметры"
+                    android:textAllCaps="false"
+                    android:textColor="@color/white"
+                    android:textSize="20dp" />
             </LinearLayout>
         </LinearLayout>
     </ScrollView>

@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".DrinkingFragment">
+    tools:context=".NutritionFragment">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -38,7 +38,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textColor="@color/black"
-                    android:text="Мое питье"
+                    android:text="Мое питание"
                     android:textSize="32dp"
                     android:layout_marginVertical="10dp"
                     android:textAlignment="textStart"
@@ -59,7 +59,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Количество выпитой воды"
+                            android:text="Количество калорий"
                             android:textColor="@color/black"
                             android:textSize="18dp"
                             android:textStyle="bold" />
@@ -82,7 +82,7 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="мл"
+                                android:text="ккал"
                                 android:layout_marginLeft="5dp"
                                 android:textColor="@color/black"
                                 android:textSize="18dp" />
@@ -98,7 +98,7 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="950"
+                                android:text="1550"
                                 android:textColor="@color/black"
                                 android:textSize="28dp"
                                 android:textStyle="bold" />
@@ -106,7 +106,7 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="мл"
+                                android:text="ккал"
                                 android:layout_marginLeft="5dp"
                                 android:textColor="@color/black"
                                 android:textSize="18dp" />
@@ -117,7 +117,7 @@
                             android:layout_height="35dp"
                             android:layout_marginTop="10dp"
                             android:background="@drawable/button_asset"
-                            android:text="+ 250 мл"
+                            android:text="+ питание"
                             android:layout_marginRight="10dp"
                             android:textAlignment="center"
                             android:textAllCaps="false"
@@ -136,7 +136,7 @@
                             android:adjustViewBounds="true"
                             android:layout_gravity="end"
                             android:scaleType="centerInside"
-                            android:src="@drawable/water" />
+                            android:src="@drawable/nutrition" />
                     </LinearLayout>
                 </LinearLayout>
 
@@ -180,7 +180,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginHorizontal="7dp"
-                                android:text="200 мл"
+                                android:text="Обед 200 ккал"
                                 android:layout_gravity="center"
                                 android:textColor="@color/black"
                                 android:textSize="18dp"
@@ -246,7 +246,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginHorizontal="7dp"
-                                android:text="250 мл"
+                                android:text="Обед 250 ккал"
                                 android:layout_gravity="center"
                                 android:textColor="@color/black"
                                 android:textSize="18dp"

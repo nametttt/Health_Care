@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".DrinkingFragment">
+    tools:context=".ChangeNutritionFragment">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -38,11 +38,20 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textColor="@color/black"
-                    android:text="Мое питье"
+                    android:text="Изменение питания"
                     android:textSize="32dp"
                     android:layout_marginVertical="10dp"
                     android:textAlignment="textStart"
                     android:textStyle="bold"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/black"
+                    android:text="Измените данные о вашем питании или удалите их"
+                    android:textSize="20dp"
+                    android:layout_marginVertical="10dp"
+                    android:textAlignment="textStart"/>
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -59,13 +68,13 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Количество выпитой воды"
+                            android:text="Данные о питании"
                             android:textColor="@color/black"
                             android:textSize="18dp"
                             android:textStyle="bold" />
 
                         <LinearLayout
-                            android:layout_width="wrap_content"
+                            android:layout_width="match_parent"
                             android:layout_marginTop="10dp"
                             android:layout_marginBottom="5dp"
                             android:layout_height="wrap_content"
@@ -82,7 +91,7 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="мл"
+                                android:text="ккал"
                                 android:layout_marginLeft="5dp"
                                 android:textColor="@color/black"
                                 android:textSize="18dp" />
@@ -90,44 +99,25 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="/"
-                                android:layout_marginHorizontal="5dp"
+                                android:text="1550"
                                 android:textColor="@color/black"
-                                android:textSize="28dp"
-                                android:textStyle="bold" />
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="950"
-                                android:textColor="@color/black"
+                                android:layout_marginLeft="10dp"
                                 android:textSize="28dp"
                                 android:textStyle="bold" />
 
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="мл"
+                                android:text="грамм"
                                 android:layout_marginLeft="5dp"
                                 android:textColor="@color/black"
                                 android:textSize="18dp" />
                         </LinearLayout>
-
-                        <androidx.appcompat.widget.AppCompatButton
-                            android:layout_width="match_parent"
-                            android:layout_height="35dp"
-                            android:layout_marginTop="10dp"
-                            android:background="@drawable/button_asset"
-                            android:text="+ 250 мл"
-                            android:layout_marginRight="10dp"
-                            android:textAlignment="center"
-                            android:textAllCaps="false"
-                            android:textColor="@color/white"
-                            android:textSize="18dp" />
                     </LinearLayout>
                     <LinearLayout
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
-                        android:layout_weight="0.4"
+                        android:layout_weight="0.3"
                         android:orientation="vertical">
 
                         <ImageView
@@ -136,17 +126,57 @@
                             android:adjustViewBounds="true"
                             android:layout_gravity="end"
                             android:scaleType="centerInside"
-                            android:src="@drawable/water" />
+                            android:src="@drawable/nutrition" />
                     </LinearLayout>
                 </LinearLayout>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginBottom="5dp"
+                    android:text="Тип приема пищи"
+                    android:textAlignment="textStart"
+                    android:textColor="@color/darkgray"
+                    android:textSize="20dp" />
+
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginVertical="5dp"
+                    android:padding="12dp"
+                    android:textSize="18dp"
+                    android:maxLines="1"
+                    android:background="@drawable/edit_text_asset"
+                    android:hint="Тип приема пищи"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginBottom="5dp"
+                    android:text="Время питания"
+                    android:textAlignment="textStart"
+                    android:textColor="@color/darkgray"
+                    android:textSize="20dp" />
+
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginVertical="5dp"
+                    android:padding="12dp"
+                    android:textSize="18dp"
+                    android:maxLines="1"
+                    android:background="@drawable/edit_text_asset"
+                    android:hint="Время питания"/>
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textColor="@color/black"
-                    android:text="Последние записи"
+                    android:text="Продукты"
                     android:textSize="24dp"
-                    android:layout_marginVertical="15dp"
+                    android:layout_marginTop="15dp"
+                    android:layout_marginBottom="10dp"
                     android:textAlignment="textStart"
                     android:textStyle="bold"/>
 
@@ -168,32 +198,28 @@
                             android:layout_height="wrap_content"
                             android:orientation="horizontal">
 
-                            <ImageView
-                                android:layout_width="25dp"
-                                android:layout_height="wrap_content"
-                                android:layout_gravity="center"
-                                android:adjustViewBounds="true"
-                                android:scaleType="centerInside"
-                                android:src="@drawable/logout" />
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginHorizontal="7dp"
-                                android:text="200 мл"
-                                android:layout_gravity="center"
-                                android:textColor="@color/black"
-                                android:textSize="18dp"
-                                android:textStyle="bold" />
-
-                            <TextView
+                            <LinearLayout
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:layout_marginHorizontal="7dp"
-                                android:text="12:30"
-                                android:gravity="end"
-                                android:textColor="@color/black"
-                                android:textSize="18dp"/>
+                                android:orientation="vertical">
+                                <TextView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginHorizontal="7dp"
+                                    android:text="Вкусный борщ"
+                                    android:layout_gravity="center"
+                                    android:textColor="@color/black"
+                                    android:textSize="18dp"
+                                    android:textStyle="bold" />
+                                <TextView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginHorizontal="7dp"
+                                    android:text="1 порция (100 грамм), 100 ккал"
+                                    android:layout_gravity="center"
+                                    android:textColor="@color/black"
+                                    android:textSize="18dp"/>
+                            </LinearLayout>
                         </LinearLayout>
 
 
@@ -202,14 +228,13 @@
                     <LinearLayout
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
-                        android:layout_weight="0.2"
-                        android:orientation="vertical">
+                        android:layout_weight="0.1"
+                        android:gravity="center"
+                        android:orientation="horizontal">
 
                         <ImageView
                             android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="end"
-                            android:layout_marginHorizontal="10dp"
+                            android:layout_height="25dp"
                             android:adjustViewBounds="true"
                             android:scaleType="centerInside"
                             android:src="@drawable/next" />
@@ -219,14 +244,14 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
+                    android:layout_marginTop="15dp"
                     android:background="@drawable/health_asset"
                     android:padding="15dp">
 
                     <LinearLayout
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_weight="0.8"
+                        android:layout_weight="0.7"
                         android:orientation="vertical">
 
                         <LinearLayout
@@ -246,20 +271,11 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginHorizontal="7dp"
-                                android:text="250 мл"
+                                android:text="Добавить продукт"
                                 android:layout_gravity="center"
                                 android:textColor="@color/black"
                                 android:textSize="18dp"
                                 android:textStyle="bold" />
-
-                            <TextView
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_marginHorizontal="7dp"
-                                android:text="15:30"
-                                android:gravity="end"
-                                android:textColor="@color/black"
-                                android:textSize="18dp"/>
                         </LinearLayout>
 
 
@@ -268,7 +284,7 @@
                     <LinearLayout
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
-                        android:layout_weight="0.2"
+                        android:layout_weight="0.4"
                         android:orientation="vertical">
 
                         <ImageView
@@ -282,8 +298,31 @@
                     </LinearLayout>
                 </LinearLayout>
 
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/continu"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/button_asset"
+                    android:padding="10dp"
+                    android:layout_marginTop="20dp"
+                    android:text="Сохранить"
+                    android:textAllCaps="false"
+                    android:textColor="@color/white"
+                    android:textSize="20dp" />
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/cancel_asset"
+                    android:padding="10dp"
+                    android:layout_marginTop="15dp"
+                    android:text="Удалить"
+                    android:textAllCaps="false"
+                    android:textColor="@color/black"
+                    android:textSize="20dp" />
             </LinearLayout>
         </LinearLayout>
+
     </ScrollView>
 
 </FrameLayout>
