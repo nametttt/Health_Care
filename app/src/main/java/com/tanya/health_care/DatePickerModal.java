@@ -1,6 +1,5 @@
 package com.tanya.health_care;
 
-import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.os.Bundle;
@@ -10,7 +9,6 @@ import android.widget.DatePicker;
 import androidx.fragment.app.DialogFragment;
 
 import java.util.Calendar;
-import java.util.Date;
 
 public class DatePickerModal extends DialogFragment
         implements DatePickerDialog.OnDateSetListener {

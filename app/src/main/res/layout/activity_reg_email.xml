@@ -63,6 +63,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginVertical="5dp"
                 android:padding="12dp"
+                android:id="@+id/email"
                 android:textSize="18dp"
                 android:maxLines="1"
                 android:background="@drawable/edit_text_asset"
@@ -75,6 +76,7 @@
                 android:orientation="horizontal">
             <CheckBox
                 android:layout_width="25dp"
+                android:id="@+id/userargee"
                 android:layout_height="25dp"
                 android:layout_gravity="center_vertical"
                 android:button="@drawable/checkbox_view_asset"

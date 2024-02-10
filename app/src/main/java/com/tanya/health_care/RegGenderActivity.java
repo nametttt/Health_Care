@@ -6,10 +6,15 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.RadioButton;
+import android.widget.Toast;
+import com.tanya.health_care.code.User;
 
 public class RegGenderActivity extends AppCompatActivity {
 
     private Button btn, bb;
+    private RadioButton woman, men;
+    private String gender = "женский";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -17,6 +22,8 @@ public class RegGenderActivity extends AppCompatActivity {
 
         btn = findViewById(R.id.back);
         bb = findViewById(R.id.continu);
+        woman = findViewById(R.id.woman);
+        men = findViewById(R.id.men);
 
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -29,8 +36,26 @@ public class RegGenderActivity extends AppCompatActivity {
         bb.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(RegGenderActivity.this, RegBirthdayActivity.class);
-                startActivity(intent);
+
+                if(!men.isChecked() && !woman.isChecked())
+                {
+                    Toast.makeText(RegGenderActivity.this, "Выберите ваш пол", Toast.LENGTH_SHORT).show();
+                }
+                else
+                {
+                    if(men.isChecked())
+                    {
+                        gender = "мужской";
+                    }
+
+                    User currentUser = new User();
+                    currentUser.setGender(gender);
+
+                    Intent intent = new Intent(RegGenderActivity.this, RegBirthdayActivity.class);
+                    intent.putExtra("userGender", gender);
+                    startActivity(intent);
+                }
+
             }
         });
     }

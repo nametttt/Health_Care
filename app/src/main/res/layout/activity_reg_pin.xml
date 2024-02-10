@@ -33,17 +33,18 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textColor="@color/black"
-                android:text="Введите код из письма"
+                android:text="Подтвердите вашу почту"
                 android:textSize="32dp"
                 android:layout_marginVertical="10dp"
                 android:textAlignment="textStart"
                 android:textStyle="bold"/>
 
             <TextView
+                android:id="@+id/aboutemail"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textColor="@color/black"
-                android:text="Код подтверждения отправлен на почту example@gmail.com"
+                android:text="Вам необходимо подтвердить вашу почту. Перейдите по ссылке, отправленной на вашу почту, чтобы подтвердить ее."
                 android:textSize="20dp"
                 android:layout_marginTop="10dp"
                 android:layout_marginBottom="25dp"

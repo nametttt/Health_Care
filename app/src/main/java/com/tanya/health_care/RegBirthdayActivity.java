@@ -6,6 +6,9 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
+
+import com.tanya.health_care.code.User;
 
 public class RegBirthdayActivity extends AppCompatActivity {
 
@@ -19,7 +22,14 @@ public class RegBirthdayActivity extends AppCompatActivity {
         back = findViewById(R.id.back);
         cont = findViewById(R.id.continu);
 
-       btn.setOnClickListener(new View.OnClickListener() {
+        String userEmail = getIntent().getStringExtra("userEmail");
+        String userGender = getIntent().getStringExtra("userGender");
+
+        String toastMessage = userEmail + " " + userGender;
+
+        Toast.makeText(RegBirthdayActivity.this, toastMessage, Toast.LENGTH_SHORT).show();
+
+        btn.setOnClickListener(new View.OnClickListener() {
            @Override
            public void onClick(View view) {
                DatePickerModal datePickerModal = new DatePickerModal();

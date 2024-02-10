@@ -66,7 +66,7 @@
                     android:textSize="20dp"
                     android:padding="10dp"
                     android:button="@null"
-
+                    android:id="@+id/woman"
                     android:drawableTop="@drawable/woman"
                     />
 
@@ -81,6 +81,7 @@
                     android:layout_height="wrap_content"
                     android:checked="false"
                     android:text="Мужской"
+                    android:id="@+id/men"
                     android:textAlignment="center"
                     android:padding="10dp"
                     android:layout_weight="0.4"
