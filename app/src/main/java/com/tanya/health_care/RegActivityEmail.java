@@ -58,7 +58,10 @@ public class RegActivityEmail extends AppCompatActivity {
                     Toast.makeText(RegActivityEmail.this, "Пожалуйста, примите пользовательское соглашение", Toast.LENGTH_SHORT).show();
                 } else {
                     final String pinCode = GeneratePin.generatePinCode();
-                    sendConfirmationEmail(email.getText().toString(), pinCode);
+//                    sendConfirmationEmail(email.getText().toString(), pinCode);
+                    Intent intent = new Intent(RegActivityEmail.this, RegPasswordActivity.class);
+                    intent.putExtra("userEmail", email.getText().toString().trim());
+                    startActivity(intent);
                 }
             }
         });

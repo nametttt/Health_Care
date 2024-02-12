@@ -10,6 +10,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.chaos.view.PinView;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 public class RegPinActivity extends AppCompatActivity {
 
@@ -26,18 +28,14 @@ public class RegPinActivity extends AppCompatActivity {
         btn = findViewById(R.id.continu);
         bb = findViewById(R.id.back);
 
-        firstPinView = findViewById(R.id.firstPinView);
         expectedPinCode = getIntent().getStringExtra("pinCode");
         emailTextView = findViewById(R.id.aboutemail);
+        FirebaseUser mUser = FirebaseAuth.getInstance().getCurrentUser();
 
         Intent intent = getIntent();
         String userEmail = intent.getStringExtra("userEmail");
+        emailTextView.setText("Код подтверждения отправлен на почту " + mUser.getEmail());
 
-        if (userEmail != null && !userEmail.isEmpty()) {
-            emailTextView.setText("Код подтверждения отправлен на почту " + userEmail);
-        } else {
-            emailTextView.setText("Ошибка: почта не найдена");
-        }
 
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
