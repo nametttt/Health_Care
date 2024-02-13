@@ -14,8 +14,6 @@ import android.view.ViewGroup;
 
 public class ArticleFragment extends Fragment {
 
-    private ArticleViewModel mViewModel;
-
     public static ArticleFragment newInstance() {
         return new ArticleFragment();
     }
@@ -29,8 +27,6 @@ public class ArticleFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        mViewModel = new ViewModelProvider(this).get(ArticleViewModel.class);
-        // TODO: Use the ViewModel
     }
 
 }

@@ -14,7 +14,6 @@ import android.view.ViewGroup;
 
 public class AdminChangeFoodFragment extends Fragment {
 
-    private AdminChangeFoodViewModel mViewModel;
 
     public static AdminChangeFoodFragment newInstance() {
         return new AdminChangeFoodFragment();
@@ -29,8 +28,6 @@ public class AdminChangeFoodFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        mViewModel = new ViewModelProvider(this).get(AdminChangeFoodViewModel.class);
-        // TODO: Use the ViewModel
     }
 
 }

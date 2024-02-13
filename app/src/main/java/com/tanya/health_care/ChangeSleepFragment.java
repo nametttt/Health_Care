@@ -14,8 +14,6 @@ import android.view.ViewGroup;
 
 public class ChangeSleepFragment extends Fragment {
 
-    private ChangeSleepViewModel mViewModel;
-
     public static ChangeSleepFragment newInstance() {
         return new ChangeSleepFragment();
     }
@@ -29,8 +27,6 @@ public class ChangeSleepFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        mViewModel = new ViewModelProvider(this).get(ChangeSleepViewModel.class);
-        // TODO: Use the ViewModel
     }
 
 }

@@ -14,8 +14,6 @@ import android.view.ViewGroup;
 
 public class ChatFragment extends Fragment {
 
-    private ChatViewModel mViewModel;
-
     public static ChatFragment newInstance() {
         return new ChatFragment();
     }
@@ -29,8 +27,6 @@ public class ChatFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        mViewModel = new ViewModelProvider(this).get(ChatViewModel.class);
-        // TODO: Use the ViewModel
     }
 
 }

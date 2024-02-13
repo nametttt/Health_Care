@@ -14,8 +14,6 @@ import android.view.ViewGroup;
 
 public class ChangePasswordFragment extends Fragment {
 
-    private ChangePasswordViewModel mViewModel;
-
     public static ChangePasswordFragment newInstance() {
         return new ChangePasswordFragment();
     }
@@ -29,8 +27,6 @@ public class ChangePasswordFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        mViewModel = new ViewModelProvider(this).get(ChangePasswordViewModel.class);
-        // TODO: Use the ViewModel
     }
 
 }

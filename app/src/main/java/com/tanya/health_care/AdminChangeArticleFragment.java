@@ -14,7 +14,6 @@ import android.view.ViewGroup;
 
 public class AdminChangeArticleFragment extends Fragment {
 
-    private AdminChangeArticleViewModel mViewModel;
 
     public static AdminChangeArticleFragment newInstance() {
         return new AdminChangeArticleFragment();
@@ -29,8 +28,6 @@ public class AdminChangeArticleFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        mViewModel = new ViewModelProvider(this).get(AdminChangeArticleViewModel.class);
-        // TODO: Use the ViewModel
     }
 
 }

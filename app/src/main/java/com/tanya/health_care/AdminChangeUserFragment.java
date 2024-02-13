@@ -14,7 +14,6 @@ import android.view.ViewGroup;
 
 public class AdminChangeUserFragment extends Fragment {
 
-    private AdminChangeUserViewModel mViewModel;
 
     public static AdminChangeUserFragment newInstance() {
         return new AdminChangeUserFragment();
@@ -29,7 +28,6 @@ public class AdminChangeUserFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        mViewModel = new ViewModelProvider(this).get(AdminChangeUserViewModel.class);
         // TODO: Use the ViewModel
     }
 

@@ -14,8 +14,6 @@ import android.view.ViewGroup;
 
 public class ChangePhysicalParametersFragment extends Fragment {
 
-    private ChangePhysicalParametersViewModel mViewModel;
-
     public static ChangePhysicalParametersFragment newInstance() {
         return new ChangePhysicalParametersFragment();
     }
@@ -29,8 +27,6 @@ public class ChangePhysicalParametersFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        mViewModel = new ViewModelProvider(this).get(ChangePhysicalParametersViewModel.class);
-        // TODO: Use the ViewModel
     }
 
 }

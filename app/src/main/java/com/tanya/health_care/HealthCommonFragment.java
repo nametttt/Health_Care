@@ -14,8 +14,6 @@ import android.view.ViewGroup;
 
 public class HealthCommonFragment extends Fragment {
 
-    private HealthCommonViewModel mViewModel;
-
     public static HealthCommonFragment newInstance() {
         return new HealthCommonFragment();
     }
@@ -29,8 +27,6 @@ public class HealthCommonFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        mViewModel = new ViewModelProvider(this).get(HealthCommonViewModel.class);
-        // TODO: Use the ViewModel
     }
 
 }

@@ -14,8 +14,6 @@ import android.view.ViewGroup;
 
 public class NutritionFragment extends Fragment {
 
-    private NutritionViewModel mViewModel;
-
     public static NutritionFragment newInstance() {
         return new NutritionFragment();
     }
@@ -29,8 +27,6 @@ public class NutritionFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        mViewModel = new ViewModelProvider(this).get(NutritionViewModel.class);
-        // TODO: Use the ViewModel
     }
 
 }

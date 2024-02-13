@@ -14,8 +14,6 @@ import android.view.ViewGroup;
 
 public class ChangeDrinkingFragment extends Fragment {
 
-    private ChangeDrinkingViewModel mViewModel;
-
     public static ChangeDrinkingFragment newInstance() {
         return new ChangeDrinkingFragment();
     }
@@ -29,8 +27,6 @@ public class ChangeDrinkingFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        mViewModel = new ViewModelProvider(this).get(ChangeDrinkingViewModel.class);
-        // TODO: Use the ViewModel
     }
 
 }

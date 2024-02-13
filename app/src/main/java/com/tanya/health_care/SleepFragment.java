@@ -14,8 +14,6 @@ import android.view.ViewGroup;
 
 public class SleepFragment extends Fragment {
 
-    private SleepViewModel mViewModel;
-
     public static SleepFragment newInstance() {
         return new SleepFragment();
     }
@@ -29,8 +27,6 @@ public class SleepFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        mViewModel = new ViewModelProvider(this).get(SleepViewModel.class);
-        // TODO: Use the ViewModel
     }
 
 }
