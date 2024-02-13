@@ -31,18 +31,8 @@ public class Start_Animation extends AppCompatActivity {
             @Override
             public void run() {
                 Intent mainIntent;
-                if(mAuth.getCurrentUser() != null){
-                    if (mAuth.getCurrentUser().isEmailVerified()){
-                        mainIntent = new Intent(Start_Animation.this, RegGenderActivity.class);
-                    }
-                    else {
-                        mainIntent = new Intent(Start_Animation.this, RegPinActivity.class);
-                    }
-                }
-                else {
-                    mainIntent = new Intent(Start_Animation.this, MainActivity.class);
-                }
 
+                mainIntent = new Intent(Start_Animation.this, MainActivity.class);
 
                 Start_Animation.this.startActivity(mainIntent);
 

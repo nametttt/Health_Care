@@ -58,6 +58,8 @@ public class RegPasswordActivity extends AppCompatActivity {
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Intent intent = new Intent(RegPasswordActivity.this, RegActivityEmail.class);
+                startActivity(intent);
             }
         });
 
@@ -143,7 +145,7 @@ public class RegPasswordActivity extends AppCompatActivity {
                                         @Override
                                         public void onComplete(@NonNull Task<Void> emailTask) {
                                             if (emailTask.isSuccessful()) {
-                                                Intent intent = new Intent(RegPasswordActivity.this, RegBirthdayActivity.class);
+                                                Intent intent = new Intent(RegPasswordActivity.this, RegPinActivity.class);
                                                 startActivity(intent);
                                                 intent.putExtra("userEmail", userEmail);
                                                 intent.putExtra("pass", pass);

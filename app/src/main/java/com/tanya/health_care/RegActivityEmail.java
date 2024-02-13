@@ -50,50 +50,27 @@ public class RegActivityEmail extends AppCompatActivity {
         bb.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (email.getText().toString().isEmpty()) {
+                final String userEmail = email.getText().toString().trim();
+
+                if (userEmail.isEmpty()) {
                     Toast.makeText(RegActivityEmail.this, "Пожалуйста, введите почту!", Toast.LENGTH_SHORT).show();
-                } else if (!getEmail.isValidEmail(email.getText())) {
+                } else if (!getEmail.isValidEmail(userEmail)) {
                     Toast.makeText(RegActivityEmail.this, "Пожалуйста, введите корректную почту", Toast.LENGTH_SHORT).show();
                 } else if (!userAgree.isChecked()) {
                     Toast.makeText(RegActivityEmail.this, "Пожалуйста, примите пользовательское соглашение", Toast.LENGTH_SHORT).show();
                 } else {
-                    final String pinCode = GeneratePin.generatePinCode();
-//                    sendConfirmationEmail(email.getText().toString(), pinCode);
-                    Intent intent = new Intent(RegActivityEmail.this, RegPasswordActivity.class);
-                    intent.putExtra("userEmail", email.getText().toString().trim());
-                    startActivity(intent);
+                    // Assuming you have a method to check if the user exists in the database
+                    if (isUserInDatabase(userEmail)) {
+                        final String pinCode = GeneratePin.generatePinCode();
+                        // sendConfirmationEmail(userEmail, pinCode);
+                        Intent intent = new Intent(RegActivityEmail.this, RegPasswordActivity.class);
+                        intent.putExtra("userEmail", userEmail);
+                        startActivity(intent);
+                    } else {
+                        Toast.makeText(RegActivityEmail.this, "Пользователь с введенной почтой не найден в базе данных", Toast.LENGTH_SHORT).show();
+                    }
                 }
             }
         });
-    }
-
-    private void sendConfirmationEmail(String userEmail, String pinCode) {
-        mAuth.createUserWithEmailAndPassword(userEmail, pinCode)
-                .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-
-                        if (task.isSuccessful()) {
-                            mAuth.getCurrentUser().sendEmailVerification()
-                                    .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                        @Override
-                                        public void onComplete(@NonNull Task<Void> emailTask) {
-                                            if (emailTask.isSuccessful()) {
-                                                Toast.makeText(RegActivityEmail.this, "Письмо с кодом подтверждения отправлено на почту", Toast.LENGTH_SHORT).show();
-
-                                                Intent intent = new Intent(RegActivityEmail.this, RegPinActivity.class);
-                                                intent.putExtra("userEmail", userEmail);
-                                                intent.putExtra("pinCode", pinCode);
-                                                startActivity(intent);
-                                            } else {
-                                                Toast.makeText(RegActivityEmail.this, "Ошибка отправки кода подтверждения: " + emailTask.getException().getMessage(), Toast.LENGTH_SHORT).show();
-                                            }
-                                        }
-                                    });
-                        } else {
-                            Toast.makeText(RegActivityEmail.this, "Ошибка создания пользователя: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                });
     }
 }

@@ -41,16 +41,8 @@ public class RegPinActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                String enteredPinCode = firstPinView.getText().toString();
-
-                if (enteredPinCode.equals(expectedPinCode)) {
-                    Toast.makeText(RegPinActivity.this, "Пин-код верный", Toast.LENGTH_SHORT).show();
-                    Intent intent = new Intent(RegPinActivity.this, RegGenderActivity.class);
-                    startActivity(intent);
-                } else {
-                    Toast.makeText(RegPinActivity.this, "Неверный пин-код", Toast.LENGTH_SHORT).show();
-                    firstPinView.setText(null);
-                }
+                Intent intent = new Intent(RegPinActivity.this, RegGenderActivity.class);
+                startActivity(intent);
 
             }
         });
@@ -58,7 +50,7 @@ public class RegPinActivity extends AppCompatActivity {
         bb.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(RegPinActivity.this, RegActivityEmail.class);
+                Intent intent = new Intent(RegPinActivity.this, RegPasswordActivity.class);
                 startActivity(intent);
             }
         });
