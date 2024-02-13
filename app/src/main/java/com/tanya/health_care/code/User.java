@@ -3,13 +3,12 @@ package com.tanya.health_care.code;
 import java.util.Date;
 
 public class User {
-    private String email, password, gender, role;
-    private Date birthday;
+    private String email, password, gender, role, birthday;
 
     public User() {
     }
 
-    public User(String email, String password, String gender, String role, Date birthday) {
+    public User(String email, String password, String gender, String role, String birthday) {
         this.email = email;
         this.password = password;
         this.gender = gender;
@@ -49,11 +48,11 @@ public class User {
         this.role = role;
     }
 
-    public Date getBirthday() {
+    public String getBirthday() {
         return birthday;
     }
 
-    public void setBirthday(Date birthday) {
+    public void setBirthday(String birthday) {
         this.birthday = birthday;
     }
 }

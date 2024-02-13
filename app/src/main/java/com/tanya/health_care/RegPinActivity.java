@@ -12,14 +12,16 @@ import android.widget.Toast;
 import com.chaos.view.PinView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.tanya.health_care.code.GeneratePin;
 
 public class RegPinActivity extends AppCompatActivity {
 
     private Button btn, bb;
-    private TextView emailTextView;
+    private TextView emailTextView, newPin;
     private PinView firstPinView;
-    private String expectedPinCode;
+    private String expectedPinCode, userEmail;
 
+    private boolean newPinRequested = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,33 +29,63 @@ public class RegPinActivity extends AppCompatActivity {
         setContentView(R.layout.activity_reg_pin);
         btn = findViewById(R.id.continu);
         bb = findViewById(R.id.back);
+        firstPinView = findViewById(R.id.firstPinView);
+        newPin = findViewById(R.id.newpin);
 
         expectedPinCode = getIntent().getStringExtra("pinCode");
         emailTextView = findViewById(R.id.aboutemail);
-        FirebaseUser mUser = FirebaseAuth.getInstance().getCurrentUser();
 
         Intent intent = getIntent();
-        String userEmail = intent.getStringExtra("userEmail");
-        emailTextView.setText("Код подтверждения отправлен на почту " + mUser.getEmail());
-
+        userEmail = intent.getStringExtra("userEmail");
+        emailTextView.setText("Код подтверждения отправлен на почту " + userEmail);
 
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-                Intent intent = new Intent(RegPinActivity.this, RegGenderActivity.class);
-                startActivity(intent);
-
+                handlePinVerification();
             }
         });
 
         bb.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(RegPinActivity.this, RegPasswordActivity.class);
+                Intent intent = new Intent(RegPinActivity.this, RegActivityEmail.class);
+                intent.putExtra("userEmail", userEmail);
                 startActivity(intent);
             }
         });
+
+        newPin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                handleNewPinRequest();
+            }
+        });
+    }
+
+    private void handlePinVerification() {
+        String enteredPin = firstPinView.getText().toString();
+
+        if (enteredPin.isEmpty()) {
+            Toast.makeText(RegPinActivity.this, "Введите пин-код", Toast.LENGTH_SHORT).show();
+        } else if (enteredPin.equals(expectedPinCode)) {
+            Intent intent = new Intent(RegPinActivity.this, RegGenderActivity.class);
+            intent.putExtra("userEmail", userEmail);
+            startActivity(intent);
+        } else {
+            Toast.makeText(RegPinActivity.this, "Неверный пин-код", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void handleNewPinRequest() {
+        if (!newPinRequested) {
+            expectedPinCode = GeneratePin.generatePinCode();
+            emailTextView.setText("Новый код подтверждения отправлен на почту");
+            Toast.makeText(RegPinActivity.this, "Новый пин-код отправлен на почту.", Toast.LENGTH_SHORT).show();
+            newPinRequested = true;
+        } else {
+            Toast.makeText(RegPinActivity.this, "Вы уже запросили новый пин-код.", Toast.LENGTH_SHORT).show();
+        }
     }
 
 }

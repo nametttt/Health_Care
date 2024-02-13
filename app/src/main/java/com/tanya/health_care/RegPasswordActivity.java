@@ -3,12 +3,16 @@ package com.tanya.health_care;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.ClipData;
+import android.content.ClipboardManager;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.InputType;
 import android.text.method.HideReturnsTransformationMethod;
 import android.text.method.PasswordTransformationMethod;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -18,16 +22,19 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.tanya.health_care.code.EyeVisibility;
+import com.tanya.health_care.code.User;
 
 public class RegPasswordActivity extends AppCompatActivity {
 
     private ImageButton imgBtn, imageBut;
-    private EditText password, firstpassword;
+    private EditText password, confirmPassword;
     private Button btn, continu;
-    private  String email, pass;
+    private String email, gender, birthday;
     private FirebaseAuth mAuth;
-
-    private boolean isVisible = false, isVis = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,25 +43,24 @@ public class RegPasswordActivity extends AppCompatActivity {
 
         init();
     }
-    private void init(){
+
+    private void init() {
+        Intent intent = getIntent();
+        email = intent.getStringExtra("userEmail");
+        gender = intent.getStringExtra("userGender");
+        birthday = intent.getStringExtra("userBirthday");
 
         imgBtn = findViewById(R.id.eye);
         imageBut = findViewById(R.id.firsteye);
         password = findViewById(R.id.password);
+        confirmPassword = findViewById(R.id.firstpassword);
         mAuth = FirebaseAuth.getInstance();
         continu = findViewById(R.id.continu);
-        firstpassword = findViewById(R.id.firstpassword);
-        firstpassword.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
-        password.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
         btn = findViewById(R.id.back);
 
+        password.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+        confirmPassword.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
 
-        Intent intent = getIntent();
-        String userEmail = intent.getStringExtra("userEmail");
-
-        if (userEmail != null && !userEmail.isEmpty()) {
-            email = userEmail;
-        }
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -63,102 +69,107 @@ public class RegPasswordActivity extends AppCompatActivity {
             }
         });
 
-
         continu.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // проверки сюда!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                sendConfirmationEmail(userEmail, password.getText().toString().trim());
+                registerUser();
             }
         });
 
         imgBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                togglePassVisability();
+                togglePassVisibility();
             }
         });
-
-
-
 
         imageBut.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                togglePasswordVisability();
+                togglePasswordVisibility();
             }
         });
     }
 
-
-    private void togglePasswordVisability() {
-        if (isVis) {
-            String pass = firstpassword.getText().toString();
-            firstpassword.setTransformationMethod(PasswordTransformationMethod.getInstance());
-            firstpassword.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
-            firstpassword.setText(pass);
-            imageBut.setImageResource(R.drawable.eye);
-            firstpassword.setSelection(pass.length());
-        } else {
-            String pass = firstpassword.getText().toString();
-            firstpassword.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
-            firstpassword.setInputType(InputType.TYPE_CLASS_TEXT);
-            firstpassword.setText(pass);
-            imageBut.setImageResource(R.drawable.eye_off);
-
-            firstpassword.setSelection(pass.length());
-        }
-        isVis= !isVis;
+    private void togglePasswordVisibility() {
+        EyeVisibility.toggleVisibility(confirmPassword, imageBut);
     }
 
-    private void togglePassVisability() {
-        if (isVisible) {
-            String pass = password.getText().toString();
-            password.setTransformationMethod(PasswordTransformationMethod.getInstance());
-            password.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
-            password.setText(pass);
-            imgBtn.setImageResource(R.drawable.eye);
-            password.setSelection(pass.length());
-        } else {
-            String pass = password.getText().toString();
-            password.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
-            password.setInputType(InputType.TYPE_CLASS_TEXT);
-            password.setText(pass);
-            imgBtn.setImageResource(R.drawable.eye_off);
-
-            password.setSelection(pass.length());
-        }
-        isVisible= !isVisible;
+    private void togglePassVisibility() {
+        EyeVisibility.toggleVisibility(password, imgBtn);
     }
 
+    private void registerUser() {
+        String pass1 = password.getText().toString().trim();
+        String pass2 = confirmPassword.getText().toString().trim();
 
+        if (pass1.isEmpty() || pass2.isEmpty()) {
+            Toast.makeText(this, "Пожалуйста, введите оба пароля", Toast.LENGTH_SHORT).show();
+            return;
+        }
 
-    private void sendConfirmationEmail(String userEmail, String pass) {
-        mAuth.createUserWithEmailAndPassword(userEmail, pass)
+        if (pass1.length() < 6) {
+            Toast.makeText(this, "Пароль должен содержать не менее 6 символов", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if (!pass1.equals(pass2)) {
+            Toast.makeText(this, "Пароли не совпадают", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        if (imm != null) {
+            imm.hideSoftInputFromWindow(password.getWindowToken(), 0);
+            imm.hideSoftInputFromWindow(confirmPassword.getWindowToken(), 0);
+        }
+
+        FirebaseDatabase mDb = FirebaseDatabase.getInstance();
+        DatabaseReference ref = mDb.getReference("users");
+
+        mAuth.createUserWithEmailAndPassword(email, pass1)
                 .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
-
                         if (task.isSuccessful()) {
-                            mAuth.getCurrentUser().sendEmailVerification()
-                                    .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                        @Override
-                                        public void onComplete(@NonNull Task<Void> emailTask) {
-                                            if (emailTask.isSuccessful()) {
-                                                Intent intent = new Intent(RegPasswordActivity.this, RegPinActivity.class);
-                                                startActivity(intent);
-                                                intent.putExtra("userEmail", userEmail);
-                                                intent.putExtra("pass", pass);
-                                                startActivity(intent);
-                                            } else {
-                                                Toast.makeText(RegPasswordActivity.this, "Ошибка отправки кода подтверждения: " + emailTask.getException().getMessage(), Toast.LENGTH_SHORT).show();
-                                            }
+                            FirebaseUser firebaseUser = mAuth.getCurrentUser();
+
+                            if (firebaseUser != null) {
+                                String userId = firebaseUser.getUid();
+
+                                User user = new User(email, pass1, gender, "Пользователь", birthday);
+
+                                DatabaseReference userRef = ref.child(userId);
+
+                                userRef.setValue(user).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<Void> databaseTask) {
+                                        if (databaseTask.isSuccessful()) {
+                                            Intent intent = new Intent(RegPasswordActivity.this, HomeActivity.class);
+                                            startActivity(intent);
+                                            finish();
+                                        } else {
+                                            String errorMessage = databaseTask.getException().getMessage();
+                                            Toast.makeText(RegPasswordActivity.this, errorMessage, Toast.LENGTH_SHORT).show();
                                         }
-                                    });
+                                    }
+                                });
+                            } else {
+                                String errorMessage = "Ошибка: текущий пользователь равен null";
+                                Toast.makeText(RegPasswordActivity.this, errorMessage, Toast.LENGTH_SHORT).show();
+                            }
                         } else {
-                            Toast.makeText(RegPasswordActivity.this, "Ошибка создания пользователя: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                            handleRegistrationError(task.getException());
+                            ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+                            ClipData clip = ClipData.newPlainText("Error message", task.getException().getMessage());
+                            clipboard.setPrimaryClip(clip);
                         }
                     }
                 });
+    }
+
+    private void handleRegistrationError(Exception exception) {
+
+        Toast.makeText(RegPasswordActivity.this, exception.toString(), Toast.LENGTH_SHORT).show();
     }
 }

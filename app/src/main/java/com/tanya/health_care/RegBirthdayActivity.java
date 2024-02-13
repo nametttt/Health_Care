@@ -6,6 +6,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.DatePicker;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.tanya.health_care.code.User;
@@ -24,10 +26,6 @@ public class RegBirthdayActivity extends AppCompatActivity {
 
         String userEmail = getIntent().getStringExtra("userEmail");
         String userGender = getIntent().getStringExtra("userGender");
-
-        String toastMessage = userEmail + " " + userGender;
-
-        Toast.makeText(RegBirthdayActivity.this, toastMessage, Toast.LENGTH_SHORT).show();
 
         btn.setOnClickListener(new View.OnClickListener() {
            @Override
@@ -49,8 +47,15 @@ public class RegBirthdayActivity extends AppCompatActivity {
         cont.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(RegBirthdayActivity.this, RegPasswordActivity.class);
-                startActivity(intent);
+                if (btn != null && btn.getText().toString().isEmpty()) {
+                    Toast.makeText(RegBirthdayActivity.this, "Пожалуйста, выберите дату рождения", Toast.LENGTH_SHORT).show();
+                } else {
+                    Intent intent = new Intent(RegBirthdayActivity.this, RegPasswordActivity.class);
+                    intent.putExtra("userGender", userGender);
+                    intent.putExtra("userEmail", userEmail);
+                    intent.putExtra("userBirthday", btn.getText());
+                    startActivity(intent);
+                }
             }
         });
     }

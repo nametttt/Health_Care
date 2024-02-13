@@ -23,7 +23,11 @@ public class DatePickerModal extends DialogFragment
         int month = c.get(Calendar.MONTH);
         int day = c.get(Calendar.DAY_OF_MONTH);
 
-        // Create a new instance of DatePickerDialog and return it.
+        Calendar maxDateCalendar = Calendar.getInstance();
+        maxDateCalendar.set(1960, 0, 1);
+
+        Calendar minDateCalendar = Calendar.getInstance();
+        minDateCalendar.set(2013, 0, 1);
         return new DatePickerDialog(requireContext(), this, year, month, day);
     }
 

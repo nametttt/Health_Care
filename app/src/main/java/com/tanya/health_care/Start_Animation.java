@@ -10,37 +10,58 @@ import android.view.animation.AnimationUtils;
 import android.widget.LinearLayout;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import java.util.Objects;
 
 public class Start_Animation extends AppCompatActivity {
     private  final int splash_screen_delay = 2000;
-    private FirebaseAuth mAuth;
+    private FirebaseUser firebaseUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_start_animation);
 
-        LinearLayout health = findViewById(R.id.health);
+        firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+        LinearLayout ll = findViewById(R.id.health);
         Animation tablego = AnimationUtils.loadAnimation(this,R.anim.exiting);
-        health.startAnimation(tablego);
-        mAuth = FirebaseAuth.getInstance();
+        ll.startAnimation(tablego);
+
 
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                Intent mainIntent;
+                if (firebaseUser!=null) {
+                    assert firebaseUser!=null;
+                    if (Objects.equals(firebaseUser.getEmail(), "ya@gmail.com")){
+                        Intent mainIntent = new Intent(Start_Animation.this, HomeActivity.class);
+                        Start_Animation.this.startActivity(mainIntent);
 
-                mainIntent = new Intent(Start_Animation.this, MainActivity.class);
+                        Start_Animation.this.finish();
 
-                Start_Animation.this.startActivity(mainIntent);
+                        overridePendingTransition(R.anim.exiting, R.anim.entering);
 
-                Start_Animation.this.finish();
-                overridePendingTransition(R.anim.exiting, R.anim.entering);
+                        return;
+                    }
+                    Intent mainIntent = new Intent(Start_Animation.this, HomeActivity.class);
+                    Start_Animation.this.startActivity(mainIntent);
 
+                    Start_Animation.this.finish();
+
+                    overridePendingTransition(R.anim.exiting, R.anim.entering);
+
+                }
+
+                else {
+                    Intent mainIntent = new Intent(Start_Animation.this, MainActivity.class);
+                    Start_Animation.this.startActivity(mainIntent);
+
+                    Start_Animation.this.finish();
+
+                    overridePendingTransition(R.anim.exiting, R.anim.entering);
+                }
             }
         }, splash_screen_delay);
-
     }
 }

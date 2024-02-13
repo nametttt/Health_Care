@@ -33,7 +33,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textColor="@color/black"
-                android:text="Подтвердите вашу почту"
+                android:text="Введите пин-код"
                 android:textSize="32dp"
                 android:layout_marginVertical="10dp"
                 android:textAlignment="textStart"
@@ -44,14 +44,35 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textColor="@color/black"
-                android:text="Для продолжения регистрации подтвердите свою почту, пройдя по ссылке, отправленной на ваш электронный адрес."
+                android:text="Код подтверждения отправлен на почту"
                 android:textSize="20dp"
                 android:layout_marginTop="10dp"
                 android:layout_marginBottom="25dp"
                 android:textAlignment="textStart"/>
 
 
-
+            <com.chaos.view.PinView
+                android:id="@+id/firstPinView"
+                style="@style/PinWidget.PinView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:cursorVisible="true"
+                android:inputType="number"
+                android:layout_gravity="center"
+                android:textColor="@color/black"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                app:cursorColor="@color/blue"
+                app:cursorWidth="2dp"
+                android:itemBackground="@color/lightgray"
+                app:itemCount="4"
+                app:itemHeight="60dp"
+                app:itemRadius="7dp"
+                app:itemSpacing="20dp"
+                app:itemWidth="60dp"
+                app:lineColor="@color/gray"
+                app:lineWidth="0.5dp"
+                app:viewType="rectangle"/>
 
             <TextView
                 android:layout_width="wrap_content"
@@ -59,7 +80,8 @@
                 android:text="Получить новый код"
                 android:textColor="#5047B5"
                 android:textSize="22dp"
-                android:layout_marginTop="10dp"
+                android:id="@+id/newpin"
+                android:layout_marginTop="20dp"
                 android:textAllCaps="false"
                 android:layout_gravity="center"
                 android:background="@color/transparent"/>

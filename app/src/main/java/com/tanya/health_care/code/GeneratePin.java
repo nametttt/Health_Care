@@ -6,7 +6,7 @@ public class GeneratePin {
     public static String generatePinCode() {
         Random random = new Random();
         int pin = 1000 + random.nextInt(9000);
-        return "1234";
+        return String.valueOf(pin);
     }
 }
 
