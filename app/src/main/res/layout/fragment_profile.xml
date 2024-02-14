@@ -74,9 +74,11 @@
     </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/user_profile"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="15dp"
+            android:clickable="true"
             android:background="@drawable/health_asset"
             android:padding="15dp">
 

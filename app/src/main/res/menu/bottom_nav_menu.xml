@@ -7,17 +7,17 @@
         android:title="Здоровье" />
 
     <item
-        android:id="@+id/navigation_dashboard"
+        android:id="@+id/navigation_search"
         android:icon="@drawable/seach"
         android:title="Статьи" />
 
     <item
-        android:id="@+id/navigation_notifications"
+        android:id="@+id/navigation_chat"
         android:icon="@drawable/question"
         android:title="Чат" />
 
     <item
-        android:id="@+id/navigation_notification"
+        android:id="@+id/navigation_profile"
         android:icon="@drawable/user"
         android:title="Профиль" />
 
