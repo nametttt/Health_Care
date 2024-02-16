@@ -36,6 +36,7 @@ public class RegPasswordActivity extends AppCompatActivity {
     private String email, gender, birthday;
     private FirebaseAuth mAuth;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

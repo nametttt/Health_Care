@@ -25,7 +25,7 @@ public class HomeActivity extends AppCompatActivity {
         navView.setOnItemSelectedListener(item -> {
             switch (item.getItemId()) {
                 case R.id.navigation_home:
-                    replaceFragment(new PhysicalParametersFragment());
+                    replaceFragment(new HomeFragment());
                     break;
                 case R.id.navigation_search:
                     replaceFragment(new ArticleFragment());

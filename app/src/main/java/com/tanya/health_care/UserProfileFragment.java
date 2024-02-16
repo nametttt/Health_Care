@@ -22,11 +22,12 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.tanya.health_care.ui.profile.ProfileFragment;
 
 public class UserProfileFragment extends Fragment {
 
     EditText userName;
-    AppCompatButton pickDate;
+    AppCompatButton pickDate, exit;
     FirebaseAuth mAuth;
 
     @Override
@@ -43,6 +44,16 @@ public class UserProfileFragment extends Fragment {
         userName = v.findViewById(R.id.userName);
         pickDate = v.findViewById(R.id.pickDate);
         mAuth = FirebaseAuth.getInstance();
+        exit = v.findViewById(R.id.back);
+
+        exit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                HomeActivity homeActivity = (HomeActivity) getActivity();
+                homeActivity.replaceFragment(new ProfileFragment());
+            }
+        });
+
     }
 
 

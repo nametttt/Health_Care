@@ -43,7 +43,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textColor="@color/black"
-                android:text="Для восстановления профиля на вашу электронную почту придет инструкция для сброса пароля"
+                android:text="Для восстановления профиля введите вашу электронную почту. На нее придет инструкция для сброса пароля"
                 android:textSize="20dp"
                 android:layout_marginVertical="10dp"
                 android:textAlignment="textStart"/>
@@ -51,7 +51,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="10dp"
                 android:layout_marginBottom="5dp"
                 android:text="Адрес электронной почты"
                 android:textAlignment="textStart"

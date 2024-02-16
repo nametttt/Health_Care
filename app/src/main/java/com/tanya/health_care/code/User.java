@@ -1,6 +1,8 @@
 package com.tanya.health_care.code;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 public class User {
     private String email, password, gender, role, birthday;
@@ -16,6 +18,15 @@ public class User {
         this.birthday = birthday;
     }
 
+    public Map<String, Object> toMap() {
+        HashMap<String, Object> result = new HashMap<>();
+        result.put("email", email);
+        result.put("password", password);
+        result.put("gender", gender);
+        result.put("role", role);
+        result.put("birthday", birthday);
+        return result;
+    }
     public String getEmail() {
         return email;
     }

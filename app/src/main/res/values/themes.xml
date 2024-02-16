@@ -13,4 +13,11 @@
         <item name="android:windowDrawsSystemBarBackgrounds">false</item>
         <!--  Customize your theme here.  -->
     </style>
+    <style name="MyAlertDialogTheme" parent="ThemeOverlay.MaterialComponents.Dialog.Alert">
+        <item name="shapeAppearanceOverlay">@style/MyShapeAppearanceOverlay.MaterialAlertDialog</item>
+    </style>
+    <style name="MyShapeAppearanceOverlay.MaterialAlertDialog" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">99dp</item>
+    </style>
 </resources>
