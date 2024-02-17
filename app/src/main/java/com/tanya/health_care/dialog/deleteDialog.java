@@ -9,6 +9,10 @@ import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.Toast;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.tanya.health_care.code.getSplittedPathChild;
 
 
@@ -53,13 +57,40 @@ public class deleteDialog extends DialogFragment {
         deleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getSplittedPathChild g = new getSplittedPathChild();
-                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("users").child(g.getSplittedPathChild(user.getEmail()));
-                ref.removeValue();
-                user.delete();
+                final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                if (user != null) {
+                    getSplittedPathChild g = new getSplittedPathChild();
+                    final DatabaseReference userRef = FirebaseDatabase.getInstance().getReference().child("users").child(g.getSplittedPathChild(user.getEmail()));
+                    userRef.removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            if (task.isSuccessful()) {
+                                user.delete().addOnCompleteListener(new OnCompleteListener<Void>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<Void> task) {
+                                        if (task.isSuccessful()) {
+                                            // Пользователь успешно удален, переходите на главную страницу
+                                            Intent intent = new Intent(getContext(), MainActivity.class);
+                                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                                            startActivity(intent);
+                                            Toast.makeText(getContext(), "Успешное удаление профиля!", Toast.LENGTH_SHORT).show();
+
+                                        } else {
+                                            // Обработка ошибок при удалении пользователя
+                                            Toast.makeText(getContext(), "Ошибка при удалении пользователя", Toast.LENGTH_SHORT).show();
+                                        }
+                                    }
+                                });
+                            } else {
+                                // Обработка ошибок при удалении данных из базы данных
+                                Toast.makeText(getContext(), "Ошибка при удалении данных из базы данных", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    });
+                }
             }
         });
+
 
 // Создаем кнопку "Отмена"
         Button cancelButton = new Button(requireActivity());

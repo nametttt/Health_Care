@@ -6,11 +6,9 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
-import android.widget.DatePicker;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import com.tanya.health_care.code.User;
+import com.tanya.health_care.dialog.DatePickerModal;
 
 public class RegBirthdayActivity extends AppCompatActivity {
 

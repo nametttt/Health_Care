@@ -22,6 +22,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.tanya.health_care.code.getSplittedPathChild;
 import com.tanya.health_care.ui.profile.ProfileFragment;
 
 public class UserProfileFragment extends Fragment {
@@ -65,10 +66,27 @@ public class UserProfileFragment extends Fragment {
         mRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                FirebaseUser user = mAuth.getCurrentUser();
-                User u =  snapshot.child(user.getUid()).getValue(User.class);
-                userName.setText(u.getEmail());
-                pickDate.setText(u.getBirthday());
+
+                FirebaseDatabase db = FirebaseDatabase.getInstance();
+                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                DatabaseReference ref = db.getReference("users");
+                getSplittedPathChild pC = new getSplittedPathChild();
+
+                ref.addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        User user1 = snapshot.child(pC.getSplittedPathChild(user.getEmail())).getValue(User.class);
+                        pickDate.setText(user1.getBirthday());
+                        userName.setText(user1.getName());
+
+                        //ref.child(pC.getSplittedPathChild(user.getEmail())).child("acc").updateChildren(map);
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
             }
 
             @Override

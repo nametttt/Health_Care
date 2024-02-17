@@ -5,14 +5,14 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class User {
-    private String email, password, gender, role, birthday;
+    private String email, name, gender, role, birthday;
 
     public User() {
     }
 
-    public User(String email, String password, String gender, String role, String birthday) {
+    public User(String email, String name, String gender, String role, String birthday) {
         this.email = email;
-        this.password = password;
+        this.name = name;
         this.gender = gender;
         this.role = role;
         this.birthday = birthday;
@@ -21,7 +21,7 @@ public class User {
     public Map<String, Object> toMap() {
         HashMap<String, Object> result = new HashMap<>();
         result.put("email", email);
-        result.put("password", password);
+        result.put("name", name);
         result.put("gender", gender);
         result.put("role", role);
         result.put("birthday", birthday);
@@ -35,12 +35,12 @@ public class User {
         this.email = email;
     }
 
-    public String getPassword() {
-        return password;
+    public String getName() {
+        return name;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getGender() {

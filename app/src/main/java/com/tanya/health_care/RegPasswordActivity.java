@@ -27,10 +27,12 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.tanya.health_care.code.EyeVisibility;
 import com.tanya.health_care.code.User;
+import com.tanya.health_care.code.getSplittedPathChild;
 
 public class RegPasswordActivity extends AppCompatActivity {
 
     private ImageButton imgBtn, imageBut;
+    private String splittedPathChild;
     private EditText password, confirmPassword;
     private Button btn, continu;
     private String email, gender, birthday;
@@ -135,12 +137,17 @@ public class RegPasswordActivity extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             FirebaseUser firebaseUser = mAuth.getCurrentUser();
 
+                            getSplittedPathChild pC = new getSplittedPathChild();
+                            splittedPathChild = pC.getSplittedPathChild(email);
+
+                            int atIndex = email.indexOf('@');
+                            String name = atIndex != -1 ? email.substring(0, atIndex) : email;
                             if (firebaseUser != null) {
                                 String userId = firebaseUser.getUid();
 
-                                User user = new User(email, pass1, gender, "Пользователь", birthday);
+                                User user = new User(email, name, gender, "Пользователь", birthday);
 
-                                DatabaseReference userRef = ref.child(userId);
+                                DatabaseReference userRef = ref.child(splittedPathChild);
 
                                 userRef.setValue(user).addOnCompleteListener(new OnCompleteListener<Void>() {
                                     @Override
