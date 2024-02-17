@@ -57,6 +57,7 @@ public class ResetEmailActivity extends AppCompatActivity {
                 }
 
                 mAuth.sendPasswordResetEmail(email.getText().toString()).addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         if (task.isSuccessful()) {
                             Toast.makeText(ResetEmailActivity.this, "Письмо с инструкцией отправлено на почту!", Toast.LENGTH_SHORT).show();

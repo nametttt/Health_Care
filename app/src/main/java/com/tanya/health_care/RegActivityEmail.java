@@ -82,11 +82,10 @@ public class RegActivityEmail extends AppCompatActivity {
                                         sendEmail(email.getText().toString(), pinCode);
                                         Intent intent = new Intent(RegActivityEmail.this, RegPinActivity.class);
                                         intent.putExtra("userEmail", userEmail);
-
                                         intent.putExtra("pinCode", pinCode);
                                         startActivity(intent);
                                     } else {
-                                        Toast.makeText(RegActivityEmail.this, "Пользователь существует", Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(RegActivityEmail.this, "Пользователь уже существует", Toast.LENGTH_SHORT).show();
                                     }
                                 }
                             });

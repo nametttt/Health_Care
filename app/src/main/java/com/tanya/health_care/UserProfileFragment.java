@@ -13,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.RadioButton;
 
 import com.google.firebase.Firebase;
 import com.google.firebase.auth.FirebaseAuth;
@@ -30,6 +31,8 @@ public class UserProfileFragment extends Fragment {
     EditText userName;
     AppCompatButton pickDate, exit;
     FirebaseAuth mAuth;
+    RadioButton male, female;
+    String userGender;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
@@ -46,6 +49,8 @@ public class UserProfileFragment extends Fragment {
         pickDate = v.findViewById(R.id.pickDate);
         mAuth = FirebaseAuth.getInstance();
         exit = v.findViewById(R.id.back);
+        male = v.findViewById(R.id.male);
+        female = v.findViewById(R.id.female);
 
         exit.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -78,6 +83,12 @@ public class UserProfileFragment extends Fragment {
                         User user1 = snapshot.child(pC.getSplittedPathChild(user.getEmail())).getValue(User.class);
                         pickDate.setText(user1.getBirthday());
                         userName.setText(user1.getName());
+                        userGender = user1.getGender();
+                        if (userGender != null && userGender.equals("мужской")) {
+                            male.setChecked(true);
+                        } else {
+                            female.setChecked(true);
+                        }
 
                         //ref.child(pC.getSplittedPathChild(user.getEmail())).child("acc").updateChildren(map);
                     }
