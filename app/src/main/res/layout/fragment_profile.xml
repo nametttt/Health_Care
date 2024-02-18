@@ -57,7 +57,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textColor="@color/black"
-            android:text="Татьяна Яковлева"
+            android:id="@+id/userName"
             android:textSize="24dp"
             android:textStyle="bold"
             android:layout_marginTop="10dp"
@@ -67,7 +67,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textColor="@color/black"
-            android:text="tanusaakovleva07@gmail.com"
+            android:id="@+id/userEmail"
             android:textSize="20dp"
             android:gravity="center"
             android:layout_marginBottom="5dp"/>
