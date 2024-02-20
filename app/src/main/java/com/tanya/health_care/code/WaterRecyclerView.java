@@ -13,12 +13,12 @@ import com.tanya.health_care.R;
 
 import java.util.ArrayList;
 
-public class RecordRecyclerView extends RecyclerView.Adapter<RecordRecyclerView.ViewHolder> {
+public class WaterRecyclerView extends RecyclerView.Adapter<WaterRecyclerView.ViewHolder> {
 
     private ArrayList<RecordMainModel> record;
     private Context context;
 
-    public RecordRecyclerView(Context context, ArrayList<RecordMainModel> record) {
+    public WaterRecyclerView(Context context, ArrayList<RecordMainModel> record) {
         this.context = context;
         this.record = record;
     }
@@ -26,15 +26,15 @@ public class RecordRecyclerView extends RecyclerView.Adapter<RecordRecyclerView.
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.r_common_asset, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.r_drinking_asset, parent, false);
         return new ViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        RecordMainModel currentFlight = record.get(position);
+        RecordMainModel currentWater = record.get(position);
 
-        holder.reportText.setText(currentFlight.info);
+        holder.reportText.setText(currentWater.info);
 
     }
 

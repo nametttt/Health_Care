@@ -3,7 +3,6 @@ package com.tanya.health_care.code;
 public class RecordMainModel {
     public RecordMainModel() {
     }
-
     public String uid;
     public String info;
 
