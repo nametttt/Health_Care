@@ -14,7 +14,7 @@ public class RegGenderActivity extends AppCompatActivity {
 
     private Button btn, bb;
     private RadioButton woman, men;
-    private String gender = "женский", userEmail;
+    private String gender = "женский", userEmail, code, ExistGender;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -27,12 +27,23 @@ public class RegGenderActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         userEmail = intent.getStringExtra("userEmail");
+        code = intent.getStringExtra("UserCode");
+        ExistGender = intent.getStringExtra("Gender");
 
+        if(ExistGender != null)
+        {
+            if (ExistGender.equals("мужской")) {
+                men.setChecked(true);
+            } else {
+                woman.setChecked(true);
+            }
+        }
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(RegGenderActivity.this, RegPinActivity.class);
                 startActivity(intent);
+                intent.putExtra("UserCode", code);
             }
         });
 

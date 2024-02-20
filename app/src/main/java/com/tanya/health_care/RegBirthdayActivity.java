@@ -24,6 +24,12 @@ public class RegBirthdayActivity extends AppCompatActivity {
 
         String userEmail = getIntent().getStringExtra("userEmail");
         String userGender = getIntent().getStringExtra("userGender");
+        String birthday = getIntent().getStringExtra("Birthday");
+
+        if(birthday != null)
+        {
+            btn.setText(birthday);
+        }
 
         btn.setOnClickListener(new View.OnClickListener() {
            @Override
@@ -38,6 +44,7 @@ public class RegBirthdayActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(RegBirthdayActivity.this, RegGenderActivity.class);
+                intent.putExtra("Gender", userGender);
                 startActivity(intent);
             }
         });

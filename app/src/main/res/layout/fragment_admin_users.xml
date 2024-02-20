@@ -24,7 +24,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/text_home"
         android:layout_marginVertical="10dp"
-        android:text="Продукты"
+        android:text="Пользователи"
         android:textAlignment="textStart"
         android:textColor="@color/black"
         android:textSize="32dp"

@@ -22,6 +22,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.tanya.health_care.code.WaterData;
 import com.tanya.health_care.code.getSplittedPathChild;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 public class DrinkingFragment extends Fragment {
@@ -85,9 +86,7 @@ public class DrinkingFragment extends Fragment {
         addWater.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(waterData == null){
-                    waterData = new WaterData(0, new Date());
-                }
+                waterData = new WaterData(0, LocalDateTime.now(), 250);
                 if ( ref != null){
                     waterData.actualCount+=250;
                     ref.setValue(waterData);

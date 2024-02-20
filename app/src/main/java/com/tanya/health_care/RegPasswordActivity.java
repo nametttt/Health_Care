@@ -67,7 +67,8 @@ public class RegPasswordActivity extends AppCompatActivity {
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(RegPasswordActivity.this, RegActivityEmail.class);
+                Intent intent = new Intent(RegPasswordActivity.this, RegBirthdayActivity.class);
+                intent.putExtra("Birthday", birthday);
                 startActivity(intent);
             }
         });

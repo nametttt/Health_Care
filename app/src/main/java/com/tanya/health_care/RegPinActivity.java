@@ -19,7 +19,7 @@ public class RegPinActivity extends AppCompatActivity {
     private Button btn, bb;
     private TextView emailTextView, newPin;
     private PinView firstPinView;
-    private String expectedPinCode, userEmail;
+    private String expectedPinCode, userEmail, code;
 
     private boolean newPinRequested = false;
 
@@ -31,6 +31,12 @@ public class RegPinActivity extends AppCompatActivity {
         bb = findViewById(R.id.back);
         firstPinView = findViewById(R.id.firstPinView);
         newPin = findViewById(R.id.newpin);
+
+        code = getIntent().getStringExtra("UserCode");
+        if(code != null)
+        {
+            firstPinView.setText(code);
+        }
 
         expectedPinCode = getIntent().getStringExtra("pinCode");
         emailTextView = findViewById(R.id.aboutemail);
@@ -71,6 +77,7 @@ public class RegPinActivity extends AppCompatActivity {
         } else if (enteredPin.equals(expectedPinCode)) {
             Intent intent = new Intent(RegPinActivity.this, RegGenderActivity.class);
             intent.putExtra("userEmail", userEmail);
+            intent.putExtra("UserCode", expectedPinCode);
             startActivity(intent);
         } else {
             Toast.makeText(RegPinActivity.this, "Неверный пин-код", Toast.LENGTH_SHORT).show();

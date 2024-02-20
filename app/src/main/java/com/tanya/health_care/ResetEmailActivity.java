@@ -31,6 +31,7 @@ public class ResetEmailActivity extends AppCompatActivity {
 
     private Button btn, bb;
     TextView email;
+    private String expectedPinCode;
     FirebaseAuth mAuth;
 
     @Override
@@ -42,6 +43,8 @@ public class ResetEmailActivity extends AppCompatActivity {
         btn = findViewById(R.id.continu);
         bb = findViewById(R.id.back);
         email = findViewById(R.id.email);
+        expectedPinCode = getIntent().getStringExtra("pinCode");
+
 
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -81,6 +84,7 @@ public class ResetEmailActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(ResetEmailActivity.this, LoginActivity.class);
+                intent.putExtra("userCode", expectedPinCode);
                 startActivity(intent);
             }
         });
