@@ -1,7 +1,5 @@
 package com.tanya.health_care;
 
-import androidx.lifecycle.ViewModelProvider;
-
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -30,7 +28,7 @@ public class DrinkingFragment extends Fragment {
 
 
     private TextView drunkCount;
-    private Button addWater;
+    private Button addWater, save;
     FirebaseUser user;
     WaterData waterData;
     DatabaseReference ref;
@@ -47,6 +45,16 @@ public class DrinkingFragment extends Fragment {
         user = FirebaseAuth.getInstance().getCurrentUser();
         getSplittedPathChild pC = new getSplittedPathChild();
         drunkCount = v.findViewById(R.id.drunkCount);
+
+        save = v.findViewById(R.id.back);
+        save.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                HomeActivity homeActivity = (HomeActivity) getActivity();
+                homeActivity.replaceFragment(new HomeFragment());
+            }
+        });
+
 
         FirebaseDatabase mDb = FirebaseDatabase.getInstance();
         ref = mDb.getReference("users").child(pC.getSplittedPathChild(user.getEmail())).child("characteristic").child("water");

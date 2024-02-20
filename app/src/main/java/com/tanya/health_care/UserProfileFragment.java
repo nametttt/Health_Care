@@ -22,7 +22,6 @@ import com.google.firebase.database.ValueEventListener;
 import com.tanya.health_care.code.User;
 import com.tanya.health_care.code.getSplittedPathChild;
 import com.tanya.health_care.dialog.DatePickerModal;
-import com.tanya.health_care.ui.profile.ProfileFragment;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -94,7 +93,6 @@ public class UserProfileFragment extends Fragment {
                     }
                 });
 
-                // Обработка события сохранения данных
                 save.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {

@@ -8,8 +8,6 @@ import androidx.fragment.app.FragmentTransaction;
 import android.os.Bundle;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.tanya.health_care.ui.home.HomeFragment;
-import com.tanya.health_care.ui.profile.ProfileFragment;
 
 public class AdminHomeActivity extends AppCompatActivity {
 

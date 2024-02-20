@@ -1,7 +1,5 @@
 package com.tanya.health_care;
 
-import androidx.lifecycle.ViewModelProvider;
-
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -13,9 +11,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -35,6 +32,7 @@ public class PhysicalParametersFragment extends Fragment {
     ArrayList<RecordMainModel> arrayRecord;
     RecordRecyclerView adapter;
     DatabaseReference db;
+    Button exit;
 
 
     @Override
@@ -52,9 +50,18 @@ public class PhysicalParametersFragment extends Fragment {
         arrayRecord = new ArrayList<RecordMainModel>();
          adapter = new RecordRecyclerView(getContext(), arrayRecord);
         recyclerView = v.findViewById(R.id.recyclerView);
+        exit = v.findViewById(R.id.back);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setAdapter(adapter);
         addDataOnRecyclerView();
+
+        exit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                HomeActivity homeActivity = (HomeActivity) getActivity();
+                homeActivity.replaceFragment(new ProfileFragment());
+            }
+        });
 
     }
 

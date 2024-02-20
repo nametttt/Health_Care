@@ -1,4 +1,4 @@
-package com.tanya.health_care.ui.profile;
+package com.tanya.health_care;
 
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;

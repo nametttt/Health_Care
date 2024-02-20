@@ -2,8 +2,6 @@ package com.tanya.health_care;
 
 import static android.content.ContentValues.TAG;
 
-import androidx.lifecycle.ViewModelProvider;
-
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -32,7 +30,6 @@ import com.google.firebase.database.ValueEventListener;
 import com.tanya.health_care.code.EyeVisibility;
 import com.tanya.health_care.code.User;
 import com.tanya.health_care.code.getSplittedPathChild;
-import com.tanya.health_care.ui.profile.ProfileFragment;
 
 import java.util.Map;
 

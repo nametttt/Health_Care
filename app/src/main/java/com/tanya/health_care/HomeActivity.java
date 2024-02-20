@@ -9,9 +9,6 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
-import com.tanya.health_care.ui.home.HomeFragment;
-import com.tanya.health_care.ui.profile.ProfileFragment;
-
 public class HomeActivity extends AppCompatActivity {
 
 

@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.home.HomeFragment">
+    tools:context=".HomeFragment">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -79,6 +79,7 @@
                     <androidx.appcompat.widget.AppCompatButton
                         android:layout_width="match_parent"
                         android:layout_height="35dp"
+                        android:id="@+id/parameters"
                         android:layout_marginTop="10dp"
                         android:background="@drawable/button_asset"
                         android:text="Ввод"
@@ -145,6 +146,7 @@
                     </LinearLayout>
 
                     <androidx.appcompat.widget.AppCompatButton
+                        android:id="@+id/health_common"
                         android:layout_width="match_parent"
                         android:layout_height="35dp"
                         android:layout_marginTop="10dp"
@@ -213,6 +215,7 @@
                     </LinearLayout>
 
                     <androidx.appcompat.widget.AppCompatButton
+                        android:id="@+id/nutrition"
                         android:layout_width="match_parent"
                         android:layout_height="35dp"
                         android:layout_marginTop="10dp"
@@ -286,6 +289,7 @@
                         android:layout_marginTop="10dp"
                         android:background="@drawable/button_asset"
                         android:text="Ввод"
+                        android:id="@+id/sleep"
                         android:textAlignment="center"
                         android:textAllCaps="false"
                         android:textColor="@color/white"
