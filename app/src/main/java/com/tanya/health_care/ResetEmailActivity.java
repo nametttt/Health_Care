@@ -30,7 +30,7 @@ import javax.mail.internet.MimeMessage;
 public class ResetEmailActivity extends AppCompatActivity {
 
     private Button btn, bb;
-    TextView email;
+    private TextView email;
     private String expectedPinCode;
     FirebaseAuth mAuth;
 
