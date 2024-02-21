@@ -11,16 +11,17 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.tanya.health_care.R;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 public class WaterRecyclerView extends RecyclerView.Adapter<WaterRecyclerView.ViewHolder> {
 
-    private ArrayList<RecordMainModel> record;
+    private ArrayList<WaterData> waterData;
     private Context context;
 
-    public WaterRecyclerView(Context context, ArrayList<RecordMainModel> record) {
+    public WaterRecyclerView(Context context, ArrayList<WaterData> waterData) {
         this.context = context;
-        this.record = record;
+        this.waterData = waterData;
     }
 
     @NonNull
@@ -32,23 +33,26 @@ public class WaterRecyclerView extends RecyclerView.Adapter<WaterRecyclerView.Vi
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        RecordMainModel currentWater = record.get(position);
+        WaterData currentWater = waterData.get(position);
 
-        holder.reportText.setText(currentWater.info);
+        SimpleDateFormat fmt = new SimpleDateFormat("HH:mm");
 
+        holder.addedTime.setText(fmt.format(currentWater.lastAdded));
+        holder.addedCount.setText(currentWater.addedValue + "мл");
     }
 
     @Override
     public int getItemCount() {
-        return record.size();
+        return waterData.size();
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        TextView reportText;
+        TextView addedCount, addedTime;
 
         public ViewHolder(View itemView) {
             super(itemView);
-            reportText = itemView.findViewById(R.id.reportText);
+            addedCount = itemView.findViewById(R.id.addedWateCount);
+            addedTime = itemView.findViewById(R.id.addedTime);
         }
     }
 }

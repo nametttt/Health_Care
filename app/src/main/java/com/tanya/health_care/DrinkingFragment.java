@@ -5,6 +5,8 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,20 +21,33 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.tanya.health_care.code.RecordMainModel;
+import com.tanya.health_care.code.RecordRecyclerView;
 import com.tanya.health_care.code.WaterData;
+import com.tanya.health_care.code.WaterRecyclerView;
 import com.tanya.health_care.code.getSplittedPathChild;
 
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Comparator;
 import java.util.Date;
 
 public class DrinkingFragment extends Fragment {
-
-
     private TextView drunkCount;
     private Button addWater, save;
+
+
+    RecyclerView recyclerView;
+    ArrayList<WaterData> waterDataArrayList;
+    WaterRecyclerView adapter;
     FirebaseUser user;
     WaterData waterData;
     DatabaseReference ref;
+    getSplittedPathChild pC = new getSplittedPathChild();
+
+    FirebaseDatabase mDb;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
@@ -44,8 +59,15 @@ public class DrinkingFragment extends Fragment {
 
     void init (View v){
         user = FirebaseAuth.getInstance().getCurrentUser();
-        getSplittedPathChild pC = new getSplittedPathChild();
         drunkCount = v.findViewById(R.id.drunkCount);
+        mDb = FirebaseDatabase.getInstance();
+
+        waterDataArrayList = new ArrayList<WaterData>();
+        adapter = new WaterRecyclerView(getContext(), waterDataArrayList);
+        recyclerView = v.findViewById(R.id.recyclerView);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        recyclerView.setAdapter(adapter);
+        addDataOnRecyclerView();
 
         save = v.findViewById(R.id.back);
         save.setOnClickListener(new View.OnClickListener() {
@@ -57,22 +79,19 @@ public class DrinkingFragment extends Fragment {
         });
 
 
-        FirebaseDatabase mDb = FirebaseDatabase.getInstance();
         ref = mDb.getReference("users").child(pC.getSplittedPathChild(user.getEmail())).child("characteristic").child("water");
         ref.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if (snapshot.getValue(WaterData.class).actualCount == 0){
-                    drunkCount.setText("–");
-                    return;
+                int count = 0;
+                for (DataSnapshot dataSnapshot: snapshot.getChildren()){
+                    WaterData water = dataSnapshot.getValue(WaterData.class);
+                    if(isSameDay(water.lastAdded, new Date())){
+                        count += water.addedValue;
+                    }
                 }
-                if (snapshot.getValue(WaterData.class) != null){
-                    waterData = snapshot.getValue(WaterData.class);
-                    String count = new String(String.valueOf(waterData.actualCount));
-                    drunkCount.setText(count);
-                }
-
-                else {
+                drunkCount.setText(String.valueOf(count));
+                if(count <= 0){
                     drunkCount.setText("–");
                 }
             }
@@ -86,9 +105,10 @@ public class DrinkingFragment extends Fragment {
         addWater.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                waterData = new WaterData(0, LocalDateTime.now(), 250);
+                waterData = new WaterData(250, new Date());
+                ref = mDb.getReference("users").child(pC.getSplittedPathChild(user.getEmail())).child("characteristic").child("water").push();
+
                 if ( ref != null){
-                    waterData.actualCount+=250;
                     ref.setValue(waterData);
                 }
             }
@@ -96,4 +116,48 @@ public class DrinkingFragment extends Fragment {
     }
 
 
+    private void addDataOnRecyclerView() {
+        ValueEventListener valueEventListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (waterDataArrayList.size() > 0) {
+                    waterDataArrayList.clear();
+                }
+                for (DataSnapshot ds : snapshot.getChildren()) {
+                    ds.getValue();
+                    WaterData ps = ds.getValue(WaterData.class);
+                    assert ps != null;
+                    if(isSameDay(ps.lastAdded, new Date())){
+                        waterDataArrayList.add(ps);
+                    }
+                }
+                waterDataArrayList.sort(new SortByDate());
+                adapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        };
+        ref = mDb.getReference("users").child(pC.getSplittedPathChild(user.getEmail())).child("characteristic").child("water");
+
+        ref.addValueEventListener(valueEventListener);
+    }
+
+
+    public static boolean isSameDay(Date date1, Date date2) {
+        SimpleDateFormat fmt = new SimpleDateFormat("yyyyMMdd");
+        return fmt.format(date1).equals(fmt.format(date2));
+    }
+
+
+
+}
+
+class SortByDate implements Comparator<WaterData> {
+    @Override
+    public int compare(WaterData a, WaterData b) {
+        return  b.lastAdded.compareTo(a.lastAdded);
+    }
 }

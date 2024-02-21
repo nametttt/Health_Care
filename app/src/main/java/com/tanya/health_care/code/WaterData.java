@@ -3,17 +3,17 @@ package com.tanya.health_care.code;
 import java.time.DateTimeException;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.Calendar;
 import java.util.Date;
 
 public class WaterData {
-    public int actualCount, value;
-    public LocalDateTime lastAdded;
+    public int addedValue;
+    public Date lastAdded;
 
-    WaterData(){}
+    public WaterData(){}
 
-    public WaterData(int actualCount, LocalDateTime lastAdded, int value) {
-        this.actualCount = actualCount;
+    public WaterData(int addedValue, Date lastAdded) {
+        this.addedValue = addedValue;
         this.lastAdded = lastAdded;
-        this.value = value;
     }
 }
