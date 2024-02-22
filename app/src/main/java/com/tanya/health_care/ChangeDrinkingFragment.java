@@ -11,22 +11,105 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
+
+import com.google.firebase.Firebase;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.tanya.health_care.code.WaterData;
+import com.tanya.health_care.code.getSplittedPathChild;
+import com.tanya.health_care.dialog.DatePickerModal;
+import com.tanya.health_care.dialog.TimePicker;
+
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
 
 public class ChangeDrinkingFragment extends Fragment {
 
-    public static ChangeDrinkingFragment newInstance() {
-        return new ChangeDrinkingFragment();
+    public Date date;
+    public int count;
+    public String path;
+
+
+    Button dateTimebtn, save, delete;
+    EditText text;
+    DatabaseReference ref;
+    FirebaseDatabase mDb;
+    HomeActivity homeActivity;
+
+    public ChangeDrinkingFragment(String uid, Date date, int count) {
+        path = uid;
+        this.date = date;
+        this.count = count;
     }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_change_drinking, container, false);
+        View v = inflater.inflate(R.layout.fragment_change_drinking, container, false);
+        init(v);
+        return v;
     }
 
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
+
+    void init(View v){
+        SimpleDateFormat fmt = new SimpleDateFormat("HH:mm", new Locale("ru"));
+        homeActivity = (HomeActivity) getActivity();
+        dateTimebtn = v.findViewById(R.id.dateButton);
+        text = v.findViewById(R.id.countText);
+        save = v.findViewById(R.id.continu);
+        delete = v.findViewById(R.id.delete);
+        mDb = FirebaseDatabase.getInstance();
+        getSplittedPathChild pC = new getSplittedPathChild();
+
+        dateTimebtn.setText(fmt.format(date));
+        text.setText(String.valueOf(count));
+
+
+        dateTimebtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                TimePicker datePickerModal = new TimePicker();
+                datePickerModal.show(getParentFragmentManager(), "timepicker");
+            }
+        });
+
+        save.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                ref = mDb.getReference("users").child(pC.getSplittedPathChild(user.getEmail())).child("characteristic").child("water").child(path);
+
+                Date d = date;
+                String[] times = dateTimebtn.getText().toString().split(":");
+
+                Calendar cal = Calendar.getInstance();
+                cal.setTime(date);
+
+                cal.set(Calendar.HOUR_OF_DAY, Integer.parseInt(times[0]));
+                cal.set(Calendar.MINUTE, Integer.parseInt(times[1]));
+                date = cal.getTime();
+                WaterData newWater = new WaterData(path, Integer.parseInt(text.getText().toString()) ,date  );
+                ref.setValue(newWater);
+                homeActivity.replaceFragment(new DrinkingFragment());
+            }
+        });
+
+        delete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                ref = mDb.getReference("users").child(pC.getSplittedPathChild(user.getEmail())).child("characteristic").child("water").child(path);
+                ref.removeValue();
+                homeActivity.replaceFragment(new DrinkingFragment());
+
+            }
+        });
     }
 
 }

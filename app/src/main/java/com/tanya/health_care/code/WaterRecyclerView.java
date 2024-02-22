@@ -4,11 +4,14 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.tanya.health_care.ChangeDrinkingFragment;
+import com.tanya.health_care.HomeActivity;
 import com.tanya.health_care.R;
 
 import java.text.SimpleDateFormat;
@@ -39,6 +42,14 @@ public class WaterRecyclerView extends RecyclerView.Adapter<WaterRecyclerView.Vi
 
         holder.addedTime.setText(fmt.format(currentWater.lastAdded));
         holder.addedCount.setText(currentWater.addedValue + "мл");
+
+        holder.relativeLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                HomeActivity homeActivity = (HomeActivity) v.getContext();
+                homeActivity.replaceFragment(new ChangeDrinkingFragment(currentWater.uid,currentWater.lastAdded, currentWater.addedValue));
+            }
+        });
     }
 
     @Override
@@ -48,11 +59,14 @@ public class WaterRecyclerView extends RecyclerView.Adapter<WaterRecyclerView.Vi
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         TextView addedCount, addedTime;
+        RelativeLayout relativeLayout;
 
         public ViewHolder(View itemView) {
             super(itemView);
             addedCount = itemView.findViewById(R.id.addedWateCount);
             addedTime = itemView.findViewById(R.id.addedTime);
+            relativeLayout = itemView.findViewById(R.id.relative);
+
         }
     }
 }

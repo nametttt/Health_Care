@@ -105,8 +105,9 @@ public class DrinkingFragment extends Fragment {
         addWater.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                waterData = new WaterData(250, new Date());
                 ref = mDb.getReference("users").child(pC.getSplittedPathChild(user.getEmail())).child("characteristic").child("water").push();
+
+                waterData = new WaterData(ref.getKey().toString(),250, new Date());
 
                 if ( ref != null){
                     ref.setValue(waterData);
