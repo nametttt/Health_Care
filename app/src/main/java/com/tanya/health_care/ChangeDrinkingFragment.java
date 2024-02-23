@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.google.firebase.Firebase;
 import com.google.firebase.auth.FirebaseAuth;
@@ -34,7 +35,6 @@ public class ChangeDrinkingFragment extends Fragment {
     public Date date;
     public int count;
     public String path;
-
 
     Button dateTimebtn, save, delete;
     EditText text;
@@ -96,7 +96,10 @@ public class ChangeDrinkingFragment extends Fragment {
                 date = cal.getTime();
                 WaterData newWater = new WaterData(path, Integer.parseInt(text.getText().toString()) ,date  );
                 ref.setValue(newWater);
+                Toast.makeText(getContext(), "Изменение прошло успешно", Toast.LENGTH_SHORT).show();
+
                 homeActivity.replaceFragment(new DrinkingFragment());
+
             }
         });
 
@@ -106,6 +109,8 @@ public class ChangeDrinkingFragment extends Fragment {
                 FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                 ref = mDb.getReference("users").child(pC.getSplittedPathChild(user.getEmail())).child("characteristic").child("water").child(path);
                 ref.removeValue();
+                Toast.makeText(getContext(), "Удаление прошло успешно", Toast.LENGTH_SHORT).show();
+
                 homeActivity.replaceFragment(new DrinkingFragment());
 
             }

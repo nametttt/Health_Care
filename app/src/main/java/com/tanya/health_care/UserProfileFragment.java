@@ -23,7 +23,9 @@ import com.tanya.health_care.code.User;
 import com.tanya.health_care.code.getSplittedPathChild;
 import com.tanya.health_care.dialog.DatePickerModal;
 
+import java.text.SimpleDateFormat;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 public class UserProfileFragment extends Fragment {
@@ -118,16 +120,16 @@ public class UserProfileFragment extends Fragment {
                     }
                 });
 
-                // Установка слушателя pickDate.setOnClickListener() здесь
                 pickDate.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
+
                         DatePickerModal datePickerModal = new DatePickerModal();
-                        datePickerModal.show(getChildFragmentManager(), "datepicker");
+                        datePickerModal.setTargetButton(pickDate);
+                        datePickerModal.show(getParentFragmentManager(), "datepicker");
                     }
                 });
             }
-
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
 

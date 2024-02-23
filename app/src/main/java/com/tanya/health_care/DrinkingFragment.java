@@ -59,8 +59,8 @@ public class DrinkingFragment extends Fragment {
 
     void init (View v){
         user = FirebaseAuth.getInstance().getCurrentUser();
-        drunkCount = v.findViewById(R.id.drunkCount);
         mDb = FirebaseDatabase.getInstance();
+        drunkCount = v.findViewById(R.id.drunkCount);
 
         waterDataArrayList = new ArrayList<WaterData>();
         adapter = new WaterRecyclerView(getContext(), waterDataArrayList);

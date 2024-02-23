@@ -35,6 +35,7 @@ public class RegBirthdayActivity extends AppCompatActivity {
            @Override
            public void onClick(View view) {
                DatePickerModal datePickerModal = new DatePickerModal();
+               datePickerModal.setTargetButton(btn);
                datePickerModal.show(getSupportFragmentManager(), "datepicker");
            }
        });

@@ -32,7 +32,7 @@ public class SleepFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 HomeActivity homeActivity = (HomeActivity) getActivity();
-                homeActivity.replaceFragment(new ProfileFragment());
+                homeActivity.replaceFragment(new HomeFragment());
             }
         });
 

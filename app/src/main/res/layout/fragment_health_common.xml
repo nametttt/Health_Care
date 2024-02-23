@@ -74,7 +74,8 @@
                    <TextView
                        android:layout_width="wrap_content"
                        android:layout_height="wrap_content"
-                       android:text="120/80"
+                       android:text="-"
+                       android:id="@+id/pressure"
                        android:textColor="@color/black"
                        android:textSize="28dp"
                        android:textStyle="bold" />
@@ -150,7 +151,8 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="80"
+                            android:text="-"
+                            android:id="@+id/pulse"
                             android:textColor="@color/black"
                             android:textSize="28dp"
                             android:textStyle="bold" />
@@ -199,7 +201,8 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="36.7"
+                            android:text="-"
+                            android:id="@+id/temperature"
                             android:textColor="@color/black"
                             android:textSize="28dp"
                             android:textStyle="bold" />
@@ -229,62 +232,12 @@
             android:textAlignment="textStart"
             android:textStyle="bold"/>
 
-        <LinearLayout
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerView"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:background="@drawable/health_asset"
-            android:padding="15dp">
+            android:layout_height="match_parent"
+            />
 
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="0.8"
-                android:orientation="vertical">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-                    <ImageView
-                        android:layout_width="25dp"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:adjustViewBounds="true"
-                        android:scaleType="centerInside"
-                        android:src="@drawable/logout" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginHorizontal="7dp"
-                        android:text="Запись от 15.02.2024"
-                        android:layout_gravity="center"
-                        android:textColor="@color/black"
-                        android:textSize="18dp"
-                        android:textStyle="bold" />
-                </LinearLayout>
-
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="0.2"
-                android:orientation="vertical">
-
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="end"
-                    android:layout_marginHorizontal="10dp"
-                    android:adjustViewBounds="true"
-                    android:scaleType="centerInside"
-                    android:src="@drawable/next" />
-            </LinearLayout>
-        </LinearLayout>
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/continu"
             android:layout_width="match_parent"

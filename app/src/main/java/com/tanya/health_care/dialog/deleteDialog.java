@@ -38,7 +38,6 @@ public class deleteDialog extends DialogFragment {
         builder.setTitle("Удаление профиля")
                 .setMessage("Профиль нельзя восстановить");
 
-// Создаем отдельный layout для кнопок
         LinearLayout layout = new LinearLayout(requireActivity());
         layout.setLayoutParams(new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
