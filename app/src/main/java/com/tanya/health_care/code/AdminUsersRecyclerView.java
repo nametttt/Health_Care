@@ -32,8 +32,9 @@ public class AdminUsersRecyclerView extends RecyclerView.Adapter<AdminUsersRecyc
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.r_drinking_asset, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.r_admin_users_asset, parent, false);
         return new ViewHolder(view);
+
     }
 
     @Override
