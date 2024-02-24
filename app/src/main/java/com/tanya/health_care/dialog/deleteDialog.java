@@ -57,36 +57,39 @@ public class deleteDialog extends DialogFragment {
             @Override
             public void onClick(View v) {
                 final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                if (user != null) {
-                    getSplittedPathChild g = new getSplittedPathChild();
-                    final DatabaseReference userRef = FirebaseDatabase.getInstance().getReference().child("users").child(g.getSplittedPathChild(user.getEmail()));
-                    userRef.removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Void> task) {
-                            if (task.isSuccessful()) {
-                                user.delete().addOnCompleteListener(new OnCompleteListener<Void>() {
-                                    @Override
-                                    public void onComplete(@NonNull Task<Void> task) {
-                                        if (task.isSuccessful()) {
-                                            // Пользователь успешно удален, переходите на главную страницу
-                                            Intent intent = new Intent(getContext(), MainActivity.class);
-                                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                                            startActivity(intent);
-                                            Toast.makeText(getContext(), "Успешное удаление профиля!", Toast.LENGTH_SHORT).show();
+                String useremail = user.getEmail();
 
-                                        } else {
-                                            // Обработка ошибок при удалении пользователя
-                                            Toast.makeText(getContext(), "Ошибка при удалении пользователя", Toast.LENGTH_SHORT).show();
-                                        }
+                user.delete().addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()) {
+
+                            getSplittedPathChild g = new getSplittedPathChild();
+                            final DatabaseReference userRef = FirebaseDatabase.getInstance().getReference().child("users").child(g.getSplittedPathChild(useremail));
+                            userRef.removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+                                    if (task.isSuccessful()) {
+                                        Intent intent = new Intent( getActivity(), MainActivity.class);
+                                        startActivity(intent);
+                                        Toast.makeText(getContext(), "Успешное удаление профиля!", Toast.LENGTH_SHORT).show();
+
+                                    } else {
+                                        // Обработка ошибок при удалении данных из базы данных
+                                        Toast.makeText(getContext(), "Ошибка при удалении данных из базы данных", Toast.LENGTH_SHORT).show();
                                     }
-                                });
-                            } else {
-                                // Обработка ошибок при удалении данных из базы данных
-                                Toast.makeText(getContext(), "Ошибка при удалении данных из базы данных", Toast.LENGTH_SHORT).show();
-                            }
+                                }
+                            });
+                            // Пользователь успешно удален, переходите на главную страницу
+
+                        } else {
+                            Toast.makeText(getContext(), task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                            // Обработка ошибок при удалении пользователя
+                            Toast.makeText(getContext(), "Ошибка при удалении пользователя", Toast.LENGTH_SHORT).show();
                         }
-                    });
-                }
+                    }
+                });
+
             }
         });
 

@@ -23,6 +23,7 @@ public class Start_Animation extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_start_animation);
 
+        FirebaseAuth auth = FirebaseAuth.getInstance();
         firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
         LinearLayout ll = findViewById(R.id.health);
         Animation tablego = AnimationUtils.loadAnimation(this,R.anim.exiting);
@@ -32,7 +33,8 @@ public class Start_Animation extends AppCompatActivity {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                if (firebaseUser!=null) {
+                if (firebaseUser != null) {
+                    firebaseUser.getEmail();
                     assert firebaseUser!=null;
                     if (Objects.equals(firebaseUser.getEmail(), "ya@gmail.com")){
                         Intent mainIntent = new Intent(Start_Animation.this, AdminHomeActivity.class);
@@ -47,20 +49,15 @@ public class Start_Animation extends AppCompatActivity {
                     Intent mainIntent = new Intent(Start_Animation.this, HomeActivity.class);
                     Start_Animation.this.startActivity(mainIntent);
 
-                    Start_Animation.this.finish();
-
-                    overridePendingTransition(R.anim.exiting, R.anim.entering);
-
                 }
 
                 else {
                     Intent mainIntent = new Intent(Start_Animation.this, MainActivity.class);
                     Start_Animation.this.startActivity(mainIntent);
 
-                    Start_Animation.this.finish();
-
-                    overridePendingTransition(R.anim.exiting, R.anim.entering);
                 }
+                Start_Animation.this.finish();
+                overridePendingTransition(R.anim.exiting, R.anim.entering);
             }
         }, splash_screen_delay);
     }
