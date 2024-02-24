@@ -169,9 +169,6 @@ public class RegPasswordActivity extends AppCompatActivity {
                             }
                         } else {
                             handleRegistrationError(task.getException());
-                            ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
-                            ClipData clip = ClipData.newPlainText("Error message", task.getException().getMessage());
-                            clipboard.setPrimaryClip(clip);
                         }
                     }
                 });

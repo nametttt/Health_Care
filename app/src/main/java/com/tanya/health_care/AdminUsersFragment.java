@@ -34,7 +34,7 @@ public class AdminUsersFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 AdminHomeActivity homeActivity = (AdminHomeActivity) getActivity();
-                AdminChangeUserFragment fragment = new AdminChangeUserFragment();
+                AdminAddUserFragment fragment = new AdminAddUserFragment();
                 homeActivity.replaceFragment(fragment);
             }
         });

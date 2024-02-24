@@ -35,7 +35,7 @@ public class Start_Animation extends AppCompatActivity {
                 if (firebaseUser!=null) {
                     assert firebaseUser!=null;
                     if (Objects.equals(firebaseUser.getEmail(), "ya@gmail.com")){
-                        Intent mainIntent = new Intent(Start_Animation.this, HomeActivity.class);
+                        Intent mainIntent = new Intent(Start_Animation.this, AdminHomeActivity.class);
                         Start_Animation.this.startActivity(mainIntent);
 
                         Start_Animation.this.finish();

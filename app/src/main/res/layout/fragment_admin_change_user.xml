@@ -199,29 +199,6 @@
                         android:textSize="20dp" />
 
                 </LinearLayout>
-
-                <androidx.appcompat.widget.AppCompatButton
-                    android:id="@+id/continu"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/button_asset"
-                    android:padding="10dp"
-                    android:layout_marginTop="20dp"
-                    android:text="Сохранить"
-                    android:textAllCaps="false"
-                    android:textColor="@color/white"
-                    android:textSize="20dp" />
-
-                <androidx.appcompat.widget.AppCompatButton
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/cancel_asset"
-                    android:padding="10dp"
-                    android:layout_marginTop="15dp"
-                    android:text="Удалить"
-                    android:textAllCaps="false"
-                    android:textColor="@color/black"
-                    android:textSize="20dp" />
             </LinearLayout>
 
     </ScrollView>

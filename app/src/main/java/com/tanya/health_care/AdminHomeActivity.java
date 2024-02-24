@@ -15,7 +15,7 @@ public class AdminHomeActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_admin_home);
-        replaceFragment(new HomeFragment());
+        replaceFragment(new AdminUsersFragment());
 
         BottomNavigationView navView = findViewById(R.id.nav_view);
         navView.setOnItemSelectedListener(item -> {
@@ -37,12 +37,11 @@ public class AdminHomeActivity extends AppCompatActivity {
         });
     }
 
-
-
     public void replaceFragment(Fragment fragment) {
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.nav_host_fragment_activity_home, fragment);
+        fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
     }
 }

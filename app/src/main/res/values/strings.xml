@@ -11,4 +11,9 @@
             <item>Пользователь</item>
             <item>Администратор</item>
         </string-array>
+
+    <string-array name="user_genders">
+        <item>Мужской</item>
+        <item>Женский</item>
+    </string-array>
 </resources>
