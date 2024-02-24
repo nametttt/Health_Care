@@ -72,7 +72,6 @@ public class LoginActivity extends AppCompatActivity {
                     Toast.makeText(view.getContext(), "Пожалуйста, введите корректную почту", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                //hide keyboard
                 InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
                 imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
 
@@ -132,18 +131,18 @@ public class LoginActivity extends AppCompatActivity {
                         FirebaseUser user = mAuth.getCurrentUser();
                         if (task.isSuccessful()) {
                             assert user != null;
-//                            if (Objects.equals(user.getEmail(), "ya@gmail.com")){
-//                                Intent mainIntent = new Intent(loginActivity.this, MainAdmin.class);
-//                                loginActivity.this.startActivity(mainIntent);
-//
-//                                loginActivity.this.finish();
-//
-//
-//                                return;
-//                            }
-                            Intent x = new Intent(LoginActivity.this, HomeActivity.class);
-                            startActivity(x);
-                            finish();
+                            if (Objects.equals(user.getEmail(), "ya@gmail.com")){
+                                Intent mainIntent = new Intent(LoginActivity.this, AdminHomeActivity.class);
+                                startActivity(mainIntent);
+                                finish();
+                               return;
+                           }
+                            else{
+                                Intent x = new Intent(LoginActivity.this, HomeActivity.class);
+                                startActivity(x);
+                                finish();
+                            }
+
                         }
                         else
                             Toast.makeText(LoginActivity.this, "Что-то пошло не так!", Toast.LENGTH_SHORT).show();

@@ -3,7 +3,7 @@
 
     <item
         android:id="@+id/navigation_users"
-        android:icon="@drawable/heart_beat"
+        android:icon="@drawable/team"
         android:title="Пользователи" />
 
     <item
@@ -13,7 +13,7 @@
 
     <item
         android:id="@+id/navigation_chat"
-        android:icon="@drawable/question"
+        android:icon="@drawable/health"
         android:title="Продукты" />
 
     <item
