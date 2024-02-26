@@ -16,6 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -60,10 +61,40 @@ public class ProfileFragment extends Fragment {
         lnUserProfile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                HomeActivity homeActivity = (HomeActivity) getActivity();
-                homeActivity.replaceFragment(new UserProfileFragment());
+                FirebaseDatabase db = FirebaseDatabase.getInstance();
+                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                DatabaseReference ref = db.getReference("users");
+                getSplittedPathChild pC = new getSplittedPathChild();
+
+                ref.addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        User user1 = snapshot.child(pC.getSplittedPathChild(user.getEmail())).getValue(User.class);
+
+                        String userRole = user1.getRole();
+
+                        if ("Администратор".equals(userRole)) {
+                            AdminHomeActivity homeActivity = (AdminHomeActivity) getActivity();
+
+                            Toast.makeText(getContext(), "Вы вошли как администратор", Toast.LENGTH_SHORT).show();
+                            homeActivity.replaceFragment(new UserProfileFragment());
+
+                        }
+                        else {
+                            HomeActivity homeActivity = (HomeActivity) getActivity();
+                            homeActivity.replaceFragment(new UserProfileFragment());
+
+                        }
+
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+                    }
+                });
             }
         });
+
 
         lnChangePassword.setOnClickListener(new View.OnClickListener() {
             @Override

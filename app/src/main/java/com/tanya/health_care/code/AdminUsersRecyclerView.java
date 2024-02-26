@@ -5,12 +5,17 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.tanya.health_care.AboutArticleFragment;
+import com.tanya.health_care.AdminChangeUserFragment;
+import com.tanya.health_care.AdminHomeActivity;
 import com.tanya.health_care.ChangeCommonHealthFragment;
 import com.tanya.health_care.ChangeDrinkingFragment;
 import com.tanya.health_care.HomeActivity;
@@ -34,21 +39,20 @@ public class AdminUsersRecyclerView extends RecyclerView.Adapter<AdminUsersRecyc
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.r_admin_users_asset, parent, false);
         return new ViewHolder(view);
-
     }
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        User user = users.get(position);
-        holder.relativeLayout.setOnClickListener(new View.OnClickListener() {
+        User currentCommon = users.get(position);
+        holder.names.setText(currentCommon.email);
+
+        holder.roles.setText(currentCommon.role);
+
+        holder.change.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                HomeActivity homeActivity = (HomeActivity) v.getContext();
-                ChangeCommonHealthFragment fragment = new ChangeCommonHealthFragment();
-                Bundle args = new Bundle();
-                args.putString("Add", null);
-                fragment.setArguments(args);
-                homeActivity.replaceFragment(fragment);
+                AdminHomeActivity homeActivity = (AdminHomeActivity) v.getContext();
+                homeActivity.replaceFragment(new AdminChangeUserFragment(currentCommon.name, currentCommon.email, currentCommon.role, currentCommon.gender, currentCommon.birthday));
             }
         });
     }
@@ -59,14 +63,17 @@ public class AdminUsersRecyclerView extends RecyclerView.Adapter<AdminUsersRecyc
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        TextView addedCount, addedTime;
+        ImageView image;
+        TextView roles, names;
         RelativeLayout relativeLayout;
+        Button change;
 
         public ViewHolder(View itemView) {
             super(itemView);
-            addedCount = itemView.findViewById(R.id.addedWateCount);
-            addedTime = itemView.findViewById(R.id.addedTime);
-            relativeLayout = itemView.findViewById(R.id.relative);
+            roles = itemView.findViewById(R.id.userRole);
+            names = itemView.findViewById(R.id.userEmail);
+            relativeLayout = itemView.findViewById(R.id.rl);
+            change = itemView.findViewById(R.id.changeUser);
 
         }
     }

@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class User {
-    private String email, name, gender, role, birthday;
+    public String email, name, gender, role, birthday;
 
     public User() {
     }
