@@ -7,26 +7,88 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.tanya.health_care.code.ArticleData;
+import com.tanya.health_care.code.ArticleRecyclerView;
+import com.tanya.health_care.code.WaterData;
+import com.tanya.health_care.code.WaterRecyclerView;
+import com.tanya.health_care.code.getSplittedPathChild;
+
+import java.util.ArrayList;
+import java.util.Date;
+
 public class ArticleFragment extends Fragment {
 
-    public static ArticleFragment newInstance() {
-        return new ArticleFragment();
-    }
 
+    RecyclerView recyclerView;
+    ArrayList<ArticleData> articleDataArrayList;
+    ArticleRecyclerView adapter;
+    FirebaseUser user;
+    DatabaseReference ref;
+    getSplittedPathChild pC = new getSplittedPathChild();
+
+    FirebaseDatabase mDb;
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_article, container, false);
+        View v = inflater.inflate(R.layout.fragment_article, container, false);
+        init(v);
+        return v;
     }
 
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
+    void init(View v){
+        user = FirebaseAuth.getInstance().getCurrentUser();
+        mDb = FirebaseDatabase.getInstance();
+
+        articleDataArrayList = new ArrayList<ArticleData>();
+        adapter = new ArticleRecyclerView(getContext(), articleDataArrayList);
+        recyclerView = v.findViewById(R.id.recyclerView);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        recyclerView.setAdapter(adapter);
+        addDataOnRecyclerView();
     }
+
+
+    private void addDataOnRecyclerView() {
+        ValueEventListener valueEventListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (articleDataArrayList.size() > 0) {
+                    articleDataArrayList.clear();
+                }
+                for (DataSnapshot ds : snapshot.getChildren()) {
+                    ds.getValue();
+                    ArticleData ps = ds.getValue(ArticleData.class);
+                    assert ps != null;
+                        articleDataArrayList.add(ps);
+
+                }
+                adapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        };
+        ref = mDb.getReference().child("articles");
+
+        ref.addValueEventListener(valueEventListener);
+    }
+
+
 
 }

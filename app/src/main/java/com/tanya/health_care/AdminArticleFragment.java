@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 public class AdminArticleFragment extends Fragment {
 
@@ -19,15 +20,26 @@ public class AdminArticleFragment extends Fragment {
         return new AdminArticleFragment();
     }
 
+    Button addArticle;
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_admin_article, container, false);
+        View v = inflater.inflate(R.layout.fragment_admin_article, container, false);
+        init(v);
+        return v;
     }
 
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
+    void init(View v){
+        addArticle = v.findViewById(R.id.addArticle);
+        addArticle.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AdminHomeActivity homeActivity = (AdminHomeActivity) getActivity();
+                AdminChangeArticleFragment fragment = new AdminChangeArticleFragment();
+                homeActivity.replaceFragment(fragment);
+            }
+        });
+
     }
 
 }
