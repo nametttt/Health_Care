@@ -36,6 +36,9 @@ public class AdminArticleFragment extends Fragment {
             public void onClick(View v) {
                 AdminHomeActivity homeActivity = (AdminHomeActivity) getActivity();
                 AdminChangeArticleFragment fragment = new AdminChangeArticleFragment();
+                Bundle args = new Bundle();
+                args.putString("Add", "Добавить");
+                fragment.setArguments(args);
                 homeActivity.replaceFragment(fragment);
             }
         });

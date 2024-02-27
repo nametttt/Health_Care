@@ -16,4 +16,18 @@
         <item>Мужской</item>
         <item>Женский</item>
     </string-array>
+
+    <string-array name="categories">
+        <item>Физическое здоровье</item>
+        <item>Психическое здоровье</item>
+        <item>Здоровое питание</item>
+        <item>Фитнес и тренировки</item>
+        <item>Медицинские советы</item>
+    </string-array>
+
+    <string-array name="access">
+        <item>Публичный</item>
+        <item>Приватный</item>
+        <item>Ограниченный</item>
+    </string-array>
 </resources>

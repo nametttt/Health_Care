@@ -39,6 +39,7 @@
         android:layout_height="wrap_content"
         android:textColor="@color/black"
         android:text="Изменение статьи"
+        android:id="@+id/nameFragment"
         android:textSize="32dp"
         android:layout_marginVertical="10dp"
         android:textAlignment="textStart"
@@ -48,6 +49,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textColor="@color/black"
+        android:id="@+id/textAbout"
         android:text="Измените данные о статье или удалите ее"
         android:textSize="20dp"
         android:layout_marginVertical="10dp"
@@ -100,20 +102,73 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
             android:layout_marginBottom="5dp"
+            android:text="Категория"
+            android:textAlignment="textStart"
+            android:textColor="@color/darkgray"
+            android:textSize="20dp" />
+
+        <Spinner
+            android:id="@+id/CategorySpinner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="5dp"
+            android:background="@drawable/edit_text_asset"
+            android:textSize="20dp"
+            android:paddingVertical="12dp"
+            android:paddingHorizontal="5dp"
+            android:textAlignment="textStart"
+            android:entries="@array/categories"
+            />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="5dp"
+            android:text="Доступ"
+            android:textAlignment="textStart"
+            android:textColor="@color/darkgray"
+            android:textSize="20dp" />
+
+        <Spinner
+            android:id="@+id/AccessSpinner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="5dp"
+            android:background="@drawable/edit_text_asset"
+            android:textSize="20dp"
+            android:paddingVertical="12dp"
+            android:paddingHorizontal="5dp"
+            android:textAlignment="textStart"
+            android:entries="@array/access"
+            />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="5dp"
             android:text="Содержание"
             android:textAlignment="textStart"
             android:textColor="@color/darkgray"
             android:textSize="20dp" />
 
+
         <EditText
+            android:id="@+id/description"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginVertical="5dp"
-            android:padding="12dp"
+            android:layout_marginVertical="8dp"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:paddingTop="12dp"
+            android:paddingBottom="12dp"
             android:textSize="18dp"
-            android:id="@+id/description"
             android:background="@drawable/edit_text_asset"
-            android:hint="Содержание"/>
+            android:hint="Введите содержание статьи"
+            android:inputType="textMultiLine"
+            android:gravity="start|top"
+            android:minLines="5"
+            />
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/continu"

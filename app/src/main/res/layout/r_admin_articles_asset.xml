@@ -18,6 +18,7 @@
             <ImageView
                 android:layout_width="70dp"
                 android:layout_height="70dp"
+                android:id="@+id/image"
                 android:adjustViewBounds="true"
                 android:scaleType="centerCrop"
                 android:src="@drawable/cat" />
@@ -31,6 +32,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="7dp"
                     android:text="Статья о здоровье"
+                    android:id="@+id/title"
                     android:layout_gravity="center"
                     android:textColor="@color/black"
                     android:textSize="18dp"
@@ -43,6 +45,7 @@
                     android:layout_marginLeft="10dp"
                     android:background="@drawable/button_asset"
                     android:text="Изменить"
+                    android:id="@+id/change"
                     android:textAlignment="center"
                     android:textAllCaps="false"
                     android:textColor="@color/white"
