@@ -94,6 +94,7 @@
         android:id="@+id/title"
         android:textSize="18dp"
         android:maxLines="1"
+        android:inputType="text"
         android:background="@drawable/edit_text_asset"
         android:hint="Название"/>
 
@@ -189,6 +190,7 @@
             android:padding="10dp"
             android:layout_marginTop="15dp"
             android:text="Удалить"
+            android:id="@+id/delete"
             android:textAllCaps="false"
             android:textColor="@color/black"
             android:textSize="20dp" />

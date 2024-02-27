@@ -33,7 +33,7 @@ public class AdminChangeUserFragment extends Fragment {
     String name, email, role, gender, birthday;
     EditText names, emails;
     Spinner roles, genders;
-    AppCompatButton birthdays, save, delete;
+    AppCompatButton birthdays, save, delete, back;
 
 
     public AdminChangeUserFragment(String name, String email, String role, String gender, String birthday){
@@ -60,6 +60,7 @@ public class AdminChangeUserFragment extends Fragment {
         birthdays = v.findViewById(R.id.pickDate);
         save = v.findViewById(R.id.save);
         delete = v.findViewById(R.id.delete);
+        back = v.findViewById(R.id.back);
 
         names.setText(name);
         emails.setText(email);
@@ -137,6 +138,15 @@ public class AdminChangeUserFragment extends Fragment {
             }
         });
 
+
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AdminHomeActivity homeActivity = (AdminHomeActivity) getActivity();
+                AdminUsersFragment fragment = new AdminUsersFragment();
+                homeActivity.replaceFragment(fragment);
+            }
+        });
         birthdays.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -150,7 +160,6 @@ public class AdminChangeUserFragment extends Fragment {
     private void deleteUser() {
         String selectedEmail = emails.getText().toString().trim();
 
-        // Проверка на пустоту поля
         if (selectedEmail.isEmpty()) {
             Toast.makeText(getActivity(), "Не удалось определить пользователя", Toast.LENGTH_SHORT).show();
             return;

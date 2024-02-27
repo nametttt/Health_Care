@@ -40,6 +40,7 @@
                     android:textColor="@color/black"
                     android:text="Изменение продукта"
                     android:textSize="32dp"
+                    android:id="@+id/nameFragment"
                     android:layout_marginVertical="10dp"
                     android:textAlignment="textStart"
                     android:textStyle="bold"/>
@@ -50,6 +51,7 @@
                     android:textColor="@color/black"
                     android:text="Измените данные о продукте или удалите его"
                     android:textSize="20dp"
+                    android:id="@+id/text"
                     android:layout_marginVertical="10dp"
                     android:textAlignment="textStart"/>
 
@@ -69,9 +71,32 @@
                     android:layout_marginVertical="5dp"
                     android:padding="12dp"
                     android:textSize="18dp"
+                    android:id="@+id/name"
                     android:maxLines="1"
                     android:background="@drawable/edit_text_asset"
                     android:hint="Название"/>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginBottom="5dp"
+                    android:text="Вес"
+                    android:textAlignment="textStart"
+                    android:textColor="@color/darkgray"
+                    android:textSize="20dp" />
+
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginVertical="5dp"
+                    android:padding="12dp"
+                    android:textSize="18dp"
+                    android:id="@+id/weight"
+                    android:inputType="numberDecimal"
+                    android:maxLines="1"
+                    android:background="@drawable/edit_text_asset"
+                    android:hint="Вес (в граммах)"/>
+
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -89,6 +114,8 @@
                     android:padding="12dp"
                     android:textSize="18dp"
                     android:maxLines="1"
+                    android:inputType="numberDecimal"
+                    android:id="@+id/calories"
                     android:background="@drawable/edit_text_asset"
                     android:hint="Килокалорий на 100 грамм"/>
 
@@ -109,6 +136,8 @@
                     android:padding="12dp"
                     android:textSize="18dp"
                     android:maxLines="1"
+                    android:inputType="numberDecimal"
+                    android:id="@+id/protein"
                     android:background="@drawable/edit_text_asset"
                     android:hint="Белки"/>
 
@@ -128,6 +157,8 @@
                     android:layout_marginVertical="5dp"
                     android:padding="12dp"
                     android:textSize="18dp"
+                    android:id="@+id/fat"
+                    android:inputType="numberDecimal"
                     android:maxLines="1"
                     android:background="@drawable/edit_text_asset"
                     android:hint="Жиры"/>
@@ -148,6 +179,8 @@
                     android:layout_marginVertical="5dp"
                     android:padding="12dp"
                     android:textSize="18dp"
+                    android:inputType="numberDecimal"
+                    android:id="@+id/carbohydrates"
                     android:maxLines="1"
                     android:background="@drawable/edit_text_asset"
                     android:hint="Углероды"/>
@@ -171,6 +204,7 @@
                     android:padding="10dp"
                     android:layout_marginTop="15dp"
                     android:text="Удалить"
+                    android:id="@+id/delete"
                     android:textAllCaps="false"
                     android:textColor="@color/black"
                     android:textSize="20dp" />

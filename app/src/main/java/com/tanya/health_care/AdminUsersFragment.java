@@ -40,7 +40,6 @@ public class AdminUsersFragment extends Fragment {
     AdminUsersRecyclerView adapter;
     FirebaseUser user;
     DatabaseReference ref;
-    getSplittedPathChild pC = new getSplittedPathChild();
     FirebaseDatabase mDb;
 
     @Override

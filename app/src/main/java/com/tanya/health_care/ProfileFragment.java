@@ -99,10 +99,39 @@ public class ProfileFragment extends Fragment {
         lnChangePassword.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                HomeActivity homeActivity = (HomeActivity) getActivity();
-                homeActivity.replaceFragment(new ChangePasswordFragment());
-            }
-        });
+                    FirebaseDatabase db = FirebaseDatabase.getInstance();
+                    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                    DatabaseReference ref = db.getReference("users");
+                    getSplittedPathChild pC = new getSplittedPathChild();
+
+                    ref.addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            User user1 = snapshot.child(pC.getSplittedPathChild(user.getEmail())).getValue(User.class);
+
+                            String userRole = user1.getRole();
+
+                            if ("Администратор".equals(userRole)) {
+                                AdminHomeActivity homeActivity = (AdminHomeActivity) getActivity();
+
+                                Toast.makeText(getContext(), "Вы вошли как администратор", Toast.LENGTH_SHORT).show();
+                                homeActivity.replaceFragment(new ChangePasswordFragment());
+
+                            }
+                            else {
+                                HomeActivity homeActivity = (HomeActivity) getActivity();
+                                homeActivity.replaceFragment(new ChangePasswordFragment());
+
+                            }
+
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+                        }
+                    });
+                }
+            });
 
         lnDeleteProfile.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -56,8 +56,9 @@
                     android:textColor="@color/black"
                     android:text="Введите ваши физические параметры, это необходимо для расчета Индекса Массы Тела"
                     android:textSize="20dp"
+                    android:layout_marginTop="5dp"
                     android:id="@+id/description"
-                    android:layout_marginVertical="10dp"
+                    android:layout_marginBottom="30dp"
                     android:textAlignment="textStart"/>
 
             </LinearLayout>

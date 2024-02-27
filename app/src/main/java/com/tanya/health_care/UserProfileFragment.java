@@ -59,8 +59,36 @@ public class UserProfileFragment extends Fragment {
         exit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                HomeActivity homeActivity = (HomeActivity) getActivity();
-                homeActivity.replaceFragment(new ProfileFragment());
+                    FirebaseDatabase db = FirebaseDatabase.getInstance();
+                    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                    DatabaseReference ref = db.getReference("users");
+                    getSplittedPathChild pC = new getSplittedPathChild();
+
+                    ref.addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            User user1 = snapshot.child(pC.getSplittedPathChild(user.getEmail())).getValue(User.class);
+
+                            String userRole = user1.getRole();
+
+                            if ("Администратор".equals(userRole)) {
+                                AdminHomeActivity homeActivity = (AdminHomeActivity) getActivity();
+
+                                homeActivity.replaceFragment(new ProfileFragment());
+
+                            }
+                            else {
+                                HomeActivity homeActivity = (HomeActivity) getActivity();
+                                homeActivity.replaceFragment(new ProfileFragment());
+
+                            }
+
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+                        }
+                    });
             }
         });
     }

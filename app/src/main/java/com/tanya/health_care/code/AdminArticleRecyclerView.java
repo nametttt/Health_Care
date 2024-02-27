@@ -80,7 +80,11 @@ public class AdminArticleRecyclerView extends RecyclerView.Adapter<AdminArticleR
             @Override
             public void onClick(View v) {
                 AdminHomeActivity homeActivity = (AdminHomeActivity) v.getContext();
-                homeActivity.replaceFragment(new AdminChangeArticleFragment(currentCommon.title, currentCommon.description, finalResId));
+                AdminChangeArticleFragment fragment = new AdminChangeArticleFragment(currentCommon.uid, currentCommon.title, currentCommon.description, currentCommon.category, finalResId, currentCommon.access);
+                Bundle args = new Bundle();
+                args.putString("Add", null);
+                fragment.setArguments(args);
+                homeActivity.replaceFragment(fragment);
             }
         });
     }
