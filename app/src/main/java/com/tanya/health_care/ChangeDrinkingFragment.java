@@ -32,11 +32,12 @@ public class ChangeDrinkingFragment extends Fragment {
     public int count;
     public String path;
 
-    Button dateTimebtn, save, delete;
+    Button dateTimebtn, save, delete, exit;
     EditText text;
     DatabaseReference ref;
     FirebaseDatabase mDb;
     HomeActivity homeActivity;
+
 
     public ChangeDrinkingFragment(String uid, Date date, int count) {
         path = uid;
@@ -59,6 +60,7 @@ public class ChangeDrinkingFragment extends Fragment {
         dateTimebtn = v.findViewById(R.id.dateButton);
         text = v.findViewById(R.id.countText);
         save = v.findViewById(R.id.continu);
+        exit = v.findViewById(R.id.back);
         delete = v.findViewById(R.id.delete);
         mDb = FirebaseDatabase.getInstance();
         GetSplittedPathChild pC = new GetSplittedPathChild();
@@ -67,10 +69,19 @@ public class ChangeDrinkingFragment extends Fragment {
         text.setText(String.valueOf(count));
 
 
+        exit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                HomeActivity homeActivity = (HomeActivity) getActivity();
+                homeActivity.replaceFragment(new DrinkingFragment());
+            }
+        });
+
         dateTimebtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 TimePicker datePickerModal = new TimePicker();
+                datePickerModal.setTargetButton(dateTimebtn);
                 datePickerModal.show(getParentFragmentManager(), "timepicker");
             }
         });

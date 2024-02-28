@@ -35,12 +35,12 @@ public class ChangeCommonHealthFragment extends Fragment {
     CommonHealthData commonHealthData;
     DatabaseReference ref;
     GetSplittedPathChild pC = new GetSplittedPathChild();
+    FirebaseDatabase mDb;
     public Date date;
     public String path;
     private String pressure;
     private int pulses;
     private float temperatures;
-    FirebaseDatabase mDb;
     EditText pressureEditText, pulse, temperature;
 
     public ChangeCommonHealthFragment(){}

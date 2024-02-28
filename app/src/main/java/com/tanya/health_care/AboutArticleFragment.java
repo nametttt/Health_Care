@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.fragment.app.Fragment;
@@ -13,6 +14,7 @@ public class AboutArticleFragment extends Fragment {
     private final String title, description;
     private TextView titleTextView, descTextView;
     ImageView imageView;
+    Button exit;
     private final int imageResource;
 
     public AboutArticleFragment(String title, String description, int imageResource) {
@@ -37,5 +39,14 @@ public class AboutArticleFragment extends Fragment {
         titleTextView.setText(title);
         descTextView.setText(description);
         imageView.setImageResource(imageResource);
+        exit = view.findViewById(R.id.back);
+
+        exit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                HomeActivity homeActivity = (HomeActivity) getActivity();
+                homeActivity.replaceFragment(new ArticleFragment());
+            }
+        });
     }
 }

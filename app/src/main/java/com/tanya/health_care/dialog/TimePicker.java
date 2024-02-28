@@ -17,7 +17,13 @@ import java.util.Calendar;
   public class TimePicker extends DialogFragment
         implements TimePickerDialog.OnTimeSetListener {
 
-    @Override
+      private Button targetButton;
+
+      public void setTargetButton(Button targetButton) {
+          this.targetButton = targetButton;
+      }
+
+      @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         // Use the current time as the default values for the picker.
         final Calendar c = Calendar.getInstance();
@@ -31,8 +37,7 @@ import java.util.Calendar;
 
       @Override
       public void onTimeSet(android.widget.TimePicker view, int hourOfDay, int minute) {
-          HomeActivity cont = (HomeActivity) getActivity();
-          Button btn = cont.findViewById(R.id.dateButton);
-          btn.setText(hourOfDay+":"+minute);
+          String formattedTime = String.format("%02d:%02d", hourOfDay, minute);
+          targetButton.setText(formattedTime);
       }
   }
