@@ -56,13 +56,15 @@ public class UserProfileFragment extends Fragment {
         pC = new GetSplittedPathChild();
         viewData();
 
+        FirebaseDatabase db = FirebaseDatabase.getInstance();
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        DatabaseReference ref = db.getReference("users");
+        GetSplittedPathChild pC = new GetSplittedPathChild();
+
         exit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                    FirebaseDatabase db = FirebaseDatabase.getInstance();
-                    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                    DatabaseReference ref = db.getReference("users");
-                    GetSplittedPathChild pC = new GetSplittedPathChild();
+                    ;
 
                     ref.addValueEventListener(new ValueEventListener() {
                         @Override

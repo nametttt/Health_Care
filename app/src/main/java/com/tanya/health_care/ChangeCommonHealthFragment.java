@@ -1,5 +1,7 @@
 package com.tanya.health_care;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -79,6 +81,7 @@ public class ChangeCommonHealthFragment extends Fragment {
         if (addCommon != null)
         {
             add.setText("Добавить");
+            delete.setVisibility(View.INVISIBLE);
         }
         else
         {
@@ -222,14 +225,32 @@ public class ChangeCommonHealthFragment extends Fragment {
         delete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                ref = mDb.getReference("users").child(pC.getSplittedPathChild(user.getEmail())).child("characteristic").child("commonHealth").child(path);
-                ref.removeValue();
-                Toast.makeText(getContext(), "Удаление прошло успешно", Toast.LENGTH_SHORT).show();
+                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                builder.setTitle("Подтверждение удаления");
+                builder.setMessage("Вы уверены, что хотите удалить эту запись?");
 
-                HomeActivity homeActivity = (HomeActivity) getActivity();
-                homeActivity.replaceFragment(new HealthCommonFragment());
+                builder.setPositiveButton("Да", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                        ref = mDb.getReference("users").child(pC.getSplittedPathChild(user.getEmail())).child("characteristic").child("commonHealth").child(path);
+                        ref.removeValue();
+                        Toast.makeText(getContext(), "Удаление прошло успешно", Toast.LENGTH_SHORT).show();
+
+                        HomeActivity homeActivity = (HomeActivity) getActivity();
+                        homeActivity.replaceFragment(new HealthCommonFragment());
+                    }
+                });
+
+                builder.setNegativeButton("Отмена", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+                builder.show();
             }
         });
+
     }
 }

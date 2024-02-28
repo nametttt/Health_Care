@@ -1,5 +1,7 @@
 package com.tanya.health_care;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -113,15 +115,33 @@ public class ChangeDrinkingFragment extends Fragment {
         delete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                ref = mDb.getReference("users").child(pC.getSplittedPathChild(user.getEmail())).child("characteristic").child("water").child(path);
-                ref.removeValue();
-                Toast.makeText(getContext(), "Удаление прошло успешно", Toast.LENGTH_SHORT).show();
+                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                builder.setTitle("Подтверждение удаления");
+                builder.setMessage("Вы уверены, что хотите удалить эту запись?");
 
-                homeActivity.replaceFragment(new DrinkingFragment());
+                builder.setPositiveButton("Да", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                        ref = mDb.getReference("users").child(pC.getSplittedPathChild(user.getEmail())).child("characteristic").child("water").child(path);
+                        ref.removeValue();
+                        Toast.makeText(getContext(), "Удаление прошло успешно", Toast.LENGTH_SHORT).show();
 
+                        homeActivity.replaceFragment(new DrinkingFragment());
+                    }
+                });
+
+                builder.setNegativeButton("Отмена", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+
+                builder.show();
             }
         });
+
     }
 
 }

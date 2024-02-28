@@ -2,6 +2,8 @@ package com.tanya.health_care;
 
 import androidx.lifecycle.ViewModelProvider;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -86,6 +88,7 @@ public class ChangeSleepFragment extends Fragment {
                 save.setText("Добавить");
                 nameFragment.setText("Добавление записи о сне");
                 textFragment.setText("Введите данные для добавления новой записи о сне");
+                delete.setVisibility(View.INVISIBLE);
             } else {
                 dateButton.setVisibility(View.VISIBLE);
                 dateText.setVisibility(View.VISIBLE);
@@ -117,16 +120,34 @@ public class ChangeSleepFragment extends Fragment {
         delete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                ref = mDb.getReference("users").child(pC.getSplittedPathChild(user.getEmail())).child("characteristic").child("sleep").child(path);
-                ref.removeValue();
-                Toast.makeText(getContext(), "Удаление прошло успешно", Toast.LENGTH_SHORT).show();
-                HomeActivity homeActivity = (HomeActivity) getActivity();
+                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                builder.setTitle("Подтверждение удаления");
+                builder.setMessage("Вы уверены, что хотите удалить эту запись сна?");
 
-                homeActivity.replaceFragment(new SleepFragment());
+                builder.setPositiveButton("Да", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                        ref = mDb.getReference("users").child(pC.getSplittedPathChild(user.getEmail())).child("characteristic").child("sleep").child(path);
+                        ref.removeValue();
+                        Toast.makeText(getContext(), "Удаление прошло успешно", Toast.LENGTH_SHORT).show();
 
+                        HomeActivity homeActivity = (HomeActivity) getActivity();
+                        homeActivity.replaceFragment(new SleepFragment());
+                    }
+                });
+
+                builder.setNegativeButton("Отмена", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+
+                builder.show();
             }
         });
+
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

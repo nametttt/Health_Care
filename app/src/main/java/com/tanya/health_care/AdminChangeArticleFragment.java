@@ -99,6 +99,7 @@ public class AdminChangeArticleFragment extends Fragment {
             continu.setText("Добавить");
             name.setText("Добавление статьи");
             text.setText("Введите данные для добавления новой статьи");
+            delete.setVisibility(View.INVISIBLE);
         }
 
         image.setOnClickListener(new View.OnClickListener() {

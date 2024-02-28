@@ -73,6 +73,7 @@ public class AdminChangeFoodFragment extends Fragment {
                 save.setText("Добавить");
                 nameFragment.setText("Добавление продукта");
                 textFragment.setText("Введите данные для добавления нового продукта");
+                delete.setVisibility(View.INVISIBLE);
             } else {
                 nameEditText.setText(name);
                 weightEditText.setText(String.valueOf(weight));

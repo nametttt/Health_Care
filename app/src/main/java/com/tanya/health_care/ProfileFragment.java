@@ -132,8 +132,6 @@ public class ProfileFragment extends Fragment {
             public void onClick(View v) {
                 deleteDialog myDialogFragment = new deleteDialog();
                 FragmentManager manager = getActivity().getSupportFragmentManager();
-                //myDialogFragment.show(manager, "dialog");
-
                 FragmentTransaction transaction = manager.beginTransaction();
                 myDialogFragment.show(transaction, "dialog");
             }
@@ -143,7 +141,7 @@ public class ProfileFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 FirebaseAuth.getInstance().signOut();
-                Intent mainIntent = new Intent(getContext(), MainActivity.class);
+                Intent mainIntent = new Intent(getActivity(), MainActivity.class);
                 getActivity().startActivity(mainIntent);
             }
         });
