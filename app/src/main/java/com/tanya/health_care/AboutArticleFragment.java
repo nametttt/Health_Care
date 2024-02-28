@@ -12,7 +12,7 @@ public class AboutArticleFragment extends Fragment {
 
     private final String title, description;
     private TextView titleTextView, descTextView;
-    private ImageView imageView;
+    ImageView imageView;
     private final int imageResource;
 
     public AboutArticleFragment(String title, String description, int imageResource) {
