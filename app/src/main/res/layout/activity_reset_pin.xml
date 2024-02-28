@@ -83,8 +83,6 @@
                 android:textAllCaps="false"
                 android:layout_gravity="center"
                 android:background="@color/transparent"/>
-            />
-
 
         </LinearLayout>
 

@@ -21,7 +21,8 @@
                 android:layout_margin="20dp"
                 android:adjustViewBounds="true"
                 android:scaleType="centerInside"
-                android:src="@drawable/health_check" />
+                android:src="@drawable/health_check"
+                android:contentDescription="О приложении"/>
 
             <TextView
                 android:layout_width="match_parent"

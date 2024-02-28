@@ -1,44 +1,41 @@
 package com.tanya.health_care;
 
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import androidx.fragment.app.Fragment;
 
 public class AboutArticleFragment extends Fragment {
 
-    String title, description;
-    TextView tittle, desc;
-    ImageView imageView;
-    int image;
+    private final String title, description;
+    private TextView titleTextView, descTextView;
+    private ImageView imageView;
+    private final int imageResource;
 
-    public AboutArticleFragment(String title, String description, int image){
+    public AboutArticleFragment(String title, String description, int imageResource) {
         this.title = title;
         this.description = description;
-        this.image = image;
+        this.imageResource = imageResource;
     }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.fragment_about_article, container, false);
-        init(v);
-        return  v;
+        View view = inflater.inflate(R.layout.fragment_about_article, container, false);
+        initializeViews(view);
+        return view;
     }
 
-    private void init(View v) {
-        tittle = v.findViewById(R.id.title);
-        desc = v.findViewById(R.id.description);
-        imageView = v.findViewById(R.id.image);
+    private void initializeViews(View view) {
+        titleTextView = view.findViewById(R.id.title);
+        descTextView = view.findViewById(R.id.description);
+        imageView = view.findViewById(R.id.image);
 
-        tittle.setText(title);
-        desc.setText(description);
-        imageView.setImageResource(image);
-
+        titleTextView.setText(title);
+        descTextView.setText(description);
+        imageView.setImageResource(imageResource);
     }
-
 }

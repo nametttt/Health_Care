@@ -106,8 +106,6 @@ public class AdminAddUserFragment extends Fragment {
         int atIndex = userEmail.indexOf('@');
         String name = atIndex != -1 ? userEmail.substring(0, atIndex) : userEmail;
 
-        String userId = firebaseUser != null ? firebaseUser.getUid() : "";
-
         User user = new User(userEmail, name, userGender, userRole, userBirthday);
 
         DatabaseReference userRef = ref.child(splittedPathChild);
