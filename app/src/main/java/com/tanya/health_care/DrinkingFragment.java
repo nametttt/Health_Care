@@ -21,16 +21,12 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.tanya.health_care.code.RecordMainModel;
-import com.tanya.health_care.code.RecordRecyclerView;
 import com.tanya.health_care.code.WaterData;
 import com.tanya.health_care.code.WaterRecyclerView;
-import com.tanya.health_care.code.getSplittedPathChild;
+import com.tanya.health_care.code.GetSplittedPathChild;
 
 import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Comparator;
 import java.util.Date;
 
@@ -45,7 +41,7 @@ public class DrinkingFragment extends Fragment {
     FirebaseUser user;
     WaterData waterData;
     DatabaseReference ref;
-    getSplittedPathChild pC = new getSplittedPathChild();
+    GetSplittedPathChild pC = new GetSplittedPathChild();
 
     FirebaseDatabase mDb;
 

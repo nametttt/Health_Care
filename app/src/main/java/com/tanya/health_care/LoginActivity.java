@@ -22,7 +22,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.tanya.health_care.code.getEmail;
+import com.tanya.health_care.code.GetEmail;
 
 import java.util.Objects;
 
@@ -68,7 +68,7 @@ public class LoginActivity extends AppCompatActivity {
 
 
 
-                if (!getEmail.isValidEmail(loginEdit.getText())){
+                if (!GetEmail.isValidEmail(loginEdit.getText())){
                     Toast.makeText(view.getContext(), "Пожалуйста, введите корректную почту", Toast.LENGTH_SHORT).show();
                     return;
                 }

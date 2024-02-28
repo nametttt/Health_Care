@@ -1,7 +1,6 @@
 package com.tanya.health_care;
 
 import androidx.appcompat.widget.AppCompatButton;
-import androidx.lifecycle.ViewModelProvider;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -15,14 +14,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.tanya.health_care.code.getSplittedPathChild;
+import com.tanya.health_care.code.GetSplittedPathChild;
 import com.tanya.health_care.dialog.DatePickerModal;
 
 import java.util.HashMap;
@@ -93,7 +90,7 @@ public class AdminChangeUserFragment extends Fragment {
 
                 DatabaseReference userRef = FirebaseDatabase.getInstance().getReference().child("users");
 
-                getSplittedPathChild pC = new getSplittedPathChild();
+                GetSplittedPathChild pC = new GetSplittedPathChild();
                 String selectedUserPath = pC.getSplittedPathChild(selectedEmail);
 
                 Map<String, Object> updateMap = new HashMap<>();
@@ -167,7 +164,7 @@ public class AdminChangeUserFragment extends Fragment {
 
         DatabaseReference userRef = FirebaseDatabase.getInstance().getReference().child("users");
 
-        getSplittedPathChild pC = new getSplittedPathChild();
+        GetSplittedPathChild pC = new GetSplittedPathChild();
         String selectedUserPath = pC.getSplittedPathChild(selectedEmail);
 
         userRef.child(selectedUserPath).removeValue()

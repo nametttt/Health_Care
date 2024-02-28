@@ -15,18 +15,14 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.tanya.health_care.code.CommonHealthData;
-import com.tanya.health_care.code.WaterData;
-import com.tanya.health_care.code.getSplittedPathChild;
+import com.tanya.health_care.code.GetSplittedPathChild;
 import com.tanya.health_care.dialog.DateTimePickerDialog;
-import com.tanya.health_care.dialog.TimePicker;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -38,7 +34,7 @@ public class ChangeCommonHealthFragment extends Fragment {
     FirebaseUser user;
     CommonHealthData commonHealthData;
     DatabaseReference ref;
-    getSplittedPathChild pC = new getSplittedPathChild();
+    GetSplittedPathChild pC = new GetSplittedPathChild();
     public Date date;
     public String path;
     private String pressure;

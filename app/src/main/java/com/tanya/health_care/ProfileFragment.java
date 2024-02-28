@@ -2,7 +2,6 @@ package com.tanya.health_care;
 
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
-import androidx.lifecycle.ViewModelProvider;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -25,13 +24,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.tanya.health_care.ChangePasswordFragment;
-import com.tanya.health_care.HomeActivity;
-import com.tanya.health_care.MainActivity;
-import com.tanya.health_care.R;
-import com.tanya.health_care.UserProfileFragment;
 import com.tanya.health_care.code.User;
-import com.tanya.health_care.code.getSplittedPathChild;
+import com.tanya.health_care.code.GetSplittedPathChild;
 import com.tanya.health_care.dialog.deleteDialog;
 
 public class ProfileFragment extends Fragment {
@@ -64,7 +58,7 @@ public class ProfileFragment extends Fragment {
                 FirebaseDatabase db = FirebaseDatabase.getInstance();
                 FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                 DatabaseReference ref = db.getReference("users");
-                getSplittedPathChild pC = new getSplittedPathChild();
+                GetSplittedPathChild pC = new GetSplittedPathChild();
 
                 ref.addValueEventListener(new ValueEventListener() {
                     @Override
@@ -102,7 +96,7 @@ public class ProfileFragment extends Fragment {
                     FirebaseDatabase db = FirebaseDatabase.getInstance();
                     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                     DatabaseReference ref = db.getReference("users");
-                    getSplittedPathChild pC = new getSplittedPathChild();
+                    GetSplittedPathChild pC = new GetSplittedPathChild();
 
                     ref.addValueEventListener(new ValueEventListener() {
                         @Override
@@ -165,7 +159,7 @@ public class ProfileFragment extends Fragment {
                 FirebaseDatabase db = FirebaseDatabase.getInstance();
                 FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                 DatabaseReference ref = db.getReference("users");
-                getSplittedPathChild pC = new getSplittedPathChild();
+                GetSplittedPathChild pC = new GetSplittedPathChild();
 
                 ref.addValueEventListener(new ValueEventListener() {
                     @Override

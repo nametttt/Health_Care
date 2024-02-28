@@ -1,7 +1,5 @@
 package com.tanya.health_care;
 
-import androidx.lifecycle.ViewModelProvider;
-
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -15,14 +13,12 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.google.firebase.Firebase;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.tanya.health_care.code.WaterData;
-import com.tanya.health_care.code.getSplittedPathChild;
-import com.tanya.health_care.dialog.DatePickerModal;
+import com.tanya.health_care.code.GetSplittedPathChild;
 import com.tanya.health_care.dialog.TimePicker;
 
 import java.text.SimpleDateFormat;
@@ -65,7 +61,7 @@ public class ChangeDrinkingFragment extends Fragment {
         save = v.findViewById(R.id.continu);
         delete = v.findViewById(R.id.delete);
         mDb = FirebaseDatabase.getInstance();
-        getSplittedPathChild pC = new getSplittedPathChild();
+        GetSplittedPathChild pC = new GetSplittedPathChild();
 
         dateTimebtn.setText(fmt.format(date));
         text.setText(String.valueOf(count));

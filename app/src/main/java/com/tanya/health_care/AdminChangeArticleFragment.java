@@ -1,13 +1,9 @@
 package com.tanya.health_care;
 
-import androidx.appcompat.widget.AppCompatButton;
-import androidx.lifecycle.ViewModelProvider;
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -29,7 +25,6 @@ import android.widget.Toast;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.tanya.health_care.code.ArticleData;
-import com.tanya.health_care.code.getSplittedPathChild;
 
 import java.util.Random;
 

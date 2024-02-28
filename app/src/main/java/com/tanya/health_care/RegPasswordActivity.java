@@ -3,14 +3,10 @@ package com.tanya.health_care;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.ClipData;
-import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.InputType;
-import android.text.method.HideReturnsTransformationMethod;
-import android.text.method.PasswordTransformationMethod;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
@@ -27,7 +23,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.tanya.health_care.code.EyeVisibility;
 import com.tanya.health_care.code.User;
-import com.tanya.health_care.code.getSplittedPathChild;
+import com.tanya.health_care.code.GetSplittedPathChild;
 
 public class RegPasswordActivity extends AppCompatActivity {
 
@@ -138,7 +134,7 @@ public class RegPasswordActivity extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             FirebaseUser firebaseUser = mAuth.getCurrentUser();
 
-                            getSplittedPathChild pC = new getSplittedPathChild();
+                            GetSplittedPathChild pC = new GetSplittedPathChild();
                             splittedPathChild = pC.getSplittedPathChild(email);
 
                             int atIndex = email.indexOf('@');

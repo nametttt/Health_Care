@@ -29,7 +29,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.tanya.health_care.code.EyeVisibility;
 import com.tanya.health_care.code.User;
-import com.tanya.health_care.code.getSplittedPathChild;
+import com.tanya.health_care.code.GetSplittedPathChild;
 
 import java.util.Map;
 
@@ -90,7 +90,7 @@ public class ChangePasswordFragment extends Fragment {
                 FirebaseDatabase db = FirebaseDatabase.getInstance();
                 FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                 DatabaseReference ref = db.getReference("users");
-                getSplittedPathChild pC = new getSplittedPathChild();
+                GetSplittedPathChild pC = new GetSplittedPathChild();
 
                 ref.addValueEventListener(new ValueEventListener() {
                     @Override
@@ -148,7 +148,7 @@ public class ChangePasswordFragment extends Fragment {
 
                                                     FirebaseDatabase db = FirebaseDatabase.getInstance();
                                                     DatabaseReference ref = db.getReference("users");
-                                                    getSplittedPathChild pC = new getSplittedPathChild();
+                                                    GetSplittedPathChild pC = new GetSplittedPathChild();
                                                     ref.addListenerForSingleValueEvent(new ValueEventListener() {
                                                         @Override
                                                         public void onDataChange(@NonNull DataSnapshot snapshot) {

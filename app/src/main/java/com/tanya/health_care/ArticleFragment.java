@@ -1,7 +1,5 @@
 package com.tanya.health_care;
 
-import androidx.lifecycle.ViewModelProvider;
-
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -23,12 +21,9 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.tanya.health_care.code.ArticleData;
 import com.tanya.health_care.code.ArticleRecyclerView;
-import com.tanya.health_care.code.WaterData;
-import com.tanya.health_care.code.WaterRecyclerView;
-import com.tanya.health_care.code.getSplittedPathChild;
+import com.tanya.health_care.code.GetSplittedPathChild;
 
 import java.util.ArrayList;
-import java.util.Date;
 
 public class ArticleFragment extends Fragment {
 
@@ -38,7 +33,7 @@ public class ArticleFragment extends Fragment {
     ArticleRecyclerView adapter;
     FirebaseUser user;
     DatabaseReference ref;
-    getSplittedPathChild pC = new getSplittedPathChild();
+    GetSplittedPathChild pC = new GetSplittedPathChild();
 
     FirebaseDatabase mDb;
     @Override

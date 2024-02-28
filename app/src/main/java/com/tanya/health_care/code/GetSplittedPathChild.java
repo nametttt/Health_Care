@@ -1,7 +1,7 @@
 package com.tanya.health_care.code;
 
 
-public class getSplittedPathChild {
+public class GetSplittedPathChild {
     public String getSplittedPathChild(String email){
         email = email.replaceAll("[^A-Za-zA]", "");
 //        autosave.setDbSetUserTableName(email);

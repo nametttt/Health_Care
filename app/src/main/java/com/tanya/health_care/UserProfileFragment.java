@@ -21,7 +21,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.tanya.health_care.code.User;
-import com.tanya.health_care.code.getSplittedPathChild;
+import com.tanya.health_care.code.GetSplittedPathChild;
 import com.tanya.health_care.dialog.DatePickerModal;
 
 import java.util.HashMap;
@@ -32,7 +32,7 @@ public class UserProfileFragment extends Fragment {
     EditText userName;
     AppCompatButton pickDate, exit, save;
     FirebaseAuth mAuth;
-    getSplittedPathChild pC;
+    GetSplittedPathChild pC;
     String userGender;
     Spinner gender;
     DatabaseReference userRef;
@@ -53,7 +53,7 @@ public class UserProfileFragment extends Fragment {
         save = v.findViewById(R.id.save);
         gender = v.findViewById(R.id.userGenderSpinner);
         userRef = FirebaseDatabase.getInstance().getReference().child("users");
-        pC = new getSplittedPathChild();
+        pC = new GetSplittedPathChild();
         viewData();
 
         exit.setOnClickListener(new View.OnClickListener() {
@@ -62,7 +62,7 @@ public class UserProfileFragment extends Fragment {
                     FirebaseDatabase db = FirebaseDatabase.getInstance();
                     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                     DatabaseReference ref = db.getReference("users");
-                    getSplittedPathChild pC = new getSplittedPathChild();
+                    GetSplittedPathChild pC = new GetSplittedPathChild();
 
                     ref.addValueEventListener(new ValueEventListener() {
                         @Override

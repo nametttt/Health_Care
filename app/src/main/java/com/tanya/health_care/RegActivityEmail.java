@@ -16,7 +16,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.SignInMethodQueryResult;
 import com.tanya.health_care.code.GeneratePin;
-import com.tanya.health_care.code.getEmail;
+import com.tanya.health_care.code.GetEmail;
 
 import java.util.Properties;
 
@@ -67,7 +67,7 @@ public class RegActivityEmail extends AppCompatActivity {
             public void onClick(View view) {
                 if (email.getText().toString().isEmpty()) {
                     Toast.makeText(RegActivityEmail.this, "Пожалуйста, введите почту!", Toast.LENGTH_SHORT).show();
-                } else if (!getEmail.isValidEmail(email.getText())) {
+                } else if (!GetEmail.isValidEmail(email.getText())) {
                     Toast.makeText(RegActivityEmail.this, "Пожалуйста, введите корректную почту", Toast.LENGTH_SHORT).show();
                 } else if (!userAgree.isChecked()) {
                     Toast.makeText(RegActivityEmail.this, "Пожалуйста, примите пользовательское соглашение", Toast.LENGTH_SHORT).show();

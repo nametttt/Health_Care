@@ -4,7 +4,6 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -14,18 +13,7 @@ import android.widget.Toast;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
-import com.tanya.health_care.code.GeneratePin;
-import com.tanya.health_care.code.getEmail;
-
-import java.util.Properties;
-
-import javax.mail.Message;
-import javax.mail.MessagingException;
-import javax.mail.PasswordAuthentication;
-import javax.mail.Session;
-import javax.mail.Transport;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeMessage;
+import com.tanya.health_care.code.GetEmail;
 
 public class ResetEmailActivity extends AppCompatActivity {
 
@@ -49,7 +37,7 @@ public class ResetEmailActivity extends AppCompatActivity {
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (!getEmail.isValidEmail(email.getText())){
+                if (!GetEmail.isValidEmail(email.getText())){
                     Toast.makeText(ResetEmailActivity.this, "Пожалуйста, введите корректную почту", Toast.LENGTH_SHORT).show();
                     return;
                 }

@@ -13,11 +13,9 @@ import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.tanya.health_care.code.getSplittedPathChild;
+import com.tanya.health_care.code.GetSplittedPathChild;
 
 
-import com.tanya.health_care.HomeActivity;
-import com.tanya.health_care.LoginActivity;
 import com.tanya.health_care.MainActivity;
 import com.tanya.health_care.R;
 
@@ -64,7 +62,7 @@ public class deleteDialog extends DialogFragment {
                     public void onComplete(@NonNull Task<Void> task) {
                         if (task.isSuccessful()) {
 
-                            getSplittedPathChild g = new getSplittedPathChild();
+                            GetSplittedPathChild g = new GetSplittedPathChild();
                             final DatabaseReference userRef = FirebaseDatabase.getInstance().getReference().child("users").child(g.getSplittedPathChild(useremail));
                             userRef.removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
                                 @Override

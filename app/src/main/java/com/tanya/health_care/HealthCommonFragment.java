@@ -12,7 +12,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -24,9 +23,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.tanya.health_care.code.CommonHealthData;
 import com.tanya.health_care.code.CommonHealthRecyclerView;
-import com.tanya.health_care.code.WaterData;
-import com.tanya.health_care.code.WaterRecyclerView;
-import com.tanya.health_care.code.getSplittedPathChild;
+import com.tanya.health_care.code.GetSplittedPathChild;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -38,7 +35,7 @@ public class HealthCommonFragment extends Fragment {
     Button exit, add;
     TextView pressure, temperature, pulse;
     DatabaseReference ref;
-    getSplittedPathChild pC = new getSplittedPathChild();
+    GetSplittedPathChild pC = new GetSplittedPathChild();
 
     FirebaseDatabase mDb;
     FirebaseUser user;
