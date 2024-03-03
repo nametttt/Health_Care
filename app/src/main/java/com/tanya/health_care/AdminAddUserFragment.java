@@ -1,5 +1,11 @@
 package com.tanya.health_care;
 
+import static androidx.core.content.ContextCompat.getSystemService;
+
+import android.content.ClipData;
+import android.content.ClipboardManager;
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -8,8 +14,10 @@ import androidx.fragment.app.Fragment;
 import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.View;
+
 import com.tanya.health_care.code.GetSplittedPathChild;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -18,12 +26,14 @@ import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.tanya.health_care.code.EyeVisibility;
 import com.tanya.health_care.code.User;
+import com.tanya.health_care.code.GetSplittedPathChild;
 import com.tanya.health_care.dialog.DatePickerModal;
 
 public class AdminAddUserFragment extends Fragment {
@@ -105,6 +115,8 @@ public class AdminAddUserFragment extends Fragment {
 
         int atIndex = userEmail.indexOf('@');
         String name = atIndex != -1 ? userEmail.substring(0, atIndex) : userEmail;
+
+        String userId = firebaseUser != null ? firebaseUser.getUid() : "";
 
         User user = new User(userEmail, name, userGender, userRole, userBirthday);
 

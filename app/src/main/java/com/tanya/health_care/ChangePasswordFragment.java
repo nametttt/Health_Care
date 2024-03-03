@@ -86,37 +86,8 @@ public class ChangePasswordFragment extends Fragment {
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                FirebaseDatabase db = FirebaseDatabase.getInstance();
-                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                DatabaseReference ref = db.getReference("users");
-                GetSplittedPathChild pC = new GetSplittedPathChild();
-
-                ref.addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        User user1 = snapshot.child(pC.getSplittedPathChild(user.getEmail())).getValue(User.class);
-
-                        String userRole = user1.getRole();
-
-                        if ("Администратор".equals(userRole)) {
-                            AdminHomeActivity homeActivity = (AdminHomeActivity) getActivity();
-
-                            homeActivity.replaceFragment(new ProfileFragment());
-
-                        }
-                        else {
-                            HomeActivity homeActivity = (HomeActivity) getActivity();
-                            homeActivity.replaceFragment(new ProfileFragment());
-
-                        }
-
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
-                    }
-                });
+                HomeActivity homeActivity = (HomeActivity) getActivity();
+                homeActivity.replaceFragment(new ProfileFragment());
             }
         });
 
@@ -157,7 +128,6 @@ public class ChangePasswordFragment extends Fragment {
                                                             map.put("password",newPassword);
                                                             Toast.makeText(getActivity(), "Данные изменены", Toast.LENGTH_SHORT).show();
                                                             ref.child(pC.getSplittedPathChild(user.getEmail())).updateChildren(map);
-                                                            //ref.child(pC.getSplittedPathChild(user.getEmail())).child("acc").updateChildren(map);
                                                         }
 
                                                         @Override
@@ -165,22 +135,16 @@ public class ChangePasswordFragment extends Fragment {
 
                                                         }
                                                     });
-                                                    // Пароль пользователя успешно изменен
-                                                    Log.d(TAG, "Пароль пользователя успешно изменен.");
                                                     Toast.makeText(getContext(), "Пароль успешно изменён!", Toast.LENGTH_SHORT).show();
                                                     nowPassword.getText().clear();
                                                     newPassword.getText().clear();
                                                     repeatPassword.getText().clear();
                                                 } else {
-                                                    // Произошла ошибка при изменении пароля
                                                     Toast.makeText(getContext(), "Произошла непредвиденная ошибка!", Toast.LENGTH_SHORT).show();
-
-                                                    Log.e(TAG, "Ошибка при изменении пароля пользователя: " + updateTask.getException().getMessage());
                                                 }
                                             });
                                 } else {
-                                    // Произошла ошибка при повторной аутентификации пользователя
-                                    Log.e(TAG, "Ошибка при повторной аутентификации пользователя: " + reauthTask.getException().getMessage());
+                                    Toast.makeText(getContext(), "Ошибка при повторной аутентификации пользователя: " + reauthTask, Toast.LENGTH_SHORT).show();
                                 }
                             });
                 }

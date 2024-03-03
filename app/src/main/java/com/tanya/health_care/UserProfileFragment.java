@@ -20,8 +20,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.tanya.health_care.code.User;
 import com.tanya.health_care.code.GetSplittedPathChild;
+import com.tanya.health_care.code.User;
 import com.tanya.health_care.dialog.DatePickerModal;
 
 import java.util.HashMap;
@@ -56,41 +56,39 @@ public class UserProfileFragment extends Fragment {
         pC = new GetSplittedPathChild();
         viewData();
 
-        FirebaseDatabase db = FirebaseDatabase.getInstance();
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        DatabaseReference ref = db.getReference("users");
-        GetSplittedPathChild pC = new GetSplittedPathChild();
-
         exit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                    ;
+                FirebaseDatabase db = FirebaseDatabase.getInstance();
+                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                DatabaseReference ref = db.getReference("users");
+                GetSplittedPathChild pC = new GetSplittedPathChild();
 
-                    ref.addValueEventListener(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot snapshot) {
-                            User user1 = snapshot.child(pC.getSplittedPathChild(user.getEmail())).getValue(User.class);
+                ref.addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        User user1 = snapshot.child(pC.getSplittedPathChild(user.getEmail())).getValue(User.class);
 
-                            String userRole = user1.getRole();
+                        String userRole = user1.getRole();
 
-                            if ("Администратор".equals(userRole)) {
-                                AdminHomeActivity homeActivity = (AdminHomeActivity) getActivity();
+                        if ("Администратор".equals(userRole)) {
+                            AdminHomeActivity homeActivity = (AdminHomeActivity) getActivity();
 
-                                homeActivity.replaceFragment(new ProfileFragment());
+                            homeActivity.replaceFragment(new ProfileFragment());
 
-                            }
-                            else {
-                                HomeActivity homeActivity = (HomeActivity) getActivity();
-                                homeActivity.replaceFragment(new ProfileFragment());
-
-                            }
+                        }
+                        else {
+                            HomeActivity homeActivity = (HomeActivity) getActivity();
+                            homeActivity.replaceFragment(new ProfileFragment());
 
                         }
 
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError error) {
-                        }
-                    });
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+                    }
+                });
             }
         });
     }

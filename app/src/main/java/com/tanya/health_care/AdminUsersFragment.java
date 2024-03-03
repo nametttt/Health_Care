@@ -1,5 +1,7 @@
 package com.tanya.health_care;
 
+import androidx.lifecycle.ViewModelProvider;
+
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -12,6 +14,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -21,6 +25,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.tanya.health_care.code.AdminUsersRecyclerView;
+import com.tanya.health_care.code.ArticleData;
+import com.tanya.health_care.code.ArticleRecyclerView;
 import com.tanya.health_care.code.User;
 
 import java.util.ArrayList;
