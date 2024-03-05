@@ -30,6 +30,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.tanya.health_care.code.EyeVisibility;
 import com.tanya.health_care.code.User;
 import com.tanya.health_care.code.GetSplittedPathChild;
+import com.tanya.health_care.dialog.CustomDialog;
 
 import java.util.Map;
 
@@ -94,14 +95,18 @@ public class ChangePasswordFragment extends Fragment {
         save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (newPassword.length()<6 || repeatPassword.length()<6){
-                    Toast.makeText(getContext(), "Длина пароля должна быть более 6 символов!", Toast.LENGTH_SHORT).show();
+                if (newPassword.getText().length() < 6 || repeatPassword.getText().length() < 6) {
+                    CustomDialog dialogFragment = new CustomDialog("Ошибка", "Длина пароля должна быть более 6 символов!");
+                    dialogFragment.show(getParentFragmentManager(), "custom_dialog");
+                    return;
+
+                }
+                if (!newPassword.getText().toString().equals(repeatPassword.getText().toString())) {
+                    CustomDialog dialogFragment = new CustomDialog("Ошибка", "Пароли не совпадают!");
+                    dialogFragment.show(getParentFragmentManager(), "custom_dialog");
                     return;
                 }
-                if (!newPassword.getText().toString().equals(repeatPassword.getText().toString())){
-                    Toast.makeText(getContext(), "Пароли не совпадают!", Toast.LENGTH_SHORT).show();
-                    return;
-                }
+
                 FirebaseAuth auth = FirebaseAuth.getInstance();
                 FirebaseUser user = auth.getCurrentUser();
 
@@ -112,45 +117,44 @@ public class ChangePasswordFragment extends Fragment {
                     user.reauthenticate(credential)
                             .addOnCompleteListener(reauthTask -> {
                                 if (reauthTask.isSuccessful()) {
-                                    // Пользователь успешно повторно аутентифицирован, теперь можно изменить пароль
                                     user.updatePassword(newPass)
                                             .addOnCompleteListener(updateTask -> {
                                                 if (updateTask.isSuccessful()) {
-
                                                     FirebaseDatabase db = FirebaseDatabase.getInstance();
                                                     DatabaseReference ref = db.getReference("users");
+
                                                     GetSplittedPathChild pC = new GetSplittedPathChild();
+
                                                     ref.addListenerForSingleValueEvent(new ValueEventListener() {
                                                         @Override
                                                         public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                                            User user1 = snapshot.child(user.getEmail()).getValue(User.class);
+                                                            User user1 = snapshot.child(pC.getSplittedPathChild(user.getEmail())).getValue(User.class);
                                                             Map<String, Object> map = user1.toMap();
-                                                            map.put("password",newPassword);
-                                                            Toast.makeText(getActivity(), "Данные изменены", Toast.LENGTH_SHORT).show();
+                                                            map.put("password", newPass);
                                                             ref.child(pC.getSplittedPathChild(user.getEmail())).updateChildren(map);
                                                         }
 
                                                         @Override
                                                         public void onCancelled(@NonNull DatabaseError error) {
-
                                                         }
                                                     });
-                                                    Toast.makeText(getContext(), "Пароль успешно изменён!", Toast.LENGTH_SHORT).show();
+
+                                                    CustomDialog dialogFragment = new CustomDialog("Успех", "Пароль успешно изменен!");
+                                                    dialogFragment.show(getParentFragmentManager(), "custom_dialog");
                                                     nowPassword.getText().clear();
                                                     newPassword.getText().clear();
                                                     repeatPassword.getText().clear();
                                                 } else {
-                                                    Toast.makeText(getContext(), "Произошла непредвиденная ошибка!", Toast.LENGTH_SHORT).show();
+                                                    CustomDialog dialogFragment = new CustomDialog("Ошибка", "Произошла непредвиденная ошибка при обновлении пароля!");
+                                                    dialogFragment.show(getParentFragmentManager(), "custom_dialog");
                                                 }
                                             });
                                 } else {
-                                    Toast.makeText(getContext(), "Ошибка при повторной аутентификации пользователя: " + reauthTask, Toast.LENGTH_SHORT).show();
+                                    CustomDialog dialogFragment = new CustomDialog("Ошибка", "Ошибка при повторной аутентификации пользователя: " + reauthTask.getException());
+                                    dialogFragment.show(getParentFragmentManager(), "custom_dialog");
                                 }
                             });
                 }
-
-
-
             }
         });
     }

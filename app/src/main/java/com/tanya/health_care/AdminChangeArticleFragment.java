@@ -25,6 +25,7 @@ import android.widget.Toast;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.tanya.health_care.code.ArticleData;
+import com.tanya.health_care.dialog.CustomDialog;
 
 import java.util.Random;
 
@@ -144,11 +145,13 @@ public class AdminChangeArticleFragment extends Fragment {
                         ref.setValue(new ArticleData(
                                 path, titleText, descriptionText, n, categoryText, accessText
                         ));
-                        Toast.makeText(getActivity(), "Cтатья успешно добавлена", Toast.LENGTH_SHORT).show();
+                        CustomDialog dialogFragment = new CustomDialog("Успех", "Cтатья успешно добавлена!");
+                        dialogFragment.show(getParentFragmentManager(), "custom_dialog");
                         AdminHomeActivity homeActivity = (AdminHomeActivity) getActivity();
                         homeActivity.replaceFragment(new AdminArticleFragment());
                     } else {
-                        Toast.makeText(getActivity(), "Пожалуйста, заполните все поля", Toast.LENGTH_SHORT).show();
+                        CustomDialog dialogFragment = new CustomDialog("Ошибка", "Пожалуйста, заполните все поля!");
+                        dialogFragment.show(getParentFragmentManager(), "custom_dialog");
                     }
                 }
                 else{
@@ -167,11 +170,14 @@ public class AdminChangeArticleFragment extends Fragment {
                         ref.child("category").setValue(categoryText);
                         ref.child("access").setValue(accessText);
 
-                        Toast.makeText(getActivity(), "Cтатья успешно изменена", Toast.LENGTH_SHORT).show();
+
+                        CustomDialog dialogFragment = new CustomDialog("Успех", "Cтатья успешно изменена!");
+                        dialogFragment.show(getParentFragmentManager(), "custom_dialog");
                         AdminHomeActivity homeActivity = (AdminHomeActivity) getActivity();
                         homeActivity.replaceFragment(new AdminArticleFragment());
                     } else {
-                        Toast.makeText(getActivity(), "Пожалуйста, заполните все поля", Toast.LENGTH_SHORT).show();
+                        CustomDialog dialogFragment = new CustomDialog("Ошибка", "Пожалуйста, заполните все поля!");
+                        dialogFragment.show(getParentFragmentManager(), "custom_dialog");
                     }
                 }
             }
@@ -229,11 +235,13 @@ public class AdminChangeArticleFragment extends Fragment {
         articleRef.child(uid).removeValue()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
-                        Toast.makeText(getActivity(), "Статья успешно удалена", Toast.LENGTH_SHORT).show();
+                        CustomDialog dialogFragment = new CustomDialog("Успех", "Cтатья успешно удалена!");
+                        dialogFragment.show(getParentFragmentManager(), "custom_dialog");
                         AdminHomeActivity homeActivity = (AdminHomeActivity) getActivity();
                         homeActivity.replaceFragment(new AdminArticleFragment());
                     } else {
-                        Toast.makeText(getActivity(), "Ошибка при удалении статьи", Toast.LENGTH_SHORT).show();
+                        CustomDialog dialogFragment = new CustomDialog("Ошибка", "Ошибка при удалении статьи!");
+                        dialogFragment.show(getParentFragmentManager(), "custom_dialog");
                     }
                 });
     }

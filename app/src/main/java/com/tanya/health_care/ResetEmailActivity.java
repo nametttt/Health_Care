@@ -14,6 +14,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.tanya.health_care.code.GetEmail;
+import com.tanya.health_care.dialog.CustomDialog;
 
 public class ResetEmailActivity extends AppCompatActivity {
 
@@ -37,21 +38,27 @@ public class ResetEmailActivity extends AppCompatActivity {
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (!GetEmail.isValidEmail(email.getText())){
-                    Toast.makeText(ResetEmailActivity.this, "Пожалуйста, введите корректную почту", Toast.LENGTH_SHORT).show();
-                    return;
-                }
+
                 if (email.getText().toString().isEmpty())
                 {
-                    Toast.makeText(ResetEmailActivity.this, "Пожалуйста, введите  почту", Toast.LENGTH_SHORT).show();
+                    CustomDialog dialogFragment = new CustomDialog("Ошибка", "Пожалуйста, введите почту!");
+                    dialogFragment.show(getSupportFragmentManager(), "custom_dialog");
                     return;
                 }
+
+                if (!GetEmail.isValidEmail(email.getText())){
+                    CustomDialog dialogFragment = new CustomDialog("Ошибка", "Пожалуйста, введите корректную почту!");
+                    dialogFragment.show(getSupportFragmentManager(), "custom_dialog");
+                    return;
+                }
+
 
                 mAuth.sendPasswordResetEmail(email.getText().toString()).addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         if (task.isSuccessful()) {
-                            Toast.makeText(ResetEmailActivity.this, "Письмо с инструкцией отправлено на почту!", Toast.LENGTH_SHORT).show();
+                            CustomDialog dialogFragment = new CustomDialog("Успех", "Письмо с инструкцией отправлено на почту!");
+                            dialogFragment.show(getSupportFragmentManager(), "custom_dialog");
                             Intent intent = new Intent(ResetEmailActivity.this, LoginActivity.class);
                             startActivity(intent);
                             ResetEmailActivity.this.finish();
@@ -59,7 +66,8 @@ public class ResetEmailActivity extends AppCompatActivity {
                         else{
                             switch (task.getException().toString()){
                                 case "FirebaseAuthInvalidUserException":
-                                    Toast.makeText(ResetEmailActivity.this, "Аккаунта с такой почтой не существует", Toast.LENGTH_SHORT).show();
+                                    CustomDialog dialogFragment = new CustomDialog("Успех", "Аккаунта с такой почтой не существует!");
+                                    dialogFragment.show(getSupportFragmentManager(), "custom_dialog");
                                     break;
                             }
                         }

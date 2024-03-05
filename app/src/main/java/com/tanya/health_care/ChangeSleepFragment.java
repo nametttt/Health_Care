@@ -25,6 +25,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.tanya.health_care.code.CommonHealthData;
 import com.tanya.health_care.code.GetSplittedPathChild;
 import com.tanya.health_care.code.SleepData;
+import com.tanya.health_care.dialog.CustomDialog;
 import com.tanya.health_care.dialog.DateTimePickerDialog;
 import com.tanya.health_care.dialog.TimePicker;
 
@@ -130,7 +131,8 @@ public class ChangeSleepFragment extends Fragment {
                         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                         ref = mDb.getReference("users").child(pC.getSplittedPathChild(user.getEmail())).child("characteristic").child("sleep").child(path);
                         ref.removeValue();
-                        Toast.makeText(getContext(), "Удаление прошло успешно", Toast.LENGTH_SHORT).show();
+                        CustomDialog dialogFragment = new CustomDialog("Успех", "Удаление прошло успешно!");
+                        dialogFragment.show(getParentFragmentManager(), "custom_dialog");
 
                         HomeActivity homeActivity = (HomeActivity) getActivity();
                         homeActivity.replaceFragment(new SleepFragment());
@@ -174,118 +176,65 @@ public class ChangeSleepFragment extends Fragment {
                 String sleepFinishText = sleepFinish.getText().toString().trim();
 
                 if (TextUtils.isEmpty(sleepStartText) || TextUtils.isEmpty(sleepFinishText)) {
-                    Toast.makeText(getActivity(), "Заполните все поля", Toast.LENGTH_SHORT).show();
+                    CustomDialog dialogFragment = new CustomDialog("Ошибка", "Пожалуйста, заполните все поля!");
+                    dialogFragment.show(getParentFragmentManager(), "custom_dialog");
                     return;
                 }
 
-                if(save.getText() == "Добавить") {
+                String dateTimeString = dateButton.getText().toString();
+                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
-                    String[] startParts = sleepStartText.split(":");
-                    int startHour = Integer.parseInt(startParts[0]);
-                    int startMinute = Integer.parseInt(startParts[1]);
+                String[] startParts = sleepStartText.split(":");
+                int startHour = Integer.parseInt(startParts[0]);
+                int startMinute = Integer.parseInt(startParts[1]);
 
-                    String[] finishParts = sleepFinishText.split(":");
-                    int finishHour = Integer.parseInt(finishParts[0]);
-                    int finishMinute = Integer.parseInt(finishParts[1]);
+                String[] finishParts = sleepFinishText.split(":");
+                int finishHour = Integer.parseInt(finishParts[0]);
+                int finishMinute = Integer.parseInt(finishParts[1]);
 
-                    Calendar calStart = Calendar.getInstance();
-                    calStart.set(Calendar.HOUR_OF_DAY, startHour);
-                    calStart.set(Calendar.MINUTE, startMinute);
+                Calendar calStart = Calendar.getInstance();
+                calStart.set(Calendar.HOUR_OF_DAY, startHour);
+                calStart.set(Calendar.MINUTE, startMinute);
 
-                    Calendar calFinish = Calendar.getInstance();
-                    calFinish.set(Calendar.HOUR_OF_DAY, finishHour);
-                    calFinish.set(Calendar.MINUTE, finishMinute);
+                Calendar calFinish = Calendar.getInstance();
+                calFinish.set(Calendar.HOUR_OF_DAY, finishHour);
+                calFinish.set(Calendar.MINUTE, finishMinute);
 
-                    if (startHour > finishHour || (startHour == finishHour && startMinute >= finishMinute)) {
-                        Toast.makeText(getActivity(), "Время начала сна не может быть больше или равно времени окончания сна", Toast.LENGTH_SHORT).show();
-                        return;
-                    }
-
-                    if (finishHour < startHour || (finishHour == startHour && finishMinute <= startMinute)) {
-                        Toast.makeText(getActivity(), "Время окончания сна не может быть меньше или равно времени начала сна", Toast.LENGTH_SHORT).show();
-                        return;
-                    }
-
-                    Date startSleep = calStart.getTime();
-                    Date finishSleep = calFinish.getTime();
-
-                    ref = mDb.getReference("users").child(pC.getSplittedPathChild(user.getEmail())).child("characteristic").child("sleep").push();
-                    SleepData sleepData = new SleepData(ref.getKey().toString(), startSleep, finishSleep, new Date());
-
-                    if (ref != null) {
-                        ref.setValue(sleepData);
-                    }
-
-                    Toast.makeText(getContext(), "Добавление прошло успешно", Toast.LENGTH_SHORT).show();
-                    homeActivity.replaceFragment(new SleepFragment());
-
+                if (startHour > finishHour || (startHour == finishHour && startMinute >= finishMinute)) {
+                    CustomDialog dialogFragment = new CustomDialog("Ошибка", "Время начала сна не может быть больше или равно времени окончания сна!");
+                    dialogFragment.show(getParentFragmentManager(), "custom_dialog");
+                    return;
                 }
-                else {
-                    String dateTimeString = dateButton.getText().toString();
-                    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                    ref = mDb.getReference("users").child(pC.getSplittedPathChild(user.getEmail()))
-                            .child("characteristic").child("sleep").child(path);
 
-
-                    String[] startParts = sleepStartText.split(":");
-                    int startHour = Integer.parseInt(startParts[0]);
-                    int startMinute = Integer.parseInt(startParts[1]);
-
-
-                    String[] finishParts = sleepFinishText.split(":");
-                    int finishHour = Integer.parseInt(finishParts[0]);
-                    int finishMinute = Integer.parseInt(finishParts[1]);
-
-                    Calendar calStart = Calendar.getInstance();
-                    calStart.set(Calendar.HOUR_OF_DAY, startHour);
-                    calStart.set(Calendar.MINUTE, startMinute);
-
-
-                    Calendar calFinish = Calendar.getInstance();
-                    calFinish.set(Calendar.HOUR_OF_DAY, finishHour);
-                    calFinish.set(Calendar.MINUTE, finishMinute);
-
-                    String[] dateTimeParts = dateTimeString.split(" ");
-                    String dateString = dateTimeParts[0];
-                    String timeString = dateTimeParts[1];
-
-                    String[] dateParts = dateString.split("\\.");
-                    String[] timeParts = timeString.split(":");
-
-                    int day = Integer.parseInt(dateParts[0]);
-                    int month = Integer.parseInt(dateParts[1]) - 1; // месяцы в Calendar начинаются с 0
-                    int year = Calendar.getInstance().get(Calendar.YEAR); // год не известен, поэтому используем текущий
-
-                    int hour = Integer.parseInt(timeParts[0]);
-                    int minute = Integer.parseInt(timeParts[1]);
-
-                    Calendar cal = Calendar.getInstance();
-                    cal.set(year, month, day, hour, minute);
-
-                    Date date = cal.getTime();
-
-                    if (startHour > finishHour || (startHour == finishHour && startMinute >= finishMinute)) {
-                        Toast.makeText(getActivity(), "Время начала сна не может быть больше или равно времени окончания сна", Toast.LENGTH_SHORT).show();
-                        return;
-                    }
-
-                    if (finishHour < startHour || (finishHour == startHour && finishMinute <= startMinute)) {
-                        Toast.makeText(getActivity(), "Время окончания сна не может быть меньше или равно времени начала сна", Toast.LENGTH_SHORT).show();
-                        return;
-                    }
-
-                    Date startSleep = calStart.getTime();
-                    Date finishSleep = calFinish.getTime();
-
-                    SleepData sleepData = new SleepData(path, startSleep, finishSleep, date);
-
-                    if (ref != null) {
-                        ref.setValue(sleepData);
-                    }
-
-                    Toast.makeText(getContext(), "Изменение прошло успешно", Toast.LENGTH_SHORT).show();
-                    homeActivity.replaceFragment(new SleepFragment());
+                if (finishHour < startHour || (finishHour == startHour && finishMinute <= startMinute)) {
+                    CustomDialog dialogFragment = new CustomDialog("Ошибка", "Время начала сна не может быть меньше или равно времени окончания сна!");
+                    dialogFragment.show(getParentFragmentManager(), "custom_dialog");
+                    return;
                 }
+
+                Date startSleep = calStart.getTime();
+                Date finishSleep = calFinish.getTime();
+
+                SleepData sleepData;
+                DatabaseReference reference;
+
+                if ("Добавить".equals(save.getText())) {
+                    reference = mDb.getReference("users").child(pC.getSplittedPathChild(user.getEmail())).child("characteristic").child("sleep").push();
+                    sleepData = new SleepData(reference.getKey(), startSleep, finishSleep, new Date());
+                    CustomDialog dialogFragment = new CustomDialog("Успех", "Добавление прошло успешно!");
+                    dialogFragment.show(getParentFragmentManager(), "custom_dialog");
+                } else {
+                    reference = mDb.getReference("users").child(pC.getSplittedPathChild(user.getEmail())).child("characteristic").child("sleep").child(path);
+                    sleepData = new SleepData(path, startSleep, finishSleep, calStart.getTime());
+                    CustomDialog dialogFragment = new CustomDialog("Успех", "Изменение прошло успешно!");
+                    dialogFragment.show(getParentFragmentManager(), "custom_dialog");
+                }
+
+                if (reference != null) {
+                    reference.setValue(sleepData);
+                }
+
+                homeActivity.replaceFragment(new SleepFragment());
             }
         });
     }

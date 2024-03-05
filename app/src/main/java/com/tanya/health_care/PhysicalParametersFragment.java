@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -20,20 +21,29 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.tanya.health_care.code.CommonHealthData;
+import com.tanya.health_care.code.CommonHealthRecyclerView;
+import com.tanya.health_care.code.GetSplittedPathChild;
 import com.tanya.health_care.code.RecordMainModel;
 import com.tanya.health_care.code.RecordRecyclerView;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Comparator;
+import java.util.Date;
 
 public class PhysicalParametersFragment extends Fragment {
 
+    Button exit, add;
+    TextView pressure, temperature, pulse;
+    DatabaseReference ref;
+    GetSplittedPathChild pC = new GetSplittedPathChild();
 
+    FirebaseDatabase mDb;
+    FirebaseUser user;
     RecyclerView recyclerView;
-    ArrayList<RecordMainModel> arrayRecord;
-    RecordRecyclerView adapter;
-    DatabaseReference db;
-    Button exit;
-
+    ArrayList<CommonHealthData> commonDataArrayList;
+    CommonHealthRecyclerView adapter;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
@@ -43,17 +53,56 @@ public class PhysicalParametersFragment extends Fragment {
         return v;
     }
 
-    void init(View v){
-        FirebaseUser user= FirebaseAuth.getInstance().getCurrentUser();
-        db = FirebaseDatabase.getInstance().getReference("users").child(user.getUid()).child("record").getRef();
 
-        arrayRecord = new ArrayList<RecordMainModel>();
-         adapter = new RecordRecyclerView(getContext(), arrayRecord);
-        recyclerView = v.findViewById(R.id.recyclerView);
+    void init(View v){
+        user = FirebaseAuth.getInstance().getCurrentUser();
+        mDb = FirebaseDatabase.getInstance();
         exit = v.findViewById(R.id.back);
+        add = v.findViewById(R.id.continu);
+        pressure = v.findViewById(R.id.pressure);
+        pulse = v.findViewById(R.id.pulse);
+        temperature = v.findViewById(R.id.temperature);
+
+        commonDataArrayList = new ArrayList<CommonHealthData>();
+        adapter = new CommonHealthRecyclerView(getContext(), commonDataArrayList);
+        recyclerView = v.findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setAdapter(adapter);
         addDataOnRecyclerView();
+
+        ref = mDb.getReference("users").child(pC.getSplittedPathChild(user.getEmail())).child("characteristic").child("commonHealth");
+        ref.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                int count = 0;
+                int Pulse = 0;
+                String Pressure = "";
+                float Temperature = 0;
+                for (DataSnapshot dataSnapshot: snapshot.getChildren()){
+                    CommonHealthData common = dataSnapshot.getValue(CommonHealthData.class);
+                    if(isWithinLastWeek(common.lastAdded, new Date())){
+                        Pulse = common.pulse;
+                        Pressure = common.pressure;
+                        Temperature = common.temperature;
+                        count++;
+                    }
+                }
+                temperature.setText(String.valueOf(Temperature));
+                pulse.setText(String.valueOf(Pulse));
+                pressure.setText(String.valueOf(Pressure));
+                if(count <= 0){
+                    temperature.setText("–");
+                    pulse.setText("–");
+                    pressure.setText("–");
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
 
         exit.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -63,25 +112,36 @@ public class PhysicalParametersFragment extends Fragment {
             }
         });
 
-    }
+        add.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                HomeActivity homeActivity = (HomeActivity) getActivity();
+                ChangeCommonHealthFragment fragment = new ChangeCommonHealthFragment();
+                Bundle args = new Bundle();
+                args.putString("Add", "Добавить");
+                fragment.setArguments(args);
+                homeActivity.replaceFragment(fragment);
+            }
+        });
 
+    }
 
     private void addDataOnRecyclerView() {
         ValueEventListener valueEventListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-
-
-                if (arrayRecord.size() > 0) {
-                    arrayRecord.clear();
+                if (commonDataArrayList.size() > 0) {
+                    commonDataArrayList.clear();
                 }
                 for (DataSnapshot ds : snapshot.getChildren()) {
-
                     ds.getValue();
-                    RecordMainModel ps = ds.getValue(RecordMainModel.class);
+                    CommonHealthData ps = ds.getValue(CommonHealthData.class);
                     assert ps != null;
-                    arrayRecord.add(ps);
+                    if(isWithinLastWeek(ps.lastAdded, new Date())){
+                        commonDataArrayList.add(ps);
+                    }
                 }
+                commonDataArrayList.sort(new SortPhysical());
                 adapter.notifyDataSetChanged();
             }
 
@@ -90,8 +150,26 @@ public class PhysicalParametersFragment extends Fragment {
 
             }
         };
-        db.addValueEventListener(valueEventListener);
+        ref = mDb.getReference("users").child(pC.getSplittedPathChild(user.getEmail())).child("characteristic").child("commonHealth");
+
+        ref.addValueEventListener(valueEventListener);
     }
 
+    public static boolean isWithinLastWeek(Date date1, Date date2) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(new Date());
+        calendar.add(Calendar.DAY_OF_YEAR, -7);
 
+        Date lastWeekDate = calendar.getTime();
+
+        return (date1.after(lastWeekDate) || date1.equals(lastWeekDate)) &&
+                (date2.after(lastWeekDate) || date2.equals(lastWeekDate));
+    }
+
+}
+class SortPhysical implements Comparator<CommonHealthData> {
+    @Override
+    public int compare(CommonHealthData a, CommonHealthData b) {
+        return  b.lastAdded.compareTo(a.lastAdded);
+    }
 }

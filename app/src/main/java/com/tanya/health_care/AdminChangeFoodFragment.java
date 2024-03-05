@@ -19,6 +19,7 @@ import androidx.fragment.app.Fragment;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.tanya.health_care.code.FoodData;
+import com.tanya.health_care.dialog.CustomDialog;
 
 public class AdminChangeFoodFragment extends Fragment {
 
@@ -97,7 +98,8 @@ public class AdminChangeFoodFragment extends Fragment {
                 if (TextUtils.isEmpty(nameText) || TextUtils.isEmpty(weightText)
                         || TextUtils.isEmpty(caloriesText) || TextUtils.isEmpty(proteinText)
                         || TextUtils.isEmpty(fatText) || TextUtils.isEmpty(carbohydratesText)) {
-                    Toast.makeText(getActivity(), "Пожалуйста, заполните все поля", Toast.LENGTH_SHORT).show();
+                    CustomDialog dialogFragment = new CustomDialog("Ошибка", "Пожалуйста, заполните все поля!");
+                    dialogFragment.show(getParentFragmentManager(), "custom_dialog");
                     return;
                 }
 
@@ -118,7 +120,8 @@ public class AdminChangeFoodFragment extends Fragment {
                         FoodData newFoodData = new FoodData(path, nameText, caloriesValue, weightValue, proteinValue, carbohydratesValue, fatValue);
                         ref.setValue(newFoodData);
 
-                        Toast.makeText(getActivity(), "Продукт успешно добавлен", Toast.LENGTH_SHORT).show();
+                        CustomDialog dialogFragment = new CustomDialog("Успех", "Продукт успешно добавлен!");
+                        dialogFragment.show(getParentFragmentManager(), "custom_dialog");
                     } else {
                         ref = mDb.getReference("foods").child(uid);
 
@@ -129,14 +132,16 @@ public class AdminChangeFoodFragment extends Fragment {
                         ref.child("carbohydrates").setValue(carbohydratesValue);
                         ref.child("fat").setValue(fatValue);
 
-                        Toast.makeText(getActivity(), "Продукт успешно изменен", Toast.LENGTH_SHORT).show();
+                        CustomDialog dialogFragment = new CustomDialog("Успех", "Продукт успешно изменен!");
+                        dialogFragment.show(getParentFragmentManager(), "custom_dialog");
                     }
 
                     AdminHomeActivity homeActivity = (AdminHomeActivity) getActivity();
                     homeActivity.replaceFragment(new AdminFoodFragment());
 
                 } catch (NumberFormatException e) {
-                    Toast.makeText(getActivity(), "Ошибка при вводе числовых значений", Toast.LENGTH_SHORT).show();
+                    CustomDialog dialogFragment = new CustomDialog("Ошибка", "Ошибка при вводе числовых значений!");
+                    dialogFragment.show(getParentFragmentManager(), "custom_dialog");
                 }
             }
         });
@@ -182,11 +187,13 @@ public class AdminChangeFoodFragment extends Fragment {
         foodRef.child(uid).removeValue()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
-                        Toast.makeText(getActivity(), "Блюдо успешно удалено", Toast.LENGTH_SHORT).show();
+                        CustomDialog dialogFragment = new CustomDialog("Успех", "Блюдо успешно удалено!");
+                        dialogFragment.show(getParentFragmentManager(), "custom_dialog");
                         AdminHomeActivity homeActivity = (AdminHomeActivity) getActivity();
                         homeActivity.replaceFragment(new AdminFoodFragment());
                     } else {
-                        Toast.makeText(getActivity(), "Ошибка при удалении блюда", Toast.LENGTH_SHORT).show();
+                        CustomDialog dialogFragment = new CustomDialog("Ошибка", "Ошибка при удалении блюда!");
+                        dialogFragment.show(getParentFragmentManager(), "custom_dialog");
                     }
                 });
     }

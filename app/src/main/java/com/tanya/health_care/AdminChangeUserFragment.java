@@ -23,6 +23,7 @@ import android.widget.Toast;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.tanya.health_care.code.GetSplittedPathChild;
+import com.tanya.health_care.dialog.CustomDialog;
 import com.tanya.health_care.dialog.DatePickerModal;
 
 import java.util.HashMap;
@@ -87,7 +88,8 @@ public class AdminChangeUserFragment extends Fragment {
                 String selectedBirthday = birthdays.getText().toString();
 
                 if (selectedName.isEmpty() || selectedEmail.isEmpty() || selectedRole.isEmpty() || selectedGender.isEmpty() || selectedBirthday.isEmpty()) {
-                    Toast.makeText(getActivity(), "Заполните все поля", Toast.LENGTH_SHORT).show();
+                    CustomDialog dialogFragment = new CustomDialog("Ошибка", "Пожалуйста, заполните все поля!");
+                    dialogFragment.show(getParentFragmentManager(), "custom_dialog");
                     return;
                 }
 
@@ -105,9 +107,12 @@ public class AdminChangeUserFragment extends Fragment {
                 userRef.child(selectedUserPath).updateChildren(updateMap)
                         .addOnCompleteListener(task -> {
                             if (task.isSuccessful()) {
-                                Toast.makeText(getActivity(), "Данные пользователя изменены", Toast.LENGTH_SHORT).show();
+                                CustomDialog dialogFragment = new CustomDialog("Успех", "Данные пользователя успешно изменены!");
+                                dialogFragment.show(getParentFragmentManager(), "custom_dialog");
+
                             } else {
-                                Toast.makeText(getActivity(), "Ошибка при обновлении данных пользователя", Toast.LENGTH_SHORT).show();
+                                CustomDialog dialogFragment = new CustomDialog("Ошибка", "Ошибка при обновлении данных пользователя!");
+                                dialogFragment.show(getParentFragmentManager(), "custom_dialog");
                             }
                         });
             }
@@ -147,6 +152,7 @@ public class AdminChangeUserFragment extends Fragment {
                 homeActivity.replaceFragment(fragment);
             }
         });
+
         birthdays.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -161,7 +167,8 @@ public class AdminChangeUserFragment extends Fragment {
         String selectedEmail = emails.getText().toString().trim();
 
         if (selectedEmail.isEmpty()) {
-            Toast.makeText(getActivity(), "Не удалось определить пользователя", Toast.LENGTH_SHORT).show();
+            CustomDialog dialogFragment = new CustomDialog("Ошибка", "Не удалось определить пользователя!");
+            dialogFragment.show(getParentFragmentManager(), "custom_dialog");
             return;
         }
 
@@ -173,11 +180,14 @@ public class AdminChangeUserFragment extends Fragment {
         userRef.child(selectedUserPath).removeValue()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
-                        Toast.makeText(getActivity(), "Пользователь успешно удален", Toast.LENGTH_SHORT).show();
+                        CustomDialog dialogFragment = new CustomDialog("Успех", "Пользователь успешно удален!");
+                        dialogFragment.show(getParentFragmentManager(), "custom_dialog");
                         AdminHomeActivity homeActivity = (AdminHomeActivity) getActivity();
                         homeActivity.replaceFragment(new AdminUsersFragment());
                     } else {
-                        Toast.makeText(getActivity(), "Ошибка при удалении пользователя", Toast.LENGTH_SHORT).show();
+                        CustomDialog dialogFragment = new CustomDialog("Ошибка", "Ошибка при удалении пользователя!");
+                        dialogFragment.show(getParentFragmentManager(), "custom_dialog");
+
                     }
                 });
     }

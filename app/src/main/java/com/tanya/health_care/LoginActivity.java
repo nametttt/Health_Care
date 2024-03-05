@@ -23,6 +23,7 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.tanya.health_care.code.GetEmail;
+import com.tanya.health_care.dialog.CustomDialog;
 
 import java.util.Objects;
 
@@ -66,23 +67,28 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-
-
-                if (!GetEmail.isValidEmail(loginEdit.getText())){
-                    Toast.makeText(view.getContext(), "Пожалуйста, введите корректную почту", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
-                imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
-
                 if (loginEdit.getText().toString().isEmpty() ||
                         password.getText().toString().isEmpty()){
-                    Toast.makeText(view.getContext(), "Вы ввели не все данные", Toast.LENGTH_SHORT).show();
+                    CustomDialog dialogFragment = new CustomDialog("Ошибка", "Пожалуйста, введите все данные!");
+                    dialogFragment.show(getSupportFragmentManager(), "custom_dialog");
+
                     return;
                 }
                 else{
                     enterUser();
                 }
+
+                if (!GetEmail.isValidEmail(loginEdit.getText())){
+                    CustomDialog dialogFragment = new CustomDialog("Ошибка", "Пожалуйста, введите корректную почту!");
+                    dialogFragment.show(getSupportFragmentManager(), "custom_dialog");
+
+                    return;
+                }
+                InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+
+
+
 
             }
         });
@@ -145,7 +151,11 @@ public class LoginActivity extends AppCompatActivity {
 
                         }
                         else
-                            Toast.makeText(LoginActivity.this, "Что-то пошло не так!", Toast.LENGTH_SHORT).show();
+                        {
+                            CustomDialog dialogFragment = new CustomDialog("Ошибка", "Вы ввели неверные данные пользователя!");
+                            dialogFragment.show(getSupportFragmentManager(), "custom_dialog");
+
+                        }
                     }
                 });
     }

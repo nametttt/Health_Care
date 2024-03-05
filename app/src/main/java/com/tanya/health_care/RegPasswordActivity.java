@@ -24,6 +24,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.tanya.health_care.code.EyeVisibility;
 import com.tanya.health_care.code.User;
 import com.tanya.health_care.code.GetSplittedPathChild;
+import com.tanya.health_care.dialog.CustomDialog;
 
 public class RegPasswordActivity extends AppCompatActivity {
 
@@ -104,17 +105,20 @@ public class RegPasswordActivity extends AppCompatActivity {
         String pass2 = confirmPassword.getText().toString().trim();
 
         if (pass1.isEmpty() || pass2.isEmpty()) {
-            Toast.makeText(this, "Пожалуйста, введите оба пароля", Toast.LENGTH_SHORT).show();
+            CustomDialog dialogFragment = new CustomDialog("Ошибка", "Пожалуйста, введите оба пароля!");
+            dialogFragment.show(getSupportFragmentManager(), "custom_dialog");
             return;
         }
 
         if (pass1.length() < 6) {
-            Toast.makeText(this, "Пароль должен содержать не менее 6 символов", Toast.LENGTH_SHORT).show();
+            CustomDialog dialogFragment = new CustomDialog("Ошибка", "Пароль должен содержать не менее 6 символов!");
+            dialogFragment.show(getSupportFragmentManager(), "custom_dialog");
             return;
         }
 
         if (!pass1.equals(pass2)) {
-            Toast.makeText(this, "Пароли не совпадают", Toast.LENGTH_SHORT).show();
+            CustomDialog dialogFragment = new CustomDialog("Ошибка", "Пароли не совпадают!");
+            dialogFragment.show(getSupportFragmentManager(), "custom_dialog");
             return;
         }
 
@@ -152,16 +156,19 @@ public class RegPasswordActivity extends AppCompatActivity {
                                         if (databaseTask.isSuccessful()) {
                                             Intent intent = new Intent(RegPasswordActivity.this, HomeActivity.class);
                                             startActivity(intent);
+                                            CustomDialog dialogFragment = new CustomDialog("Успех", "Успешный вход в аккаунт!");
+                                            dialogFragment.show(getSupportFragmentManager(), "custom_dialog");
                                             finish();
                                         } else {
                                             String errorMessage = databaseTask.getException().getMessage();
-                                            Toast.makeText(RegPasswordActivity.this, errorMessage, Toast.LENGTH_SHORT).show();
+                                            CustomDialog dialogFragment = new CustomDialog("Ошибка", errorMessage);
+                                            dialogFragment.show(getSupportFragmentManager(), "custom_dialog");
                                         }
                                     }
                                 });
                             } else {
-                                String errorMessage = "Ошибка: текущий пользователь равен null";
-                                Toast.makeText(RegPasswordActivity.this, errorMessage, Toast.LENGTH_SHORT).show();
+                                CustomDialog dialogFragment = new CustomDialog("Ошибка", "Ошибка: текущий пользователь равен null");
+                                dialogFragment.show(getSupportFragmentManager(), "custom_dialog");
                             }
                         } else {
                             handleRegistrationError(task.getException());

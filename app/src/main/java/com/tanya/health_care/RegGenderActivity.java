@@ -9,6 +9,7 @@ import android.widget.Button;
 import android.widget.RadioButton;
 import android.widget.Toast;
 import com.tanya.health_care.code.User;
+import com.tanya.health_care.dialog.CustomDialog;
 
 public class RegGenderActivity extends AppCompatActivity {
 
@@ -53,7 +54,8 @@ public class RegGenderActivity extends AppCompatActivity {
 
                 if(!men.isChecked() && !woman.isChecked())
                 {
-                    Toast.makeText(RegGenderActivity.this, "Выберите ваш пол", Toast.LENGTH_SHORT).show();
+                    CustomDialog dialogFragment = new CustomDialog("Ошибка", "Выберите ваш пол!");
+                    dialogFragment.show(getSupportFragmentManager(), "custom_dialog");
                 }
                 else
                 {

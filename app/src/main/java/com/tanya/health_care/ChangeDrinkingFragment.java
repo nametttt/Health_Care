@@ -21,6 +21,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.tanya.health_care.code.WaterData;
 import com.tanya.health_care.code.GetSplittedPathChild;
+import com.tanya.health_care.dialog.CustomDialog;
 import com.tanya.health_care.dialog.TimePicker;
 
 import java.text.SimpleDateFormat;
@@ -105,7 +106,8 @@ public class ChangeDrinkingFragment extends Fragment {
                 date = cal.getTime();
                 WaterData newWater = new WaterData(path, Integer.parseInt(text.getText().toString()) ,date  );
                 ref.setValue(newWater);
-                Toast.makeText(getContext(), "Изменение прошло успешно", Toast.LENGTH_SHORT).show();
+                CustomDialog dialogFragment = new CustomDialog("Успех", "Изменение прошло успешно!");
+                dialogFragment.show(getParentFragmentManager(), "custom_dialog");
 
                 homeActivity.replaceFragment(new DrinkingFragment());
 
@@ -125,7 +127,8 @@ public class ChangeDrinkingFragment extends Fragment {
                         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                         ref = mDb.getReference("users").child(pC.getSplittedPathChild(user.getEmail())).child("characteristic").child("water").child(path);
                         ref.removeValue();
-                        Toast.makeText(getContext(), "Удаление прошло успешно", Toast.LENGTH_SHORT).show();
+                        CustomDialog dialogFragment = new CustomDialog("Успех", "Удаление прошло успешно!");
+                        dialogFragment.show(getParentFragmentManager(), "custom_dialog");
 
                         homeActivity.replaceFragment(new DrinkingFragment());
                     }

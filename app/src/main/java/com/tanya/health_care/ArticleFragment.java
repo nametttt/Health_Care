@@ -34,7 +34,6 @@ public class ArticleFragment extends Fragment {
     ArticleRecyclerView adapter;
     FirebaseUser user;
     DatabaseReference ref;
-    GetSplittedPathChild pC = new GetSplittedPathChild();
 
     FirebaseDatabase mDb;
     @Override

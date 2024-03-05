@@ -34,6 +34,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.tanya.health_care.code.EyeVisibility;
 import com.tanya.health_care.code.User;
 import com.tanya.health_care.code.GetSplittedPathChild;
+import com.tanya.health_care.dialog.CustomDialog;
 import com.tanya.health_care.dialog.DatePickerModal;
 
 public class AdminAddUserFragment extends Fragment {
@@ -96,12 +97,14 @@ public class AdminAddUserFragment extends Fragment {
         String userGender = gender.getSelectedItem().toString();
 
         if (userEmail.isEmpty() || userPassword.isEmpty() || userRole.isEmpty() || userBirthday.isEmpty() || userGender.isEmpty()) {
-            Toast.makeText(getContext(), "Заполните все поля", Toast.LENGTH_SHORT).show();
+            CustomDialog dialogFragment = new CustomDialog("Ошибка", "Заполните все поля!");
+            dialogFragment.show(getParentFragmentManager(), "custom_dialog");
             return;
         }
 
         if (userPassword.length() < 6) {
-            Toast.makeText(getContext(), "Пароль должен содержать не менее 6 символов", Toast.LENGTH_SHORT).show();
+            CustomDialog dialogFragment = new CustomDialog("Ошибка", "Пароль должен содержать не менее 6 символов!");
+            dialogFragment.show(getParentFragmentManager(), "custom_dialog");
             return;
         }
 
@@ -126,14 +129,15 @@ public class AdminAddUserFragment extends Fragment {
             @Override
             public void onComplete(@NonNull Task<Void> databaseTask) {
                 if (databaseTask.isSuccessful()) {
-                    String errorMessage = "Успешное добавление пользователя";
+                    CustomDialog dialogFragment = new CustomDialog("Успех", "Успешное добавление пользователя!");
+                    dialogFragment.show(getParentFragmentManager(), "custom_dialog");
                     AdminHomeActivity homeActivity = (AdminHomeActivity) getActivity();
                     AdminUsersFragment fragment = new AdminUsersFragment();
                     homeActivity.replaceFragment(fragment);
-                    Toast.makeText(getContext(), errorMessage, Toast.LENGTH_SHORT).show();
                 } else {
                     String errorMessage = databaseTask.getException().getMessage();
-                    Toast.makeText(getContext(), errorMessage, Toast.LENGTH_SHORT).show();
+                    CustomDialog dialogFragment = new CustomDialog("Ошибка", errorMessage);
+                    dialogFragment.show(getParentFragmentManager(), "custom_dialog");
                 }
             }
         });

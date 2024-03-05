@@ -22,6 +22,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.tanya.health_care.code.GetSplittedPathChild;
 import com.tanya.health_care.code.User;
+import com.tanya.health_care.dialog.CustomDialog;
 import com.tanya.health_care.dialog.DatePickerModal;
 
 import java.util.HashMap;
@@ -33,7 +34,6 @@ public class UserProfileFragment extends Fragment {
     AppCompatButton pickDate, exit, save;
     FirebaseAuth mAuth;
     GetSplittedPathChild pC;
-    String userGender;
     Spinner gender;
     DatabaseReference userRef;
 
@@ -130,9 +130,11 @@ public class UserProfileFragment extends Fragment {
                 userRef.child(pC.getSplittedPathChild(user.getEmail())).updateChildren(updateMap)
                         .addOnCompleteListener(task -> {
                             if (task.isSuccessful()) {
-                                Toast.makeText(getActivity(), "Данные изменены", Toast.LENGTH_SHORT).show();
+                                CustomDialog dialogFragment = new CustomDialog("Успех", "Данные успешно изменены!");
+                                dialogFragment.show(getChildFragmentManager(), "custom_dialog");
                             } else {
-                                Toast.makeText(getActivity(), "Ошибка при обновлении данных", Toast.LENGTH_SHORT).show();
+                                CustomDialog dialogFragment = new CustomDialog("Ошибка", "Ошибка при обновлении данных!");
+                                dialogFragment.show(getChildFragmentManager(), "custom_dialog");
                             }
                         });
             }

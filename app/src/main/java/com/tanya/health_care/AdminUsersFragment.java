@@ -80,11 +80,10 @@ public class AdminUsersFragment extends Fragment {
                     users.clear();
                 }
                 for (DataSnapshot ds : snapshot.getChildren()) {
-                    ds.getValue();
                     User ps = ds.getValue(User.class);
-                    assert ps != null;
-                    users.add(ps);
-
+                    if (ps != null && !ps.getEmail().equals("ya@gmail.com")) {
+                        users.add(ps);
+                    }
                 }
                 adapter.notifyDataSetChanged();
             }
@@ -95,8 +94,8 @@ public class AdminUsersFragment extends Fragment {
             }
         };
         ref = mDb.getReference().child("users");
-
         ref.addValueEventListener(valueEventListener);
     }
+
 
 }

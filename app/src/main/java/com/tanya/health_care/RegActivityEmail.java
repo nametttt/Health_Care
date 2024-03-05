@@ -17,6 +17,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.SignInMethodQueryResult;
 import com.tanya.health_care.code.GeneratePin;
 import com.tanya.health_care.code.GetEmail;
+import com.tanya.health_care.dialog.CustomDialog;
 
 import java.util.Properties;
 
@@ -66,11 +67,14 @@ public class RegActivityEmail extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 if (email.getText().toString().isEmpty()) {
-                    Toast.makeText(RegActivityEmail.this, "Пожалуйста, введите почту!", Toast.LENGTH_SHORT).show();
+                    CustomDialog dialogFragment = new CustomDialog("Ошибка", "Пожалуйста, введите почту!");
+                    dialogFragment.show(getSupportFragmentManager(), "custom_dialog");
                 } else if (!GetEmail.isValidEmail(email.getText())) {
-                    Toast.makeText(RegActivityEmail.this, "Пожалуйста, введите корректную почту", Toast.LENGTH_SHORT).show();
+                    CustomDialog dialogFragment = new CustomDialog("Ошибка", "Пожалуйста, введите корректную почту!");
+                    dialogFragment.show(getSupportFragmentManager(), "custom_dialog");
                 } else if (!userAgree.isChecked()) {
-                    Toast.makeText(RegActivityEmail.this, "Пожалуйста, примите пользовательское соглашение", Toast.LENGTH_SHORT).show();
+                    CustomDialog dialogFragment = new CustomDialog("Ошибка", "Пожалуйста, примите пользовательское соглашение!");
+                    dialogFragment.show(getSupportFragmentManager(), "custom_dialog");
                 } else {
                     final String userEmail = email.getText().toString().trim();
                     FirebaseAuth.getInstance().fetchSignInMethodsForEmail(userEmail)

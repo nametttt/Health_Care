@@ -12,22 +12,20 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.tanya.health_care.ChangeCommonHealthFragment;
-import com.tanya.health_care.ChangeDrinkingFragment;
-import com.tanya.health_care.ChangeSleepFragment;
 import com.tanya.health_care.HomeActivity;
 import com.tanya.health_care.R;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
-public class SleepRecyclerView extends RecyclerView.Adapter<SleepRecyclerView.ViewHolder> {
+public class PhysicalParametersRecyclerView extends RecyclerView.Adapter<PhysicalParametersRecyclerView.ViewHolder> {
 
-    private ArrayList<SleepData> sleepData;
+    private ArrayList<PhysicalParametersData> physicalParametersData;
     private Context context;
 
-    public SleepRecyclerView(Context context, ArrayList<SleepData> sleepData) {
+    public PhysicalParametersRecyclerView(Context context, ArrayList<PhysicalParametersData> physicalParametersData) {
         this.context = context;
-        this.sleepData = sleepData;
+        this.physicalParametersData = physicalParametersData;
     }
 
     @NonNull
@@ -39,22 +37,19 @@ public class SleepRecyclerView extends RecyclerView.Adapter<SleepRecyclerView.Vi
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        SleepData currentSleep = sleepData.get(position);
+        PhysicalParametersData currentCommon = physicalParametersData.get(position);
 
         SimpleDateFormat fmt = new SimpleDateFormat("HH:mm");
+        SimpleDateFormat fmt1 = new SimpleDateFormat("dd.MM");
 
-        holder.addedTime.setText(fmt.format(currentSleep.addTime));
-
-        String formattedStartTime = fmt.format(currentSleep.sleepStart);
-        String formattedEndTime = fmt.format(currentSleep.sleepFinish);
-
-        holder.addedCount.setText("C " + formattedStartTime + " до " + formattedEndTime);
+        holder.addedTime.setText(fmt.format(currentCommon.lastAdded));
+        holder.addedCount.setText("Запись от " + fmt1.format(currentCommon.lastAdded));
 
         holder.relativeLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 HomeActivity homeActivity = (HomeActivity) v.getContext();
-                ChangeSleepFragment fragment = new ChangeSleepFragment(currentSleep.uid, currentSleep.sleepStart, currentSleep.sleepFinish, currentSleep.addTime);
+                ChangeCommonHealthFragment fragment = new ChangeCommonHealthFragment(currentCommon.uid, currentCommon.pressure, currentCommon.temperature, currentCommon.pulse, currentCommon.lastAdded);
                 Bundle args = new Bundle();
                 args.putString("Add", null);
                 fragment.setArguments(args);
@@ -65,7 +60,7 @@ public class SleepRecyclerView extends RecyclerView.Adapter<SleepRecyclerView.Vi
 
     @Override
     public int getItemCount() {
-        return sleepData.size();
+        return physicalParametersData.size();
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {

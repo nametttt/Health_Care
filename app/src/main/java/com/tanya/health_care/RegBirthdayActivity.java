@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.tanya.health_care.dialog.CustomDialog;
 import com.tanya.health_care.dialog.DatePickerModal;
 
 public class RegBirthdayActivity extends AppCompatActivity {
@@ -54,7 +55,8 @@ public class RegBirthdayActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 if (btn != null && btn.getText().toString().isEmpty()) {
-                    Toast.makeText(RegBirthdayActivity.this, "Пожалуйста, выберите дату рождения", Toast.LENGTH_SHORT).show();
+                    CustomDialog dialogFragment = new CustomDialog("Ошибка", "Пожалуйста, выберите дату рождения!");
+                    dialogFragment.show(getSupportFragmentManager(), "custom_dialog");
                 } else {
                     Intent intent = new Intent(RegBirthdayActivity.this, RegPasswordActivity.class);
                     intent.putExtra("userGender", userGender);
