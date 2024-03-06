@@ -58,92 +58,99 @@ public class ChangeDrinkingFragment extends Fragment {
 
 
     void init(View v){
-        SimpleDateFormat fmt = new SimpleDateFormat("HH:mm", new Locale("ru"));
-        homeActivity = (HomeActivity) getActivity();
-        dateTimebtn = v.findViewById(R.id.dateButton);
-        text = v.findViewById(R.id.countText);
-        save = v.findViewById(R.id.continu);
-        exit = v.findViewById(R.id.back);
-        delete = v.findViewById(R.id.delete);
-        mDb = FirebaseDatabase.getInstance();
-        GetSplittedPathChild pC = new GetSplittedPathChild();
+        try{
+            SimpleDateFormat fmt = new SimpleDateFormat("HH:mm", new Locale("ru"));
+            homeActivity = (HomeActivity) getActivity();
+            dateTimebtn = v.findViewById(R.id.dateButton);
+            text = v.findViewById(R.id.countText);
+            save = v.findViewById(R.id.continu);
+            exit = v.findViewById(R.id.back);
+            delete = v.findViewById(R.id.delete);
+            mDb = FirebaseDatabase.getInstance();
+            GetSplittedPathChild pC = new GetSplittedPathChild();
 
-        dateTimebtn.setText(fmt.format(date));
-        text.setText(String.valueOf(count));
+            dateTimebtn.setText(fmt.format(date));
+            text.setText(String.valueOf(count));
 
 
-        exit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                HomeActivity homeActivity = (HomeActivity) getActivity();
-                homeActivity.replaceFragment(new DrinkingFragment());
-            }
-        });
+            exit.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    HomeActivity homeActivity = (HomeActivity) getActivity();
+                    homeActivity.replaceFragment(new DrinkingFragment());
+                }
+            });
 
-        dateTimebtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                TimePicker datePickerModal = new TimePicker();
-                datePickerModal.setTargetButton(dateTimebtn);
-                datePickerModal.show(getParentFragmentManager(), "timepicker");
-            }
-        });
+            dateTimebtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    TimePicker datePickerModal = new TimePicker();
+                    datePickerModal.setTargetButton(dateTimebtn);
+                    datePickerModal.show(getParentFragmentManager(), "timepicker");
+                }
+            });
 
-        save.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                ref = mDb.getReference("users").child(pC.getSplittedPathChild(user.getEmail())).child("characteristic").child("water").child(path);
+            save.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                    ref = mDb.getReference("users").child(pC.getSplittedPathChild(user.getEmail())).child("characteristic").child("water").child(path);
 
-                Date d = date;
-                String[] times = dateTimebtn.getText().toString().split(":");
+                    Date d = date;
+                    String[] times = dateTimebtn.getText().toString().split(":");
 
-                Calendar cal = Calendar.getInstance();
-                cal.setTime(date);
+                    Calendar cal = Calendar.getInstance();
+                    cal.setTime(date);
 
-                cal.set(Calendar.HOUR_OF_DAY, Integer.parseInt(times[0]));
-                cal.set(Calendar.MINUTE, Integer.parseInt(times[1]));
-                date = cal.getTime();
-                WaterData newWater = new WaterData(path, Integer.parseInt(text.getText().toString()) ,date  );
-                ref.setValue(newWater);
-                CustomDialog dialogFragment = new CustomDialog("Успех", "Изменение прошло успешно!");
-                dialogFragment.show(getParentFragmentManager(), "custom_dialog");
+                    cal.set(Calendar.HOUR_OF_DAY, Integer.parseInt(times[0]));
+                    cal.set(Calendar.MINUTE, Integer.parseInt(times[1]));
+                    date = cal.getTime();
+                    WaterData newWater = new WaterData(path, Integer.parseInt(text.getText().toString()) ,date  );
+                    ref.setValue(newWater);
+                    CustomDialog dialogFragment = new CustomDialog("Успех", "Изменение прошло успешно!");
+                    dialogFragment.show(getParentFragmentManager(), "custom_dialog");
 
-                homeActivity.replaceFragment(new DrinkingFragment());
+                    homeActivity.replaceFragment(new DrinkingFragment());
 
-            }
-        });
+                }
+            });
 
-        delete.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-                builder.setTitle("Подтверждение удаления");
-                builder.setMessage("Вы уверены, что хотите удалить эту запись?");
+            delete.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                    builder.setTitle("Подтверждение удаления");
+                    builder.setMessage("Вы уверены, что хотите удалить эту запись?");
 
-                builder.setPositiveButton("Да", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                        ref = mDb.getReference("users").child(pC.getSplittedPathChild(user.getEmail())).child("characteristic").child("water").child(path);
-                        ref.removeValue();
-                        CustomDialog dialogFragment = new CustomDialog("Успех", "Удаление прошло успешно!");
-                        dialogFragment.show(getParentFragmentManager(), "custom_dialog");
+                    builder.setPositiveButton("Да", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                            ref = mDb.getReference("users").child(pC.getSplittedPathChild(user.getEmail())).child("characteristic").child("water").child(path);
+                            ref.removeValue();
+                            CustomDialog dialogFragment = new CustomDialog("Успех", "Удаление прошло успешно!");
+                            dialogFragment.show(getParentFragmentManager(), "custom_dialog");
 
-                        homeActivity.replaceFragment(new DrinkingFragment());
-                    }
-                });
+                            homeActivity.replaceFragment(new DrinkingFragment());
+                        }
+                    });
 
-                builder.setNegativeButton("Отмена", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                });
+                    builder.setNegativeButton("Отмена", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    });
 
-                builder.show();
-            }
-        });
+                    builder.show();
+                }
+            });
+        }
+        catch (Exception e) {
+            CustomDialog dialogFragment = new CustomDialog("Ошибка", e.getMessage());
+            dialogFragment.show(getParentFragmentManager(), "custom_dialog");
+        }
+
 
     }
 

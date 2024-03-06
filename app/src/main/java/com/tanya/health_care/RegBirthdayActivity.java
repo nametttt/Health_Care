@@ -54,16 +54,23 @@ public class RegBirthdayActivity extends AppCompatActivity {
         cont.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (btn != null && btn.getText().toString().isEmpty()) {
-                    CustomDialog dialogFragment = new CustomDialog("Ошибка", "Пожалуйста, выберите дату рождения!");
-                    dialogFragment.show(getSupportFragmentManager(), "custom_dialog");
-                } else {
-                    Intent intent = new Intent(RegBirthdayActivity.this, RegPasswordActivity.class);
-                    intent.putExtra("userGender", userGender);
-                    intent.putExtra("userEmail", userEmail);
-                    intent.putExtra("userBirthday", btn.getText());
-                    startActivity(intent);
+                try{
+                    if (btn != null && btn.getText().toString().isEmpty()) {
+                        CustomDialog dialogFragment = new CustomDialog("Ошибка", "Пожалуйста, выберите дату рождения!");
+                        dialogFragment.show(getSupportFragmentManager(), "custom_dialog");
+                    } else {
+                        Intent intent = new Intent(RegBirthdayActivity.this, RegPasswordActivity.class);
+                        intent.putExtra("userGender", userGender);
+                        intent.putExtra("userEmail", userEmail);
+                        intent.putExtra("userBirthday", btn.getText());
+                        startActivity(intent);
+                    }
                 }
+                catch (Exception e) {
+                    CustomDialog dialogFragment = new CustomDialog("Ошибка", e.getMessage());
+                    dialogFragment.show(getSupportFragmentManager(), "custom_dialog");
+                }
+
             }
         });
     }

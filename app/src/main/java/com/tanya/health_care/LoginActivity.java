@@ -22,6 +22,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.tanya.health_care.code.EyeVisibility;
 import com.tanya.health_care.code.GetEmail;
 import com.tanya.health_care.dialog.CustomDialog;
 
@@ -46,117 +47,117 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void init(){
-        imgBtn = findViewById(R.id.eye);
-        loginEdit = findViewById(R.id.loginEdit);
-        password = findViewById(R.id.password);
-        password.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
-        btn = findViewById(R.id.back);
-        txt = findViewById(R.id.forget);
-        auth = findViewById(R.id.auth);
-        mAuth = FirebaseAuth.getInstance();
+        try{
+            imgBtn = findViewById(R.id.eye);
+            loginEdit = findViewById(R.id.loginEdit);
+            password = findViewById(R.id.password);
+            password.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+            btn = findViewById(R.id.back);
+            txt = findViewById(R.id.forget);
+            auth = findViewById(R.id.auth);
+            mAuth = FirebaseAuth.getInstance();
 
-        btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                startActivity(intent);
-            }
-        });
-
-        auth.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                if (loginEdit.getText().toString().isEmpty() ||
-                        password.getText().toString().isEmpty()){
-                    CustomDialog dialogFragment = new CustomDialog("Ошибка", "Пожалуйста, введите все данные!");
-                    dialogFragment.show(getSupportFragmentManager(), "custom_dialog");
-
-                    return;
+            btn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                    startActivity(intent);
                 }
-                else{
-                    enterUser();
+            });
+
+            auth.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+
+                    if (loginEdit.getText().toString().isEmpty() ||
+                            password.getText().toString().isEmpty()){
+                        CustomDialog dialogFragment = new CustomDialog("Ошибка", "Пожалуйста, введите все данные!");
+                        dialogFragment.show(getSupportFragmentManager(), "custom_dialog");
+
+                        return;
+                    }
+                    else{
+                        enterUser();
+                    }
+
+                    if (!GetEmail.isValidEmail(loginEdit.getText())){
+                        CustomDialog dialogFragment = new CustomDialog("Ошибка", "Пожалуйста, введите корректную почту!");
+                        dialogFragment.show(getSupportFragmentManager(), "custom_dialog");
+
+                        return;
+                    }
+                    InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+
+
+
+
                 }
+            });
 
-                if (!GetEmail.isValidEmail(loginEdit.getText())){
-                    CustomDialog dialogFragment = new CustomDialog("Ошибка", "Пожалуйста, введите корректную почту!");
-                    dialogFragment.show(getSupportFragmentManager(), "custom_dialog");
-
-                    return;
+            txt.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(LoginActivity.this, ResetEmailActivity.class);
+                    startActivity(intent);
                 }
-                InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
-                imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+            });
 
+            imgBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    togglePassVisibility();
+                }
+            });
+        }
+        catch (Exception e) {
+            CustomDialog dialogFragment = new CustomDialog("Ошибка", e.getMessage());
+            dialogFragment.show(getSupportFragmentManager(), "custom_dialog");
+        }
 
-
-
-            }
-        });
-
-        txt.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(LoginActivity.this, ResetEmailActivity.class);
-                startActivity(intent);
-            }
-        });
-
-        imgBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                togglePassVisibility();
-            }
-        });
     }
 
 
     private void togglePassVisibility() {
-        String pass = password.getText().toString();
-        if (isVisible) {
-            password.setTransformationMethod(PasswordTransformationMethod.getInstance());
-            password.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
-            password.setText(pass);
-            imgBtn.setImageResource(R.drawable.eye);
-        } else {
-            password.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
-            password.setInputType(InputType.TYPE_CLASS_TEXT);
-            password.setText(pass);
-            imgBtn.setImageResource(R.drawable.eye_off);
-
-        }
-        password.setSelection(pass.length());
-        isVisible= !isVisible;
+        EyeVisibility.toggleVisibility(password, imgBtn);
     }
 
 
     public void enterUser(){
-        mAuth.signInWithEmailAndPassword(loginEdit.getText().toString(), password.getText().toString())
-                .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        FirebaseUser user = mAuth.getCurrentUser();
-                        if (task.isSuccessful()) {
-                            assert user != null;
-                            if (Objects.equals(user.getEmail(), "ya@gmail.com")){
-                                Intent mainIntent = new Intent(LoginActivity.this, AdminHomeActivity.class);
-                                startActivity(mainIntent);
-                                finish();
-                               return;
-                           }
-                            else{
-                                Intent x = new Intent(LoginActivity.this, HomeActivity.class);
-                                startActivity(x);
-                                finish();
+        try{
+            mAuth.signInWithEmailAndPassword(loginEdit.getText().toString(), password.getText().toString())
+                    .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                        @Override
+                        public void onComplete(@NonNull Task<AuthResult> task) {
+                            FirebaseUser user = mAuth.getCurrentUser();
+                            if (task.isSuccessful()) {
+                                assert user != null;
+                                if (Objects.equals(user.getEmail(), "ya@gmail.com")){
+                                    Intent mainIntent = new Intent(LoginActivity.this, AdminHomeActivity.class);
+                                    startActivity(mainIntent);
+                                    finish();
+                                    return;
+                                }
+                                else{
+                                    Intent x = new Intent(LoginActivity.this, HomeActivity.class);
+                                    startActivity(x);
+                                    finish();
+                                }
+
                             }
+                            else
+                            {
+                                CustomDialog dialogFragment = new CustomDialog("Ошибка", "Вы ввели неверные данные пользователя!");
+                                dialogFragment.show(getSupportFragmentManager(), "custom_dialog");
 
+                            }
                         }
-                        else
-                        {
-                            CustomDialog dialogFragment = new CustomDialog("Ошибка", "Вы ввели неверные данные пользователя!");
-                            dialogFragment.show(getSupportFragmentManager(), "custom_dialog");
+                    });
+        }
+        catch (Exception e) {
+            CustomDialog dialogFragment = new CustomDialog("Ошибка", e.getMessage());
+            dialogFragment.show(getSupportFragmentManager(), "custom_dialog");
+        }
 
-                        }
-                    }
-                });
     }
 }

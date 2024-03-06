@@ -38,41 +38,48 @@ public class ResetEmailActivity extends AppCompatActivity {
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                try{
+                    if (email.getText().toString().isEmpty())
+                    {
+                        CustomDialog dialogFragment = new CustomDialog("Ошибка", "Пожалуйста, введите почту!");
+                        dialogFragment.show(getSupportFragmentManager(), "custom_dialog");
+                        return;
+                    }
 
-                if (email.getText().toString().isEmpty())
-                {
-                    CustomDialog dialogFragment = new CustomDialog("Ошибка", "Пожалуйста, введите почту!");
-                    dialogFragment.show(getSupportFragmentManager(), "custom_dialog");
-                    return;
-                }
-
-                if (!GetEmail.isValidEmail(email.getText())){
-                    CustomDialog dialogFragment = new CustomDialog("Ошибка", "Пожалуйста, введите корректную почту!");
-                    dialogFragment.show(getSupportFragmentManager(), "custom_dialog");
-                    return;
-                }
+                    if (!GetEmail.isValidEmail(email.getText())){
+                        CustomDialog dialogFragment = new CustomDialog("Ошибка", "Пожалуйста, введите корректную почту!");
+                        dialogFragment.show(getSupportFragmentManager(), "custom_dialog");
+                        return;
+                    }
 
 
-                mAuth.sendPasswordResetEmail(email.getText().toString()).addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        if (task.isSuccessful()) {
-                            CustomDialog dialogFragment = new CustomDialog("Успех", "Письмо с инструкцией отправлено на почту!");
-                            dialogFragment.show(getSupportFragmentManager(), "custom_dialog");
-                            Intent intent = new Intent(ResetEmailActivity.this, LoginActivity.class);
-                            startActivity(intent);
-                            ResetEmailActivity.this.finish();
-                        }
-                        else{
-                            switch (task.getException().toString()){
-                                case "FirebaseAuthInvalidUserException":
-                                    CustomDialog dialogFragment = new CustomDialog("Успех", "Аккаунта с такой почтой не существует!");
-                                    dialogFragment.show(getSupportFragmentManager(), "custom_dialog");
-                                    break;
+                    mAuth.sendPasswordResetEmail(email.getText().toString()).addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            if (task.isSuccessful()) {
+                                CustomDialog dialogFragment = new CustomDialog("Успех", "Письмо с инструкцией отправлено на почту!");
+                                dialogFragment.show(getSupportFragmentManager(), "custom_dialog");
+                                Intent intent = new Intent(ResetEmailActivity.this, LoginActivity.class);
+                                startActivity(intent);
+                                ResetEmailActivity.this.finish();
+                            }
+                            else{
+                                switch (task.getException().toString()){
+                                    case "FirebaseAuthInvalidUserException":
+                                        CustomDialog dialogFragment = new CustomDialog("Успех", "Аккаунта с такой почтой не существует!");
+                                        dialogFragment.show(getSupportFragmentManager(), "custom_dialog");
+                                        break;
+                                }
                             }
                         }
-                    }
-                });
+                    });
+                }
+                catch (Exception e) {
+                    CustomDialog dialogFragment = new CustomDialog("Ошибка", e.getMessage());
+                    dialogFragment.show(getSupportFragmentManager(), "custom_dialog");
+                }
+
+
             }
         });
 

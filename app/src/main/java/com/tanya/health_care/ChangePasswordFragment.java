@@ -95,65 +95,49 @@ public class ChangePasswordFragment extends Fragment {
         save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (newPassword.getText().length() < 6 || repeatPassword.getText().length() < 6) {
-                    CustomDialog dialogFragment = new CustomDialog("Ошибка", "Длина пароля должна быть более 6 символов!");
+                try {
+                    if (newPassword.getText().length() < 6 || repeatPassword.getText().length() < 6) {
+                        CustomDialog dialogFragment = new CustomDialog("Ошибка", "Длина пароля должна быть более 6 символов!");
+                        dialogFragment.show(getParentFragmentManager(), "custom_dialog");
+                        return;
+                    }
+
+                    if (!newPassword.getText().toString().equals(repeatPassword.getText().toString())) {
+                        CustomDialog dialogFragment = new CustomDialog("Ошибка", "Пароли не совпадают!");
+                        dialogFragment.show(getParentFragmentManager(), "custom_dialog");
+                        return;
+                    }
+
+                    FirebaseAuth auth = FirebaseAuth.getInstance();
+                    FirebaseUser user = auth.getCurrentUser();
+
+                    String newPass = newPassword.getText().toString();
+
+                    if (user != null) {
+                        AuthCredential credential = EmailAuthProvider.getCredential(user.getEmail(), nowPassword.getText().toString());
+                        user.reauthenticate(credential)
+                                .addOnCompleteListener(reauthTask -> {
+                                    if (reauthTask.isSuccessful()) {
+                                        user.updatePassword(newPass)
+                                                .addOnCompleteListener(updateTask -> {
+                                                    if (updateTask.isSuccessful()) {
+                                                        CustomDialog dialogFragment = new CustomDialog("Успех", "Пароль успешно изменен!");
+                                                        dialogFragment.show(getParentFragmentManager(), "custom_dialog");
+                                                        nowPassword.getText().clear();
+                                                        newPassword.getText().clear();
+                                                        repeatPassword.getText().clear();
+                                                    } else {
+                                                        CustomDialog dialogFragment = new CustomDialog("Ошибка", "Произошла непредвиденная ошибка при обновлении пароля!");
+                                                        dialogFragment.show(getParentFragmentManager(), "custom_dialog");                                                    }
+                                                });
+                                    } else {
+                                        CustomDialog dialogFragment = new CustomDialog("Ошибка", "Ошибка при повторной аутентификации пользователя: " + reauthTask.getException());
+                                        dialogFragment.show(getParentFragmentManager(), "custom_dialog");                                    }
+                                });
+                    }
+                } catch (Exception e) {
+                    CustomDialog dialogFragment = new CustomDialog("Ошибка", e.getMessage());
                     dialogFragment.show(getParentFragmentManager(), "custom_dialog");
-                    return;
-
-                }
-                if (!newPassword.getText().toString().equals(repeatPassword.getText().toString())) {
-                    CustomDialog dialogFragment = new CustomDialog("Ошибка", "Пароли не совпадают!");
-                    dialogFragment.show(getParentFragmentManager(), "custom_dialog");
-                    return;
-                }
-
-                FirebaseAuth auth = FirebaseAuth.getInstance();
-                FirebaseUser user = auth.getCurrentUser();
-
-                String newPass = newPassword.getText().toString();
-
-                if (user != null) {
-                    AuthCredential credential = EmailAuthProvider.getCredential(user.getEmail(), nowPassword.getText().toString());
-                    user.reauthenticate(credential)
-                            .addOnCompleteListener(reauthTask -> {
-                                if (reauthTask.isSuccessful()) {
-                                    user.updatePassword(newPass)
-                                            .addOnCompleteListener(updateTask -> {
-                                                if (updateTask.isSuccessful()) {
-                                                    FirebaseDatabase db = FirebaseDatabase.getInstance();
-                                                    DatabaseReference ref = db.getReference("users");
-
-                                                    GetSplittedPathChild pC = new GetSplittedPathChild();
-
-                                                    ref.addListenerForSingleValueEvent(new ValueEventListener() {
-                                                        @Override
-                                                        public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                                            User user1 = snapshot.child(pC.getSplittedPathChild(user.getEmail())).getValue(User.class);
-                                                            Map<String, Object> map = user1.toMap();
-                                                            map.put("password", newPass);
-                                                            ref.child(pC.getSplittedPathChild(user.getEmail())).updateChildren(map);
-                                                        }
-
-                                                        @Override
-                                                        public void onCancelled(@NonNull DatabaseError error) {
-                                                        }
-                                                    });
-
-                                                    CustomDialog dialogFragment = new CustomDialog("Успех", "Пароль успешно изменен!");
-                                                    dialogFragment.show(getParentFragmentManager(), "custom_dialog");
-                                                    nowPassword.getText().clear();
-                                                    newPassword.getText().clear();
-                                                    repeatPassword.getText().clear();
-                                                } else {
-                                                    CustomDialog dialogFragment = new CustomDialog("Ошибка", "Произошла непредвиденная ошибка при обновлении пароля!");
-                                                    dialogFragment.show(getParentFragmentManager(), "custom_dialog");
-                                                }
-                                            });
-                                } else {
-                                    CustomDialog dialogFragment = new CustomDialog("Ошибка", "Ошибка при повторной аутентификации пользователя: " + reauthTask.getException());
-                                    dialogFragment.show(getParentFragmentManager(), "custom_dialog");
-                                }
-                            });
                 }
             }
         });

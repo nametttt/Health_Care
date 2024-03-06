@@ -52,24 +52,29 @@ public class RegGenderActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                if(!men.isChecked() && !woman.isChecked())
-                {
-                    CustomDialog dialogFragment = new CustomDialog("Ошибка", "Выберите ваш пол!");
+                try{
+                    if(!men.isChecked() && !woman.isChecked())
+                    {
+                        CustomDialog dialogFragment = new CustomDialog("Ошибка", "Выберите ваш пол!");
+                        dialogFragment.show(getSupportFragmentManager(), "custom_dialog");
+                    }
+                    else
+                    {
+                        if(men.isChecked())
+                        {
+                            gender = "мужской";
+                        }
+
+                        Intent intent = new Intent(RegGenderActivity.this, RegBirthdayActivity.class);
+                        intent.putExtra("userGender", gender);
+                        intent.putExtra("userEmail", userEmail);
+                        startActivity(intent);
+                    }
+                }
+                catch (Exception e) {
+                    CustomDialog dialogFragment = new CustomDialog("Ошибка", e.getMessage());
                     dialogFragment.show(getSupportFragmentManager(), "custom_dialog");
                 }
-                else
-                {
-                    if(men.isChecked())
-                    {
-                        gender = "мужской";
-                    }
-
-                    Intent intent = new Intent(RegGenderActivity.this, RegBirthdayActivity.class);
-                    intent.putExtra("userGender", gender);
-                    intent.putExtra("userEmail", userEmail);
-                    startActivity(intent);
-                }
-
             }
         });
     }

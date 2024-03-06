@@ -66,34 +66,41 @@ public class RegActivityEmail extends AppCompatActivity {
         bb.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (email.getText().toString().isEmpty()) {
-                    CustomDialog dialogFragment = new CustomDialog("Ошибка", "Пожалуйста, введите почту!");
-                    dialogFragment.show(getSupportFragmentManager(), "custom_dialog");
-                } else if (!GetEmail.isValidEmail(email.getText())) {
-                    CustomDialog dialogFragment = new CustomDialog("Ошибка", "Пожалуйста, введите корректную почту!");
-                    dialogFragment.show(getSupportFragmentManager(), "custom_dialog");
-                } else if (!userAgree.isChecked()) {
-                    CustomDialog dialogFragment = new CustomDialog("Ошибка", "Пожалуйста, примите пользовательское соглашение!");
-                    dialogFragment.show(getSupportFragmentManager(), "custom_dialog");
-                } else {
-                    final String userEmail = email.getText().toString().trim();
-                    FirebaseAuth.getInstance().fetchSignInMethodsForEmail(userEmail)
-                            .addOnCompleteListener(new OnCompleteListener<SignInMethodQueryResult>() {
-                                @Override
-                                public void onComplete(@NonNull Task<SignInMethodQueryResult> task) {
-                                    if (task.isSuccessful()) {
-                                        final String pinCode = GeneratePin.generatePinCode();
-                                        sendEmail(email.getText().toString(), pinCode);
-                                        Intent intent = new Intent(RegActivityEmail.this, RegPinActivity.class);
-                                        intent.putExtra("userEmail", userEmail);
-                                        intent.putExtra("pinCode", pinCode);
-                                        startActivity(intent);
-                                    } else {
-                                        Toast.makeText(RegActivityEmail.this, "Пользователь уже существует", Toast.LENGTH_SHORT).show();
+                try{
+                    if (email.getText().toString().isEmpty()) {
+                        CustomDialog dialogFragment = new CustomDialog("Ошибка", "Пожалуйста, введите почту!");
+                        dialogFragment.show(getSupportFragmentManager(), "custom_dialog");
+                    } else if (!GetEmail.isValidEmail(email.getText())) {
+                        CustomDialog dialogFragment = new CustomDialog("Ошибка", "Пожалуйста, введите корректную почту!");
+                        dialogFragment.show(getSupportFragmentManager(), "custom_dialog");
+                    } else if (!userAgree.isChecked()) {
+                        CustomDialog dialogFragment = new CustomDialog("Ошибка", "Пожалуйста, примите пользовательское соглашение!");
+                        dialogFragment.show(getSupportFragmentManager(), "custom_dialog");
+                    } else {
+                        final String userEmail = email.getText().toString().trim();
+                        FirebaseAuth.getInstance().fetchSignInMethodsForEmail(userEmail)
+                                .addOnCompleteListener(new OnCompleteListener<SignInMethodQueryResult>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<SignInMethodQueryResult> task) {
+                                        if (task.isSuccessful()) {
+                                            final String pinCode = GeneratePin.generatePinCode();
+                                            sendEmail(email.getText().toString(), pinCode);
+                                            Intent intent = new Intent(RegActivityEmail.this, RegPinActivity.class);
+                                            intent.putExtra("userEmail", userEmail);
+                                            intent.putExtra("pinCode", pinCode);
+                                            startActivity(intent);
+                                        } else {
+                                            Toast.makeText(RegActivityEmail.this, "Пользователь уже существует", Toast.LENGTH_SHORT).show();
+                                        }
                                     }
-                                }
-                            });
+                                });
+                    }
                 }
+                catch (Exception e) {
+                    CustomDialog dialogFragment = new CustomDialog("Ошибка", e.getMessage());
+                    dialogFragment.show(getSupportFragmentManager(), "custom_dialog");
+                }
+
             }
         });
     }

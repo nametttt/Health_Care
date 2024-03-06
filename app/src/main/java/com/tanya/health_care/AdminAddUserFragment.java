@@ -90,57 +90,64 @@ public class AdminAddUserFragment extends Fragment {
 
     }
     private void registerUser() {
-        String userEmail = email.getText().toString().trim();
-        String userPassword = password.getText().toString().trim();
-        String userRole = role.getSelectedItem().toString();
-        String userBirthday = pickDate.getText().toString().trim();
-        String userGender = gender.getSelectedItem().toString();
+        try {
+            String userEmail = email.getText().toString().trim();
+            String userPassword = password.getText().toString().trim();
+            String userRole = role.getSelectedItem().toString();
+            String userBirthday = pickDate.getText().toString().trim();
+            String userGender = gender.getSelectedItem().toString();
 
-        if (userEmail.isEmpty() || userPassword.isEmpty() || userRole.isEmpty() || userBirthday.isEmpty() || userGender.isEmpty()) {
-            CustomDialog dialogFragment = new CustomDialog("Ошибка", "Заполните все поля!");
-            dialogFragment.show(getParentFragmentManager(), "custom_dialog");
-            return;
-        }
-
-        if (userPassword.length() < 6) {
-            CustomDialog dialogFragment = new CustomDialog("Ошибка", "Пароль должен содержать не менее 6 символов!");
-            dialogFragment.show(getParentFragmentManager(), "custom_dialog");
-            return;
-        }
-
-        FirebaseDatabase mDb = FirebaseDatabase.getInstance();
-        DatabaseReference ref = mDb.getReference("users");
-
-        FirebaseUser firebaseUser = mAuth.getCurrentUser();
-
-        GetSplittedPathChild pC = new GetSplittedPathChild();
-        splittedPathChild = pC.getSplittedPathChild(userEmail);
-
-        int atIndex = userEmail.indexOf('@');
-        String name = atIndex != -1 ? userEmail.substring(0, atIndex) : userEmail;
-
-        String userId = firebaseUser != null ? firebaseUser.getUid() : "";
-
-        User user = new User(userEmail, name, userGender, userRole, userBirthday);
-
-        DatabaseReference userRef = ref.child(splittedPathChild);
-
-        userRef.setValue(user).addOnCompleteListener(new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull Task<Void> databaseTask) {
-                if (databaseTask.isSuccessful()) {
-                    CustomDialog dialogFragment = new CustomDialog("Успех", "Успешное добавление пользователя!");
-                    dialogFragment.show(getParentFragmentManager(), "custom_dialog");
-                    AdminHomeActivity homeActivity = (AdminHomeActivity) getActivity();
-                    AdminUsersFragment fragment = new AdminUsersFragment();
-                    homeActivity.replaceFragment(fragment);
-                } else {
-                    String errorMessage = databaseTask.getException().getMessage();
-                    CustomDialog dialogFragment = new CustomDialog("Ошибка", errorMessage);
-                    dialogFragment.show(getParentFragmentManager(), "custom_dialog");
-                }
+            if (userEmail.isEmpty() || userPassword.isEmpty() || userRole.isEmpty() || userBirthday.isEmpty() || userGender.isEmpty()) {
+                CustomDialog dialogFragment = new CustomDialog("Ошибка", "Заполните все поля!");
+                dialogFragment.show(getParentFragmentManager(), "custom_dialog");
+                return;
             }
-        });
+
+            if (userPassword.length() < 6) {
+                CustomDialog dialogFragment = new CustomDialog("Ошибка", "Пароль должен содержать не менее 6 символов!");
+                dialogFragment.show(getParentFragmentManager(), "custom_dialog");
+                return;
+            }
+
+            FirebaseDatabase mDb = FirebaseDatabase.getInstance();
+            DatabaseReference ref = mDb.getReference("users");
+
+            FirebaseUser firebaseUser = mAuth.getCurrentUser();
+
+            GetSplittedPathChild pC = new GetSplittedPathChild();
+            splittedPathChild = pC.getSplittedPathChild(userEmail);
+
+            int atIndex = userEmail.indexOf('@');
+            String name = atIndex != -1 ? userEmail.substring(0, atIndex) : userEmail;
+
+            String userId = firebaseUser != null ? firebaseUser.getUid() : "";
+
+            User user = new User(userEmail, name, userGender, userRole, userBirthday);
+
+            DatabaseReference userRef = ref.child(splittedPathChild);
+
+            userRef.setValue(user).addOnCompleteListener(new OnCompleteListener<Void>() {
+                @Override
+                public void onComplete(@NonNull Task<Void> databaseTask) {
+                    if (databaseTask.isSuccessful()) {
+                        CustomDialog dialogFragment = new CustomDialog("Успех", "Успешное добавление пользователя!");
+                        dialogFragment.show(getParentFragmentManager(), "custom_dialog");
+                        AdminHomeActivity homeActivity = (AdminHomeActivity) getActivity();
+                        AdminUsersFragment fragment = new AdminUsersFragment();
+                        homeActivity.replaceFragment(fragment);
+                    } else {
+                        String errorMessage = databaseTask.getException().getMessage();
+                        CustomDialog dialogFragment = new CustomDialog("Ошибка", errorMessage);
+                        dialogFragment.show(getParentFragmentManager(), "custom_dialog");
+                    }
+                }
+            });
+        }
+        catch (Exception e) {
+            CustomDialog dialogFragment = new CustomDialog("Ошибка", e.getMessage());
+            dialogFragment.show(getParentFragmentManager(), "custom_dialog");
+        }
+
     }
 
 }

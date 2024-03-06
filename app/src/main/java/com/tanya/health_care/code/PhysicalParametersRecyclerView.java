@@ -12,6 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.tanya.health_care.ChangeCommonHealthFragment;
+import com.tanya.health_care.ChangePhysicalParametersFragment;
 import com.tanya.health_care.HomeActivity;
 import com.tanya.health_care.R;
 
@@ -49,7 +50,7 @@ public class PhysicalParametersRecyclerView extends RecyclerView.Adapter<Physica
             @Override
             public void onClick(View v) {
                 HomeActivity homeActivity = (HomeActivity) v.getContext();
-                ChangeCommonHealthFragment fragment = new ChangeCommonHealthFragment(currentCommon.uid, currentCommon.pressure, currentCommon.temperature, currentCommon.pulse, currentCommon.lastAdded);
+                ChangePhysicalParametersFragment fragment = new ChangePhysicalParametersFragment(currentCommon.uid, currentCommon.height, currentCommon.weight, currentCommon.lastAdded);
                 Bundle args = new Bundle();
                 args.putString("Add", null);
                 fragment.setArguments(args);

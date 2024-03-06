@@ -43,10 +43,6 @@ public class HealthCommonFragment extends Fragment {
     ArrayList<CommonHealthData> commonDataArrayList;
     CommonHealthRecyclerView adapter;
 
-    public static HealthCommonFragment newInstance() {
-        return new HealthCommonFragment();
-    }
-
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {

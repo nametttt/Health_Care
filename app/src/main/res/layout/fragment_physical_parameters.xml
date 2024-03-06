@@ -44,6 +44,16 @@
                     android:textAlignment="textStart"
                     android:textStyle="bold"/>
 
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/black"
+                    android:id="@+id/aboutImt"
+                    android:visibility="gone"
+                    android:textSize="20dp"
+                    android:layout_marginVertical="10dp"
+                    android:textAlignment="textStart"/>
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -75,6 +85,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="-"
+                                android:id="@+id/imt"
                                 android:textColor="@color/black"
                                 android:textSize="28dp"
                                 android:textStyle="bold" />
@@ -151,6 +162,7 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:text="-"
+                                    android:id="@+id/height"
                                     android:textColor="@color/black"
                                     android:textSize="28dp"
                                     android:textStyle="bold" />
@@ -200,6 +212,7 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:text="-"
+                                    android:id="@+id/weight"
                                     android:textColor="@color/black"
                                     android:textSize="28dp"
                                     android:textStyle="bold" />
@@ -232,13 +245,14 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     />
+
                 <androidx.appcompat.widget.AppCompatButton
                     android:id="@+id/continu"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
                     android:background="@drawable/button_asset"
                     android:padding="10dp"
-                    android:layout_marginTop="20dp"
                     android:text="Добавить параметры"
                     android:textAllCaps="false"
                     android:textColor="@color/white"

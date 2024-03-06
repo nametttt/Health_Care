@@ -52,38 +52,41 @@ public class AdminChangeFoodFragment extends Fragment {
     }
 
     void init(View v) {
-        nameEditText = v.findViewById(R.id.name);
-        weightEditText = v.findViewById(R.id.weight);
-        caloriesEditText = v.findViewById(R.id.calories);
-        proteinEditText = v.findViewById(R.id.protein);
-        fatEditText = v.findViewById(R.id.fat);
-        carbohydratesEditText = v.findViewById(R.id.carbohydrates);
+        try{
+            nameEditText = v.findViewById(R.id.name);
+            weightEditText = v.findViewById(R.id.weight);
+            caloriesEditText = v.findViewById(R.id.calories);
+            proteinEditText = v.findViewById(R.id.protein);
+            fatEditText = v.findViewById(R.id.fat);
+            carbohydratesEditText = v.findViewById(R.id.carbohydrates);
 
-        save = v.findViewById(R.id.continu);
-        back = v.findViewById(R.id.back);
-        delete = v.findViewById(R.id.delete);
+            save = v.findViewById(R.id.continu);
+            back = v.findViewById(R.id.back);
+            delete = v.findViewById(R.id.delete);
 
 
-        nameFragment = v.findViewById(R.id.nameFragment);
-        textFragment = v.findViewById(R.id.text);
+            nameFragment = v.findViewById(R.id.nameFragment);
+            textFragment = v.findViewById(R.id.text);
 
-        Bundle args = getArguments();
-        if (args != null) {
-            String addCommon = args.getString("Add");
-            if ("Добавить".equals(addCommon)) {
-                save.setText("Добавить");
-                nameFragment.setText("Добавление продукта");
-                textFragment.setText("Введите данные для добавления нового продукта");
-                delete.setVisibility(View.INVISIBLE);
-            } else {
-                nameEditText.setText(name);
-                weightEditText.setText(String.valueOf(weight));
-                caloriesEditText.setText(String.valueOf(calories));
-                proteinEditText.setText(String.valueOf(protein));
-                fatEditText.setText(String.valueOf(fat));
-                carbohydratesEditText.setText(String.valueOf(carbohydrates));
+            Bundle args = getArguments();
+            if (args != null) {
+                String addCommon = args.getString("Add");
+                if ("Добавить".equals(addCommon)) {
+                    save.setText("Добавить");
+                    nameFragment.setText("Добавление продукта");
+                    textFragment.setText("Введите данные для добавления нового продукта");
+                    delete.setVisibility(View.INVISIBLE);
+                } else {
+                    nameEditText.setText(name);
+                    weightEditText.setText(String.valueOf(weight));
+                    caloriesEditText.setText(String.valueOf(calories));
+                    proteinEditText.setText(String.valueOf(protein));
+                    fatEditText.setText(String.valueOf(fat));
+                    carbohydratesEditText.setText(String.valueOf(carbohydrates));
+                }
             }
-        }
+
+
 
         save.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -179,23 +182,35 @@ public class AdminChangeFoodFragment extends Fragment {
                 builder.create().show();
             }
         });
+        }
+        catch (Exception e) {
+            CustomDialog dialogFragment = new CustomDialog("Ошибка", e.getMessage());
+            dialogFragment.show(getParentFragmentManager(), "custom_dialog");
+        }
 
     }
     private void deleteFood() {
-        DatabaseReference foodRef = FirebaseDatabase.getInstance().getReference().child("foods");
+        try{
+            DatabaseReference foodRef = FirebaseDatabase.getInstance().getReference().child("foods");
 
-        foodRef.child(uid).removeValue()
-                .addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        CustomDialog dialogFragment = new CustomDialog("Успех", "Блюдо успешно удалено!");
-                        dialogFragment.show(getParentFragmentManager(), "custom_dialog");
-                        AdminHomeActivity homeActivity = (AdminHomeActivity) getActivity();
-                        homeActivity.replaceFragment(new AdminFoodFragment());
-                    } else {
-                        CustomDialog dialogFragment = new CustomDialog("Ошибка", "Ошибка при удалении блюда!");
-                        dialogFragment.show(getParentFragmentManager(), "custom_dialog");
-                    }
-                });
+            foodRef.child(uid).removeValue()
+                    .addOnCompleteListener(task -> {
+                        if (task.isSuccessful()) {
+                            CustomDialog dialogFragment = new CustomDialog("Успех", "Блюдо успешно удалено!");
+                            dialogFragment.show(getParentFragmentManager(), "custom_dialog");
+                            AdminHomeActivity homeActivity = (AdminHomeActivity) getActivity();
+                            homeActivity.replaceFragment(new AdminFoodFragment());
+                        } else {
+                            CustomDialog dialogFragment = new CustomDialog("Ошибка", "Ошибка при удалении блюда!");
+                            dialogFragment.show(getParentFragmentManager(), "custom_dialog");
+                        }
+                    });
+        }
+        catch (Exception e) {
+            CustomDialog dialogFragment = new CustomDialog("Ошибка", e.getMessage());
+            dialogFragment.show(getParentFragmentManager(), "custom_dialog");
+        }
+
     }
 
 }

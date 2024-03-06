@@ -63,123 +63,134 @@ public class AdminChangeArticleFragment extends Fragment {
 
 
     private void init(View v) {
-        image = v.findViewById(R.id.image);
-        title = v.findViewById(R.id.title);
-        description = v.findViewById(R.id.description);
-        continu = v.findViewById(R.id.continu);
-        name = v.findViewById(R.id.nameFragment);
-        text = v.findViewById(R.id.textAbout);
-        categories = v.findViewById(R.id.CategorySpinner);
-        accesses = v.findViewById(R.id.AccessSpinner);
-        delete = v.findViewById(R.id.delete);
-        back = v.findViewById(R.id.back);
+        try{
+            image = v.findViewById(R.id.image);
+            title = v.findViewById(R.id.title);
+            description = v.findViewById(R.id.description);
+            continu = v.findViewById(R.id.continu);
+            name = v.findViewById(R.id.nameFragment);
+            text = v.findViewById(R.id.textAbout);
+            categories = v.findViewById(R.id.CategorySpinner);
+            accesses = v.findViewById(R.id.AccessSpinner);
+            delete = v.findViewById(R.id.delete);
+            back = v.findViewById(R.id.back);
 
-        title.setText(titl);
-        description.setText(desc);
-        if(finalResId != 0)
-        {
-            image.setImageResource(finalResId);
-        }
+            title.setText(titl);
+            description.setText(desc);
+            if(finalResId != 0)
+            {
+                image.setImageResource(finalResId);
+            }
 
-        if ("Физическое здоровье".equals(category)) {
-            categories.setSelection(0);
-        } else if ("Психическое здоровье".equals(category)) {
-            categories.setSelection(1);
-        } else if ("Здоровое питание".equals(category)) {
-            categories.setSelection(2);
-        } else if ("Фитнес и тренировки".equals(category)) {
-            categories.setSelection(3);
-        } else {
-            categories.setSelection(4);
-        }
+            if ("Физическое здоровье".equals(category)) {
+                categories.setSelection(0);
+            } else if ("Психическое здоровье".equals(category)) {
+                categories.setSelection(1);
+            } else if ("Здоровое питание".equals(category)) {
+                categories.setSelection(2);
+            } else if ("Фитнес и тренировки".equals(category)) {
+                categories.setSelection(3);
+            } else {
+                categories.setSelection(4);
+            }
 
 
-        String addCommon = getArguments().getString("Add");
-        if (addCommon != null)
-        {
-            continu.setText("Добавить");
-            name.setText("Добавление статьи");
-            text.setText("Введите данные для добавления новой статьи");
-            delete.setVisibility(View.INVISIBLE);
-        }
+            String addCommon = getArguments().getString("Add");
+            if (addCommon != null)
+            {
+                continu.setText("Добавить");
+                name.setText("Добавление статьи");
+                text.setText("Введите данные для добавления новой статьи");
+                delete.setVisibility(View.INVISIBLE);
+            }
+
+
 
         image.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                builder.setTitle("Выберите изображение из галереи")
-                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                Intent galleryIntent = new Intent(Intent.ACTION_GET_CONTENT);
-                                galleryIntent.setType("image/*");
-                                startActivityForResult(galleryIntent, GALLERY_REQUEST_CODE);
-                            }
-                        })
-                        .setNegativeButton("Отмена", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.dismiss();
-                            }
-                        })
-                        .show();
+                try{
+                    AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                    builder.setTitle("Выберите изображение из галереи")
+                            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    Intent galleryIntent = new Intent(Intent.ACTION_GET_CONTENT);
+                                    galleryIntent.setType("image/*");
+                                    startActivityForResult(galleryIntent, GALLERY_REQUEST_CODE);
+                                }
+                            })
+                            .setNegativeButton("Отмена", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+                                }
+                            })
+                            .show();
+                }
+                catch (Exception e) {
+                    CustomDialog dialogFragment = new CustomDialog("Ошибка", e.getMessage());
+                    dialogFragment.show(getParentFragmentManager(), "custom_dialog");
+                }
+
             }
         });
 
         continu.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if ("Добавить".equals(continu.getText())) {
-                    String titleText = title.getText().toString().trim();
-                    String descriptionText = description.getText().toString().trim();
-                    String categoryText = categories.getSelectedItem().toString().trim();
-                    String accessText = accesses.getSelectedItem().toString().trim();
+                    if ("Добавить".equals(continu.getText())) {
+                        String titleText = title.getText().toString().trim();
+                        String descriptionText = description.getText().toString().trim();
+                        String categoryText = categories.getSelectedItem().toString().trim();
+                        String accessText = accesses.getSelectedItem().toString().trim();
 
-                    if (!TextUtils.isEmpty(titleText) && !TextUtils.isEmpty(descriptionText)
-                            && !TextUtils.isEmpty(categoryText) && !TextUtils.isEmpty(accessText)) {
-                        FirebaseDatabase mDb = FirebaseDatabase.getInstance();
-                        DatabaseReference ref = mDb.getReference("articles").push();
-                        String path = ref.getKey();
-                        Random rnd = new Random();
-                        String n = "1.png";
-                        ref.setValue(new ArticleData(
-                                path, titleText, descriptionText, n, categoryText, accessText
-                        ));
-                        CustomDialog dialogFragment = new CustomDialog("Успех", "Cтатья успешно добавлена!");
-                        dialogFragment.show(getParentFragmentManager(), "custom_dialog");
-                        AdminHomeActivity homeActivity = (AdminHomeActivity) getActivity();
-                        homeActivity.replaceFragment(new AdminArticleFragment());
-                    } else {
-                        CustomDialog dialogFragment = new CustomDialog("Ошибка", "Пожалуйста, заполните все поля!");
-                        dialogFragment.show(getParentFragmentManager(), "custom_dialog");
+                        if (!TextUtils.isEmpty(titleText) && !TextUtils.isEmpty(descriptionText)
+                                && !TextUtils.isEmpty(categoryText) && !TextUtils.isEmpty(accessText)) {
+                            FirebaseDatabase mDb = FirebaseDatabase.getInstance();
+                            DatabaseReference ref = mDb.getReference("articles").push();
+                            String path = ref.getKey();
+                            Random rnd = new Random();
+                            String n = "1.png";
+                            ref.setValue(new ArticleData(
+                                    path, titleText, descriptionText, n, categoryText, accessText
+                            ));
+                            CustomDialog dialogFragment = new CustomDialog("Успех", "Cтатья успешно добавлена!");
+                            dialogFragment.show(getParentFragmentManager(), "custom_dialog");
+                            AdminHomeActivity homeActivity = (AdminHomeActivity) getActivity();
+                            homeActivity.replaceFragment(new AdminArticleFragment());
+                        } else {
+                            CustomDialog dialogFragment = new CustomDialog("Ошибка", "Пожалуйста, заполните все поля!");
+                            dialogFragment.show(getParentFragmentManager(), "custom_dialog");
+                        }
                     }
-                }
-                else{
-                    String titleText = title.getText().toString().trim();
-                    String descriptionText = description.getText().toString().trim();
-                    String categoryText = categories.getSelectedItem().toString().trim();
-                    String accessText = accesses.getSelectedItem().toString().trim();
+                    else{
+                        String titleText = title.getText().toString().trim();
+                        String descriptionText = description.getText().toString().trim();
+                        String categoryText = categories.getSelectedItem().toString().trim();
+                        String accessText = accesses.getSelectedItem().toString().trim();
 
-                    if (!TextUtils.isEmpty(titleText) && !TextUtils.isEmpty(descriptionText)
-                            && !TextUtils.isEmpty(categoryText) && !TextUtils.isEmpty(accessText)) {
-                        FirebaseDatabase mDb = FirebaseDatabase.getInstance();
-                        DatabaseReference ref = mDb.getReference("articles").child(uid);
+                        if (!TextUtils.isEmpty(titleText) && !TextUtils.isEmpty(descriptionText)
+                                && !TextUtils.isEmpty(categoryText) && !TextUtils.isEmpty(accessText)) {
+                            FirebaseDatabase mDb = FirebaseDatabase.getInstance();
+                            DatabaseReference ref = mDb.getReference("articles").child(uid);
 
-                        ref.child("title").setValue(titleText);
-                        ref.child("description").setValue(descriptionText);
-                        ref.child("category").setValue(categoryText);
-                        ref.child("access").setValue(accessText);
+                            ref.child("title").setValue(titleText);
+                            ref.child("description").setValue(descriptionText);
+                            ref.child("category").setValue(categoryText);
+                            ref.child("access").setValue(accessText);
 
 
-                        CustomDialog dialogFragment = new CustomDialog("Успех", "Cтатья успешно изменена!");
-                        dialogFragment.show(getParentFragmentManager(), "custom_dialog");
-                        AdminHomeActivity homeActivity = (AdminHomeActivity) getActivity();
-                        homeActivity.replaceFragment(new AdminArticleFragment());
-                    } else {
-                        CustomDialog dialogFragment = new CustomDialog("Ошибка", "Пожалуйста, заполните все поля!");
-                        dialogFragment.show(getParentFragmentManager(), "custom_dialog");
+                            CustomDialog dialogFragment = new CustomDialog("Успех", "Cтатья успешно изменена!");
+                            dialogFragment.show(getParentFragmentManager(), "custom_dialog");
+                            AdminHomeActivity homeActivity = (AdminHomeActivity) getActivity();
+                            homeActivity.replaceFragment(new AdminArticleFragment());
+                        } else {
+                            CustomDialog dialogFragment = new CustomDialog("Ошибка", "Пожалуйста, заполните все поля!");
+                            dialogFragment.show(getParentFragmentManager(), "custom_dialog");
+                        }
                     }
-                }
+
             }
         });
 
@@ -195,28 +206,33 @@ public class AdminChangeArticleFragment extends Fragment {
         delete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                builder.setTitle("Удаление статьи");
-                builder.setMessage("Вы уверены, что хотите удалить эту статью?");
+                    AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                    builder.setTitle("Удаление статьи");
+                    builder.setMessage("Вы уверены, что хотите удалить эту статью?");
 
-                builder.setPositiveButton("Да", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        deleteArticle();
-                    }
-                });
+                    builder.setPositiveButton("Да", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            deleteArticle();
+                        }
+                    });
 
-                builder.setNegativeButton("Отмена", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                });
+                    builder.setNegativeButton("Отмена", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    });
 
-                builder.create().show();
+                    builder.create().show();
+
             }
         });
-
+        }
+        catch (Exception e) {
+            CustomDialog dialogFragment = new CustomDialog("Ошибка", e.getMessage());
+            dialogFragment.show(getParentFragmentManager(), "custom_dialog");
+        }
     }
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
@@ -230,20 +246,27 @@ public class AdminChangeArticleFragment extends Fragment {
     }
 
     private void deleteArticle() {
-        DatabaseReference articleRef = FirebaseDatabase.getInstance().getReference().child("articles");
+        try {
+            DatabaseReference articleRef = FirebaseDatabase.getInstance().getReference().child("articles");
 
-        articleRef.child(uid).removeValue()
-                .addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        CustomDialog dialogFragment = new CustomDialog("Успех", "Cтатья успешно удалена!");
-                        dialogFragment.show(getParentFragmentManager(), "custom_dialog");
-                        AdminHomeActivity homeActivity = (AdminHomeActivity) getActivity();
-                        homeActivity.replaceFragment(new AdminArticleFragment());
-                    } else {
-                        CustomDialog dialogFragment = new CustomDialog("Ошибка", "Ошибка при удалении статьи!");
-                        dialogFragment.show(getParentFragmentManager(), "custom_dialog");
-                    }
-                });
+            articleRef.child(uid).removeValue()
+                    .addOnCompleteListener(task -> {
+                        if (task.isSuccessful()) {
+                            CustomDialog dialogFragment = new CustomDialog("Успех", "Cтатья успешно удалена!");
+                            dialogFragment.show(getParentFragmentManager(), "custom_dialog");
+                            AdminHomeActivity homeActivity = (AdminHomeActivity) getActivity();
+                            homeActivity.replaceFragment(new AdminArticleFragment());
+                        } else {
+                            CustomDialog dialogFragment = new CustomDialog("Ошибка", "Ошибка при удалении статьи!");
+                            dialogFragment.show(getParentFragmentManager(), "custom_dialog");
+                        }
+                    });
+        }
+        catch (Exception e) {
+            CustomDialog dialogFragment = new CustomDialog("Ошибка", e.getMessage());
+            dialogFragment.show(getParentFragmentManager(), "custom_dialog");
+        }
+
     }
 
 }

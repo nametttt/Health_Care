@@ -101,80 +101,87 @@ public class RegPasswordActivity extends AppCompatActivity {
     }
 
     private void registerUser() {
-        String pass1 = password.getText().toString().trim();
-        String pass2 = confirmPassword.getText().toString().trim();
+        try{
+            String pass1 = password.getText().toString().trim();
+            String pass2 = confirmPassword.getText().toString().trim();
 
-        if (pass1.isEmpty() || pass2.isEmpty()) {
-            CustomDialog dialogFragment = new CustomDialog("Ошибка", "Пожалуйста, введите оба пароля!");
-            dialogFragment.show(getSupportFragmentManager(), "custom_dialog");
-            return;
-        }
+            if (pass1.isEmpty() || pass2.isEmpty()) {
+                CustomDialog dialogFragment = new CustomDialog("Ошибка", "Пожалуйста, введите оба пароля!");
+                dialogFragment.show(getSupportFragmentManager(), "custom_dialog");
+                return;
+            }
 
-        if (pass1.length() < 6) {
-            CustomDialog dialogFragment = new CustomDialog("Ошибка", "Пароль должен содержать не менее 6 символов!");
-            dialogFragment.show(getSupportFragmentManager(), "custom_dialog");
-            return;
-        }
+            if (pass1.length() < 6) {
+                CustomDialog dialogFragment = new CustomDialog("Ошибка", "Пароль должен содержать не менее 6 символов!");
+                dialogFragment.show(getSupportFragmentManager(), "custom_dialog");
+                return;
+            }
 
-        if (!pass1.equals(pass2)) {
-            CustomDialog dialogFragment = new CustomDialog("Ошибка", "Пароли не совпадают!");
-            dialogFragment.show(getSupportFragmentManager(), "custom_dialog");
-            return;
-        }
+            if (!pass1.equals(pass2)) {
+                CustomDialog dialogFragment = new CustomDialog("Ошибка", "Пароли не совпадают!");
+                dialogFragment.show(getSupportFragmentManager(), "custom_dialog");
+                return;
+            }
 
-        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-        if (imm != null) {
-            imm.hideSoftInputFromWindow(password.getWindowToken(), 0);
-            imm.hideSoftInputFromWindow(confirmPassword.getWindowToken(), 0);
-        }
+            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            if (imm != null) {
+                imm.hideSoftInputFromWindow(password.getWindowToken(), 0);
+                imm.hideSoftInputFromWindow(confirmPassword.getWindowToken(), 0);
+            }
 
-        FirebaseDatabase mDb = FirebaseDatabase.getInstance();
-        DatabaseReference ref = mDb.getReference("users");
+            FirebaseDatabase mDb = FirebaseDatabase.getInstance();
+            DatabaseReference ref = mDb.getReference("users");
 
-        mAuth.createUserWithEmailAndPassword(email, pass1)
-                .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            FirebaseUser firebaseUser = mAuth.getCurrentUser();
+            mAuth.createUserWithEmailAndPassword(email, pass1)
+                    .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                        @Override
+                        public void onComplete(@NonNull Task<AuthResult> task) {
+                            if (task.isSuccessful()) {
+                                FirebaseUser firebaseUser = mAuth.getCurrentUser();
 
-                            GetSplittedPathChild pC = new GetSplittedPathChild();
-                            splittedPathChild = pC.getSplittedPathChild(email);
+                                GetSplittedPathChild pC = new GetSplittedPathChild();
+                                splittedPathChild = pC.getSplittedPathChild(email);
 
-                            int atIndex = email.indexOf('@');
-                            String name = atIndex != -1 ? email.substring(0, atIndex) : email;
-                            if (firebaseUser != null) {
-                                String userId = firebaseUser.getUid();
+                                int atIndex = email.indexOf('@');
+                                String name = atIndex != -1 ? email.substring(0, atIndex) : email;
+                                if (firebaseUser != null) {
+                                    String userId = firebaseUser.getUid();
 
-                                User user = new User(email, name, gender, "Пользователь", birthday);
+                                    User user = new User(email, name, gender, "Пользователь", birthday);
 
-                                DatabaseReference userRef = ref.child(splittedPathChild);
+                                    DatabaseReference userRef = ref.child(splittedPathChild);
 
-                                userRef.setValue(user).addOnCompleteListener(new OnCompleteListener<Void>() {
-                                    @Override
-                                    public void onComplete(@NonNull Task<Void> databaseTask) {
-                                        if (databaseTask.isSuccessful()) {
-                                            Intent intent = new Intent(RegPasswordActivity.this, HomeActivity.class);
-                                            startActivity(intent);
-                                            CustomDialog dialogFragment = new CustomDialog("Успех", "Успешный вход в аккаунт!");
-                                            dialogFragment.show(getSupportFragmentManager(), "custom_dialog");
-                                            finish();
-                                        } else {
-                                            String errorMessage = databaseTask.getException().getMessage();
-                                            CustomDialog dialogFragment = new CustomDialog("Ошибка", errorMessage);
-                                            dialogFragment.show(getSupportFragmentManager(), "custom_dialog");
+                                    userRef.setValue(user).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<Void> databaseTask) {
+                                            if (databaseTask.isSuccessful()) {
+                                                Intent intent = new Intent(RegPasswordActivity.this, HomeActivity.class);
+                                                startActivity(intent);
+                                                CustomDialog dialogFragment = new CustomDialog("Успех", "Успешная регистрация!");
+                                                dialogFragment.show(getSupportFragmentManager(), "custom_dialog");
+                                                finish();
+                                            } else {
+                                                String errorMessage = databaseTask.getException().getMessage();
+                                                CustomDialog dialogFragment = new CustomDialog("Ошибка", errorMessage);
+                                                dialogFragment.show(getSupportFragmentManager(), "custom_dialog");
+                                            }
                                         }
-                                    }
-                                });
+                                    });
+                                } else {
+                                    CustomDialog dialogFragment = new CustomDialog("Ошибка", "Ошибка: текущий пользователь равен null");
+                                    dialogFragment.show(getSupportFragmentManager(), "custom_dialog");
+                                }
                             } else {
-                                CustomDialog dialogFragment = new CustomDialog("Ошибка", "Ошибка: текущий пользователь равен null");
-                                dialogFragment.show(getSupportFragmentManager(), "custom_dialog");
+                                handleRegistrationError(task.getException());
                             }
-                        } else {
-                            handleRegistrationError(task.getException());
                         }
-                    }
-                });
+                    });
+        }
+        catch (Exception e) {
+            CustomDialog dialogFragment = new CustomDialog("Ошибка", e.getMessage());
+            dialogFragment.show(getSupportFragmentManager(), "custom_dialog");
+        }
+
     }
 
     private void handleRegistrationError(Exception exception) {

@@ -23,6 +23,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.tanya.health_care.code.AdminArticleRecyclerView;
 import com.tanya.health_care.code.ArticleData;
 import com.tanya.health_care.code.GetSplittedPathChild;
+import com.tanya.health_care.dialog.CustomDialog;
 
 import java.util.ArrayList;
 
@@ -75,31 +76,35 @@ public class AdminArticleFragment extends Fragment {
 
     }
     private void addDataOnRecyclerView() {
-        ValueEventListener valueEventListener = new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if (articles.size() > 0) {
-                    articles.clear();
+        try {
+            ValueEventListener valueEventListener = new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    if (articles.size() > 0) {
+                        articles.clear();
+                    }
+                    for (DataSnapshot ds : snapshot.getChildren()) {
+                        ds.getValue();
+                        ArticleData ps = ds.getValue(ArticleData.class);
+                        assert ps != null;
+                        articles.add(ps);
+
+                    }
+                    adapter.notifyDataSetChanged();
                 }
-                for (DataSnapshot ds : snapshot.getChildren()) {
-                    ds.getValue();
-                    ArticleData ps = ds.getValue(ArticleData.class);
-                    assert ps != null;
-                    articles.add(ps);
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
 
                 }
-                adapter.notifyDataSetChanged();
-            }
+            };
+            ref = mDb.getReference().child("articles");
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        };
-        ref = mDb.getReference().child("articles");
-
-        ref.addValueEventListener(valueEventListener);
+            ref.addValueEventListener(valueEventListener);
+        } catch (Exception e) {
+            CustomDialog dialogFragment = new CustomDialog("Ошибка", e.getMessage());
+            dialogFragment.show(getParentFragmentManager(), "custom_dialog");
+        }
     }
-
 
 }

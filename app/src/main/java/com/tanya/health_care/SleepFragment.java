@@ -1,5 +1,7 @@
 package com.tanya.health_care;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -24,13 +26,17 @@ import com.google.firebase.database.ValueEventListener;
 import com.tanya.health_care.code.GetSplittedPathChild;
 import com.tanya.health_care.code.SleepData;
 import com.tanya.health_care.code.SleepRecyclerView;
+import com.tanya.health_care.code.SleepTimeGenerator;
 import com.tanya.health_care.code.WaterData;
 import com.tanya.health_care.code.WaterRecyclerView;
+import com.tanya.health_care.dialog.CustomDialog;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.Locale;
 
 public class SleepFragment extends Fragment {
 
@@ -44,9 +50,6 @@ public class SleepFragment extends Fragment {
 
     FirebaseDatabase mDb;
     TextView duration;
-    public static SleepFragment newInstance() {
-        return new SleepFragment();
-    }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
@@ -92,16 +95,8 @@ public class SleepFragment extends Fragment {
                 }
             }
 
-            private long calculateDurationMillis(SleepData sleep) {
-                if (sleep != null && sleep.sleepStart != null && sleep.sleepFinish != null) {
-                    return sleep.sleepFinish.getTime() - sleep.sleepStart.getTime();
-                }
-                return 0;
-            }
-
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-
             }
         });
 
@@ -124,6 +119,7 @@ public class SleepFragment extends Fragment {
                 homeActivity.replaceFragment(fragment);
             }
         });
+
 
     }
     private void addDataOnRecyclerView() {
@@ -160,6 +156,14 @@ public class SleepFragment extends Fragment {
         SimpleDateFormat fmt = new SimpleDateFormat("yyyyMMdd");
         return fmt.format(date1).equals(fmt.format(date2));
     }
+
+    private long calculateDurationMillis(SleepData sleep) {
+        if (sleep != null && sleep.sleepStart != null && sleep.sleepFinish != null) {
+            return sleep.sleepFinish.getTime() - sleep.sleepStart.getTime();
+        }
+        return 0;
+    }
+
 
 
 }
