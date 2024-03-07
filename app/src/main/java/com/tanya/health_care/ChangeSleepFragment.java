@@ -236,7 +236,9 @@ public class ChangeSleepFragment extends Fragment {
                     }
 
                     homeActivity.replaceFragment(new SleepFragment());
+
                 }
+
             });
         }
         catch (Exception e) {

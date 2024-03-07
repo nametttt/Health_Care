@@ -46,6 +46,7 @@ public class SleepFragment extends Fragment {
     SleepRecyclerView adapter;
     FirebaseUser user;
     DatabaseReference ref;
+    boolean isExist = true;
     GetSplittedPathChild pC = new GetSplittedPathChild();
 
     FirebaseDatabase mDb;
@@ -73,6 +74,7 @@ public class SleepFragment extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setAdapter(adapter);
         addDataOnRecyclerView();
+        newDate();
 
         ref = mDb.getReference("users").child(pC.getSplittedPathChild(user.getEmail())).child("characteristic").child("sleep");
         ref.addValueEventListener(new ValueEventListener() {
@@ -121,6 +123,54 @@ public class SleepFragment extends Fragment {
         });
 
 
+
+    }
+
+    private void newDate(){
+        if(isExist)
+        {
+            AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
+
+            Date sleepStart = SleepTimeGenerator.generateSleepTime();
+            Date sleepFinish = SleepTimeGenerator.generateWakeUpTime();
+
+            SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm");
+            String sleepStartString = dateFormat.format(sleepStart);
+            String sleepFinishString = dateFormat.format(sleepFinish);
+
+            builder.setTitle("Время сна");
+            builder.setMessage("Вы спали с " + sleepStartString + " до " + sleepFinishString + "?");
+            builder.setPositiveButton("Да", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    DatabaseReference reference = mDb.getReference("users")
+                            .child(pC.getSplittedPathChild(user.getEmail()))
+                            .child("characteristic")
+                            .child("sleep")
+                            .push();
+
+                    SleepData sleepData = new SleepData(reference.getKey(), sleepStart, sleepFinish, new Date());
+
+                    reference.setValue(sleepData);
+                    long durationMillis = calculateDurationMillis(sleepData);
+                    long totalHours = durationMillis / (1000 * 60 * 60);
+                    long totalMinutes = (durationMillis % (1000 * 60 * 60)) / (1000 * 60);
+
+                    long totalDurationMillis = 0;
+                    totalDurationMillis += durationMillis;
+
+                    duration.setText(String.format("%dч %dмин", totalHours, totalMinutes));
+
+                }
+            });
+            builder.setNegativeButton("Нет", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                }
+            });
+            builder.show();
+        }
     }
     private void addDataOnRecyclerView() {
         ValueEventListener valueEventListener = new ValueEventListener() {
@@ -128,6 +178,7 @@ public class SleepFragment extends Fragment {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (sleepData.size() > 0) {
                     sleepData.clear();
+                    isExist = false;
                 }
                 for (DataSnapshot ds : snapshot.getChildren()) {
                     ds.getValue();
