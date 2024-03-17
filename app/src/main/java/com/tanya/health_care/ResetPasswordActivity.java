@@ -5,6 +5,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.InputType;
+import android.text.method.HideReturnsTransformationMethod;
+import android.text.method.PasswordTransformationMethod;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -64,5 +66,17 @@ public class ResetPasswordActivity extends AppCompatActivity {
 
     private void togglePasswordVisibility(EditText editText, ImageButton imageButton) {
         EyeVisibility.toggleVisibility(editText, imageButton);
+        boolean isVisible = editText.getInputType() != (InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+
+        if (isVisible) {
+            editText.setTransformationMethod(PasswordTransformationMethod.getInstance());
+            editText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+            imageButton.setImageResource(R.drawable.eye);
+        } else {
+            editText.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
+            editText.setInputType(InputType.TYPE_CLASS_TEXT);
+            imageButton.setImageResource(R.drawable.eye_off);
+        }
+        editText.setSelection(editText.getText().length());
     }
 }

@@ -43,7 +43,7 @@ public class deleteDialog extends DialogFragment {
         layout.setPadding(40, 40, 40, 40);
         layout.setBackgroundColor(Color.WHITE);
 
-// Создаем кнопку "Удалить"
+        // Создаем кнопку "Удалить"
         Button deleteButton = new Button(requireActivity());
         deleteButton.setLayoutParams(new LinearLayout.LayoutParams(
                 0,
@@ -55,44 +55,38 @@ public class deleteDialog extends DialogFragment {
             @Override
             public void onClick(View v) {
                 final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                String useremail = user.getEmail();
+                if (user != null) {
+                    String useremail = user.getEmail();
 
-                user.delete().addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        if (task.isSuccessful()) {
-
-                            GetSplittedPathChild g = new GetSplittedPathChild();
-                            final DatabaseReference userRef = FirebaseDatabase.getInstance().getReference().child("users").child(g.getSplittedPathChild(useremail));
-                            userRef.removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
-                                @Override
-                                public void onComplete(@NonNull Task<Void> task) {
-                                    if (task.isSuccessful()) {
-                                        Intent intent = new Intent( getActivity(), MainActivity.class);
-                                        startActivity(intent);
-                                        Toast.makeText(getContext(), "Успешное удаление профиля!", Toast.LENGTH_SHORT).show();
-
-                                    } else {
-                                        // Обработка ошибок при удалении данных из базы данных
-                                        Toast.makeText(getContext(), "Ошибка при удалении данных из базы данных", Toast.LENGTH_SHORT).show();
+                    user.delete().addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            if (task.isSuccessful()) {
+                                GetSplittedPathChild g = new GetSplittedPathChild();
+                                final DatabaseReference userRef = FirebaseDatabase.getInstance().getReference().child("users").child(g.getSplittedPathChild(useremail)).child(user.getUid());
+                                userRef.removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<Void> task) {
+                                        if (task.isSuccessful()) {
+                                            Intent intent = new Intent(getActivity(), MainActivity.class);
+                                            startActivity(intent);
+                                            Toast.makeText(getContext(), "Успешное удаление профиля!", Toast.LENGTH_SHORT).show();
+                                            dismiss();
+                                        } else {
+                                            Toast.makeText(getContext(), "Ошибка при удалении данных из базы данных", Toast.LENGTH_SHORT).show();
+                                        }
                                     }
-                                }
-                            });
-                            // Пользователь успешно удален, переходите на главную страницу
-
-                        } else {
-                            Toast.makeText(getContext(), task.getException().getMessage(), Toast.LENGTH_SHORT).show();
-                            // Обработка ошибок при удалении пользователя
-                            Toast.makeText(getContext(), "Ошибка при удалении пользователя", Toast.LENGTH_SHORT).show();
+                                });
+                            } else {
+                                Toast.makeText(getContext(), "Ошибка при удалении пользователя", Toast.LENGTH_SHORT).show();
+                            }
                         }
-                    }
-                });
-
+                    });
+                }
             }
         });
 
-
-// Создаем кнопку "Отмена"
+        // Создаем кнопку "Отмена"
         Button cancelButton = new Button(requireActivity());
         cancelButton.setLayoutParams(new LinearLayout.LayoutParams(
                 0,
@@ -101,7 +95,6 @@ public class deleteDialog extends DialogFragment {
         cancelButton.setText("Отмена");
         cancelButton.setTextColor(Color.BLACK);
         cancelButton.setBackgroundColor(getResources().getColor(R.color.lightgray));
-
 
         cancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -113,20 +106,16 @@ public class deleteDialog extends DialogFragment {
         View divider = new View(requireActivity());
         divider.setLayoutParams(new LinearLayout.LayoutParams(20, LinearLayout.LayoutParams.MATCH_PARENT));
 
-
         GradientDrawable canc = new GradientDrawable();
         canc.setColor(getResources().getColor(R.color.lightgray));
         canc.setCornerRadius(20);
         cancelButton.setBackground(canc);
 
-
-// Устанавливаем цвет рамки для кнопки "Удалить"
         GradientDrawable deleteButtonBackground = new GradientDrawable();
         deleteButtonBackground.setColor(getResources().getColor(R.color.green));
         deleteButtonBackground.setCornerRadius(20);
         deleteButton.setBackground(deleteButtonBackground);
 
-// Выравниваем кнопки по высоте и добавляем отступ между ними
         layout.setGravity(Gravity.CENTER_VERTICAL);
         layout.addView(cancelButton, new LinearLayout.LayoutParams(
                 0,
@@ -138,7 +127,6 @@ public class deleteDialog extends DialogFragment {
 
         layout.setDividerPadding(20);
 
-// Устанавливаем радиус закругления углов для всего окна
         GradientDrawable dialogBackground = new GradientDrawable();
         dialogBackground.setCornerRadius(40);
         dialogBackground.setColor(Color.WHITE);

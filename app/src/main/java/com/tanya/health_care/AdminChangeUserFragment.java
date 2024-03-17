@@ -67,9 +67,9 @@ public class AdminChangeUserFragment extends Fragment {
             names.setText(name);
             emails.setText(email);
             if ("Администратор".equals(role)) {
-                roles.setSelection(0);
-            } else {
                 roles.setSelection(1);
+            } else {
+                roles.setSelection(0);
             }
             if ("Мужской".equals(gender)) {
                 genders.setSelection(0);
