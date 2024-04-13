@@ -19,24 +19,24 @@
             android:layout_height="wrap_content"
             android:layout_margin="20dp"
             android:adjustViewBounds="true"
-            android:contentDescription="Салат"
+            android:contentDescription="О приложении"
             android:scaleType="centerInside"
-            android:src="@drawable/salad" />
+            android:src="@drawable/health_check" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Правильное питание"
+            android:text="Всё о вашем здоровье"
             android:textAlignment="center"
             android:textColor="@color/black"
-            android:textSize="30dp"
+            android:textSize="32dp"
             android:textStyle="bold" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:text="Приложение позволяет записывать данные о питании, а также подсчитывать калории"
+            android:layout_marginVertical="10dp"
+            android:text="И даже больше: отслеживание аспектов вашего здоровья, общение с чат-ботом и советы от экспертов"
             android:textAlignment="center"
             android:textColor="@color/black"
             android:textSize="24dp" />

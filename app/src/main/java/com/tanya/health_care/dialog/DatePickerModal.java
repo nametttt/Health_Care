@@ -21,9 +21,18 @@ public class DatePickerModal extends DialogFragment implements DatePickerDialog.
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         final Calendar c = Calendar.getInstance();
-        int year = c.get(Calendar.YEAR);
-        int month = c.get(Calendar.MONTH);
-        int day = c.get(Calendar.DAY_OF_MONTH);
+        int year, month, day;
+
+        if (!targetButton.getText().toString().isEmpty()) {
+            String[] dateParts = targetButton.getText().toString().split("\\.");
+            day = Integer.parseInt(dateParts[0]);
+            month = Integer.parseInt(dateParts[1]) - 1;
+            year = Integer.parseInt(dateParts[2]);
+        } else {
+            year = c.get(Calendar.YEAR);
+            month = c.get(Calendar.MONTH);
+            day = c.get(Calendar.DAY_OF_MONTH);
+        }
 
         Calendar maxCalendar = Calendar.getInstance();
         maxCalendar.set(2015, Calendar.DECEMBER, 31);
@@ -36,7 +45,6 @@ public class DatePickerModal extends DialogFragment implements DatePickerDialog.
         DatePickerDialog datePickerDialog = new DatePickerDialog(requireContext(), this, year, month, day);
 
         datePickerDialog.getDatePicker().setMaxDate(maxDate);
-
         datePickerDialog.getDatePicker().setMinDate(minDate);
 
         return datePickerDialog;
