@@ -3,79 +3,48 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:background="@color/white"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_above="@id/bottomLayout"
         android:layout_marginHorizontal="20dp"
-        android:layout_marginBottom="50dp"
+        android:layout_marginTop="50dp"
         android:orientation="vertical">
 
-        <LinearLayout
+        <com.tanya.health_care.code.WrapContentHeightViewPager
+            android:id="@+id/viewPager"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:orientation="vertical">
+            android:layout_height="wrap_content" />
 
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="20dp"
-                android:adjustViewBounds="true"
-                android:contentDescription="О приложении"
-                android:scaleType="centerInside"
-                android:src="@drawable/health_check" />
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Всё о вашем здоровье"
-                android:textAlignment="center"
-                android:textColor="@color/black"
-                android:textSize="32dp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginVertical="10dp"
-                android:text="И даже больше: отслеживание аспектов вашего здоровья, общение с чат-ботом и советы от экспертов"
-                android:textAlignment="center"
-                android:textColor="@color/black"
-                android:textSize="24dp" />
-
-        </LinearLayout>
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
             android:layout_marginVertical="10dp"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:layout_marginBottom="10dp">
 
             <ImageView
+                android:id="@+id/indicator1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="5dp"
                 android:src="@drawable/selected_circle_asset" />
 
             <ImageView
+                android:id="@+id/indicator2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="5dp"
                 android:src="@drawable/circle_asset" />
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="5dp"
-                android:src="@drawable/circle_asset" />
-
         </LinearLayout>
+
     </LinearLayout>
+
+
     <LinearLayout
         android:id="@+id/bottomLayout"
         android:layout_width="match_parent"
@@ -86,29 +55,26 @@
         android:orientation="vertical">
 
         <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/continu"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginVertical="15dp"
             android:background="@drawable/button_asset"
             android:padding="10dp"
-            android:textAlignment="center"
-            android:id="@+id/continu"
             android:text="Зарегистрироваться"
             android:textAllCaps="false"
             android:textColor="@color/white"
             android:textSize="20dp" />
 
         <TextView
+            android:id="@+id/auth"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/auth"
             android:layout_marginBottom="5dp"
             android:text="Уже есть аккаунт?"
             android:textAlignment="center"
             android:textColor="@color/darkgreen"
             android:textSize="20dp" />
     </LinearLayout>
-
-
 
 </RelativeLayout>
