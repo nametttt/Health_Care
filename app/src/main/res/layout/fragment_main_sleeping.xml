@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    tools:context=".MainAboutAppFragment">
+    tools:context=".MainSleepingFragment">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -15,27 +15,28 @@
             android:layout_height="wrap_content"
             android:layout_margin="20dp"
             android:adjustViewBounds="true"
-            android:contentDescription="О приложении"
+            android:contentDescription="Сон"
             android:scaleType="centerInside"
-            android:src="@drawable/main_about_app" />
+            android:src="@drawable/main_sleeping" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Всё о вашем здоровье"
+            android:text="Здоровый сон"
             android:textAlignment="center"
             android:textColor="@color/black"
-            android:textSize="32dp"
+            android:textSize="30dp"
             android:textStyle="bold" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginVertical="10dp"
-            android:text="И даже больше: отслеживание аспектов вашего здоровья, общение с чат-ботом и советы от экспертов"
+            android:layout_marginTop="10dp"
+            android:text="Заботьтесь о своем сне: приложение поможет отслеживать количество часов на сон"
             android:textAlignment="center"
             android:textColor="@color/black"
             android:textSize="24dp" />
     </LinearLayout>
+
 
 </FrameLayout>

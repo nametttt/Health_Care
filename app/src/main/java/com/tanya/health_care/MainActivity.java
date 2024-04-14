@@ -17,52 +17,101 @@ public class MainActivity extends AppCompatActivity {
     private Button btn;
     private TextView txt;
     private ViewPager viewPager;
-    private ImageView indicator1, indicator2;
+    private ImageView indicator1, indicator2, indicator3, indicator4, indicator5, indicator6;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        viewPager = findViewById(R.id.viewPager);
-        indicator1 = findViewById(R.id.indicator1);
-        indicator2 = findViewById(R.id.indicator2);
-        btn = findViewById(R.id.continu);
-        txt = findViewById(R.id.auth);
+        try {
+            viewPager = findViewById(R.id.viewPager);
+            indicator1 = findViewById(R.id.indicator1);
+            indicator2 = findViewById(R.id.indicator2);
+            indicator3 = findViewById(R.id.indicator3);
+            indicator4 = findViewById(R.id.indicator4);
+            indicator5 = findViewById(R.id.indicator5);
+            indicator6 = findViewById(R.id.indicator6);
+            btn = findViewById(R.id.continu);
+            txt = findViewById(R.id.auth);
 
-        // Создаем адаптер для ViewPager
-        MyPagerAdapter adapter = new MyPagerAdapter(getSupportFragmentManager());
-        viewPager.setAdapter(adapter);
+            MyPagerAdapter adapter = new MyPagerAdapter(getSupportFragmentManager());
+            viewPager.setAdapter(adapter);
 
-        // Добавляем слушателя изменения страницы ViewPager
-        viewPager.addOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
-            @Override
-            public void onPageSelected(int position) {
-                // Обновляем состояние индикаторов при изменении страницы
-                if (position == 0) {
-                    indicator1.setImageResource(R.drawable.selected_circle_asset);
-                    indicator2.setImageResource(R.drawable.circle_asset);
-                } else {
-                    indicator1.setImageResource(R.drawable.circle_asset);
-                    indicator2.setImageResource(R.drawable.selected_circle_asset);
+            viewPager.addOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
+                @Override
+                public void onPageSelected(int position) {
+                    switch (position) {
+                        case 0:
+                            indicator1.setImageResource(R.drawable.selected_circle_asset);
+                            indicator2.setImageResource(R.drawable.circle_asset);
+                            indicator3.setImageResource(R.drawable.circle_asset);
+                            indicator4.setImageResource(R.drawable.circle_asset);
+                            indicator5.setImageResource(R.drawable.circle_asset);
+                            indicator6.setImageResource(R.drawable.circle_asset);
+                            break;
+                        case 1:
+                            indicator1.setImageResource(R.drawable.circle_asset);
+                            indicator2.setImageResource(R.drawable.selected_circle_asset);
+                            indicator3.setImageResource(R.drawable.circle_asset);
+                            indicator4.setImageResource(R.drawable.circle_asset);
+                            indicator5.setImageResource(R.drawable.circle_asset);
+                            indicator6.setImageResource(R.drawable.circle_asset);
+                            break;
+                        case 2:
+                            indicator1.setImageResource(R.drawable.circle_asset);
+                            indicator2.setImageResource(R.drawable.circle_asset);
+                            indicator3.setImageResource(R.drawable.selected_circle_asset);
+                            indicator4.setImageResource(R.drawable.circle_asset);
+                            indicator5.setImageResource(R.drawable.circle_asset);
+                            indicator6.setImageResource(R.drawable.circle_asset);
+                            break;
+                        case 3:
+                            indicator1.setImageResource(R.drawable.circle_asset);
+                            indicator2.setImageResource(R.drawable.circle_asset);
+                            indicator3.setImageResource(R.drawable.circle_asset);
+                            indicator4.setImageResource(R.drawable.selected_circle_asset);
+                            indicator5.setImageResource(R.drawable.circle_asset);
+                            indicator6.setImageResource(R.drawable.circle_asset);
+                            break;
+                        case 4:
+                            indicator1.setImageResource(R.drawable.circle_asset);
+                            indicator2.setImageResource(R.drawable.circle_asset);
+                            indicator3.setImageResource(R.drawable.circle_asset);
+                            indicator4.setImageResource(R.drawable.circle_asset);
+                            indicator5.setImageResource(R.drawable.selected_circle_asset);
+                            indicator6.setImageResource(R.drawable.circle_asset);
+                            break;
+                        case 5:
+                            indicator1.setImageResource(R.drawable.circle_asset);
+                            indicator2.setImageResource(R.drawable.circle_asset);
+                            indicator3.setImageResource(R.drawable.circle_asset);
+                            indicator4.setImageResource(R.drawable.circle_asset);
+                            indicator5.setImageResource(R.drawable.circle_asset);
+                            indicator6.setImageResource(R.drawable.selected_circle_asset);
+                            break;
+                    }
                 }
-            }
-        });
+            });
 
-        btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(MainActivity.this, RegActivityEmail.class);
-                startActivity(intent);
-            }
-        });
+            btn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(MainActivity.this, RegActivityEmail.class);
+                    startActivity(intent);
+                }
+            });
 
-        txt.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, LoginActivity.class);
-                startActivity(intent);
-            }
-        });
+            txt.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+                    startActivity(intent);
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
 }

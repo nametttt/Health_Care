@@ -11,7 +11,7 @@
         android:layout_height="match_parent"
         android:layout_above="@id/bottomLayout"
         android:layout_marginHorizontal="20dp"
-        android:layout_marginTop="50dp"
+        android:layout_marginTop="70dp"
         android:orientation="vertical">
 
         <com.tanya.health_care.code.WrapContentHeightViewPager
@@ -40,6 +40,31 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="5dp"
                 android:src="@drawable/circle_asset" />
+            <ImageView
+                android:id="@+id/indicator3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:src="@drawable/circle_asset" />
+            <ImageView
+                android:id="@+id/indicator4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:src="@drawable/circle_asset" />
+            <ImageView
+                android:id="@+id/indicator5"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:src="@drawable/circle_asset" />
+            <ImageView
+                android:id="@+id/indicator6"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:src="@drawable/circle_asset" />
+
         </LinearLayout>
 
     </LinearLayout>

@@ -8,6 +8,8 @@ import androidx.viewpager.widget.ViewPager;
 
 public class WrapContentHeightViewPager extends ViewPager {
 
+    private int mFixedHeight = 0;
+
     public WrapContentHeightViewPager(Context context) {
         super(context);
     }
@@ -18,18 +20,19 @@ public class WrapContentHeightViewPager extends ViewPager {
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        int height = 0;
-        // Измеряем высоту каждого дочернего элемента (фрагмента)
-        for (int i = 0; i < getChildCount(); i++) {
-            View child = getChildAt(i);
-            child.measure(widthMeasureSpec, MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED));
-            int h = child.getMeasuredHeight();
-            // Берем самую большую высоту
-            if (h > height) height = h;
+        if (mFixedHeight == 0) {
+            int height = 0;
+            for (int i = 0; i < getChildCount(); i++) {
+                View child = getChildAt(i);
+                child.measure(widthMeasureSpec, MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED));
+                int h = child.getMeasuredHeight();
+                // Выбираем максимальную высоту
+                height = Math.max(height, h);
+            }
+            mFixedHeight = height;
         }
 
-        // Устанавливаем высоту ViewPager равной самой большой высоте
-        heightMeasureSpec = MeasureSpec.makeMeasureSpec(height, MeasureSpec.EXACTLY);
+        heightMeasureSpec = MeasureSpec.makeMeasureSpec(mFixedHeight, MeasureSpec.EXACTLY);
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
     }
 }

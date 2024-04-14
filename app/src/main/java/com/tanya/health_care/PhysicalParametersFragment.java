@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CalendarView;
 import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -44,19 +45,23 @@ public class PhysicalParametersFragment extends Fragment {
     FirebaseDatabase mDb;
     FirebaseUser user;
     RecyclerView recyclerView;
+    CalendarView calendarView;
+
     ArrayList<PhysicalParametersData> physicalDataArrayList;
     PhysicalParametersRecyclerView adapter;
 
+    private float currentImt = 0;
+    private float currentHeight = 0;
+    private float currentWeight = 0;
+
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
-                             @Nullable Bundle savedInstanceState) {
-        View v =  inflater.inflate(R.layout.fragment_physical_parameters, container, false);
-        init(v);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View v = inflater.inflate(R.layout.fragment_physical_parameters, container, false);
+        initViews(v);
         return v;
     }
 
-
-    void init(View v){
+    private void initViews(View v) {
         user = FirebaseAuth.getInstance().getCurrentUser();
         mDb = FirebaseDatabase.getInstance();
         exit = v.findViewById(R.id.back);
@@ -66,12 +71,23 @@ public class PhysicalParametersFragment extends Fragment {
         weight = v.findViewById(R.id.weight);
         aboutImt = v.findViewById(R.id.aboutImt);
 
-        physicalDataArrayList = new ArrayList<PhysicalParametersData>();
+        physicalDataArrayList = new ArrayList<>();
         adapter = new PhysicalParametersRecyclerView(getContext(), physicalDataArrayList);
         recyclerView = v.findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setAdapter(adapter);
         addDataOnRecyclerView();
+
+        calendarView = v.findViewById(R.id.calendarView);
+        initCalendarListener();
+
+        calendarView.setMaxDate(System.currentTimeMillis());
+
+        Calendar minDate = Calendar.getInstance();
+        minDate.add(Calendar.YEAR, -1);
+        calendarView.setMinDate(minDate.getTimeInMillis());
+
+        calendarView.setDate(System.currentTimeMillis());
 
         ref = mDb.getReference("users").child(pC.getSplittedPathChild(user.getEmail())).child("characteristic").child("physicalParameters");
         ref.addValueEventListener(new ValueEventListener() {
@@ -82,7 +98,7 @@ public class PhysicalParametersFragment extends Fragment {
                     float Height = 0, mHeight = 0, Imt = 0, Weight = 0;
                     for (DataSnapshot dataSnapshot: snapshot.getChildren()){
                         PhysicalParametersData common = dataSnapshot.getValue(PhysicalParametersData.class);
-                        if(isWithinLastWeek(common.lastAdded, new Date())){
+                        if(isSameDay(common.lastAdded, new Date())){
                             Height = common.height;
                             mHeight = common.height / 100.0f;
                             Weight = common.weight;
@@ -92,33 +108,19 @@ public class PhysicalParametersFragment extends Fragment {
                             count++;
                         }
                     }
-                    imt.setText(String.valueOf(Imt));
-                    weight.setText(String.valueOf(Weight));
-                    height.setText(String.valueOf(Height));
-                    String imtInfo = getImtInfo(Imt, Height);
-                    aboutImt.setVisibility(View.VISIBLE);
-                    aboutImt.setText(imtInfo);
-
-                    if(count <= 0){
-                        imt.setText("–");
-                        aboutImt.setVisibility(View.GONE);
-                        weight.setText("–");
-                        height.setText("–");
-                    }
-                }
-                catch (Exception e) {
+                    currentImt = Imt;
+                    currentWeight = Weight;
+                    currentHeight = Height;
+                    updateImtViews();
+                } catch (Exception e) {
                     CustomDialog dialogFragment = new CustomDialog("Ошибка", e.getMessage());
                     dialogFragment.show(getChildFragmentManager(), "custom_dialog");
                 }
-
             }
 
             @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
+            public void onCancelled(@NonNull DatabaseError error) {}
         });
-
 
         exit.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -139,21 +141,98 @@ public class PhysicalParametersFragment extends Fragment {
                 homeActivity.replaceFragment(fragment);
             }
         });
+    }
 
+    private void initCalendarListener() {
+        calendarView.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
+            @Override
+            public void onSelectedDayChange(CalendarView view, int year, int month, int dayOfMonth) {
+                Calendar selectedDate = Calendar.getInstance();
+                selectedDate.set(year, month, dayOfMonth);
+                updatePhysicalDataForSelectedDate(selectedDate.getTime());
+            }
+        });
+    }
+
+    private void updatePhysicalDataForSelectedDate(Date selectedDate) {
+        ref.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                physicalDataArrayList.clear();
+
+                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                    PhysicalParametersData data = dataSnapshot.getValue(PhysicalParametersData.class);
+                    if (isSameDay(data.lastAdded, selectedDate)) {
+                        physicalDataArrayList.add(data);
+                    }
+                }
+
+                if (!physicalDataArrayList.isEmpty()) {
+                    calculateAndDisplayImt(physicalDataArrayList);
+                } else {
+                    resetImtViews();
+                }
+
+                adapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                CustomDialog dialogFragment = new CustomDialog("Ошибка", error.getMessage());
+                dialogFragment.show(getChildFragmentManager(), "custom_dialog");
+            }
+        });
+    }
+
+    private void calculateAndDisplayImt(ArrayList<PhysicalParametersData> dataList) {
+        float totalHeight = 0;
+        float totalWeight = 0;
+        int dataCount = 0;
+
+        for (PhysicalParametersData data : dataList) {
+            totalHeight += data.height;
+            totalWeight += data.weight;
+            dataCount++;
+        }
+
+        if (dataCount > 0) {
+            currentHeight = totalHeight / dataCount;
+            currentWeight = totalWeight / dataCount;
+            currentImt = calculateImt(currentWeight, currentHeight);
+
+            updateImtViews();
+        } else {
+            resetImtViews();
+        }
+    }
+
+    private float calculateImt(float weight, float height) {
+        return Math.round((weight / (height * height / 10000)) * 10.0f) / 10.0f;
+    }
+
+    private void updateImtViews() {
+        imt.setText(String.valueOf(currentImt));
+        weight.setText(String.valueOf(currentWeight));
+        height.setText(String.valueOf(currentHeight));
+        aboutImt.setVisibility(View.VISIBLE);
+        aboutImt.setText(getImtInfo(currentImt, currentHeight));
+    }
+
+    private void resetImtViews() {
+        imt.setText("–");
+        aboutImt.setVisibility(View.GONE);
+        weight.setText("–");
+        height.setText("–");
     }
 
     private void addDataOnRecyclerView() {
         ValueEventListener valueEventListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if (physicalDataArrayList.size() > 0) {
-                    physicalDataArrayList.clear();
-                }
+                physicalDataArrayList.clear();
                 for (DataSnapshot ds : snapshot.getChildren()) {
-                    ds.getValue();
                     PhysicalParametersData ps = ds.getValue(PhysicalParametersData.class);
-                    assert ps != null;
-                    if(isWithinLastWeek(ps.lastAdded, new Date())){
+                    if (isSameDay(ps.lastAdded, new Date())) {
                         physicalDataArrayList.add(ps);
                     }
                 }
@@ -162,27 +241,23 @@ public class PhysicalParametersFragment extends Fragment {
             }
 
             @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
+            public void onCancelled(@NonNull DatabaseError error) {}
         };
         ref = mDb.getReference("users").child(pC.getSplittedPathChild(user.getEmail())).child("characteristic").child("physicalParameters");
-
         ref.addValueEventListener(valueEventListener);
     }
 
-    public static boolean isWithinLastWeek(Date date1, Date date2) {
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(new Date());
-        calendar.add(Calendar.DAY_OF_YEAR, -7);
-
-        Date lastWeekDate = calendar.getTime();
-
-        return (date1.after(lastWeekDate) || date1.equals(lastWeekDate)) &&
-                (date2.after(lastWeekDate) || date2.equals(lastWeekDate));
+    private boolean isSameDay(Date date1, Date date2) {
+        Calendar cal1 = Calendar.getInstance();
+        cal1.setTime(date1);
+        Calendar cal2 = Calendar.getInstance();
+        cal2.setTime(date2);
+        return cal1.get(Calendar.YEAR) == cal2.get(Calendar.YEAR) &&
+                cal1.get(Calendar.MONTH) == cal2.get(Calendar.MONTH) &&
+                cal1.get(Calendar.DAY_OF_MONTH) == cal2.get(Calendar.DAY_OF_MONTH);
     }
-    private String getImtInfo(float imt, float height) {
 
+    private String getImtInfo(float imt, float height) {
         String category;
         String recommendation;
 
@@ -208,11 +283,10 @@ public class PhysicalParametersFragment extends Fragment {
         return "У вас " + category + ". " + recommendation;
     }
 
-
 }
 class SortPhysical implements Comparator<PhysicalParametersData> {
     @Override
     public int compare(PhysicalParametersData a, PhysicalParametersData b) {
-        return  b.lastAdded.compareTo(a.lastAdded);
+        return b.lastAdded.compareTo(a.lastAdded);
     }
 }

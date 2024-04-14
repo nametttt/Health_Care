@@ -1,5 +1,6 @@
 package com.tanya.health_care;
 
+import android.graphics.Color;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -12,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CalendarView;
 import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -27,14 +29,13 @@ import com.tanya.health_care.code.GetSplittedPathChild;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Comparator;
 import java.util.Date;
 
 public class DrinkingFragment extends Fragment {
     private TextView drunkCount;
     private Button addWater, save;
-
-
     RecyclerView recyclerView;
     ArrayList<WaterData> waterDataArrayList;
     WaterRecyclerView adapter;
@@ -44,6 +45,7 @@ public class DrinkingFragment extends Fragment {
     GetSplittedPathChild pC = new GetSplittedPathChild();
 
     FirebaseDatabase mDb;
+    CalendarView calendarView;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
@@ -66,6 +68,16 @@ public class DrinkingFragment extends Fragment {
         addDataOnRecyclerView();
 
         save = v.findViewById(R.id.back);
+        CalendarView calendarView = v.findViewById(R.id.calendarView);
+
+        calendarView.setMaxDate(System.currentTimeMillis());
+
+        Calendar minDate = Calendar.getInstance();
+        minDate.add(Calendar.YEAR, -1);
+        calendarView.setMinDate(minDate.getTimeInMillis());
+
+        calendarView.setDate(System.currentTimeMillis());
+
         save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -74,6 +86,16 @@ public class DrinkingFragment extends Fragment {
             }
         });
 
+        calendarView.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
+            @Override
+            public void onSelectedDayChange(@NonNull CalendarView view, int year, int month, int dayOfMonth) {
+                Calendar selectedDate = Calendar.getInstance();
+                selectedDate.set(year, month, dayOfMonth);
+                Date date = selectedDate.getTime();
+
+                updateWaterDataForSelectedDate(date);
+            }
+        });
 
         ref = mDb.getReference("users").child(pC.getSplittedPathChild(user.getEmail())).child("characteristic").child("water");
         ref.addValueEventListener(new ValueEventListener() {
@@ -148,7 +170,20 @@ public class DrinkingFragment extends Fragment {
         return fmt.format(date1).equals(fmt.format(date2));
     }
 
+    private void updateWaterDataForSelectedDate(Date selectedDate) {
+        int count = 0;
 
+        for (WaterData water : waterDataArrayList) {
+            if (isSameDay(water.lastAdded, selectedDate)) {
+                count += water.addedValue;
+            }
+        }
+
+        drunkCount.setText(String.valueOf(count));
+        if (count <= 0) {
+            drunkCount.setText("–");
+        }
+    }
 
 }
 

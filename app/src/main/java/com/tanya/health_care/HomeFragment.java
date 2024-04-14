@@ -16,7 +16,6 @@ import com.tanya.health_care.DrinkingFragment;
 import com.tanya.health_care.HealthCommonFragment;
 import com.tanya.health_care.HomeActivity;
 import com.tanya.health_care.NutritionFragment;
-import com.tanya.health_care.PhysicalParametersFragment;
 import com.tanya.health_care.R;
 import com.tanya.health_care.SleepFragment;
 import com.tanya.health_care.UserProfileFragment;

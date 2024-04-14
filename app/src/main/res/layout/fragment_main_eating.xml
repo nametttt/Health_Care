@@ -15,9 +15,9 @@
             android:layout_height="wrap_content"
             android:layout_margin="20dp"
             android:adjustViewBounds="true"
-            android:contentDescription="Салат"
+            android:contentDescription="Питание"
             android:scaleType="centerInside"
-            android:src="@drawable/salad" />
+            android:src="@drawable/main_eating" />
 
         <TextView
             android:layout_width="match_parent"
