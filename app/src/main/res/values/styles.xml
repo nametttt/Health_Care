@@ -7,4 +7,9 @@
         <item name="colorOnSurface">@color/menugreen</item>
         <item name="colorAccent">@color/black</item>
     </style>
+
+    <style name="HorizontalCalendarTextStyle">
+        <item name="android:textColor">@color/black</item>
+    </style>
+
 </resources>

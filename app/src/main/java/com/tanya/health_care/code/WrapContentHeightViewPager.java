@@ -26,7 +26,6 @@ public class WrapContentHeightViewPager extends ViewPager {
                 View child = getChildAt(i);
                 child.measure(widthMeasureSpec, MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED));
                 int h = child.getMeasuredHeight();
-                // Выбираем максимальную высоту
                 height = Math.max(height, h);
             }
             mFixedHeight = height;

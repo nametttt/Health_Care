@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".DrinkingFragment">
 
     <ScrollView
@@ -48,14 +49,13 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="15dp"
-                    android:background="@drawable/health_asset">
+                    android:background="@drawable/image_asset">
 
-                    <CalendarView
-                        android:id="@+id/calendarView"
+                    <com.vivekkaushik.datepicker.DatePickerTimeline
+                        android:id="@+id/HorizontalCalendar"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        />
-
+                        android:layout_margin="10dp" />
                 </LinearLayout>
                 <LinearLayout
                     android:layout_width="match_parent"

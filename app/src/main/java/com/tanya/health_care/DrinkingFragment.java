@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CalendarView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -26,12 +27,20 @@ import com.google.firebase.database.ValueEventListener;
 import com.tanya.health_care.code.WaterData;
 import com.tanya.health_care.code.WaterRecyclerView;
 import com.tanya.health_care.code.GetSplittedPathChild;
+import com.vivekkaushik.datepicker.DatePickerTimeline;
+import com.vivekkaushik.datepicker.OnDateSelectedListener;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.List;
+import java.util.Locale;
+
+import in.akshit.horizontalcalendar.HorizontalCalendarView;
+import in.akshit.horizontalcalendar.Tools;
+
 
 public class DrinkingFragment extends Fragment {
     private TextView drunkCount;
@@ -50,6 +59,8 @@ public class DrinkingFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
+        Locale locale = new Locale("ru");
+        Locale.setDefault(locale);
         View v = inflater.inflate(R.layout.fragment_drinking, container, false);
         init(v);
         return v;
@@ -67,16 +78,54 @@ public class DrinkingFragment extends Fragment {
         recyclerView.setAdapter(adapter);
         addDataOnRecyclerView();
 
+        DatePickerTimeline calendarView = v.findViewById(R.id.HorizontalCalendar);
+        Calendar today = Calendar.getInstance();
+
+        Calendar oneMonthAgo = Calendar.getInstance();
+        oneMonthAgo.add(Calendar.DAY_OF_MONTH, -4);
+
+        calendarView.setInitialDate(oneMonthAgo.get(Calendar.YEAR), oneMonthAgo.get(Calendar.MONTH), oneMonthAgo.get(Calendar.DAY_OF_MONTH));
+
+        calendarView.setActiveDate(today);
+        Calendar startDate = Calendar.getInstance();
+        startDate.setTime(today.getTime());
+
+        Calendar endDate = Calendar.getInstance();
+        endDate.set(Calendar.YEAR, today.get(Calendar.YEAR));
+        endDate.set(Calendar.MONTH, today.get(Calendar.MONTH));
+        endDate.set(Calendar.DAY_OF_MONTH, endDate.getActualMaximum(Calendar.DAY_OF_MONTH));
+
+        List<Date> inactiveDates = new ArrayList<>();
+        while (startDate.before(endDate)) {
+            startDate.add(Calendar.DAY_OF_MONTH, 1);
+            inactiveDates.add(startDate.getTime());
+        }
+
+        Date[] inactiveDatesArray = inactiveDates.toArray(new Date[0]);
+
+        calendarView.deactivateDates(inactiveDatesArray);
+
+        calendarView.post(new Runnable() {
+            @Override
+            public void run() {
+                calendarView.setInitialDate(oneMonthAgo.get(Calendar.YEAR), oneMonthAgo.get(Calendar.MONTH - 1), oneMonthAgo.get(Calendar.DAY_OF_MONTH));
+            }
+        });
+        calendarView.setOnDateSelectedListener(new OnDateSelectedListener() {
+            @Override
+            public void onDateSelected(int year, int month, int day, int dayOfWeek) {
+                // Do Something
+            }
+
+            @Override
+            public void onDisabledDateSelected(int year, int month, int day, int dayOfWeek, boolean isDisabled) {
+                // Do Something
+            }
+        });
+
+
         save = v.findViewById(R.id.back);
-        CalendarView calendarView = v.findViewById(R.id.calendarView);
 
-        calendarView.setMaxDate(System.currentTimeMillis());
-
-        Calendar minDate = Calendar.getInstance();
-        minDate.add(Calendar.YEAR, -1);
-        calendarView.setMinDate(minDate.getTimeInMillis());
-
-        calendarView.setDate(System.currentTimeMillis());
 
         save.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -86,16 +135,6 @@ public class DrinkingFragment extends Fragment {
             }
         });
 
-        calendarView.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
-            @Override
-            public void onSelectedDayChange(@NonNull CalendarView view, int year, int month, int dayOfMonth) {
-                Calendar selectedDate = Calendar.getInstance();
-                selectedDate.set(year, month, dayOfMonth);
-                Date date = selectedDate.getTime();
-
-                updateWaterDataForSelectedDate(date);
-            }
-        });
 
         ref = mDb.getReference("users").child(pC.getSplittedPathChild(user.getEmail())).child("characteristic").child("water");
         ref.addValueEventListener(new ValueEventListener() {

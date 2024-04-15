@@ -2,7 +2,9 @@ pluginManagement {
     repositories {
         gradlePluginPortal()
         google()
+        jcenter()
         mavenCentral()
+        maven { url 'https://jitpack.io' }
     }
 
 }
@@ -11,7 +13,11 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
+        jcenter()
+        maven { url 'https://jitpack.io' }
     }
 }
 rootProject.name = "Health_Care"
 include ':app'
+
+

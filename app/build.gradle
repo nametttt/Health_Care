@@ -30,6 +30,7 @@ android {
     buildFeatures {
         viewBinding true
     }
+
 }
 
 dependencies {
@@ -49,5 +50,7 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
     implementation 'com.sun.mail:android-mail:1.6.0'
     implementation 'com.sun.mail:android-activation:1.6.0'
+    implementation 'com.github.akshittyagi205:HorizontalCalendarView:v1.0.0'
+    implementation 'com.vivekkaushik.datepicker:datePickerTimeline:0.0.4'
 
 }

@@ -29,6 +29,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.Locale;
 
 public class HealthCommonFragment extends Fragment {
 
@@ -46,7 +47,8 @@ public class HealthCommonFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-
+        Locale locale = new Locale("ru");
+        Locale.setDefault(locale);
         View v = inflater.inflate(R.layout.fragment_health_common, container, false);
         init(v);
         return v;
@@ -60,6 +62,8 @@ public class HealthCommonFragment extends Fragment {
         pressure = v.findViewById(R.id.pressure);
         pulse = v.findViewById(R.id.pulse);
         temperature = v.findViewById(R.id.temperature);
+
+
 
         commonDataArrayList = new ArrayList<CommonHealthData>();
         adapter = new CommonHealthRecyclerView(getContext(), commonDataArrayList);
