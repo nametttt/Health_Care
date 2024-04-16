@@ -8,11 +8,14 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CalendarView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -30,6 +33,7 @@ import java.util.Calendar;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.Locale;
+
 
 public class HealthCommonFragment extends Fragment {
 
@@ -62,8 +66,6 @@ public class HealthCommonFragment extends Fragment {
         pressure = v.findViewById(R.id.pressure);
         pulse = v.findViewById(R.id.pulse);
         temperature = v.findViewById(R.id.temperature);
-
-
 
         commonDataArrayList = new ArrayList<CommonHealthData>();
         adapter = new CommonHealthRecyclerView(getContext(), commonDataArrayList);

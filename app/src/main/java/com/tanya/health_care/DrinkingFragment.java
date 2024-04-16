@@ -38,8 +38,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-import in.akshit.horizontalcalendar.HorizontalCalendarView;
-import in.akshit.horizontalcalendar.Tools;
 
 
 public class DrinkingFragment extends Fragment {
@@ -81,36 +79,16 @@ public class DrinkingFragment extends Fragment {
         DatePickerTimeline calendarView = v.findViewById(R.id.HorizontalCalendar);
         Calendar today = Calendar.getInstance();
 
-        Calendar oneMonthAgo = Calendar.getInstance();
-        oneMonthAgo.add(Calendar.DAY_OF_MONTH, -4);
-
-        calendarView.setInitialDate(oneMonthAgo.get(Calendar.YEAR), oneMonthAgo.get(Calendar.MONTH), oneMonthAgo.get(Calendar.DAY_OF_MONTH));
-
+// Устанавливаем сегодняшнюю дату как выбранную и активируем календарь
         calendarView.setActiveDate(today);
-        Calendar startDate = Calendar.getInstance();
-        startDate.setTime(today.getTime());
+        calendarView.setActivated(true);
 
-        Calendar endDate = Calendar.getInstance();
-        endDate.set(Calendar.YEAR, today.get(Calendar.YEAR));
-        endDate.set(Calendar.MONTH, today.get(Calendar.MONTH));
-        endDate.set(Calendar.DAY_OF_MONTH, endDate.getActualMaximum(Calendar.DAY_OF_MONTH));
-
-        List<Date> inactiveDates = new ArrayList<>();
-        while (startDate.before(endDate)) {
-            startDate.add(Calendar.DAY_OF_MONTH, 1);
-            inactiveDates.add(startDate.getTime());
+// Устанавливаем сегодняшнюю дату как начальную только если календарь активирован
+        if (calendarView.isActivated()) {
+            calendarView.setInitialDate(today.get(Calendar.YEAR), today.get(Calendar.MONTH), today.get(Calendar.DAY_OF_MONTH));
         }
 
-        Date[] inactiveDatesArray = inactiveDates.toArray(new Date[0]);
-
-        calendarView.deactivateDates(inactiveDatesArray);
-
-        calendarView.post(new Runnable() {
-            @Override
-            public void run() {
-                calendarView.setInitialDate(oneMonthAgo.get(Calendar.YEAR), oneMonthAgo.get(Calendar.MONTH - 1), oneMonthAgo.get(Calendar.DAY_OF_MONTH));
-            }
-        });
+// Устанавливаем слушатель событий календаря
         calendarView.setOnDateSelectedListener(new OnDateSelectedListener() {
             @Override
             public void onDateSelected(int year, int month, int day, int dayOfWeek) {
@@ -122,6 +100,7 @@ public class DrinkingFragment extends Fragment {
                 // Do Something
             }
         });
+
 
 
         save = v.findViewById(R.id.back);
