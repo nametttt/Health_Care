@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CalendarView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -31,15 +32,21 @@ import com.tanya.health_care.code.RecordMainModel;
 import com.tanya.health_care.code.RecordRecyclerView;
 import com.tanya.health_care.dialog.CustomDialog;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.Locale;
+
+import in.akshit.horizontalcalendar.HorizontalCalendarView;
+import in.akshit.horizontalcalendar.Tools;
 
 public class PhysicalParametersFragment extends Fragment {
 
     Button exit, add;
-    TextView imt, height, weight, aboutImt;
+    TextView imt, height, weight, aboutImt, dateText;
     DatabaseReference ref;
     GetSplittedPathChild pC = new GetSplittedPathChild();
     FirebaseDatabase mDb;
@@ -57,7 +64,10 @@ public class PhysicalParametersFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_physical_parameters, container, false);
+        Locale locale = new Locale("ru");
+        Locale.setDefault(locale);
         initViews(v);
+        updatePhysicalDataForSelectedDate(new Date());
         return v;
     }
 
@@ -71,6 +81,8 @@ public class PhysicalParametersFragment extends Fragment {
         weight = v.findViewById(R.id.weight);
         aboutImt = v.findViewById(R.id.aboutImt);
 
+        dateText = v.findViewById(R.id.dateText);
+
         physicalDataArrayList = new ArrayList<>();
         adapter = new PhysicalParametersRecyclerView(getContext(), physicalDataArrayList);
         recyclerView = v.findViewById(R.id.recyclerView);
@@ -78,16 +90,41 @@ public class PhysicalParametersFragment extends Fragment {
         recyclerView.setAdapter(adapter);
         addDataOnRecyclerView();
 
-        calendarView = v.findViewById(R.id.calendarView);
-        initCalendarListener();
+        HorizontalCalendarView calendarView = v.findViewById(R.id.calendar);
 
-        calendarView.setMaxDate(System.currentTimeMillis());
+        Calendar starttime = Calendar.getInstance();
+        starttime.add(Calendar.MONTH,-6);
 
-        Calendar minDate = Calendar.getInstance();
-        minDate.add(Calendar.YEAR, -1);
-        calendarView.setMinDate(minDate.getTimeInMillis());
+        Calendar endtime = Calendar.getInstance();
+        endtime.add(Calendar.MONTH,6);
 
-        calendarView.setDate(System.currentTimeMillis());
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");
+        String formattedDate = dateFormat.format(Calendar.getInstance().getTime());
+        dateText.setText("Дата " + formattedDate);
+
+        ArrayList datesToBeColored = new ArrayList();
+        datesToBeColored.add(Tools.getFormattedDateToday());
+
+        calendarView.setUpCalendar(starttime.getTimeInMillis(),
+                endtime.getTimeInMillis(),
+                datesToBeColored,
+                new HorizontalCalendarView.OnCalendarListener() {
+                    @Override
+                    public void onDateSelected(String date) {
+                        Calendar selectedDate = Calendar.getInstance();
+                        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+                        SimpleDateFormat dateFormate = new SimpleDateFormat("dd.MM.yyyy");
+                        try {
+                            selectedDate.setTime(dateFormat.parse(date));
+                            String formattedDate = dateFormate.format(selectedDate.getTime());
+                            dateText.setText("Дата " + formattedDate);
+                            updatePhysicalDataForSelectedDate(selectedDate.getTime());
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
+
 
         ref = mDb.getReference("users").child(pC.getSplittedPathChild(user.getEmail())).child("characteristic").child("physicalParameters");
         ref.addValueEventListener(new ValueEventListener() {
@@ -96,9 +133,9 @@ public class PhysicalParametersFragment extends Fragment {
                 try {
                     int count = 0;
                     float Height = 0, mHeight = 0, Imt = 0, Weight = 0;
-                    for (DataSnapshot dataSnapshot: snapshot.getChildren()){
+                    for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
                         PhysicalParametersData common = dataSnapshot.getValue(PhysicalParametersData.class);
-                        if(isSameDay(common.lastAdded, new Date())){
+                        if (isSameDay(common.lastAdded, new Date())) {
                             Height = common.height;
                             mHeight = common.height / 100.0f;
                             Weight = common.weight;
@@ -119,7 +156,8 @@ public class PhysicalParametersFragment extends Fragment {
             }
 
             @Override
-            public void onCancelled(@NonNull DatabaseError error) {}
+            public void onCancelled(@NonNull DatabaseError error) {
+            }
         });
 
         exit.setOnClickListener(new View.OnClickListener() {
@@ -139,17 +177,6 @@ public class PhysicalParametersFragment extends Fragment {
                 args.putString("Add", "Добавить");
                 fragment.setArguments(args);
                 homeActivity.replaceFragment(fragment);
-            }
-        });
-    }
-
-    private void initCalendarListener() {
-        calendarView.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
-            @Override
-            public void onSelectedDayChange(CalendarView view, int year, int month, int dayOfMonth) {
-                Calendar selectedDate = Calendar.getInstance();
-                selectedDate.set(year, month, dayOfMonth);
-                updatePhysicalDataForSelectedDate(selectedDate.getTime());
             }
         });
     }
@@ -241,20 +268,16 @@ public class PhysicalParametersFragment extends Fragment {
             }
 
             @Override
-            public void onCancelled(@NonNull DatabaseError error) {}
+            public void onCancelled(@NonNull DatabaseError error) {
+            }
         };
         ref = mDb.getReference("users").child(pC.getSplittedPathChild(user.getEmail())).child("characteristic").child("physicalParameters");
         ref.addValueEventListener(valueEventListener);
     }
 
-    private boolean isSameDay(Date date1, Date date2) {
-        Calendar cal1 = Calendar.getInstance();
-        cal1.setTime(date1);
-        Calendar cal2 = Calendar.getInstance();
-        cal2.setTime(date2);
-        return cal1.get(Calendar.YEAR) == cal2.get(Calendar.YEAR) &&
-                cal1.get(Calendar.MONTH) == cal2.get(Calendar.MONTH) &&
-                cal1.get(Calendar.DAY_OF_MONTH) == cal2.get(Calendar.DAY_OF_MONTH);
+    public static boolean isSameDay(Date date1, Date date2) {
+        SimpleDateFormat fmt = new SimpleDateFormat("yyyyMMdd");
+        return fmt.format(date1).equals(fmt.format(date2));
     }
 
     private String getImtInfo(float imt, float height) {

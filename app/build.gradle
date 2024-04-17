@@ -46,18 +46,13 @@ dependencies {
     implementation 'com.google.firebase:firebase-auth:21.0.3'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'com.google.firebase:firebase-database:20.3.0'
-    implementation 'com.michalsvec:single-row-calednar:1.0.0'
-    implementation 'com.github.techisfun:onelinecalendar:0.4'
     implementation 'androidx.multidex:multidex:2.0.1'
-    implementation 'devs.mulham.horizontalcalendar:horizontalcalendar:1.3.4'
+    implementation 'com.github.akshittyagi205:HorizontalCalendarView:v1.0.0'
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
     implementation 'com.sun.mail:android-mail:1.6.0'
     implementation 'com.sun.mail:android-activation:1.6.0'
-    implementation 'com.vivekkaushik.datepicker:datePickerTimeline:0.0.4'
-    implementation 'org.jetbrains.kotlin:kotlin-stdlib:1.6.10'
-
 
 
 }

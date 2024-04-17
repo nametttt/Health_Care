@@ -48,17 +48,23 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textColor="@color/black"
-                    android:id="@+id/aboutImt"
-                    android:visibility="gone"
-                    android:textSize="20dp"
-                    android:layout_marginVertical="10dp"
-                    android:textAlignment="textStart"/>
-
-                <CalendarView
-                    android:id="@+id/calendarView"
+                    android:text="Выбранная дата"
+                    android:textSize="24dp"
+                    android:id="@+id/dateText"
+                    android:layout_marginVertical="15dp"
+                    android:textAlignment="textStart"
+                    android:textStyle="bold"/>
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    />
+                    android:background="@drawable/image_asset">
+
+                    <in.akshit.horizontalcalendar.HorizontalCalendarView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/calendar"/>
+
+                </LinearLayout>
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -234,7 +240,15 @@
                     </LinearLayout>
                 </LinearLayout>
 
-
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/black"
+                    android:id="@+id/aboutImt"
+                    android:visibility="gone"
+                    android:textSize="20dp"
+                    android:layout_marginVertical="10dp"
+                    android:textAlignment="textStart"/>
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

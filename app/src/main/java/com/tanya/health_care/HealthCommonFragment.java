@@ -17,8 +17,6 @@ import android.widget.CalendarView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.github.techisfun.onelinecalendar.OnDateClickListener;
-import com.github.techisfun.onelinecalendar.OneLineCalendarView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -29,7 +27,9 @@ import com.google.firebase.database.ValueEventListener;
 import com.tanya.health_care.code.CommonHealthData;
 import com.tanya.health_care.code.CommonHealthRecyclerView;
 import com.tanya.health_care.code.GetSplittedPathChild;
+import com.tanya.health_care.code.WaterData;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -37,15 +37,14 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.Locale;
 
-import devs.mulham.horizontalcalendar.HorizontalCalendar;
-import devs.mulham.horizontalcalendar.HorizontalCalendarView;
-import devs.mulham.horizontalcalendar.utils.HorizontalCalendarListener;
+import in.akshit.horizontalcalendar.HorizontalCalendarView;
+import in.akshit.horizontalcalendar.Tools;
 
 
 public class HealthCommonFragment extends Fragment {
 
     Button exit, add;
-    TextView pressure, temperature, pulse;
+    TextView pressure, temperature, pulse, dateText;
     DatabaseReference ref;
     GetSplittedPathChild pC = new GetSplittedPathChild();
 
@@ -62,6 +61,7 @@ public class HealthCommonFragment extends Fragment {
         Locale.setDefault(locale);
         View v = inflater.inflate(R.layout.fragment_health_common, container, false);
         init(v);
+        updateCommonDataForSelectedDate(new Date());
         return v;
     }
 
@@ -73,7 +73,7 @@ public class HealthCommonFragment extends Fragment {
         pressure = v.findViewById(R.id.pressure);
         pulse = v.findViewById(R.id.pulse);
         temperature = v.findViewById(R.id.temperature);
-
+        dateText = v.findViewById(R.id.dateText);
         commonDataArrayList = new ArrayList<CommonHealthData>();
         adapter = new CommonHealthRecyclerView(getContext(), commonDataArrayList);
         recyclerView = v.findViewById(R.id.recyclerViews);
@@ -81,50 +81,39 @@ public class HealthCommonFragment extends Fragment {
         recyclerView.setAdapter(adapter);
         addDataOnRecyclerView();
 
+        HorizontalCalendarView calendarView = v.findViewById(R.id.calendar);
 
-        Calendar startDate = Calendar.getInstance();
-        startDate.add(Calendar.MONTH, -1);
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");
+        String formattedDate = dateFormat.format(Calendar.getInstance().getTime());
+        dateText.setText("Дата " + formattedDate);
 
-        /* ends after 1 month from now */
-        Calendar endDate = Calendar.getInstance();
-        endDate.add(Calendar.MONTH, 1);
+        Calendar starttime = Calendar.getInstance();
+        starttime.add(Calendar.MONTH, -1);
 
+        Calendar endtime = Calendar.getInstance();
 
+        ArrayList<String> datesToBeColored = new ArrayList<>();
+        datesToBeColored.add(Tools.getFormattedDateToday());
 
-
-        ref = mDb.getReference("users").child(pC.getSplittedPathChild(user.getEmail())).child("characteristic").child("commonHealth");
-        ref.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                int count = 0;
-                int Pulse = 0;
-                String Pressure = "";
-                float Temperature = 0;
-                for (DataSnapshot dataSnapshot: snapshot.getChildren()){
-                    CommonHealthData common = dataSnapshot.getValue(CommonHealthData.class);
-                    if(isWithinLastWeek(common.lastAdded, new Date())){
-                        Pulse = common.pulse;
-                        Pressure = common.pressure;
-                        Temperature = common.temperature;
-                        count++;
+        calendarView.setUpCalendar(starttime.getTimeInMillis(),
+                endtime.getTimeInMillis(),
+                datesToBeColored,
+                new HorizontalCalendarView.OnCalendarListener() {
+                    @Override
+                    public void onDateSelected(String date) {
+                        Calendar selectedDate = Calendar.getInstance();
+                        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+                        SimpleDateFormat dateFormate = new SimpleDateFormat("dd.MM.yyyy");
+                        try {
+                            selectedDate.setTime(dateFormat.parse(date));
+                            String formattedDate = dateFormate.format(selectedDate.getTime());
+                            dateText.setText("Дата " + formattedDate);
+                            updateCommonDataForSelectedDate(selectedDate.getTime());
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                        }
                     }
-                }
-                temperature.setText(String.valueOf(Temperature));
-                pulse.setText(String.valueOf(Pulse));
-                pressure.setText(String.valueOf(Pressure));
-                if(count <= 0){
-                    temperature.setText("–");
-                    pulse.setText("–");
-                    pressure.setText("–");
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
-
+                });
 
         exit.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -146,25 +135,6 @@ public class HealthCommonFragment extends Fragment {
             }
         });
 
-
-
-        HorizontalCalendar horizontalCalendar = new HorizontalCalendar.Builder(v, R.id.sometext)
-                .range(startDate, endDate)
-                .datesNumberOnScreen(7)
-                .build();
-
-        horizontalCalendar.setCalendarListener(new HorizontalCalendarListener() {
-            @Override
-            public void onDateSelected(Calendar date, int position) {
-
-            }
-
-            @Override
-            public boolean onDateLongClicked(Calendar date, int position) {
-                return true;
-            }
-        });
-
     }
 
     private void addDataOnRecyclerView() {
@@ -178,7 +148,7 @@ public class HealthCommonFragment extends Fragment {
                     ds.getValue();
                     CommonHealthData ps = ds.getValue(CommonHealthData.class);
                     assert ps != null;
-                    if(isWithinLastWeek(ps.lastAdded, new Date())){
+                    if(isSameDay(ps.lastAdded, new Date())){
                         commonDataArrayList.add(ps);
                     }
                 }
@@ -192,25 +162,59 @@ public class HealthCommonFragment extends Fragment {
             }
         };
         ref = mDb.getReference("users").child(pC.getSplittedPathChild(user.getEmail())).child("characteristic").child("commonHealth");
-
         ref.addValueEventListener(valueEventListener);
     }
 
-    public static boolean isWithinLastWeek(Date date1, Date date2) {
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(new Date());
-        calendar.add(Calendar.DAY_OF_YEAR, -7);
+    public static boolean isSameDay(Date date1, Date date2) {
+        SimpleDateFormat fmt = new SimpleDateFormat("yyyyMMdd", Locale.getDefault());
+        return fmt.format(date1).equals(fmt.format(date2));
+    }
 
-        Date lastWeekDate = calendar.getTime();
+    private void updateCommonDataForSelectedDate(Date selectedDate) {
+        ref.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                commonDataArrayList.clear();
 
-        return (date1.after(lastWeekDate) || date1.equals(lastWeekDate)) &&
-                (date2.after(lastWeekDate) || date2.equals(lastWeekDate));
+                int count = 0;
+                int Pulse = 0;
+                String Pressure = "";
+                float Temperature = 0;
+                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                    CommonHealthData common = dataSnapshot.getValue(CommonHealthData.class);
+                    if (isSameDay(common.lastAdded, selectedDate)) {
+                        commonDataArrayList.add(common);
+
+                        Pulse = common.pulse;
+                        Pressure = common.pressure;
+                        Temperature = common.temperature;
+                        count++;
+                    }
+                }
+                temperature.setText(String.valueOf(Temperature));
+                pulse.setText(String.valueOf(Pulse));
+                pressure.setText(String.valueOf(Pressure));
+                if (count <= 0) {
+                    temperature.setText("–");
+                    pulse.setText("–");
+                    pressure.setText("–");
+                }
+                adapter.notifyDataSetChanged();
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                // Handle onCancelled event
+            }
+        });
     }
 
 }
+
 class SortCommon implements Comparator<CommonHealthData> {
     @Override
     public int compare(CommonHealthData a, CommonHealthData b) {
-        return  b.lastAdded.compareTo(a.lastAdded);
+        return b.lastAdded.compareTo(a.lastAdded);
     }
 }
