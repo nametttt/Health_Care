@@ -1,5 +1,7 @@
 package com.tanya.health_care;
 
+import static com.kizitonwose.calendar.core.ExtensionsKt.firstDayOfWeekFromLocale;
+
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -13,7 +15,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.CalendarView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -24,6 +25,9 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+
+import com.prolificinteractive.materialcalendarview.CalendarDay;
+import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
 import com.tanya.health_care.code.CommonHealthData;
 import com.tanya.health_care.code.CommonHealthRecyclerView;
 import com.tanya.health_care.code.GetSplittedPathChild;
@@ -48,15 +52,18 @@ public class HealthCommonFragment extends Fragment {
     ArrayList<CommonHealthData> commonDataArrayList;
     CommonHealthRecyclerView adapter;
 
+
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
+
         Locale locale = new Locale("ru");
         Locale.setDefault(locale);
         View v = inflater.inflate(R.layout.fragment_health_common, container, false);
         init(v);
         return v;
     }
+
 
     void init(View v){
         user = FirebaseAuth.getInstance().getCurrentUser();
@@ -127,6 +134,21 @@ public class HealthCommonFragment extends Fragment {
                 homeActivity.replaceFragment(fragment);
             }
         });
+
+        MaterialCalendarView calendarView = v.findViewById(R.id.calendarView);
+
+        CalendarDay minDay = CalendarDay.from(2022, 12, 12);
+        CalendarDay maxDay = CalendarDay.from(2024, 12, 12);
+
+
+
+        calendarView.state().edit()
+                .setMinimumDate(minDay)
+                .setMaximumDate(maxDay)
+                .commit();
+
+
+
 
     }
 

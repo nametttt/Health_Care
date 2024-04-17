@@ -53,11 +53,15 @@
             android:paddingVertical="10dp"
             android:background="@drawable/image_asset">
 
-            <com.kizitonwose.calendarview.CalendarView
+
+            <com.prolificinteractive.materialcalendarview.MaterialCalendarView
                 android:id="@+id/calendarView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:cv_dayViewResource="@layout/calendar_day_layout" />
+                app:mcv_selectionColor="@color/green"
+                app:mcv_calendarMode="week"
+
+                />
 
         </LinearLayout>
         <LinearLayout
