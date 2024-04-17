@@ -9,6 +9,7 @@
         android:label="HealthCare"
         android:supportsRtl="true"
         android:theme="@style/Theme.Health_Care"
+        tools:replace="android:label"
         tools:targetApi="31">
         <activity
             android:name=".MainActivityAboutApp"

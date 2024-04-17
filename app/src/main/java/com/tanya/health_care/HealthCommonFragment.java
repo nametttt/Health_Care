@@ -17,6 +17,8 @@ import android.widget.CalendarView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.github.techisfun.onelinecalendar.OnDateClickListener;
+import com.github.techisfun.onelinecalendar.OneLineCalendarView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -28,11 +30,16 @@ import com.tanya.health_care.code.CommonHealthData;
 import com.tanya.health_care.code.CommonHealthRecyclerView;
 import com.tanya.health_care.code.GetSplittedPathChild;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.Locale;
+
+import devs.mulham.horizontalcalendar.HorizontalCalendar;
+import devs.mulham.horizontalcalendar.HorizontalCalendarView;
+import devs.mulham.horizontalcalendar.utils.HorizontalCalendarListener;
 
 
 public class HealthCommonFragment extends Fragment {
@@ -69,10 +76,21 @@ public class HealthCommonFragment extends Fragment {
 
         commonDataArrayList = new ArrayList<CommonHealthData>();
         adapter = new CommonHealthRecyclerView(getContext(), commonDataArrayList);
-        recyclerView = v.findViewById(R.id.recyclerView);
+        recyclerView = v.findViewById(R.id.recyclerViews);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setAdapter(adapter);
         addDataOnRecyclerView();
+
+
+        Calendar startDate = Calendar.getInstance();
+        startDate.add(Calendar.MONTH, -1);
+
+        /* ends after 1 month from now */
+        Calendar endDate = Calendar.getInstance();
+        endDate.add(Calendar.MONTH, 1);
+
+
+
 
         ref = mDb.getReference("users").child(pC.getSplittedPathChild(user.getEmail())).child("characteristic").child("commonHealth");
         ref.addValueEventListener(new ValueEventListener() {
@@ -125,6 +143,25 @@ public class HealthCommonFragment extends Fragment {
                 args.putString("Add", "Добавить");
                 fragment.setArguments(args);
                 homeActivity.replaceFragment(fragment);
+            }
+        });
+
+
+
+        HorizontalCalendar horizontalCalendar = new HorizontalCalendar.Builder(v, R.id.sometext)
+                .range(startDate, endDate)
+                .datesNumberOnScreen(7)
+                .build();
+
+        horizontalCalendar.setCalendarListener(new HorizontalCalendarListener() {
+            @Override
+            public void onDateSelected(Calendar date, int position) {
+
+            }
+
+            @Override
+            public boolean onDateLongClicked(Calendar date, int position) {
+                return true;
             }
         });
 
