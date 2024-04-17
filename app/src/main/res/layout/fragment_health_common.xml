@@ -53,14 +53,10 @@
             android:paddingVertical="10dp"
             android:background="@drawable/image_asset">
 
-
-            <com.prolificinteractive.materialcalendarview.MaterialCalendarView
-                android:id="@+id/calendarView"
+            <com.sahana.horizontalcalendar.HorizontalCalendar
+                android:id="@+id/tagsss"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:mcv_selectionColor="@color/green"
-                app:mcv_calendarMode="week"
-
+                android:layout_height="match_parent"
                 />
 
         </LinearLayout>
@@ -253,7 +249,7 @@
             android:textStyle="bold"/>
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recyclerView"
+            android:id="@+id/recyclerViews"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             />

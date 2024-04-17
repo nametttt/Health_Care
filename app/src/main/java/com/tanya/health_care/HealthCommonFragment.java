@@ -76,7 +76,7 @@ public class HealthCommonFragment extends Fragment {
 
         commonDataArrayList = new ArrayList<CommonHealthData>();
         adapter = new CommonHealthRecyclerView(getContext(), commonDataArrayList);
-        recyclerView = v.findViewById(R.id.recyclerView);
+        recyclerView = v.findViewById(R.id.recyclerViews);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setAdapter(adapter);
         addDataOnRecyclerView();
@@ -135,17 +135,17 @@ public class HealthCommonFragment extends Fragment {
             }
         });
 
-        MaterialCalendarView calendarView = v.findViewById(R.id.calendarView);
-
-        CalendarDay minDay = CalendarDay.from(2022, 12, 12);
-        CalendarDay maxDay = CalendarDay.from(2024, 12, 12);
-
-
-
-        calendarView.state().edit()
-                .setMinimumDate(minDay)
-                .setMaximumDate(maxDay)
-                .commit();
+//        MaterialCalendarView calendarView = v.findViewById(R.id.calendarView);
+//
+//        CalendarDay minDay = CalendarDay.from(2022, 12, 12);
+//        CalendarDay maxDay = CalendarDay.from(2024, 12, 12);
+//
+//
+//
+//        calendarView.state().edit()
+//                .setMinimumDate(minDay)
+//                .setMaximumDate(maxDay)
+//                .commit();
 
 
 
