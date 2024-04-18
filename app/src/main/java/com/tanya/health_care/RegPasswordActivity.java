@@ -22,7 +22,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.tanya.health_care.code.EyeVisibility;
-import com.tanya.health_care.code.User;
+import com.tanya.health_care.code.UserData;
 import com.tanya.health_care.code.GetSplittedPathChild;
 import com.tanya.health_care.dialog.CustomDialog;
 
@@ -147,7 +147,7 @@ public class RegPasswordActivity extends AppCompatActivity {
                                 if (firebaseUser != null) {
                                     String userId = firebaseUser.getUid();
 
-                                    User user = new User(email, name, gender, "Пользователь", birthday);
+                                    UserData user = new UserData(email, name, gender, "Пользователь", birthday, "notphoto.png", "");
 
                                     DatabaseReference userRef = ref.child(splittedPathChild);
 

@@ -6,9 +6,9 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -21,7 +21,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.tanya.health_care.code.User;
+import com.squareup.picasso.Picasso;
+import com.tanya.health_care.code.UserData;
 import com.tanya.health_care.code.GetSplittedPathChild;
 import com.tanya.health_care.dialog.CustomDialog;
 import com.tanya.health_care.dialog.deleteDialog;
@@ -30,6 +31,7 @@ public class ProfileFragment extends Fragment {
 
     private LinearLayout lnUserProfile, lnChangePassword, lnDeleteProfile, lnExitProfile, lnEmail;
     private TextView name, email;
+    ImageView imageView;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
@@ -48,6 +50,7 @@ public class ProfileFragment extends Fragment {
             lnDeleteProfile = v.findViewById(R.id.deleteProfile);
             lnExitProfile = v.findViewById(R.id.exitProfile);
             lnEmail = v.findViewById(R.id.emailWrite);
+            imageView = v.findViewById(R.id.imageView);
 
             viewData();
 
@@ -99,8 +102,9 @@ public class ProfileFragment extends Fragment {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                         if (snapshot.exists()) {
-                            User user1 = snapshot.getValue(User.class);
+                            UserData user1 = snapshot.getValue(UserData.class);
                             if (user1 != null) {
+                                setTextPhoto(user1);
                                 name.setText(user1.getName());
                                 email.setText(user1.getEmail());
                             }
@@ -120,4 +124,13 @@ public class ProfileFragment extends Fragment {
         }
 
     }
+    private void setTextPhoto(UserData user1){
+        if (user1.getImage().isEmpty()) {
+            imageView.setImageResource(R.drawable.notphoto);
+        } else {
+            Picasso.get().load(user1.getImage()).placeholder(R.drawable.notphoto).into(imageView);
+        }
+
+    }
+
 }

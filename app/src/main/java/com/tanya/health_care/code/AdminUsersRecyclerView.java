@@ -1,7 +1,6 @@
 package com.tanya.health_care.code;
 
 import android.content.Context;
-import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,23 +12,18 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.tanya.health_care.AboutArticleFragment;
 import com.tanya.health_care.AdminChangeUserFragment;
 import com.tanya.health_care.AdminHomeActivity;
-import com.tanya.health_care.ChangeCommonHealthFragment;
-import com.tanya.health_care.ChangeDrinkingFragment;
-import com.tanya.health_care.HomeActivity;
 import com.tanya.health_care.R;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 public class AdminUsersRecyclerView extends RecyclerView.Adapter<AdminUsersRecyclerView.ViewHolder> {
 
-    private ArrayList<User> users;
+    private ArrayList<UserData> users;
     private Context context;
 
-    public AdminUsersRecyclerView(Context context, ArrayList<User> users) {
+    public AdminUsersRecyclerView(Context context, ArrayList<UserData> users) {
         this.context = context;
         this.users = users;
     }
@@ -43,7 +37,7 @@ public class AdminUsersRecyclerView extends RecyclerView.Adapter<AdminUsersRecyc
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        User currentCommon = users.get(position);
+        UserData currentCommon = users.get(position);
         holder.names.setText(currentCommon.email);
 
         holder.roles.setText(currentCommon.role);

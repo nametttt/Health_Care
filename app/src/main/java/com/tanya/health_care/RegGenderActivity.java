@@ -7,8 +7,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.RadioButton;
-import android.widget.Toast;
-import com.tanya.health_care.code.User;
+
 import com.tanya.health_care.dialog.CustomDialog;
 
 public class RegGenderActivity extends AppCompatActivity {

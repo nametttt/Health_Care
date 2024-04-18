@@ -31,6 +31,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
             android:layout_marginHorizontal="20dp"
             android:orientation="vertical">
 
@@ -45,30 +46,33 @@
                 android:textSize="32dp"
                 android:textStyle="bold" />
 
-<!--            <TextView-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:layout_marginTop="20dp"-->
-<!--                android:layout_marginBottom="10dp"-->
-<!--                android:text="Фотография профиля"-->
-<!--                android:textAlignment="textStart"-->
-<!--                android:textColor="@color/darkgray"-->
-<!--                android:textSize="20dp" />-->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="10dp"
+                android:text="Фотография профиля"
+                android:textAlignment="textStart"
+                android:textColor="@color/darkgray"
+                android:textSize="20dp" />
 
-<!--            <androidx.cardview.widget.CardView-->
-<!--                android:layout_width="150dp"-->
-<!--                android:layout_height="150dp"-->
-<!--                android:layout_gravity="center"-->
-<!--                app:cardCornerRadius="100dp">-->
+            <androidx.cardview.widget.CardView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                app:cardCornerRadius="100dp">
 
-<!--                <ImageView-->
-<!--                    android:layout_width="match_parent"-->
-<!--                    android:layout_height="match_parent"-->
-<!--                    android:adjustViewBounds="true"-->
-<!--                    android:scaleType="centerCrop"-->
-<!--                    android:src="@drawable/cat" />-->
+                <ImageView
+                    android:layout_width="200dp"
+                    android:layout_height="200dp"
+                    android:adjustViewBounds="true"
+                    android:scaleType="centerCrop"
+                    android:id="@+id/imageView"
+                    android:foreground="@drawable/image_asset"
+                    android:src="@drawable/notphoto" />
 
-<!--            </androidx.cardview.widget.CardView>-->
+            </androidx.cardview.widget.CardView>
+
 
             <TextView
                 android:layout_width="match_parent"

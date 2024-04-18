@@ -39,17 +39,20 @@
             android:padding="20dp">
 
             <androidx.cardview.widget.CardView
-                android:layout_width="150dp"
-                android:layout_height="150dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                app:cardCornerRadius="100dp">
+                android:layout_marginHorizontal="50dp"
+                app:cardCornerRadius="120dp">
 
                 <ImageView
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_width="200dp"
+                    android:layout_height="200dp"
+                    android:id="@+id/imageView"
                     android:adjustViewBounds="true"
                     android:scaleType="centerCrop"
-                    android:src="@drawable/cat" />
+                    android:foreground="@drawable/image_asset"
+                    android:src="@drawable/notphoto" />
 
             </androidx.cardview.widget.CardView>
 
@@ -59,6 +62,7 @@
             android:textColor="@color/black"
             android:id="@+id/userName"
             android:textSize="24dp"
+            android:text="загрузка..."
             android:textStyle="bold"
             android:layout_marginTop="10dp"
             android:gravity="center"
@@ -69,6 +73,7 @@
             android:textColor="@color/black"
             android:id="@+id/userEmail"
             android:textSize="20dp"
+            android:text="загрузка..."
             android:gravity="center"
             android:layout_marginBottom="5dp"/>
     </LinearLayout>

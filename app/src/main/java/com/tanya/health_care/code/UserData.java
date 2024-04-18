@@ -1,21 +1,22 @@
 package com.tanya.health_care.code;
 
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-public class User {
-    public String email, name, gender, role, birthday;
+public class UserData {
+    public String email, name, gender, role, birthday, image, token;
 
-    public User() {
+    public UserData() {
     }
 
-    public User(String email, String name, String gender, String role, String birthday) {
+    public UserData(String email, String name, String gender, String role, String birthday, String image, String deviceToken) {
         this.email = email;
         this.name = name;
         this.gender = gender;
         this.role = role;
         this.birthday = birthday;
+        this.image = image;
+        this.token = deviceToken;
     }
 
     public Map<String, Object> toMap() {
@@ -25,15 +26,24 @@ public class User {
         result.put("gender", gender);
         result.put("role", role);
         result.put("birthday", birthday);
+        result.put("image", image);
+        result.put("token", token);
         return result;
     }
     public String getEmail() {
         return email;
     }
+    public String getImage() {
+        return image;
+    }
 
     public void setEmail(String email) {
         this.email = email;
     }
+    public void setImage(String image) {
+        this.image = image;
+    }
+
 
     public String getName() {
         return name;
