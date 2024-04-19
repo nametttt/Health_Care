@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class UserData {
-    public String email, name, gender, role, birthday, image, token;
+    public String email, name, gender, role, birthday, image, deviceToken;
 
     public UserData() {
     }
@@ -16,7 +16,7 @@ public class UserData {
         this.role = role;
         this.birthday = birthday;
         this.image = image;
-        this.token = deviceToken;
+        this.deviceToken = deviceToken;
     }
 
     public Map<String, Object> toMap() {
@@ -27,23 +27,29 @@ public class UserData {
         result.put("role", role);
         result.put("birthday", birthday);
         result.put("image", image);
-        result.put("token", token);
+        result.put("token", deviceToken);
         return result;
     }
     public String getEmail() {
         return email;
     }
-    public String getImage() {
-        return image;
-    }
-
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getImage() {
+        return image;
     }
     public void setImage(String image) {
         this.image = image;
     }
 
+    public String getToken() {
+        return deviceToken;
+    }
+    public void setToken(String image) {
+        this.deviceToken = deviceToken;
+    }
 
     public String getName() {
         return name;

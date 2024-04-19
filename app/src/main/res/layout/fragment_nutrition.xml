@@ -57,7 +57,7 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/image_asset">
+                    android:background="@drawable/calendar_asset">
 
                     <in.akshit.horizontalcalendar.HorizontalCalendarView
                         android:layout_width="match_parent"

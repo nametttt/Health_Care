@@ -44,12 +44,34 @@
                     android:textAlignment="textStart"
                     android:textStyle="bold"/>
 
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/black"
+                    android:text="Выбранная дата"
+                    android:textSize="24dp"
+                    android:id="@+id/dateText"
+                    android:layout_marginVertical="15dp"
+                    android:textAlignment="textStart"
+                    android:textStyle="bold"/>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/calendar_asset">
+
+                    <in.akshit.horizontalcalendar.HorizontalCalendarView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/calendar"/>
+
+                </LinearLayout>
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="15dp"
                     android:background="@drawable/health_asset"
                     android:padding="15dp">
+
 
                     <LinearLayout
                         android:layout_width="0dp"
@@ -77,6 +99,7 @@
                                 android:id="@+id/sleepDuration"
                                 android:textColor="@color/black"
                                 android:textSize="28dp"
+                                android:text="загрузка..."
                                 android:textStyle="bold" />
                         </LinearLayout>
 

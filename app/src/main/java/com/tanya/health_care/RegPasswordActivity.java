@@ -1,10 +1,15 @@
 package com.tanya.health_care;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.InputType;
 import android.view.View;
@@ -188,4 +193,6 @@ public class RegPasswordActivity extends AppCompatActivity {
 
         Toast.makeText(RegPasswordActivity.this, exception.toString(), Toast.LENGTH_SHORT).show();
     }
+
+
 }
