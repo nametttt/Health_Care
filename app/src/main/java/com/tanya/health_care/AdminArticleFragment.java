@@ -12,6 +12,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageButton;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -23,6 +25,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.tanya.health_care.code.AdminArticleRecyclerView;
 import com.tanya.health_care.code.ArticleData;
 import com.tanya.health_care.code.GetSplittedPathChild;
+import com.tanya.health_care.code.UserData;
 import com.tanya.health_care.dialog.CustomDialog;
 
 import java.util.ArrayList;
@@ -36,6 +39,8 @@ public class AdminArticleFragment extends Fragment {
     DatabaseReference ref;
     GetSplittedPathChild pC = new GetSplittedPathChild();
     FirebaseDatabase mDb;
+    ImageButton searchButton;
+    EditText searchEditText;
 
     public static AdminArticleFragment newInstance() {
         return new AdminArticleFragment();
@@ -55,6 +60,9 @@ public class AdminArticleFragment extends Fragment {
         user = FirebaseAuth.getInstance().getCurrentUser();
         mDb = FirebaseDatabase.getInstance();
 
+        searchButton = v.findViewById(R.id.search);
+        searchEditText = v.findViewById(R.id.searchEditText);
+
         articles = new ArrayList<ArticleData>();
         adapter = new AdminArticleRecyclerView(getContext(), articles);
         recyclerView = v.findViewById(R.id.recyclerView);
@@ -71,6 +79,18 @@ public class AdminArticleFragment extends Fragment {
                 args.putString("Add", "Добавить");
                 fragment.setArguments(args);
                 homeActivity.replaceFragment(fragment);
+            }
+        });
+
+        searchButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String searchText = searchEditText.getText().toString().trim();
+                if (searchText.isEmpty()) {
+                    addDataOnRecyclerView();
+                } else {
+                    filterArticles(searchText);
+                }
             }
         });
 
@@ -105,6 +125,29 @@ public class AdminArticleFragment extends Fragment {
             CustomDialog dialogFragment = new CustomDialog("Ошибка", e.getMessage());
             dialogFragment.show(getParentFragmentManager(), "custom_dialog");
         }
+    }
+    private void filterArticles(String searchText) {
+        ref = mDb.getReference().child("articles");
+        ref.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                articles.clear();
+                for (DataSnapshot ds : snapshot.getChildren()) {
+                    ArticleData articleData = ds.getValue(ArticleData.class);
+                    if (articleData != null ) {
+                        if (articleData.getTitle().toLowerCase().contains(searchText.toLowerCase())) {
+                            articles.add(articleData);
+                        }
+                    }
+                }
+                adapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
     }
 
 }

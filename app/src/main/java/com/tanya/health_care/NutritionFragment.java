@@ -13,11 +13,7 @@ import android.widget.Button;
 
 public class NutritionFragment extends Fragment {
 
-    public static NutritionFragment newInstance() {
-        return new NutritionFragment();
-    }
-
-    Button exit;
+    Button exit, addNutrition;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
@@ -30,11 +26,20 @@ public class NutritionFragment extends Fragment {
 
     void init(View v){
         exit = v.findViewById(R.id.back);
+        addNutrition = v.findViewById(R.id.addNutrition);
         exit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 HomeActivity homeActivity = (HomeActivity) getActivity();
                 homeActivity.replaceFragment(new HomeFragment());
+            }
+        });
+
+        addNutrition.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                HomeActivity homeActivity = (HomeActivity) getActivity();
+                homeActivity.replaceFragment(new ChangeNutritionFragment());
             }
         });
 

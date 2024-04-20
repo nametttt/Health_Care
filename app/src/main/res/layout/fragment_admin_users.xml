@@ -52,14 +52,17 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="0.9"
                 android:hint="Поиск"
+                android:id="@+id/searchEditText"
                 android:textSize="18dp"
                 android:maxLines="1"
                 android:padding="12dp"
                 android:backgroundTint="@color/lightgray"
                 />
 
+
             <ImageButton
                 android:layout_width="0dp"
+                android:id="@+id/search"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.12"
                 android:adjustViewBounds="true"
@@ -70,6 +73,18 @@
                 />
 
         </LinearLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/black"
+            android:text="Загрузка..."
+            android:textSize="20dp"
+            android:textStyle="italic"
+            android:id="@+id/loading"
+            android:layout_marginTop="15dp"
+            android:layout_marginBottom="5dp"
+            android:textAlignment="center"/>
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerView"

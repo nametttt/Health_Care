@@ -22,4 +22,12 @@ public class FoodData {
         this.carbohydrates = carbohydrates;
         this.fat = fat;
     }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 }

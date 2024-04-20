@@ -22,8 +22,14 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.tanya.health_care.code.EyeVisibility;
 import com.tanya.health_care.code.GetEmail;
+import com.tanya.health_care.code.GetSplittedPathChild;
 import com.tanya.health_care.dialog.CustomDialog;
 
 import java.util.Objects;
@@ -89,9 +95,6 @@ public class LoginActivity extends AppCompatActivity {
                     InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
                     imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
 
-
-
-
                 }
             });
 
@@ -129,30 +132,45 @@ public class LoginActivity extends AppCompatActivity {
                     .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
-                            FirebaseUser user = mAuth.getCurrentUser();
                             if (task.isSuccessful()) {
-                                assert user != null;
-                                if (Objects.equals(user.getEmail(), "ya@gmail.com")){
-                                    Intent mainIntent = new Intent(LoginActivity.this, AdminHomeActivity.class);
-                                    startActivity(mainIntent);
-                                    finish();
-                                    return;
-                                }
-                                else{
-                                    Intent x = new Intent(LoginActivity.this, HomeActivity.class);
-                                    startActivity(x);
-                                    finish();
-                                }
+                                FirebaseUser user = mAuth.getCurrentUser();
+                                GetSplittedPathChild pC = new GetSplittedPathChild();
+                                if (user != null) {
+                                    DatabaseReference userRef = FirebaseDatabase.getInstance().getReference().child("users").child(pC.getSplittedPathChild(user.getEmail()));
+                                    userRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                            String role = dataSnapshot.child("role").getValue(String.class);
+                                            if (role != null) {
+                                                if (role.equals("Администратор")) {
+                                                    Intent mainIntent = new Intent(LoginActivity.this, AdminHomeActivity.class);
+                                                    startActivity(mainIntent);
+                                                } else {
+                                                    Intent x = new Intent(LoginActivity.this, HomeActivity.class);
+                                                    startActivity(x);
+                                                }
+                                            } else {
+                                                CustomDialog dialogFragment = new CustomDialog("Ошибка", "Роль пользователя не определена!");
+                                                dialogFragment.show(getSupportFragmentManager(), "custom_dialog");
+                                            }
+                                            finish();
+                                        }
 
-                            }
-                            else
-                            {
+                                        @Override
+                                        public void onCancelled(@NonNull DatabaseError databaseError) {
+                                            CustomDialog dialogFragment = new CustomDialog("Ошибка", "Ошибка получения данных пользователя из базы данных!");
+                                            dialogFragment.show(getSupportFragmentManager(), "custom_dialog");
+                                        }
+                                    });
+                                }
+                            } else {
+                                // Обработка ошибок входа
                                 CustomDialog dialogFragment = new CustomDialog("Ошибка", "Вы ввели неверные данные пользователя!");
                                 dialogFragment.show(getSupportFragmentManager(), "custom_dialog");
-
                             }
                         }
                     });
+
         }
         catch (Exception e) {
             CustomDialog dialogFragment = new CustomDialog("Ошибка", e.getMessage());

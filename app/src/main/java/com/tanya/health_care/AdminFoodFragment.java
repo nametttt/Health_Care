@@ -12,6 +12,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageButton;
 
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -22,6 +24,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.tanya.health_care.code.AdminFoodRecyclerView;
 import com.tanya.health_care.code.FoodData;
 import com.tanya.health_care.code.GetSplittedPathChild;
+import com.tanya.health_care.code.UserData;
 
 import java.util.ArrayList;
 
@@ -31,7 +34,8 @@ public class AdminFoodFragment extends Fragment {
     RecyclerView recyclerView;
     ArrayList<FoodData> foods;
     AdminFoodRecyclerView adapter;
-    FirebaseUser user;
+    ImageButton searchButton;
+    EditText searchEditText;
     DatabaseReference ref;
     GetSplittedPathChild pC = new GetSplittedPathChild();
     FirebaseDatabase mDb;
@@ -46,6 +50,8 @@ public class AdminFoodFragment extends Fragment {
     void init(View v){
         addProduct = v.findViewById(R.id.addProduct);
         mDb = FirebaseDatabase.getInstance();
+        searchButton = v.findViewById(R.id.search);
+        searchEditText = v.findViewById(R.id.searchEditText);
 
         foods = new ArrayList<FoodData>();
         adapter = new AdminFoodRecyclerView(getContext(), foods);
@@ -54,6 +60,18 @@ public class AdminFoodFragment extends Fragment {
         recyclerView.setAdapter(adapter);
         addDataOnRecyclerView();
 
+
+        searchButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String searchText = searchEditText.getText().toString().trim();
+                if (searchText.isEmpty()) {
+                    addDataOnRecyclerView();
+                } else {
+                    filterFood(searchText);
+                }
+            }
+        });
         addProduct.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -92,5 +110,30 @@ public class AdminFoodFragment extends Fragment {
 
         ref.addValueEventListener(valueEventListener);
     }
+
+    private void filterFood(String searchText) {
+        ref = mDb.getReference().child("foods");
+        ref.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                foods.clear();
+                for (DataSnapshot ds : snapshot.getChildren()) {
+                    FoodData foodData = ds.getValue(FoodData.class);
+                    if (foodData != null) {
+                        if (foodData.getName().toLowerCase().contains(searchText.toLowerCase())) {
+                            foods.add(foodData);
+                        }
+                    }
+                }
+                adapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
+
 
 }

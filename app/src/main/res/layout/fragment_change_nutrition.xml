@@ -83,7 +83,7 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="450"
+                                android:text="0"
                                 android:textColor="@color/black"
                                 android:textSize="28dp"
                                 android:textStyle="bold" />
@@ -99,7 +99,7 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="1550"
+                                android:text="0"
                                 android:textColor="@color/black"
                                 android:layout_marginLeft="10dp"
                                 android:textSize="28dp"
@@ -139,15 +139,18 @@
                     android:textColor="@color/darkgray"
                     android:textSize="20dp" />
 
-                <EditText
+                <Spinner
+                    android:id="@+id/typeFood"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginVertical="5dp"
-                    android:padding="12dp"
-                    android:textSize="18dp"
-                    android:maxLines="1"
                     android:background="@drawable/edit_text_asset"
-                    android:hint="Тип приема пищи"/>
+                    android:textSize="20dp"
+                    android:paddingVertical="12dp"
+                    android:paddingHorizontal="5dp"
+                    android:textAlignment="textStart"
+                    android:entries="@array/type_food"
+                    />
 
                 <TextView
                     android:layout_width="match_parent"
@@ -165,6 +168,7 @@
                     android:layout_marginVertical="5dp"
                     android:padding="12dp"
                     android:textSize="18dp"
+                    android:id="@+id/nutritionTime"
                     android:maxLines="1"
                     android:background="@drawable/edit_text_asset"
                     android:hint="Время питания"/>

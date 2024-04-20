@@ -12,6 +12,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -34,6 +37,9 @@ public class AdminUsersFragment extends Fragment {
     FirebaseUser user;
     DatabaseReference ref;
     FirebaseDatabase mDb;
+    ImageButton searchButton;
+    EditText searchEditText;
+    TextView loading;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
@@ -48,13 +54,28 @@ public class AdminUsersFragment extends Fragment {
 
         user = FirebaseAuth.getInstance().getCurrentUser();
         mDb = FirebaseDatabase.getInstance();
-
+        loading = v.findViewById(R.id.loading);
         users = new ArrayList<UserData>();
         adapter = new AdminUsersRecyclerView(getContext(), users);
         recyclerView = v.findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setAdapter(adapter);
         addDataOnRecyclerView();
+
+        searchButton = v.findViewById(R.id.search);
+        searchEditText = v.findViewById(R.id.searchEditText);
+
+        searchButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String searchText = searchEditText.getText().toString().trim();
+                if (searchText.isEmpty()) {
+                    addDataOnRecyclerView();
+                } else {
+                    filterUsers(searchText);
+                }
+            }
+        });
 
         addUser.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -67,16 +88,41 @@ public class AdminUsersFragment extends Fragment {
 
     }
     private void addDataOnRecyclerView() {
-        ValueEventListener valueEventListener = new ValueEventListener() {
+        ref = mDb.getReference().child("users");
+        ref.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if (users.size() > 0) {
-                    users.clear();
-                }
+                users.clear();
                 for (DataSnapshot ds : snapshot.getChildren()) {
-                    UserData ps = ds.getValue(UserData.class);
-                    if (ps != null && !ps.getEmail().equals("ya@gmail.com")) {
-                        users.add(ps);
+                    UserData userData = ds.getValue(UserData.class);
+                    if (userData != null && !userData.getEmail().equals(user.getEmail())) {
+                        users.add(userData);
+                    }
+                }
+                loading.setVisibility(View.GONE);
+                adapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
+
+    private void filterUsers(String searchText) {
+        ref = mDb.getReference().child("users");
+        ref.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                users.clear();
+                for (DataSnapshot ds : snapshot.getChildren()) {
+                    UserData userData = ds.getValue(UserData.class);
+                    if (userData != null && !userData.getEmail().equals(user.getEmail())) {
+                        if (userData.getName().toLowerCase().contains(searchText.toLowerCase()) ||
+                                userData.getEmail().toLowerCase().contains(searchText.toLowerCase())) {
+                            users.add(userData);
+                        }
                     }
                 }
                 adapter.notifyDataSetChanged();
@@ -86,9 +132,7 @@ public class AdminUsersFragment extends Fragment {
             public void onCancelled(@NonNull DatabaseError error) {
 
             }
-        };
-        ref = mDb.getReference().child("users");
-        ref.addValueEventListener(valueEventListener);
+        });
     }
 
 

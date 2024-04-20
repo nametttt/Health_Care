@@ -95,7 +95,8 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="450"
+                                android:text="..."
+                                android:id="@+id/userCalories"
                                 android:textColor="@color/black"
                                 android:textSize="28dp"
                                 android:textStyle="bold" />
@@ -139,6 +140,7 @@
                             android:layout_marginTop="10dp"
                             android:background="@drawable/button_asset"
                             android:text="+ питание"
+                            android:id="@+id/addNutrition"
                             android:layout_marginRight="10dp"
                             android:textAlignment="center"
                             android:textAllCaps="false"
@@ -171,72 +173,12 @@
                     android:textAlignment="textStart"
                     android:textStyle="bold"/>
 
-                <LinearLayout
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recyclerViews"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
-                    android:background="@drawable/health_asset"
-                    android:padding="15dp">
-
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="0.8"
-                        android:orientation="vertical">
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="horizontal">
-
-                            <ImageView
-                                android:layout_width="25dp"
-                                android:layout_height="wrap_content"
-                                android:layout_gravity="center"
-                                android:adjustViewBounds="true"
-                                android:scaleType="centerInside"
-                                android:src="@drawable/logout" />
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginHorizontal="7dp"
-                                android:text="Обед 200 ккал"
-                                android:layout_gravity="center"
-                                android:textColor="@color/black"
-                                android:textSize="18dp"
-                                android:textStyle="bold" />
-
-                            <TextView
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_marginHorizontal="7dp"
-                                android:text="12:30"
-                                android:gravity="end"
-                                android:textColor="@color/black"
-                                android:textSize="18dp"/>
-                        </LinearLayout>
-
-
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="0.2"
-                        android:orientation="vertical">
-
-                        <ImageView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="end"
-                            android:layout_marginHorizontal="10dp"
-                            android:adjustViewBounds="true"
-                            android:scaleType="centerInside"
-                            android:src="@drawable/next" />
-                    </LinearLayout>
-                </LinearLayout>
-
+                    android:layout_height="match_parent"
+                    />
 
             </LinearLayout>
 
