@@ -1,5 +1,6 @@
 package com.tanya.health_care;
 
+import android.graphics.Color;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -10,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+
 
 public class NutritionFragment extends Fragment {
 
@@ -27,6 +29,7 @@ public class NutritionFragment extends Fragment {
     void init(View v){
         exit = v.findViewById(R.id.back);
         addNutrition = v.findViewById(R.id.addNutrition);
+
         exit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

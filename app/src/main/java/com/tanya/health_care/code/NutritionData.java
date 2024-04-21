@@ -1,17 +1,21 @@
 package com.tanya.health_care.code;
 
+import java.util.ArrayList;
+import java.util.Date;
+
 public class NutritionData {
-    private String nutritionId;
-    private String nutritionTime;
-    private String nutritionType;
+    public String nutritionId;
+    public Date nutritionTime;
+    public String nutritionType;
+    public ArrayList<Food> foods;
 
     public NutritionData() {
     }
 
-    public NutritionData(String nutritionId, String nutritionTime, String nutritionType) {
+    public NutritionData(String nutritionId, Date nutritionTime, String nutritionType, ArrayList<Food> foods) {
         this.nutritionId = nutritionId;
         this.nutritionTime = nutritionTime;
         this.nutritionType = nutritionType;
+        this.foods = foods;
     }
-
 }

@@ -22,6 +22,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.tanya.health_care.code.Food;
 import com.tanya.health_care.code.FoodData;
 import com.tanya.health_care.code.SelectFoodRecyclerView;
 import com.tanya.health_care.code.SelectedFoodViewModel;
@@ -81,18 +82,16 @@ public class FoodFragment extends Fragment {
                 for (FoodData food : foodDataArrayList) {
                     if (food.isSelected()) {
                         selectedFoods.add(food);
+
+//                        FoodData a = new FoodData(food.uid, (float) food.weight);
+//                        selectedFoods.add(a);
                     }
                 }
-                viewModel.getSelectedFoods().setValue(selectedFoods);
-                ChangeNutritionFragment fragment = new ChangeNutritionFragment();
+                ChangeNutritionFragment fragment = new ChangeNutritionFragment(selectedFoods);
                 HomeActivity homeActivity = (HomeActivity) getActivity();
-                Bundle args = new Bundle();
-                args.putString("Add", "");
-                fragment.setArguments(args);
                 homeActivity.replaceFragment(fragment);
             }
         });
-
 
 
     }
