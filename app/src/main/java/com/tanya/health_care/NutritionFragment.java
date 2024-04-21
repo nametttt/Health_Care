@@ -39,7 +39,11 @@ public class NutritionFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 HomeActivity homeActivity = (HomeActivity) getActivity();
-                homeActivity.replaceFragment(new ChangeNutritionFragment());
+                ChangeNutritionFragment fragment = new ChangeNutritionFragment();
+                Bundle args = new Bundle();
+                args.putString("Add", "Добавить");
+                fragment.setArguments(args);
+                homeActivity.replaceFragment(fragment);
             }
         });
 

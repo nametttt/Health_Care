@@ -48,7 +48,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textColor="@color/black"
-                    android:text="Измените данные о вашем питании или удалите их"
+                    android:text="Введите данные о вашем питании"
                     android:textSize="20dp"
                     android:layout_marginVertical="10dp"
                     android:textAlignment="textStart"/>
@@ -158,6 +158,7 @@
                     android:layout_marginTop="20dp"
                     android:layout_marginBottom="5dp"
                     android:text="Время питания"
+                    android:id="@+id/AboutNutritionTime"
                     android:textAlignment="textStart"
                     android:textColor="@color/darkgray"
                     android:textSize="20dp" />
@@ -184,73 +185,22 @@
                     android:textAlignment="textStart"
                     android:textStyle="bold"/>
 
-                <LinearLayout
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recyclerViews"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
-                    android:background="@drawable/health_asset"
-                    android:padding="15dp">
-
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="0.8"
-                        android:orientation="vertical">
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="horizontal">
-
-                            <LinearLayout
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:orientation="vertical">
-                                <TextView
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginHorizontal="7dp"
-                                    android:text="Вкусный борщ"
-                                    android:layout_gravity="center"
-                                    android:textColor="@color/black"
-                                    android:textSize="18dp"
-                                    android:textStyle="bold" />
-                                <TextView
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginHorizontal="7dp"
-                                    android:text="1 порция (100 грамм), 100 ккал"
-                                    android:layout_gravity="center"
-                                    android:textColor="@color/black"
-                                    android:textSize="18dp"/>
-                            </LinearLayout>
-                        </LinearLayout>
-
-
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="0.1"
-                        android:gravity="center"
-                        android:orientation="horizontal">
-
-                        <ImageView
-                            android:layout_width="wrap_content"
-                            android:layout_height="25dp"
-                            android:adjustViewBounds="true"
-                            android:scaleType="centerInside"
-                            android:src="@drawable/next" />
-                    </LinearLayout>
-                </LinearLayout>
+                    android:layout_height="match_parent"
+                    android:scrollbars="vertical"
+                    />
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="15dp"
+                    android:id="@+id/addFood"
                     android:background="@drawable/health_asset"
                     android:padding="15dp">
+
 
                     <LinearLayout
                         android:layout_width="0dp"
@@ -298,12 +248,12 @@
                             android:layout_marginHorizontal="10dp"
                             android:adjustViewBounds="true"
                             android:scaleType="centerInside"
-                            android:src="@drawable/next" />
+                            android:src="@drawable/plus" />
                     </LinearLayout>
                 </LinearLayout>
 
                 <androidx.appcompat.widget.AppCompatButton
-                    android:id="@+id/continu"
+                    android:id="@+id/save"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@drawable/button_asset"
@@ -319,6 +269,7 @@
                     android:layout_height="wrap_content"
                     android:background="@drawable/cancel_asset"
                     android:padding="10dp"
+                    android:id="@+id/delete"
                     android:layout_marginTop="15dp"
                     android:text="Удалить"
                     android:textAllCaps="false"
