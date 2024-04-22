@@ -41,7 +41,7 @@ public class ProfileFragment extends Fragment {
         return v;
     }
 
-    private void init(View v) {
+    public void init(View v) {
         try{
             name = v.findViewById(R.id.userName);
             email = v.findViewById(R.id.userEmail);

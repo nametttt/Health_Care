@@ -1,11 +1,13 @@
 package com.tanya.health_care.code;
 
+import java.util.ArrayList;
+
 public class FoodData {
 
     public String uid;
     public String name;
     public int calories;
-    public int weight;
+    public float weight;
     public int protein;
     public int carbohydrates;
     public int fat;
@@ -14,7 +16,7 @@ public class FoodData {
     public FoodData() {
     }
 
-    public FoodData(String uid, String name, int calories, int weight, int protein, int carbohydrates, int fat) {
+    public FoodData(String uid, String name, int calories, float weight, int protein, int carbohydrates, int fat) {
         this.uid = uid;
         this.name = name;
         this.calories = calories;
@@ -23,6 +25,7 @@ public class FoodData {
         this.carbohydrates = carbohydrates;
         this.fat = fat;
     }
+
 
     public String getUid() {
         return uid;
@@ -47,11 +50,11 @@ public class FoodData {
         this.calories = calories;
     }
 
-    public int getWeight() {
+    public float getWeight() {
         return weight;
     }
 
-    public void setWeight(int weight) {
+    public void setWeight(float weight) {
         this.weight = weight;
     }
 

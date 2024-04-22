@@ -26,14 +26,15 @@ public class AdminChangeFoodFragment extends Fragment {
     TextView nameFragment, textFragment;
     Button save, back, delete;
     String uid, name;
-    private int calories, weight, protein, fat, carbohydrates;
+    float weight;
+    private int calories, protein, fat, carbohydrates;
 
     private EditText nameEditText, weightEditText, caloriesEditText, proteinEditText, fatEditText, carbohydratesEditText;
 
     public AdminChangeFoodFragment() {
     }
 
-    public AdminChangeFoodFragment(String uid, String name, int calories, int weight, int protein, int fat, int carbohydrates) {
+    public AdminChangeFoodFragment(String uid, String name, int calories, float weight, int protein, int fat, int carbohydrates) {
         this.uid = uid;
         this.name = name;
         this.calories = calories;

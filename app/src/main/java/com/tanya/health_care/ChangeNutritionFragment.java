@@ -59,6 +59,7 @@ public class ChangeNutritionFragment extends Fragment {
     FirebaseUser user;
     TextView nutritionTime, AboutNutritionTime;
     Spinner typeFood;
+    TextView kkal, weight;
     GetSplittedPathChild pC = new GetSplittedPathChild();
 
     private ArrayList<FoodData> selectedFoods;
@@ -90,6 +91,9 @@ public class ChangeNutritionFragment extends Fragment {
         typeFood = v.findViewById(R.id.typeFood);
         addFood = v.findViewById(R.id.addFood);
 
+        kkal = v.findViewById(R.id.kkal);
+        weight = v.findViewById(R.id.weight);
+
         foodDataArrayList = new ArrayList<>();
         adapter = new FoodRecyclerView(getContext(), foodDataArrayList);
         recyclerView = v.findViewById(R.id.recyclerViews);
@@ -100,6 +104,14 @@ public class ChangeNutritionFragment extends Fragment {
 
         if (selectedFoods != null && !selectedFoods.isEmpty()) {
             foodDataArrayList.addAll(selectedFoods);
+            float calories = 0, weightFood = 0;
+            for(FoodData f : selectedFoods)
+            {
+                calories += f.calories;
+                weightFood += f.weight;
+            }
+            kkal.setText(String.valueOf(calories));
+            weight.setText(String.valueOf(weightFood));
             adapter.notifyDataSetChanged();
         }
 
@@ -148,7 +160,7 @@ public class ChangeNutritionFragment extends Fragment {
 
                 NutritionData nutritionData = new NutritionData(nutritionRef.getKey(), nutritionTimeValue, selectedType, food);
 
-                nutritionRef.setValue(nutritionData);
+                nutritionRef.push().setValue(nutritionData);
 
                 CustomDialog dialogFragment = new CustomDialog("Успех", "Данные о питании сохранены успешно!");
                 dialogFragment.show(getParentFragmentManager(), "custom_dialog");
@@ -162,7 +174,7 @@ public class ChangeNutritionFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 HomeActivity homeActivity = (HomeActivity) getActivity();
-                homeActivity.replaceFragment(new FoodFragment());
+                homeActivity.replaceFragment(new FoodFragment(selectedFoods));
             }
         });
 

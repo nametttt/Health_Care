@@ -43,6 +43,7 @@ public class FoodFragment extends Fragment {
     DatabaseReference ref;
     FirebaseDatabase mDb;
     Button back, save;
+    ArrayList<FoodData> selectedFoods;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
@@ -50,6 +51,10 @@ public class FoodFragment extends Fragment {
         View v = inflater.inflate(R.layout.fragment_food, container, false);
         init(v);
         return v;
+    }
+
+    public FoodFragment(ArrayList<FoodData> selectedFoods){
+        this.selectedFoods = selectedFoods;
     }
 
     void init (View v) {
@@ -78,7 +83,6 @@ public class FoodFragment extends Fragment {
         save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ArrayList<FoodData> selectedFoods = new ArrayList<>();
                 for (FoodData food : foodDataArrayList) {
                     if (food.isSelected()) {
                         selectedFoods.add(food);
@@ -93,7 +97,6 @@ public class FoodFragment extends Fragment {
             }
         });
 
-
     }
 
     private void addDataOnRecyclerView() {
@@ -107,8 +110,13 @@ public class FoodFragment extends Fragment {
                     ds.getValue();
                     FoodData ps = ds.getValue(FoodData.class);
                     assert ps != null;
+
                     foodDataArrayList.add(ps);
+
                 }
+
+                findAndRemoveDuplicates(selectedFoods, foodDataArrayList);
+
                 foodDataArrayList.sort(new SortByName());
                 adapter.notifyDataSetChanged();
             }
@@ -122,6 +130,29 @@ public class FoodFragment extends Fragment {
 
         ref.addValueEventListener(valueEventListener);
     }
+
+    public void findAndRemoveDuplicates(ArrayList<FoodData> list1, ArrayList<FoodData> list2) {
+        // Создаем временный список для хранения элементов, которые нужно удалить
+        ArrayList<FoodData> elementsToRemove = new ArrayList<>();
+
+        // Проходим по первому списку
+        for (FoodData foodData1 : list1) {
+            // Проходим по второму списку
+            for (FoodData foodData2 : list2) {
+                if(foodData1.uid.equals(foodData2.uid)){
+                    elementsToRemove.add(foodData1);
+                    elementsToRemove.add(foodData2);
+                }
+
+            }
+        }
+
+        // Удаляем найденные элементы из обоих списков
+        list2.removeAll(elementsToRemove);
+
+        System.out.println("Найденные совпадающие элементы удалены из обоих списков.");
+    }
+
 
 
 }

@@ -16,6 +16,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.messaging.FirebaseMessaging;
+import com.tanya.health_care.code.FoodData;
 import com.tanya.health_care.code.GetSplittedPathChild;
 import com.tanya.health_care.code.UserData;
 
@@ -28,6 +29,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import java.util.ArrayList;
 import java.util.Map;
 
 public class HomeActivity extends AppCompatActivity {
@@ -71,7 +73,8 @@ public class HomeActivity extends AppCompatActivity {
                     replaceFragment(new ChatFragment());
                     break;
                 case R.id.navigation_profile:
-                    replaceFragment(new ProfileFragment());
+                    ProfileFragment fragment = new ProfileFragment();
+                    replaceFragment(fragment);
                     break;
             }
             return true;
@@ -106,6 +109,7 @@ public class HomeActivity extends AppCompatActivity {
         fragmentTransaction.replace(R.id.nav_host_fragment_activity_home, fragment);
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
+
     }
 
     private final ActivityResultLauncher<String> requestPermissionLauncher =
@@ -127,5 +131,6 @@ public class HomeActivity extends AppCompatActivity {
             }
         }
     }
+
 
 }

@@ -11,6 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.tanya.health_care.ChangeDrinkingFragment;
+import com.tanya.health_care.ChangeFoodWeightFragment;
 import com.tanya.health_care.HomeActivity;
 import com.tanya.health_care.R;
 
@@ -47,7 +48,7 @@ public class FoodRecyclerView extends RecyclerView.Adapter<FoodRecyclerView.View
             @Override
             public void onClick(View v) {
                 HomeActivity homeActivity = (HomeActivity) v.getContext();
-                //homeActivity.replaceFragment(new ChangeDrinkingFragment(currentWater.uid, currentWater.lastAdded, currentWater.addedValue));
+                homeActivity.replaceFragment(new ChangeFoodWeightFragment(currentFood));
             }
         });
     }
