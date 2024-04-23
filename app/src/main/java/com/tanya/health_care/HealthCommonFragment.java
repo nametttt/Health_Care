@@ -84,31 +84,34 @@ public class HealthCommonFragment extends Fragment {
         HorizontalCalendarView calendarView = v.findViewById(R.id.calendar);
 
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");
-        String formattedDate = dateFormat.format(Calendar.getInstance().getTime());
+        String formattedDate = dateFormat.format(new Date());
         dateText.setText("Дата " + formattedDate);
 
-        Calendar starttime = Calendar.getInstance();
-        starttime.add(Calendar.MONTH, -1);
+        Date currentTime = new Date();
 
-        Calendar endtime = Calendar.getInstance();
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(currentTime);
+        calendar.add(Calendar.MONTH, -1);
+        Date minDate = calendar.getTime();
+
+        Date maxDate = currentTime;
 
         ArrayList<String> datesToBeColored = new ArrayList<>();
         datesToBeColored.add(Tools.getFormattedDateToday());
 
-        calendarView.setUpCalendar(starttime.getTimeInMillis(),
-                endtime.getTimeInMillis(),
+        calendarView.setUpCalendar(minDate.getTime(),
+                maxDate.getTime(),
                 datesToBeColored,
                 new HorizontalCalendarView.OnCalendarListener() {
                     @Override
                     public void onDateSelected(String date) {
-                        Calendar selectedDate = Calendar.getInstance();
                         SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
                         SimpleDateFormat dateFormate = new SimpleDateFormat("dd.MM.yyyy");
                         try {
-                            selectedDate.setTime(dateFormat.parse(date));
-                            String formattedDate = dateFormate.format(selectedDate.getTime());
+                            Date selectedDate = dateFormat.parse(date);
+                            String formattedDate = dateFormate.format(selectedDate);
                             dateText.setText("Дата " + formattedDate);
-                            updateCommonDataForSelectedDate(selectedDate.getTime());
+                            updateCommonDataForSelectedDate(selectedDate);
                         } catch (ParseException e) {
                             e.printStackTrace();
                         }

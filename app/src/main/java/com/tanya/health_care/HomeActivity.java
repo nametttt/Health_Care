@@ -54,8 +54,6 @@ public class HomeActivity extends AppCompatActivity {
 
                 String msg = getString(R.string.msg_token_fmt, token);
                 Log.d(TAG, msg);
-                Toast.makeText(HomeActivity.this, msg, Toast.LENGTH_SHORT).show();
-
                 saveTokenToDatabase(token);
             }
         });

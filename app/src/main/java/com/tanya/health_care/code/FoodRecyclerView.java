@@ -10,12 +10,10 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.tanya.health_care.ChangeDrinkingFragment;
 import com.tanya.health_care.ChangeFoodWeightFragment;
 import com.tanya.health_care.HomeActivity;
 import com.tanya.health_care.R;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 
@@ -32,7 +30,7 @@ public class FoodRecyclerView extends RecyclerView.Adapter<FoodRecyclerView.View
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.r_nutrition_asset, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.r_food_asset, parent, false);
         return new ViewHolder(view);
     }
 

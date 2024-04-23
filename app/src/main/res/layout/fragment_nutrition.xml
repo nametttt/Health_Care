@@ -169,13 +169,13 @@
                     android:textColor="@color/black"
                     android:text="Последние записи"
                     android:textSize="24dp"
-                    android:layout_marginVertical="15dp"
+                    android:layout_marginTop="20dp"
                     android:textAlignment="textStart"
                     android:textStyle="bold"/>
 
 
                 <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/recyclerViews"
+                    android:id="@+id/recyclerView"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     />

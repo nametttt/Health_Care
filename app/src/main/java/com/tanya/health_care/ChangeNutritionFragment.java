@@ -145,7 +145,6 @@ public class ChangeNutritionFragment extends Fragment {
                 Date nutritionTimeValue = new Date();
                 String selectedType = typeFood.getSelectedItem().toString();
 
-
                 DatabaseReference nutritionRef = mDb.getReference("users")
                         .child(pC.getSplittedPathChild(user.getEmail()))
                         .child("characteristic")

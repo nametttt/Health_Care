@@ -43,6 +43,7 @@ import in.akshit.horizontalcalendar.Tools;
 
 public class DrinkingFragment extends Fragment {
     private TextView drunkCount, dateText;
+    private Date selectedDate = new Date();
     private Button addWater, save;
     RecyclerView recyclerView;
     ArrayList<WaterData> waterDataArrayList;
@@ -61,7 +62,7 @@ public class DrinkingFragment extends Fragment {
         Locale.setDefault(locale);
         View v = inflater.inflate(R.layout.fragment_drinking, container, false);
         init(v);
-        updateWaterDataForSelectedDate(new Date());
+        updateWaterDataForSelectedDate(selectedDate);
         return v;
     }
 
@@ -69,48 +70,63 @@ public class DrinkingFragment extends Fragment {
         user = FirebaseAuth.getInstance().getCurrentUser();
         mDb = FirebaseDatabase.getInstance();
         drunkCount = v.findViewById(R.id.drunkCount);
-        HorizontalCalendarView calendarView = v.findViewById(R.id.calendar);
         dateText = v.findViewById(R.id.dateText);
         waterDataArrayList = new ArrayList<WaterData>();
         adapter = new WaterRecyclerView(getContext(), waterDataArrayList);
         recyclerView = v.findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setAdapter(adapter);
-        addDataOnRecyclerView();
 
         save = v.findViewById(R.id.back);
 
+        HorizontalCalendarView calendarView = v.findViewById(R.id.calendar);
+
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");
-        String formattedDate = dateFormat.format(Calendar.getInstance().getTime());
+        String formattedDate = dateFormat.format(new Date());
         dateText.setText("Дата " + formattedDate);
 
-        Calendar starttime = Calendar.getInstance();
-        starttime.add(Calendar.MONTH, -1);
+        Date currentTime = selectedDate;
 
-        Calendar endtime = Calendar.getInstance();
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(currentTime);
+        calendar.add(Calendar.MONTH, -1);
+        Date minDate = calendar.getTime();
+
+        Date maxDate = currentTime;
 
         ArrayList<String> datesToBeColored = new ArrayList<>();
         datesToBeColored.add(Tools.getFormattedDateToday());
 
-        calendarView.setUpCalendar(starttime.getTimeInMillis(),
-                endtime.getTimeInMillis(),
+        calendarView.setUpCalendar(minDate.getTime(),
+                maxDate.getTime(),
                 datesToBeColored,
                 new HorizontalCalendarView.OnCalendarListener() {
                     @Override
                     public void onDateSelected(String date) {
-                        Calendar selectedDate = Calendar.getInstance();
+                        Calendar calendar = Calendar.getInstance();
+
+                        int hour = calendar.get(Calendar.HOUR_OF_DAY);
+                        int minute = calendar.get(Calendar.MINUTE);
+                        int second = calendar.get(Calendar.SECOND);
+
                         SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
-                        SimpleDateFormat dateFormate = new SimpleDateFormat("dd.MM.yyyy");
                         try {
-                            selectedDate.setTime(dateFormat.parse(date));
-                            String formattedDate = dateFormate.format(selectedDate.getTime());
-                            dateText.setText("Дата " + formattedDate);
-                            updateWaterDataForSelectedDate(selectedDate.getTime());
+                            Date newselectedDate = dateFormat.parse(date);
+                            updateDateText(newselectedDate);
+                            calendar.setTime(newselectedDate); // Устанавливаем выбранную дату
+
+                            // Устанавливаем текущее время
+                            calendar.set(Calendar.HOUR_OF_DAY, hour);
+                            calendar.set(Calendar.MINUTE, minute);
+                            calendar.set(Calendar.SECOND, second);
+                            selectedDate = calendar.getTime();
+                            updateWaterDataForSelectedDate(selectedDate);
                         } catch (ParseException e) {
                             e.printStackTrace();
                         }
                     }
                 });
+
         save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -124,33 +140,49 @@ public class DrinkingFragment extends Fragment {
         addWater.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 ref = mDb.getReference("users").child(pC.getSplittedPathChild(user.getEmail())).child("characteristic").child("water").push();
 
-                waterData = new WaterData(ref.getKey().toString(),250, new Date());
+                waterData = new WaterData(ref.getKey().toString(),250, selectedDate);
 
                 if ( ref != null){
                     ref.setValue(waterData);
+                    updateWaterDataForSelectedDate(selectedDate);
+                    updateDateText(selectedDate);
                 }
             }
         });
     }
 
 
-    private void addDataOnRecyclerView() {
+
+    public static boolean isSameDay(Date date1, Date date2) {
+        SimpleDateFormat fmt = new SimpleDateFormat("yyyyMMdd");
+        return fmt.format(date1).equals(fmt.format(date2));
+    }
+
+    private void updateWaterDataForSelectedDate(Date selectedDate) {
         ValueEventListener valueEventListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (waterDataArrayList.size() > 0) {
                     waterDataArrayList.clear();
                 }
+                int count = 0;
                 for (DataSnapshot ds : snapshot.getChildren()) {
                     ds.getValue();
                     WaterData ps = ds.getValue(WaterData.class);
                     assert ps != null;
-                    if(isSameDay(ps.lastAdded, new Date())){
+                    if(isSameDay(ps.lastAdded, selectedDate)){
                         waterDataArrayList.add(ps);
+                        count += ps.addedValue;
                     }
                 }
+                drunkCount.setText(String.valueOf(count));
+                if (count <= 0) {
+                    drunkCount.setText("–");
+                }
+
                 waterDataArrayList.sort(new SortByDate());
                 adapter.notifyDataSetChanged();
             }
@@ -165,41 +197,10 @@ public class DrinkingFragment extends Fragment {
         ref.addValueEventListener(valueEventListener);
     }
 
-
-    public static boolean isSameDay(Date date1, Date date2) {
-        SimpleDateFormat fmt = new SimpleDateFormat("yyyyMMdd");
-        return fmt.format(date1).equals(fmt.format(date2));
-    }
-
-    private void updateWaterDataForSelectedDate(Date selectedDate) {
-        ref.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                waterDataArrayList.clear();
-
-                int count = 0;
-
-                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
-                    WaterData water = dataSnapshot.getValue(WaterData.class);
-                    if (isSameDay(water.lastAdded, selectedDate)) {
-                        waterDataArrayList.add(water);
-                        count += water.addedValue;
-                    }
-                }
-
-                drunkCount.setText(String.valueOf(count));
-                if (count <= 0) {
-                    drunkCount.setText("–");
-                }
-
-                adapter.notifyDataSetChanged();
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                // Handle onCancelled event
-            }
-        });
+    private void updateDateText(Date date) {
+        SimpleDateFormat dateFormate = new SimpleDateFormat("dd.MM.yyyy");
+        String formattedDate = dateFormate.format(date);
+        dateText.setText("Дата " + formattedDate);
     }
 
 }

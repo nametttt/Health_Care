@@ -60,7 +60,7 @@ public class PhysicalParametersFragment extends Fragment {
     RecyclerView recyclerView;
     ArrayList<PhysicalParametersData> physicalDataArrayList;
     PhysicalParametersRecyclerView adapter;
-
+    private Date selectedDate = new Date();
     private float currentImt = 0;
     private float currentHeight = 0;
     private float currentWeight = 0;
@@ -77,7 +77,7 @@ public class PhysicalParametersFragment extends Fragment {
         Locale locale = new Locale("ru");
         Locale.setDefault(locale);
         initViews(v);
-        updatePhysicalDataForSelectedDate(new Date());
+        updatePhysicalDataForSelectedDate(selectedDate);
         return v;
     }
 
@@ -114,78 +114,54 @@ public class PhysicalParametersFragment extends Fragment {
         recyclerView = v.findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setAdapter(adapter);
-        addDataOnRecyclerView();
 
         HorizontalCalendarView calendarView = v.findViewById(R.id.calendar);
 
-        Calendar starttime = Calendar.getInstance();
-        starttime.add(Calendar.MONTH,-6);
-
-        Calendar endtime = Calendar.getInstance();
-        endtime.add(Calendar.MONTH,6);
-
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");
-        String formattedDate = dateFormat.format(Calendar.getInstance().getTime());
+        String formattedDate = dateFormat.format(new Date());
         dateText.setText("Дата " + formattedDate);
 
-        ArrayList datesToBeColored = new ArrayList();
+        Date currentTime = selectedDate;
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(currentTime);
+        calendar.add(Calendar.MONTH, -1);
+        Date minDate = calendar.getTime();
+
+        Date maxDate = currentTime;
+
+        ArrayList<String> datesToBeColored = new ArrayList<>();
         datesToBeColored.add(Tools.getFormattedDateToday());
 
-
-        calendarView.setUpCalendar(starttime.getTimeInMillis(),
-                endtime.getTimeInMillis(),
+        calendarView.setUpCalendar(minDate.getTime(),
+                maxDate.getTime(),
                 datesToBeColored,
                 new HorizontalCalendarView.OnCalendarListener() {
                     @Override
                     public void onDateSelected(String date) {
-                        Calendar selectedDate = Calendar.getInstance();
+                        Calendar calendar = Calendar.getInstance();
+
+                        int hour = calendar.get(Calendar.HOUR_OF_DAY);
+                        int minute = calendar.get(Calendar.MINUTE);
+                        int second = calendar.get(Calendar.SECOND);
+
                         SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
-                        SimpleDateFormat dateFormate = new SimpleDateFormat("dd.MM.yyyy");
                         try {
-                            selectedDate.setTime(dateFormat.parse(date));
-                            String formattedDate = dateFormate.format(selectedDate.getTime());
-                            dateText.setText("Дата " + formattedDate);
-                            updatePhysicalDataForSelectedDate(selectedDate.getTime());
+                            Date newselectedDate = dateFormat.parse(date);
+                            updateDateText(newselectedDate);
+                            calendar.setTime(newselectedDate); // Устанавливаем выбранную дату
+
+                            // Устанавливаем текущее время
+                            calendar.set(Calendar.HOUR_OF_DAY, hour);
+                            calendar.set(Calendar.MINUTE, minute);
+                            calendar.set(Calendar.SECOND, second);
+                            selectedDate = calendar.getTime();
+                            updatePhysicalDataForSelectedDate(selectedDate);
                         } catch (ParseException e) {
                             e.printStackTrace();
                         }
                     }
                 });
-
-
-        ref = mDb.getReference("users").child(pC.getSplittedPathChild(user.getEmail())).child("characteristic").child("physicalParameters");
-        ref.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                try {
-                    int count = 0;
-                    float Height = 0, mHeight = 0, Imt = 0, Weight = 0;
-                    for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
-                        PhysicalParametersData common = dataSnapshot.getValue(PhysicalParametersData.class);
-                        if (isSameDay(common.lastAdded, new Date())) {
-                            Height = common.height;
-                            mHeight = common.height / 100.0f;
-                            Weight = common.weight;
-                            count++;
-
-                            Imt = Math.round((Weight / (mHeight * mHeight)) * 10.0f) / 10.0f;
-                            count++;
-                        }
-                    }
-                    currentImt = Imt;
-                    currentWeight = Weight;
-                    currentHeight = Height;
-                    updateImtViews();
-                } catch (Exception e) {
-                    CustomDialog dialogFragment = new CustomDialog("Ошибка", e.getMessage());
-                    dialogFragment.show(getChildFragmentManager(), "custom_dialog");
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-            }
-        });
 
         exit.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -208,25 +184,25 @@ public class PhysicalParametersFragment extends Fragment {
         });
     }
 
+
     private void updatePhysicalDataForSelectedDate(Date selectedDate) {
-        ref.addListenerForSingleValueEvent(new ValueEventListener() {
+        ValueEventListener valueEventListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 physicalDataArrayList.clear();
-
-                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
-                    PhysicalParametersData data = dataSnapshot.getValue(PhysicalParametersData.class);
-                    if (isSameDay(data.lastAdded, selectedDate)) {
-                        physicalDataArrayList.add(data);
+                for (DataSnapshot ds : snapshot.getChildren()) {
+                    PhysicalParametersData ps = ds.getValue(PhysicalParametersData.class);
+                    if (isSameDay(ps.lastAdded, selectedDate)) {
+                        physicalDataArrayList.add(ps);
                     }
                 }
-
                 if (!physicalDataArrayList.isEmpty()) {
                     calculateAndDisplayImt(physicalDataArrayList);
                 } else {
                     resetImtViews();
                 }
 
+                physicalDataArrayList.sort(new SortPhysical());
                 adapter.notifyDataSetChanged();
             }
 
@@ -235,7 +211,9 @@ public class PhysicalParametersFragment extends Fragment {
                 CustomDialog dialogFragment = new CustomDialog("Ошибка", error.getMessage());
                 dialogFragment.show(getChildFragmentManager(), "custom_dialog");
             }
-        });
+        };
+        ref = mDb.getReference("users").child(pC.getSplittedPathChild(user.getEmail())).child("characteristic").child("physicalParameters");
+        ref.addValueEventListener(valueEventListener);
     }
 
     private void calculateAndDisplayImt(ArrayList<PhysicalParametersData> dataList) {
@@ -272,34 +250,17 @@ public class PhysicalParametersFragment extends Fragment {
         aboutImt.setText(getImtInfo(currentImt, currentHeight));
     }
 
+    private void updateDateText(Date date) {
+        SimpleDateFormat dateFormate = new SimpleDateFormat("dd.MM.yyyy");
+        String formattedDate = dateFormate.format(date);
+        dateText.setText("Дата " + formattedDate);
+    }
+
     private void resetImtViews() {
         imt.setText("–");
         aboutImt.setVisibility(View.GONE);
         weight.setText("–");
         height.setText("–");
-    }
-
-    private void addDataOnRecyclerView() {
-        ValueEventListener valueEventListener = new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                physicalDataArrayList.clear();
-                for (DataSnapshot ds : snapshot.getChildren()) {
-                    PhysicalParametersData ps = ds.getValue(PhysicalParametersData.class);
-                    if (isSameDay(ps.lastAdded, new Date())) {
-                        physicalDataArrayList.add(ps);
-                    }
-                }
-                physicalDataArrayList.sort(new SortPhysical());
-                adapter.notifyDataSetChanged();
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-            }
-        };
-        ref = mDb.getReference("users").child(pC.getSplittedPathChild(user.getEmail())).child("characteristic").child("physicalParameters");
-        ref.addValueEventListener(valueEventListener);
     }
 
     public static boolean isSameDay(Date date1, Date date2) {
