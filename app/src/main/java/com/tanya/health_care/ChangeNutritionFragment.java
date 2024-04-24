@@ -12,6 +12,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -145,6 +146,11 @@ public class ChangeNutritionFragment extends Fragment {
                 Date nutritionTimeValue = new Date();
                 String selectedType = typeFood.getSelectedItem().toString();
 
+                if (TextUtils.isEmpty(selectedType) || selectedFoods.isEmpty()) {
+                    CustomDialog dialogFragment = new CustomDialog("Ошибка", "Пожалуйста, заполните все поля!");
+                    dialogFragment.show(getParentFragmentManager(), "custom_dialog");
+                    return;
+                }
                 DatabaseReference nutritionRef = mDb.getReference("users")
                         .child(pC.getSplittedPathChild(user.getEmail()))
                         .child("characteristic")
