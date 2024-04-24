@@ -163,9 +163,8 @@ public class ChangeNutritionFragment extends Fragment {
 
                 CustomDialog dialogFragment = new CustomDialog("Успех", "Данные о питании сохранены успешно!");
                 dialogFragment.show(getParentFragmentManager(), "custom_dialog");
-
-                selectedFoods.clear();
-                adapter.notifyDataSetChanged();
+                HomeActivity homeActivity = (HomeActivity) getActivity();
+                homeActivity.replaceFragment(new NutritionFragment());
             }
         });
 
@@ -178,6 +177,7 @@ public class ChangeNutritionFragment extends Fragment {
         });
 
     }
+
 
 
 }
