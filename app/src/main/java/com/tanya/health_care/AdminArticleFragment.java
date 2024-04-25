@@ -84,18 +84,6 @@ public class AdminArticleFragment extends Fragment {
             }
         });
 
-        searchButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String searchText = searchEditText.getText().toString().trim();
-                if (searchText.isEmpty()) {
-                    addDataOnRecyclerView();
-                } else {
-                    filterArticles(searchText);
-                }
-            }
-        });
-
         searchEditText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
@@ -104,14 +92,27 @@ public class AdminArticleFragment extends Fragment {
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 String searchText = searchEditText.getText().toString().trim();
                 if (searchText.isEmpty()) {
+                    searchButton.setClickable(false);
+                    searchButton.setImageResource(R.drawable.search);
                     addDataOnRecyclerView();
                 } else {
+                    searchButton.setClickable(true);
+                    searchButton.setImageResource(R.drawable.close);
                     filterArticles(searchText);
                 }
             }
 
             @Override
             public void afterTextChanged(Editable s) {}
+        });
+
+        searchButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                searchEditText.setText(null);
+                searchButton.setClickable(false);
+                searchButton.setImageResource(R.drawable.search);
+            }
         });
 
     }

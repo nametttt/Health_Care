@@ -8,6 +8,8 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -65,16 +67,26 @@ public class AdminUsersFragment extends Fragment {
         searchButton = v.findViewById(R.id.search);
         searchEditText = v.findViewById(R.id.searchEditText);
 
-        searchButton.setOnClickListener(new View.OnClickListener() {
+        searchEditText.addTextChangedListener(new TextWatcher() {
             @Override
-            public void onClick(View v) {
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
                 String searchText = searchEditText.getText().toString().trim();
                 if (searchText.isEmpty()) {
+                    searchButton.setClickable(false);
+                    searchButton.setImageResource(R.drawable.search);
                     addDataOnRecyclerView();
                 } else {
+                    searchButton.setClickable(true);
+                    searchButton.setImageResource(R.drawable.close);
                     filterUsers(searchText);
                 }
             }
+
+            @Override
+            public void afterTextChanged(Editable s) {}
         });
 
         addUser.setOnClickListener(new View.OnClickListener() {
@@ -83,6 +95,15 @@ public class AdminUsersFragment extends Fragment {
                 AdminHomeActivity homeActivity = (AdminHomeActivity) getActivity();
                 AdminAddUserFragment fragment = new AdminAddUserFragment();
                 homeActivity.replaceFragment(fragment);
+            }
+        });
+
+        searchButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                searchEditText.setText(null);
+                searchButton.setClickable(false);
+                searchButton.setImageResource(R.drawable.search);
             }
         });
 

@@ -66,8 +66,12 @@ public class AdminFoodFragment extends Fragment {
             public void onClick(View v) {
                 String searchText = searchEditText.getText().toString().trim();
                 if (searchText.isEmpty()) {
+                    searchButton.setClickable(false);
+                    searchButton.setImageResource(R.drawable.search);
                     addDataOnRecyclerView();
                 } else {
+                    searchButton.setClickable(true);
+                    searchButton.setImageResource(R.drawable.close);
                     filterFood(searchText);
                 }
             }
@@ -81,6 +85,15 @@ public class AdminFoodFragment extends Fragment {
                 args.putString("Add", "Добавить");
                 fragment.setArguments(args);
                 homeActivity.replaceFragment(fragment);
+            }
+        });
+
+        searchButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                searchEditText.setText(null);
+                searchButton.setClickable(false);
+                searchButton.setImageResource(R.drawable.search);
             }
         });
     }

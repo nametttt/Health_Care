@@ -145,7 +145,7 @@ public class NutritionFragment extends Fragment {
             public void onClick(View v) {
                 ArrayList<FoodData> selectedFoods = new ArrayList<>();
                 HomeActivity homeActivity = (HomeActivity) getActivity();
-                ChangeNutritionFragment fragment = new ChangeNutritionFragment(selectedFoods);
+                ChangeNutritionFragment fragment = new ChangeNutritionFragment(null, null, null, selectedFoods, null);
                 Bundle args = new Bundle();
                 args.putString("Add", "Добавить");
                 fragment.setArguments(args);
@@ -168,7 +168,7 @@ public class NutritionFragment extends Fragment {
                     nutritionDataArrayList.clear();
                 }
 
-                float count = 0;
+                int count = 0;
                 for (DataSnapshot ds : snapshot.getChildren()) {
                     ds.getValue();
                     NutritionData ps = ds.getValue(NutritionData.class);

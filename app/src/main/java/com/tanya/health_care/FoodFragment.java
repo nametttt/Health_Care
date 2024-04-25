@@ -10,10 +10,14 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -22,6 +26,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.tanya.health_care.code.ArticleData;
 import com.tanya.health_care.code.Food;
 import com.tanya.health_care.code.FoodData;
 import com.tanya.health_care.code.SelectFoodRecyclerView;
@@ -36,7 +41,7 @@ import java.util.Date;
 public class FoodFragment extends Fragment {
 
     private SelectedFoodViewModel viewModel;
-
+    ImageButton searchImage;
     RecyclerView recyclerView;
     ArrayList<FoodData> foodDataArrayList;
     SelectFoodRecyclerView adapter;
@@ -44,6 +49,8 @@ public class FoodFragment extends Fragment {
     FirebaseDatabase mDb;
     Button back, save;
     ArrayList<FoodData> selectedFoods;
+    EditText searchEditText;
+    String searchText;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
@@ -66,7 +73,8 @@ public class FoodFragment extends Fragment {
         mDb = FirebaseDatabase.getInstance();
         back = v.findViewById(R.id.back);
         save = v.findViewById(R.id.save);
-
+        searchEditText = v.findViewById(R.id.searchEditText);
+        searchImage = v.findViewById(R.id.searchImage);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setAdapter(adapter);
 
@@ -86,16 +94,45 @@ public class FoodFragment extends Fragment {
                 for (FoodData food : foodDataArrayList) {
                     if (food.isSelected()) {
                         selectedFoods.add(food);
-
 //                        FoodData a = new FoodData(food.uid, (float) food.weight);
 //                        selectedFoods.add(a);
                     }
                 }
-                ChangeNutritionFragment fragment = new ChangeNutritionFragment(selectedFoods);
+                ChangeNutritionFragment fragment = new ChangeNutritionFragment(null, null, null, selectedFoods, null);
                 HomeActivity homeActivity = (HomeActivity) getActivity();
                 homeActivity.replaceFragment(fragment);
             }
         });
+        searchEditText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                searchText = searchEditText.getText().toString().trim();
+                if (searchText.isEmpty()) {
+                    searchImage.setClickable(false);
+                    searchImage.setImageResource(R.drawable.search);
+                    addDataOnRecyclerView();
+                } else {
+                    searchImage.setClickable(true);
+                    searchImage.setImageResource(R.drawable.close);
+                    filterFoods(searchText);
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {}
+        });
+        searchImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                searchEditText.setText(null);
+                searchImage.setClickable(false);
+                searchImage.setImageResource(R.drawable.search);
+            }
+        });
+
 
     }
 
@@ -132,12 +169,8 @@ public class FoodFragment extends Fragment {
     }
 
     public void findAndRemoveDuplicates(ArrayList<FoodData> list1, ArrayList<FoodData> list2) {
-        // Создаем временный список для хранения элементов, которые нужно удалить
         ArrayList<FoodData> elementsToRemove = new ArrayList<>();
-
-        // Проходим по первому списку
         for (FoodData foodData1 : list1) {
-            // Проходим по второму списку
             for (FoodData foodData2 : list2) {
                 if(foodData1.uid.equals(foodData2.uid)){
                     elementsToRemove.add(foodData1);
@@ -146,11 +179,32 @@ public class FoodFragment extends Fragment {
 
             }
         }
-
-        // Удаляем найденные элементы из обоих списков
         list2.removeAll(elementsToRemove);
 
         System.out.println("Найденные совпадающие элементы удалены из обоих списков.");
+    }
+    private void filterFoods(String searchText) {
+        ref = mDb.getReference().child("foods");
+        ref.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                foodDataArrayList.clear();
+                for (DataSnapshot ds : snapshot.getChildren()) {
+                    FoodData foodData = ds.getValue(FoodData.class);
+                    if (foodData != null ) {
+                        if (foodData.getName().toLowerCase().contains(searchText.toLowerCase())) {
+                            foodDataArrayList.add(foodData);
+                        }
+                    }
+                }
+                adapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
     }
 
 

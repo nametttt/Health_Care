@@ -1,6 +1,7 @@
 package com.tanya.health_care.code;
 
 import android.content.Context;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +12,8 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.tanya.health_care.ChangeDrinkingFragment;
+import com.tanya.health_care.ChangeNutritionFragment;
+import com.tanya.health_care.ChangePhysicalParametersFragment;
 import com.tanya.health_care.HomeActivity;
 import com.tanya.health_care.R;
 
@@ -39,29 +42,32 @@ public class NutritionRecyclerView extends RecyclerView.Adapter<NutritionRecycle
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         NutritionData currentNutrition = nutritionData.get(position);
-
+        ArrayList<FoodData> selectedFoods = new ArrayList<FoodData>();
         SimpleDateFormat fmt = new SimpleDateFormat("HH:mm");
 
         holder.addedTime.setText(fmt.format(currentNutrition.nutritionTime));
-
-        float totalCalories = 0;
+        int totalCalories = 0;
         for (Food food : currentNutrition.foods) {
             String uid = food.Uid;
             for (FoodData foodData : foods) {
                 if (foodData.getUid().equals(uid)) {
+                    selectedFoods.add(foodData);
                     totalCalories += foodData.getCalories();
                 }
             }
         }
 
-        // Устанавливаем текст для addedCount, включая общее количество калорий
-        holder.addedCount.setText(currentNutrition.nutritionType + " - " + totalCalories + " кал");
+        holder.addedCount.setText(currentNutrition.nutritionType + " - " + totalCalories + " ккал");
 
         holder.relativeLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 HomeActivity homeActivity = (HomeActivity) v.getContext();
-                //homeActivity.replaceFragment(new ChangeDrinkingFragment(currentWater.uid,currentWater.lastAdded, currentWater.addedValue));
+                ChangeNutritionFragment fragment = new ChangeNutritionFragment(currentNutrition.nutritionId, currentNutrition.nutritionTime, currentNutrition.nutritionType, selectedFoods, null);
+//                Bundle args = new Bundle();
+//                args.putString("Add", null);
+//                fragment.setArguments(args);
+                homeActivity.replaceFragment(fragment);
             }
         });
     }

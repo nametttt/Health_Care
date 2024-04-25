@@ -20,6 +20,7 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -65,9 +66,22 @@ public class ChangeNutritionFragment extends Fragment {
 
     private ArrayList<FoodData> selectedFoods;
 
-    public ChangeNutritionFragment(ArrayList<FoodData> selectedFoods) {
+    public String nutritionId;
+    public Date nutritionDate;
+    public String nutritionType;
+    public String AddNutrition;
+
+    public ChangeNutritionFragment(String nutritionId, Date nutritionDate, String nutritionType, ArrayList<FoodData> selectedFoods, String AddNutrition) {
         this.selectedFoods = selectedFoods;
+        this.nutritionId = nutritionId;
+        this.nutritionDate = nutritionDate;
+        this.nutritionType = nutritionType;
+        this.AddNutrition = AddNutrition;
     }
+
+//    public ChangeNutritionFragment(ArrayList<FoodData> selectedFoods) {
+//        this.selectedFoods = selectedFoods;
+//    }
     public ChangeNutritionFragment() {
 
     }
@@ -100,6 +114,9 @@ public class ChangeNutritionFragment extends Fragment {
         recyclerView = v.findViewById(R.id.recyclerViews);
         mDb = FirebaseDatabase.getInstance();
 
+        if (AddNutrition != null){
+            Toast.makeText(getContext(), AddNutrition, Toast.LENGTH_SHORT).show();
+        }
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setAdapter(adapter);
 
