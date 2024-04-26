@@ -58,6 +58,16 @@ public class NutritionFragment extends Fragment {
     GetSplittedPathChild pC = new GetSplittedPathChild();
     ArrayList<FoodData> foods = new ArrayList<>();
     FirebaseDatabase mDb;
+    HorizontalCalendarView calendarView;
+
+    private Date newDate;
+
+    public NutritionFragment(Date newDate) {
+        this.newDate = newDate;
+    }
+
+    public NutritionFragment() {
+    }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
@@ -65,8 +75,6 @@ public class NutritionFragment extends Fragment {
 
         View v = inflater.inflate(R.layout.fragment_nutrition, container, false);
         init(v);
-        GetData();
-        updateNutritionDataForSelectedDate(selectedDate);
         return v;
     }
 
@@ -84,53 +92,18 @@ public class NutritionFragment extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setAdapter(adapter);
 
-        HorizontalCalendarView calendarView = v.findViewById(R.id.calendar);
+        calendarView = v.findViewById(R.id.calendar);
+        MyCalendar();
+        GetData();
 
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");
-        String formattedDate = dateFormat.format(new Date());
-        dateText.setText("Дата " + formattedDate);
-
-        Date currentTime = selectedDate;
-
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(currentTime);
-        calendar.add(Calendar.MONTH, -1);
-        Date minDate = calendar.getTime();
-
-        Date maxDate = currentTime;
-
-        ArrayList<String> datesToBeColored = new ArrayList<>();
-        datesToBeColored.add(Tools.getFormattedDateToday());
-
-        calendarView.setUpCalendar(minDate.getTime(),
-                maxDate.getTime(),
-                datesToBeColored,
-                new HorizontalCalendarView.OnCalendarListener() {
-                    @Override
-                    public void onDateSelected(String date) {
-                        Calendar calendar = Calendar.getInstance();
-
-                        int hour = calendar.get(Calendar.HOUR_OF_DAY);
-                        int minute = calendar.get(Calendar.MINUTE);
-                        int second = calendar.get(Calendar.SECOND);
-
-                        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
-                        try {
-                            Date newselectedDate = dateFormat.parse(date);
-                            updateDateText(newselectedDate);
-                            calendar.setTime(newselectedDate); // Устанавливаем выбранную дату
-
-                            // Устанавливаем текущее время
-                            calendar.set(Calendar.HOUR_OF_DAY, hour);
-                            calendar.set(Calendar.MINUTE, minute);
-                            calendar.set(Calendar.SECOND, second);
-                            selectedDate = calendar.getTime();
-                            updateNutritionDataForSelectedDate(selectedDate);
-                        } catch (ParseException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                });
+        if(newDate != null){
+            updateNutritionDataForSelectedDate(newDate);
+            updateDateText(newDate);
+        }
+        else{
+            updateNutritionDataForSelectedDate(selectedDate);
+            updateDateText(selectedDate);
+        }
 
         exit.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -145,10 +118,7 @@ public class NutritionFragment extends Fragment {
             public void onClick(View v) {
                 ArrayList<FoodData> selectedFoods = new ArrayList<>();
                 HomeActivity homeActivity = (HomeActivity) getActivity();
-                ChangeNutritionFragment fragment = new ChangeNutritionFragment(null, null, null, selectedFoods, null);
-                Bundle args = new Bundle();
-                args.putString("Add", "Добавить");
-                fragment.setArguments(args);
+                ChangeNutritionFragment fragment = new ChangeNutritionFragment(null, selectedDate, null, selectedFoods, "add");
                 homeActivity.replaceFragment(fragment);
             }
         });
@@ -220,6 +190,50 @@ public class NutritionFragment extends Fragment {
         };
         DatabaseReference Newref = mDb.getReference().child("foods");
         Newref.addValueEventListener(valueEventListener);
+    }
+
+    private void MyCalendar(){
+        Date currentTime = selectedDate;
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(currentTime);
+        calendar.add(Calendar.MONTH, -1);
+        Date minDate = calendar.getTime();
+
+        Date maxDate = currentTime;
+
+        ArrayList<String> datesToBeColored = new ArrayList<>();
+        datesToBeColored.add(Tools.getFormattedDateToday());
+
+        calendarView.setUpCalendar(minDate.getTime(),
+                maxDate.getTime(),
+                datesToBeColored,
+                new HorizontalCalendarView.OnCalendarListener() {
+                    @Override
+                    public void onDateSelected(String date) {
+                        Calendar calendar = Calendar.getInstance();
+
+                        int hour = calendar.get(Calendar.HOUR_OF_DAY);
+                        int minute = calendar.get(Calendar.MINUTE);
+                        int second = calendar.get(Calendar.SECOND);
+
+                        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+                        try {
+                            Date newselectedDate = dateFormat.parse(date);
+                            updateDateText(newselectedDate);
+                            calendar.setTime(newselectedDate); // Устанавливаем выбранную дату
+
+                            // Устанавливаем текущее время
+                            calendar.set(Calendar.HOUR_OF_DAY, hour);
+                            calendar.set(Calendar.MINUTE, minute);
+                            calendar.set(Calendar.SECOND, second);
+                            selectedDate = calendar.getTime();
+                            updateNutritionDataForSelectedDate(selectedDate);
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
     }
 }
 class SortByDateNutrition implements Comparator<NutritionData> {

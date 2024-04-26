@@ -52,7 +52,7 @@ public class DrinkingFragment extends Fragment {
     WaterData waterData;
     DatabaseReference ref;
     GetSplittedPathChild pC = new GetSplittedPathChild();
-
+    HorizontalCalendarView calendarView;
     FirebaseDatabase mDb;
 
     @Override
@@ -79,53 +79,8 @@ public class DrinkingFragment extends Fragment {
 
         save = v.findViewById(R.id.back);
 
-        HorizontalCalendarView calendarView = v.findViewById(R.id.calendar);
-
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");
-        String formattedDate = dateFormat.format(new Date());
-        dateText.setText("Дата " + formattedDate);
-
-        Date currentTime = selectedDate;
-
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(currentTime);
-        calendar.add(Calendar.MONTH, -1);
-        Date minDate = calendar.getTime();
-
-        Date maxDate = currentTime;
-
-        ArrayList<String> datesToBeColored = new ArrayList<>();
-        datesToBeColored.add(Tools.getFormattedDateToday());
-
-        calendarView.setUpCalendar(minDate.getTime(),
-                maxDate.getTime(),
-                datesToBeColored,
-                new HorizontalCalendarView.OnCalendarListener() {
-                    @Override
-                    public void onDateSelected(String date) {
-                        Calendar calendar = Calendar.getInstance();
-
-                        int hour = calendar.get(Calendar.HOUR_OF_DAY);
-                        int minute = calendar.get(Calendar.MINUTE);
-                        int second = calendar.get(Calendar.SECOND);
-
-                        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
-                        try {
-                            Date newselectedDate = dateFormat.parse(date);
-                            updateDateText(newselectedDate);
-                            calendar.setTime(newselectedDate); // Устанавливаем выбранную дату
-
-                            // Устанавливаем текущее время
-                            calendar.set(Calendar.HOUR_OF_DAY, hour);
-                            calendar.set(Calendar.MINUTE, minute);
-                            calendar.set(Calendar.SECOND, second);
-                            selectedDate = calendar.getTime();
-                            updateWaterDataForSelectedDate(selectedDate);
-                        } catch (ParseException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                });
+        calendarView = v.findViewById(R.id.calendar);
+        MyCalendar();
 
         save.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -201,6 +156,50 @@ public class DrinkingFragment extends Fragment {
         SimpleDateFormat dateFormate = new SimpleDateFormat("dd.MM.yyyy");
         String formattedDate = dateFormate.format(date);
         dateText.setText("Дата " + formattedDate);
+    }
+
+    private void MyCalendar(){
+
+        Date currentTime = selectedDate;
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(currentTime);
+        calendar.add(Calendar.MONTH, -1);
+        Date minDate = calendar.getTime();
+
+        Date maxDate = currentTime;
+
+        ArrayList<String> datesToBeColored = new ArrayList<>();
+        datesToBeColored.add(Tools.getFormattedDateToday());
+
+        calendarView.setUpCalendar(minDate.getTime(),
+                maxDate.getTime(),
+                datesToBeColored,
+                new HorizontalCalendarView.OnCalendarListener() {
+                    @Override
+                    public void onDateSelected(String date) {
+                        Calendar calendar = Calendar.getInstance();
+
+                        int hour = calendar.get(Calendar.HOUR_OF_DAY);
+                        int minute = calendar.get(Calendar.MINUTE);
+                        int second = calendar.get(Calendar.SECOND);
+
+                        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+                        try {
+                            Date newselectedDate = dateFormat.parse(date);
+                            updateDateText(newselectedDate);
+                            calendar.setTime(newselectedDate);
+
+                            calendar.set(Calendar.HOUR_OF_DAY, hour);
+                            calendar.set(Calendar.MINUTE, minute);
+                            calendar.set(Calendar.SECOND, second);
+                            selectedDate = calendar.getTime();
+                            updateWaterDataForSelectedDate(selectedDate);
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
     }
 
 }

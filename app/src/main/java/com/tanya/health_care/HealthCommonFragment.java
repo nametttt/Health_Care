@@ -47,12 +47,22 @@ public class HealthCommonFragment extends Fragment {
     TextView pressure, temperature, pulse, dateText;
     DatabaseReference ref;
     GetSplittedPathChild pC = new GetSplittedPathChild();
-
+    private Date selectedDate = new Date();
     FirebaseDatabase mDb;
     FirebaseUser user;
     RecyclerView recyclerView;
     ArrayList<CommonHealthData> commonDataArrayList;
     CommonHealthRecyclerView adapter;
+    private Date newDate;
+    String Add;
+    HorizontalCalendarView calendarView;
+
+    public HealthCommonFragment(Date newDate) {
+        this.newDate = newDate;
+    }
+
+    public HealthCommonFragment() {
+    }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
@@ -61,7 +71,6 @@ public class HealthCommonFragment extends Fragment {
         Locale.setDefault(locale);
         View v = inflater.inflate(R.layout.fragment_health_common, container, false);
         init(v);
-        updateCommonDataForSelectedDate(new Date());
         return v;
     }
 
@@ -79,15 +88,41 @@ public class HealthCommonFragment extends Fragment {
         recyclerView = v.findViewById(R.id.recyclerViews);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setAdapter(adapter);
-        addDataOnRecyclerView();
+        calendarView = v.findViewById(R.id.calendar);
+        MyCalendar();
 
-        HorizontalCalendarView calendarView = v.findViewById(R.id.calendar);
+        if(newDate != null){
+            updateCommonDataForSelectedDate(newDate);
+            updateDateText(newDate);
+        }
+        else{
+            updateCommonDataForSelectedDate(selectedDate);
+            updateDateText(selectedDate);
+        }
 
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");
-        String formattedDate = dateFormat.format(new Date());
-        dateText.setText("Дата " + formattedDate);
+        exit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                HomeActivity homeActivity = (HomeActivity) getActivity();
+                homeActivity.replaceFragment(new HomeFragment());
+            }
+        });
 
-        Date currentTime = new Date();
+        add.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Add = "add";
+                HomeActivity homeActivity = (HomeActivity) getActivity();
+                ChangeCommonHealthFragment fragment = new ChangeCommonHealthFragment(selectedDate, Add);
+                homeActivity.replaceFragment(fragment);
+            }
+        });
+
+    }
+
+    private void MyCalendar(){
+
+        Date currentTime = selectedDate;
 
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(currentTime);
@@ -105,12 +140,22 @@ public class HealthCommonFragment extends Fragment {
                 new HorizontalCalendarView.OnCalendarListener() {
                     @Override
                     public void onDateSelected(String date) {
+                        Calendar calendar = Calendar.getInstance();
+
+                        int hour = calendar.get(Calendar.HOUR_OF_DAY);
+                        int minute = calendar.get(Calendar.MINUTE);
+                        int second = calendar.get(Calendar.SECOND);
+
                         SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
-                        SimpleDateFormat dateFormate = new SimpleDateFormat("dd.MM.yyyy");
                         try {
-                            Date selectedDate = dateFormat.parse(date);
-                            String formattedDate = dateFormate.format(selectedDate);
-                            dateText.setText("Дата " + formattedDate);
+                            Date newselectedDate = dateFormat.parse(date);
+                            updateDateText(newselectedDate);
+                            calendar.setTime(newselectedDate); // Устанавливаем выбранную дату
+
+                            calendar.set(Calendar.HOUR_OF_DAY, hour);
+                            calendar.set(Calendar.MINUTE, minute);
+                            calendar.set(Calendar.SECOND, second);
+                            selectedDate = calendar.getTime();
                             updateCommonDataForSelectedDate(selectedDate);
                         } catch (ParseException e) {
                             e.printStackTrace();
@@ -118,73 +163,27 @@ public class HealthCommonFragment extends Fragment {
                     }
                 });
 
-        exit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                HomeActivity homeActivity = (HomeActivity) getActivity();
-                homeActivity.replaceFragment(new HomeFragment());
-            }
-        });
-
-        add.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                HomeActivity homeActivity = (HomeActivity) getActivity();
-                ChangeCommonHealthFragment fragment = new ChangeCommonHealthFragment();
-                Bundle args = new Bundle();
-                args.putString("Add", "Добавить");
-                fragment.setArguments(args);
-                homeActivity.replaceFragment(fragment);
-            }
-        });
-
     }
-
-    private void addDataOnRecyclerView() {
-        ValueEventListener valueEventListener = new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if (commonDataArrayList.size() > 0) {
-                    commonDataArrayList.clear();
-                }
-                for (DataSnapshot ds : snapshot.getChildren()) {
-                    ds.getValue();
-                    CommonHealthData ps = ds.getValue(CommonHealthData.class);
-                    assert ps != null;
-                    if(isSameDay(ps.lastAdded, new Date())){
-                        commonDataArrayList.add(ps);
-                    }
-                }
-                commonDataArrayList.sort(new SortCommon());
-                adapter.notifyDataSetChanged();
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        };
-        ref = mDb.getReference("users").child(pC.getSplittedPathChild(user.getEmail())).child("characteristic").child("commonHealth");
-        ref.addValueEventListener(valueEventListener);
-    }
-
     public static boolean isSameDay(Date date1, Date date2) {
         SimpleDateFormat fmt = new SimpleDateFormat("yyyyMMdd", Locale.getDefault());
         return fmt.format(date1).equals(fmt.format(date2));
     }
 
     private void updateCommonDataForSelectedDate(Date selectedDate) {
-        ref.addListenerForSingleValueEvent(new ValueEventListener() {
+        ValueEventListener valueEventListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                commonDataArrayList.clear();
-
+                if (commonDataArrayList.size() > 0) {
+                    commonDataArrayList.clear();
+                }
                 int count = 0;
                 int Pulse = 0;
                 String Pressure = "";
                 float Temperature = 0;
-                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
-                    CommonHealthData common = dataSnapshot.getValue(CommonHealthData.class);
+                for (DataSnapshot ds : snapshot.getChildren()) {
+                    ds.getValue();
+                    CommonHealthData common = ds.getValue(CommonHealthData.class);
+                    assert common != null;
                     if (isSameDay(common.lastAdded, selectedDate)) {
                         commonDataArrayList.add(common);
 
@@ -202,17 +201,26 @@ public class HealthCommonFragment extends Fragment {
                     pulse.setText("–");
                     pressure.setText("–");
                 }
-                adapter.notifyDataSetChanged();
 
+                commonDataArrayList.sort(new SortCommon());
+                adapter.notifyDataSetChanged();
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                // Handle onCancelled event
+
             }
-        });
+        };
+        ref = mDb.getReference("users").child(pC.getSplittedPathChild(user.getEmail())).child("characteristic").child("commonHealth");
+
+        ref.addValueEventListener(valueEventListener);
     }
 
+    private void updateDateText(Date date) {
+        SimpleDateFormat dateFormate = new SimpleDateFormat("dd.MM.yyyy");
+        String formattedDate = dateFormate.format(date);
+        dateText.setText("Дата " + formattedDate);
+    }
 }
 
 class SortCommon implements Comparator<CommonHealthData> {

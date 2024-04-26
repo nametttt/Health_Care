@@ -3,6 +3,8 @@ package com.tanya.health_care;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.opengl.Visibility;
 import android.os.Bundle;
 
@@ -34,10 +36,12 @@ import com.tanya.health_care.code.FoodData;
 import com.tanya.health_care.code.FoodRecyclerView;
 import com.tanya.health_care.code.GetSplittedPathChild;
 import com.tanya.health_care.code.NutritionData;
+import com.tanya.health_care.code.PhysicalParametersData;
 import com.tanya.health_care.code.SelectFoodRecyclerView;
 import com.tanya.health_care.code.SelectedFoodViewModel;
 import com.tanya.health_care.code.SelectedViewModel;
 import com.tanya.health_care.dialog.CustomDialog;
+import com.tanya.health_care.dialog.DateTimePickerDialog;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -50,7 +54,7 @@ import java.util.Locale;
 public class ChangeNutritionFragment extends Fragment {
 
 
-
+    public String path;
     Button exit, save, delete;
     LinearLayout addFood;
     RecyclerView recyclerView;
@@ -59,7 +63,8 @@ public class ChangeNutritionFragment extends Fragment {
     DatabaseReference ref;
     FirebaseDatabase mDb;
     FirebaseUser user;
-    TextView nutritionTime, AboutNutritionTime;
+    Button nutritionTime;
+    TextView AboutNutritionTime;
     Spinner typeFood;
     TextView kkal, weight;
     GetSplittedPathChild pC = new GetSplittedPathChild();
@@ -67,9 +72,10 @@ public class ChangeNutritionFragment extends Fragment {
     private ArrayList<FoodData> selectedFoods;
 
     public String nutritionId;
-    public Date nutritionDate;
+    public Date nutritionDate, selectedDate;
     public String nutritionType;
     public String AddNutrition;
+    String Add;
 
     public ChangeNutritionFragment(String nutritionId, Date nutritionDate, String nutritionType, ArrayList<FoodData> selectedFoods, String AddNutrition) {
         this.selectedFoods = selectedFoods;
@@ -77,11 +83,9 @@ public class ChangeNutritionFragment extends Fragment {
         this.nutritionDate = nutritionDate;
         this.nutritionType = nutritionType;
         this.AddNutrition = AddNutrition;
+        path = nutritionId;
     }
 
-//    public ChangeNutritionFragment(ArrayList<FoodData> selectedFoods) {
-//        this.selectedFoods = selectedFoods;
-//    }
     public ChangeNutritionFragment() {
 
     }
@@ -108,6 +112,7 @@ public class ChangeNutritionFragment extends Fragment {
 
         kkal = v.findViewById(R.id.kkal);
         weight = v.findViewById(R.id.weight);
+        SimpleDateFormat fmt = new SimpleDateFormat("dd.MM HH:mm", new Locale("ru"));
 
         foodDataArrayList = new ArrayList<>();
         adapter = new FoodRecyclerView(getContext(), foodDataArrayList);
@@ -115,7 +120,25 @@ public class ChangeNutritionFragment extends Fragment {
         mDb = FirebaseDatabase.getInstance();
 
         if (AddNutrition != null){
-            Toast.makeText(getContext(), AddNutrition, Toast.LENGTH_SHORT).show();
+            Add = "add";
+            save.setText("Добавить");
+            AboutNutritionTime.setVisibility(View.GONE);
+            nutritionTime.setVisibility(View.GONE);
+            delete.setVisibility(View.INVISIBLE);
+        }
+        else{
+            Add = null;
+            nutritionTime.setVisibility(View.VISIBLE);
+            AboutNutritionTime.setVisibility(View.VISIBLE);
+            nutritionTime.setText(fmt.format(nutritionDate));
+            nutritionTime.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    DateTimePickerDialog dateTimePickerDialog = new DateTimePickerDialog();
+                    dateTimePickerDialog.setTargetButton(nutritionTime);
+                    dateTimePickerDialog.show(getParentFragmentManager(), "dateTimePicker");
+                }
+            });
         }
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setAdapter(adapter);
@@ -133,21 +156,6 @@ public class ChangeNutritionFragment extends Fragment {
             adapter.notifyDataSetChanged();
         }
 
-//        String addCommon = getArguments().getString("Add");
-//        if (addCommon != null)
-//        {
-//            save.setText("Добавить");
-//            AboutNutritionTime.setVisibility(View.GONE);
-//            nutritionTime.setVisibility(View.GONE);
-//
-//            delete.setVisibility(View.INVISIBLE);
-//        }
-//        else {
-//
-//
-//        }
-
-
 
         exit.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -160,7 +168,6 @@ public class ChangeNutritionFragment extends Fragment {
         save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Date nutritionTimeValue = new Date();
                 String selectedType = typeFood.getSelectedItem().toString();
 
                 if (TextUtils.isEmpty(selectedType) || selectedFoods.isEmpty()) {
@@ -168,34 +175,117 @@ public class ChangeNutritionFragment extends Fragment {
                     dialogFragment.show(getParentFragmentManager(), "custom_dialog");
                     return;
                 }
-                DatabaseReference nutritionRef = mDb.getReference("users")
-                        .child(pC.getSplittedPathChild(user.getEmail()))
-                        .child("characteristic")
-                        .child("nutrition");
 
-                ArrayList<Food> food = new ArrayList<Food>();
-                for(FoodData f : selectedFoods)
+                if(save.getText() == "Добавить")
                 {
-                    Food a = new Food(f.uid, (float) f.weight);
-                    food.add(a);
+                    DatabaseReference nutritionRef = mDb.getReference("users")
+                            .child(pC.getSplittedPathChild(user.getEmail()))
+                            .child("characteristic")
+                            .child("nutrition").push();
+
+                    ArrayList<Food> food = new ArrayList<Food>();
+                    for(FoodData f : selectedFoods)
+                    {
+                        Food a = new Food(f.uid, (float) f.weight);
+                        food.add(a);
+                    }
+
+                    NutritionData nutritionData = new NutritionData(nutritionRef.getKey().toString(), nutritionDate, selectedType, food);
+
+                    nutritionRef.setValue(nutritionData);
+
+                    CustomDialog dialogFragment = new CustomDialog("Успех", "Данные о питании сохранены успешно!");
+                    dialogFragment.show(getParentFragmentManager(), "custom_dialog");
+
+                }
+                else{
+                    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                    ref = mDb.getReference("users").child(pC.getSplittedPathChild(user.getEmail()))
+                            .child("characteristic").child("nutrition").child(path);
+
+                    String dateTimeString = nutritionTime.getText().toString();
+                    ArrayList<Food> food = new ArrayList<Food>();
+                    for(FoodData f : selectedFoods)
+                    {
+                        Food a = new Food(f.uid, (float) f.weight);
+                        food.add(a);
+                    }
+
+                    try {
+                        String[] dateTimeParts = dateTimeString.split(" ");
+                        String dateString = dateTimeParts[0];
+                        String timeString = dateTimeParts[1];
+
+                        String[] dateParts = dateString.split("\\.");
+                        String[] timeParts = timeString.split(":");
+
+                        int day = Integer.parseInt(dateParts[0]);
+                        int month = Integer.parseInt(dateParts[1]) - 1; // месяцы в Calendar начинаются с 0
+                        int year = Calendar.getInstance().get(Calendar.YEAR); // год не известен, поэтому используем текущий
+
+                        int hour = Integer.parseInt(timeParts[0]);
+                        int minute = Integer.parseInt(timeParts[1]);
+
+                        Calendar cal = Calendar.getInstance();
+                        cal.set(year, month, day, hour, minute);
+
+                        Date date = cal.getTime();
+
+                        NutritionData nutritionData = new NutritionData(path, date, selectedType, food);
+                        ref.setValue(nutritionData);
+
+                        CustomDialog dialogFragment = new CustomDialog("Успех", "Изменение прошло успешно!");
+                        dialogFragment.show(getParentFragmentManager(), "custom_dialog");
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        CustomDialog dialogFragment = new CustomDialog("Ошибка", "Ошибка при разборе даты!");
+                        dialogFragment.show(getParentFragmentManager(), "custom_dialog");
+                    }
                 }
 
-                NutritionData nutritionData = new NutritionData(nutritionRef.getKey(), nutritionTimeValue, selectedType, food);
-
-                nutritionRef.push().setValue(nutritionData);
-
-                CustomDialog dialogFragment = new CustomDialog("Успех", "Данные о питании сохранены успешно!");
-                dialogFragment.show(getParentFragmentManager(), "custom_dialog");
                 HomeActivity homeActivity = (HomeActivity) getActivity();
-                homeActivity.replaceFragment(new NutritionFragment());
+                homeActivity.replaceFragment(new NutritionFragment(nutritionDate));
             }
         });
+
+        delete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                builder.setTitle("Подтверждение удаления");
+                builder.setMessage("Вы уверены, что хотите удалить эту запись?");
+
+                builder.setPositiveButton("Да", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                        ref = mDb.getReference("users").child(pC.getSplittedPathChild(user.getEmail())).child("characteristic").child("nutrition").child(path);
+                        ref.removeValue();
+                        CustomDialog dialogFragment = new CustomDialog("Успех", "Удаление прошло успешно!");
+                        dialogFragment.show(getParentFragmentManager(), "custom_dialog");
+
+                        HomeActivity homeActivity = (HomeActivity) getActivity();
+                        homeActivity.replaceFragment(new NutritionFragment());
+                    }
+                });
+
+                builder.setNegativeButton("Отмена", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+                builder.show();
+            }
+        });
+
 
         addFood.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 HomeActivity homeActivity = (HomeActivity) getActivity();
-                homeActivity.replaceFragment(new FoodFragment(selectedFoods));
+                homeActivity.replaceFragment(new FoodFragment(nutritionId, nutritionDate, nutritionType, selectedFoods, Add));
             }
         });
 

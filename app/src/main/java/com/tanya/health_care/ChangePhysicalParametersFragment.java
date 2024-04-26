@@ -37,8 +37,8 @@ import java.util.Locale;
 
 public class ChangePhysicalParametersFragment extends Fragment {
 
-    public Date date;
-    public String path;
+    public Date date, selectedDate;
+    public String path, Add;
     private float height, weight;
     Button exit, add, delete;
     EditText txtheight, txtweight;
@@ -48,6 +48,10 @@ public class ChangePhysicalParametersFragment extends Fragment {
     GetSplittedPathChild pC = new GetSplittedPathChild();
     FirebaseDatabase mDb;
 
+    public ChangePhysicalParametersFragment(Date selectedDate, String add) {
+        this.selectedDate = selectedDate;
+        Add = add;
+    }
     public ChangePhysicalParametersFragment(){}
 
     public ChangePhysicalParametersFragment(String uid, float height, float weight, Date date) {
@@ -79,8 +83,7 @@ public class ChangePhysicalParametersFragment extends Fragment {
             user = FirebaseAuth.getInstance().getCurrentUser();
             mDb = FirebaseDatabase.getInstance();
 
-            String addCommon = getArguments().getString("Add");
-            if (addCommon != null)
+            if (Add != null)
             {
                 add.setText("Добавить");
                 delete.setVisibility(View.INVISIBLE);
@@ -147,14 +150,13 @@ public class ChangePhysicalParametersFragment extends Fragment {
 
                         ref = mDb.getReference("users").child(pC.getSplittedPathChild(user.getEmail())).child("characteristic").child("physicalParameters").push();
 
-                        physicalParametersData = new PhysicalParametersData(ref.getKey().toString(), heightFloat, weightFloat, new Date());
+                        physicalParametersData = new PhysicalParametersData(ref.getKey().toString(), heightFloat, weightFloat, selectedDate);
 
                         if ( ref != null){
                             ref.setValue(physicalParametersData);
                         }
                         CustomDialog dialogFragment = new CustomDialog("Успех", "Добавление прошло успешно!");
                         dialogFragment.show(getParentFragmentManager(), "custom_dialog");
-                        homeActivity.replaceFragment(new PhysicalParametersFragment());
                     }
 
                     else
@@ -191,7 +193,6 @@ public class ChangePhysicalParametersFragment extends Fragment {
                             CustomDialog dialogFragment = new CustomDialog("Успех", "Изменение прошло успешно!");
                             dialogFragment.show(getParentFragmentManager(), "custom_dialog");
 
-                            homeActivity.replaceFragment(new PhysicalParametersFragment());
 
                         } catch (Exception e) {
                             e.printStackTrace();
@@ -199,6 +200,9 @@ public class ChangePhysicalParametersFragment extends Fragment {
                             dialogFragment.show(getParentFragmentManager(), "custom_dialog");
                         }
                     }
+
+                    homeActivity.replaceFragment(new PhysicalParametersFragment(selectedDate));
+
                 }
             });
 

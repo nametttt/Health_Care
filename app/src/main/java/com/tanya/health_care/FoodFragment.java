@@ -51,7 +51,10 @@ public class FoodFragment extends Fragment {
     ArrayList<FoodData> selectedFoods;
     EditText searchEditText;
     String searchText;
-
+    String Add;
+    public String nutritionId;
+    public Date nutritionDate;
+    public String nutritionType;
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
@@ -60,8 +63,17 @@ public class FoodFragment extends Fragment {
         return v;
     }
 
-    public FoodFragment(ArrayList<FoodData> selectedFoods){
+    public FoodFragment(ArrayList<FoodData> selectedFoods, String Add){
         this.selectedFoods = selectedFoods;
+        this.Add = Add;
+    }
+
+    public FoodFragment(String nutritionId, Date nutritionDate, String nutritionType, ArrayList<FoodData> selectedFoods, String Add){
+        this.selectedFoods = selectedFoods;
+        this.Add = Add;
+        this.nutritionId = nutritionId;
+        this.nutritionDate = nutritionDate;
+        this.nutritionType = nutritionType;
     }
 
     void init (View v) {
@@ -98,7 +110,7 @@ public class FoodFragment extends Fragment {
 //                        selectedFoods.add(a);
                     }
                 }
-                ChangeNutritionFragment fragment = new ChangeNutritionFragment(null, null, null, selectedFoods, null);
+                ChangeNutritionFragment fragment = new ChangeNutritionFragment(nutritionId, nutritionDate, nutritionType, selectedFoods, Add);
                 HomeActivity homeActivity = (HomeActivity) getActivity();
                 homeActivity.replaceFragment(fragment);
             }

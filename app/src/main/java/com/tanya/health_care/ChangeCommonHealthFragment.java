@@ -39,11 +39,16 @@ public class ChangeCommonHealthFragment extends Fragment {
     DatabaseReference ref;
     GetSplittedPathChild pC = new GetSplittedPathChild();
     FirebaseDatabase mDb;
-    public Date date;
-    public String path, pressure;
+    public Date date, selectedDate;
+    public String path, pressure, Add;
     private int pulses;
     private float temperatures;
     EditText pressureEditText, pulse, temperature;
+
+    public ChangeCommonHealthFragment(Date selectedDate, String add) {
+        this.selectedDate = selectedDate;
+        Add = add;
+    }
 
     public ChangeCommonHealthFragment(){}
 
@@ -78,8 +83,7 @@ public class ChangeCommonHealthFragment extends Fragment {
             user = FirebaseAuth.getInstance().getCurrentUser();
             mDb = FirebaseDatabase.getInstance();
 
-            String addCommon = getArguments().getString("Add");
-            if (addCommon != null)
+            if (Add != null)
             {
                 add.setText("Добавить");
                 delete.setVisibility(View.INVISIBLE);
@@ -175,14 +179,13 @@ public class ChangeCommonHealthFragment extends Fragment {
 
                         ref = mDb.getReference("users").child(pC.getSplittedPathChild(user.getEmail())).child("characteristic").child("commonHealth").push();
 
-                        commonHealthData = new CommonHealthData(ref.getKey().toString(), pressureValue, pulseInt, temperatureFloat, new Date());
+                        commonHealthData = new CommonHealthData(ref.getKey().toString(), pressureValue, pulseInt, temperatureFloat, selectedDate);
 
                         if ( ref != null){
                             ref.setValue(commonHealthData);
                         }
                         CustomDialog dialogFragment = new CustomDialog("Успех", "Добавление прошло успешно!");
                         dialogFragment.show(getParentFragmentManager(), "custom_dialog");
-                        homeActivity.replaceFragment(new HealthCommonFragment());
                     }
 
                     else
@@ -219,7 +222,6 @@ public class ChangeCommonHealthFragment extends Fragment {
                             CustomDialog dialogFragment = new CustomDialog("Успех", "Изменение прошло успешно!");
                             dialogFragment.show(getParentFragmentManager(), "custom_dialog");
 
-                            homeActivity.replaceFragment(new HealthCommonFragment());
 
                         } catch (Exception e) {
                             e.printStackTrace();
@@ -227,6 +229,9 @@ public class ChangeCommonHealthFragment extends Fragment {
                             dialogFragment.show(getParentFragmentManager(), "custom_dialog");
                         }
                     }
+
+                    homeActivity.replaceFragment(new HealthCommonFragment(selectedDate));
+
                 }
             });
 

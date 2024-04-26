@@ -64,6 +64,15 @@ public class PhysicalParametersFragment extends Fragment {
     private float currentImt = 0;
     private float currentHeight = 0;
     private float currentWeight = 0;
+    private Date newDate;
+    HorizontalCalendarView calendarView;
+    String Add;
+    public PhysicalParametersFragment() {
+    }
+
+    public PhysicalParametersFragment(Date newDate) {
+        this.newDate = newDate;
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -77,7 +86,6 @@ public class PhysicalParametersFragment extends Fragment {
         Locale locale = new Locale("ru");
         Locale.setDefault(locale);
         initViews(v);
-        updatePhysicalDataForSelectedDate(selectedDate);
         return v;
     }
 
@@ -114,12 +122,39 @@ public class PhysicalParametersFragment extends Fragment {
         recyclerView = v.findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setAdapter(adapter);
+        calendarView = v.findViewById(R.id.calendar);
 
-        HorizontalCalendarView calendarView = v.findViewById(R.id.calendar);
+        MyCalendar();
 
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");
-        String formattedDate = dateFormat.format(new Date());
-        dateText.setText("Дата " + formattedDate);
+        if(newDate != null){
+            updatePhysicalDataForSelectedDate(newDate);
+            updateDateText(newDate);
+        }
+        else{
+            updatePhysicalDataForSelectedDate(selectedDate);
+            updateDateText(selectedDate);
+        }
+
+        exit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                HomeActivity homeActivity = (HomeActivity) getActivity();
+                homeActivity.replaceFragment(new HomeFragment());
+            }
+        });
+
+        add.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Add = "add";
+                HomeActivity homeActivity = (HomeActivity) getActivity();
+                ChangePhysicalParametersFragment fragment = new ChangePhysicalParametersFragment(selectedDate, Add);
+                homeActivity.replaceFragment(fragment);
+            }
+        });
+    }
+
+    private void MyCalendar(){
 
         Date currentTime = selectedDate;
 
@@ -162,36 +197,19 @@ public class PhysicalParametersFragment extends Fragment {
                         }
                     }
                 });
-
-        exit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                HomeActivity homeActivity = (HomeActivity) getActivity();
-                homeActivity.replaceFragment(new HomeFragment());
-            }
-        });
-
-        add.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                HomeActivity homeActivity = (HomeActivity) getActivity();
-                ChangePhysicalParametersFragment fragment = new ChangePhysicalParametersFragment();
-                Bundle args = new Bundle();
-                args.putString("Add", "Добавить");
-                fragment.setArguments(args);
-                homeActivity.replaceFragment(fragment);
-            }
-        });
     }
-
-
     private void updatePhysicalDataForSelectedDate(Date selectedDate) {
         ValueEventListener valueEventListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                physicalDataArrayList.clear();
+                if (physicalDataArrayList.size() > 0) {
+                    physicalDataArrayList.clear();
+                }
+
                 for (DataSnapshot ds : snapshot.getChildren()) {
+                    ds.getValue();
                     PhysicalParametersData ps = ds.getValue(PhysicalParametersData.class);
+                    assert ps != null;
                     if (isSameDay(ps.lastAdded, selectedDate)) {
                         physicalDataArrayList.add(ps);
                     }
@@ -210,6 +228,7 @@ public class PhysicalParametersFragment extends Fragment {
             public void onCancelled(@NonNull DatabaseError error) {
                 CustomDialog dialogFragment = new CustomDialog("Ошибка", error.getMessage());
                 dialogFragment.show(getChildFragmentManager(), "custom_dialog");
+
             }
         };
         ref = mDb.getReference("users").child(pC.getSplittedPathChild(user.getEmail())).child("characteristic").child("physicalParameters");
