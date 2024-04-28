@@ -81,6 +81,7 @@
                     android:background="@drawable/edit_text_asset"
                     android:hint="Время записи"/>
 
+
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

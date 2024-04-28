@@ -62,6 +62,8 @@ public class UserProfileFragment extends Fragment {
     Spinner gender;
     DatabaseReference userRef;
     ImageView imageView;
+    AdminHomeActivity adminHomeActivity = null;
+    HomeActivity homeActivity = null;
 
 
     private static final int PICK_IMAGE_REQUEST = 1;
@@ -91,6 +93,7 @@ public class UserProfileFragment extends Fragment {
             userRef = FirebaseDatabase.getInstance().getReference().child("users");
             pC = new GetSplittedPathChild();
             imageView = v.findViewById(R.id.imageView);
+
             storageReference = FirebaseStorage.getInstance().getReference().child("profilePhotos");
 
             viewData();
@@ -110,7 +113,9 @@ public class UserProfileFragment extends Fragment {
                     DatabaseReference ref = db.getReference("users");
                     GetSplittedPathChild pC = new GetSplittedPathChild();
 
-                    ref.addValueEventListener(new ValueEventListener() {
+
+
+                    ref.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot snapshot) {
                             UserData user1 = snapshot.child(pC.getSplittedPathChild(user.getEmail())).getValue(UserData.class);
@@ -118,13 +123,18 @@ public class UserProfileFragment extends Fragment {
                             String userRole = user1.getRole();
 
                             if ("Администратор".equals(userRole)) {
-                                AdminHomeActivity homeActivity = (AdminHomeActivity) getActivity();
+                                 adminHomeActivity = (AdminHomeActivity) getActivity();
 
-                                homeActivity.replaceFragment(new ProfileFragment());
 
                             } else {
-                                HomeActivity homeActivity = (HomeActivity) getActivity();
+                                 homeActivity = (HomeActivity) getActivity();
+
+                            }
+
+                            if(homeActivity != null){
                                 homeActivity.replaceFragment(new ProfileFragment());
+                            }else  if(adminHomeActivity != null){
+                                adminHomeActivity.replaceFragment(new ProfileFragment());
 
                             }
 
@@ -134,6 +144,8 @@ public class UserProfileFragment extends Fragment {
                         public void onCancelled(@NonNull DatabaseError error) {
                         }
                     });
+
+
                 }
             });
         } catch (Exception e) {

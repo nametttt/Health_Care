@@ -57,6 +57,8 @@ dependencies {
     implementation 'com.theartofdev.edmodo:android-image-cropper:2.8.0'
     implementation 'com.google.gms:google-services:4.4.1'
     implementation 'com.google.firebase:firebase-messaging:23.4.1'
+    implementation 'com.sleepsci:timepicker:1.0.2'
+    implementation 'com.github.mahdizareeii:MZTimePicker:1.8'
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'

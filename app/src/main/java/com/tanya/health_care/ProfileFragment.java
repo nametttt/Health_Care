@@ -53,10 +53,11 @@ public class ProfileFragment extends Fragment {
             imageView = v.findViewById(R.id.imageView);
 
             viewData();
+            HomeActivity activity = (HomeActivity) getActivity();
 
-            lnUserProfile.setOnClickListener(v1 -> replaceFragment(new UserProfileFragment()));
+            lnUserProfile.setOnClickListener(v1 -> activity.replaceFragment(new UserProfileFragment()));
 
-            lnChangePassword.setOnClickListener(v12 -> replaceFragment(new ChangePasswordFragment()));
+            lnChangePassword.setOnClickListener(v12 -> activity.replaceFragment(new ChangePasswordFragment()));
 
             lnDeleteProfile.setOnClickListener(v13 -> {
                 deleteDialog myDialogFragment = new deleteDialog();
@@ -83,13 +84,7 @@ public class ProfileFragment extends Fragment {
 
     }
 
-    private void replaceFragment(Fragment fragment) {
-        if (getActivity() instanceof AdminHomeActivity) {
-            ((AdminHomeActivity) getActivity()).replaceFragment(fragment);
-        } else if (getActivity() instanceof HomeActivity) {
-            ((HomeActivity) getActivity()).replaceFragment(fragment);
-        }
-    }
+
 
     private void viewData() {
         try{

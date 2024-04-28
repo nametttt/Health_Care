@@ -53,8 +53,8 @@ public class ArticleFragment extends Fragment {
         recyclerView = v.findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setAdapter(adapter);
-        GridLayoutManager layoutManager = new GridLayoutManager(getContext(), 3);
-
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
+        layoutManager.setOrientation(RecyclerView.HORIZONTAL);
         recyclerView.setLayoutManager(layoutManager);
         addDataOnRecyclerView();
     }
