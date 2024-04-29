@@ -86,7 +86,7 @@ public class HomeActivity extends AppCompatActivity {
             DatabaseReference ref = db.getReference("users");
             GetSplittedPathChild pC = new GetSplittedPathChild();
             DatabaseReference userRef = ref.child(pC.getSplittedPathChild(user.getEmail()));
-            userRef.child("token").setValue(token)
+            userRef.child("deviceToken").setValue(token)
                     .addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {

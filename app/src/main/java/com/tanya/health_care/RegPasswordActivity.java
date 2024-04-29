@@ -29,6 +29,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.tanya.health_care.code.EyeVisibility;
 import com.tanya.health_care.code.UserData;
 import com.tanya.health_care.code.GetSplittedPathChild;
+import com.tanya.health_care.code.UserValues;
+import com.tanya.health_care.code.WaterData;
 import com.tanya.health_care.dialog.CustomDialog;
 
 public class RegPasswordActivity extends AppCompatActivity {
@@ -39,7 +41,6 @@ public class RegPasswordActivity extends AppCompatActivity {
     private Button btn, continu;
     private String email, gender, birthday;
     private FirebaseAuth mAuth;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -156,10 +157,19 @@ public class RegPasswordActivity extends AppCompatActivity {
 
                                     DatabaseReference userRef = ref.child(splittedPathChild);
 
+                                    DatabaseReference userValuesRef = mDb.getReference("users").child(splittedPathChild).child("values");
+
+                                    UserValues userValues = new UserValues();
+                                    userValues.calculateNorms(gender, birthday);
+
                                     userRef.setValue(user).addOnCompleteListener(new OnCompleteListener<Void>() {
                                         @Override
                                         public void onComplete(@NonNull Task<Void> databaseTask) {
                                             if (databaseTask.isSuccessful()) {
+                                                userValuesRef.child("SleepValue").setValue(userValues.getSleepValue());
+                                                userValuesRef.child("WaterValue").setValue(userValues.getWaterValue());
+                                                userValuesRef.child("NutritionValue").setValue(userValues.getNutritionValue());
+
                                                 Intent intent = new Intent(RegPasswordActivity.this, HomeActivity.class);
                                                 startActivity(intent);
                                                 CustomDialog dialogFragment = new CustomDialog("Успех", "Успешная регистрация!");

@@ -27,7 +27,7 @@ public class UserData {
         result.put("role", role);
         result.put("birthday", birthday);
         result.put("image", image);
-        result.put("token", deviceToken);
+        result.put("deviceToken", deviceToken);
         return result;
     }
     public String getEmail() {

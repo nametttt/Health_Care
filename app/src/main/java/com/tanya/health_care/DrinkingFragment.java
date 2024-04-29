@@ -5,15 +5,22 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CalendarView;
+import android.widget.NumberPicker;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -46,6 +53,7 @@ public class DrinkingFragment extends Fragment {
     private Date selectedDate = new Date();
     private Button addWater, save;
     RecyclerView recyclerView;
+    Toolbar toolbar;
     ArrayList<WaterData> waterDataArrayList;
     WaterRecyclerView adapter;
     FirebaseUser user;
@@ -66,6 +74,28 @@ public class DrinkingFragment extends Fragment {
         return v;
     }
 
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.water_menu, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        HomeActivity homeActivity = (HomeActivity) getActivity();
+        switch (item.getItemId()) {
+            case R.id.normal:
+                homeActivity.replaceFragment(new WaterValueFragment());
+                return true;
+            case R.id.aboutCharacteristic:
+                homeActivity.replaceFragment(new AboutWaterFragment());
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+
     void init (View v){
         user = FirebaseAuth.getInstance().getCurrentUser();
         mDb = FirebaseDatabase.getInstance();
@@ -77,6 +107,10 @@ public class DrinkingFragment extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setAdapter(adapter);
 
+        toolbar = v.findViewById(R.id.toolbar);
+        ((AppCompatActivity) requireActivity()).setSupportActionBar(toolbar);
+
+        setHasOptionsMenu(true);
         save = v.findViewById(R.id.back);
 
         calendarView = v.findViewById(R.id.calendar);
@@ -171,6 +205,7 @@ public class DrinkingFragment extends Fragment {
 
         ArrayList<String> datesToBeColored = new ArrayList<>();
         datesToBeColored.add(Tools.getFormattedDateToday());
+
 
         calendarView.setUpCalendar(minDate.getTime(),
                 maxDate.getTime(),
