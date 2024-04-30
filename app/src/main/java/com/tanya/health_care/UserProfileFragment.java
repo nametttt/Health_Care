@@ -5,6 +5,7 @@ import static android.app.Activity.RESULT_OK;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.storage.UploadTask;
+import com.tanya.health_care.code.UserValues;
 import com.theartofdev.edmodo.cropper.CropImage; // Добавляем библиотеку для обрезки изображений
 
 import android.app.Activity;
@@ -290,6 +291,8 @@ public class UserProfileFragment extends Fragment {
 
     // Добавляем метод для сохранения данных и изображения в Firebase
     private void saveDataAndImage() {
+        Toast.makeText(getContext(), "Начали сохранять данные!", Toast.LENGTH_SHORT).show();
+
         FirebaseUser user = mAuth.getCurrentUser();
         if (user != null) {
             String email = user.getEmail();
@@ -333,12 +336,37 @@ public class UserProfileFragment extends Fragment {
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         // Обновление успешно
+                        updateNorms(email);
                         Toast.makeText(getContext(), "Данные успешно обновлены", Toast.LENGTH_SHORT).show();
                     } else {
                         // Ошибка при обновлении данных
                         Toast.makeText(getContext(), "Ошибка при обновлении данных", Toast.LENGTH_SHORT).show();
                     }
                 });
+    }
+    private void updateNorms(String email) {
+        userRef.child(pC.getSplittedPathChild(email)).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    UserData userData = snapshot.getValue(UserData.class);
+                    if (userData != null) {
+                        UserValues userValues = new UserValues();
+                        userValues.calculateNorms(userData.getGender(), userData.getBirthday());
+                        DatabaseReference userValuesRef = FirebaseDatabase.getInstance().getReference("users")
+                                .child(pC.getSplittedPathChild(email)).child("values");
+                        userValuesRef.child("SleepValue").setValue(userValues.getSleepValue());
+                        userValuesRef.child("WaterValue").setValue(userValues.getWaterValue());
+                        userValuesRef.child("NutritionValue").setValue(userValues.getNutritionValue());
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                // Обработка ошибок
+            }
+        });
     }
 
 }

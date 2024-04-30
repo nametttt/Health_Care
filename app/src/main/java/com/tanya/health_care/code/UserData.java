@@ -44,12 +44,14 @@ public class UserData {
         this.image = image;
     }
 
-    public String getToken() {
+    public String getDeviceToken() {
         return deviceToken;
     }
-    public void setToken(String image) {
+
+    public void setDeviceToken(String deviceToken) {
         this.deviceToken = deviceToken;
     }
+
 
     public String getName() {
         return name;

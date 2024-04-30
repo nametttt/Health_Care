@@ -93,9 +93,9 @@ public class UserValues {
             WaterValue = 2500; // Для подростков от 14 до 18 лет
         } else {
             // Для взрослых
-            if (gender.equalsIgnoreCase("male")) {
+            if (gender.equalsIgnoreCase("мужской")) {
                 WaterValue = 3000; // Для мужчин
-            } else if (gender.equalsIgnoreCase("female")) {
+            } else if (gender.equalsIgnoreCase("женский")) {
                 WaterValue = 2700; // Для женщин
             }
         }
@@ -108,33 +108,33 @@ public class UserValues {
         } else if (age >= 4 && age <= 8) {
             NutritionValue = 1200; // Для любого пола в этом возрастном диапазоне
         } else if (age >= 9 && age <= 13) {
-            if (gender.equalsIgnoreCase("male")) {
+            if (gender.equalsIgnoreCase("мужской")) {
                 NutritionValue = 1600;
-            } else if (gender.equalsIgnoreCase("female")) {
+            } else if (gender.equalsIgnoreCase("женский")) {
                 NutritionValue = 1400;
             }
         } else if (age >= 14 && age <= 18) {
-            if (gender.equalsIgnoreCase("male")) {
+            if (gender.equalsIgnoreCase("мужской")) {
                 NutritionValue = 2400;
-            } else if (gender.equalsIgnoreCase("female")) {
+            } else if (gender.equalsIgnoreCase("женский")) {
                 NutritionValue = 1800;
             }
         } else if (age >= 19 && age <= 30) {
-            if (gender.equalsIgnoreCase("male")) {
+            if (gender.equalsIgnoreCase("мужской")) {
                 NutritionValue = 2400;
-            } else if (gender.equalsIgnoreCase("female")) {
+            } else if (gender.equalsIgnoreCase("женский")) {
                 NutritionValue = 2000;
             }
         } else if (age >= 31 && age <= 50) {
-            if (gender.equalsIgnoreCase("male")) {
+            if (gender.equalsIgnoreCase("мужской")) {
                 NutritionValue = 2200;
-            } else if (gender.equalsIgnoreCase("female")) {
+            } else if (gender.equalsIgnoreCase("женский")) {
                 NutritionValue = 1800;
             }
         } else if (age >= 51) {
-            if (gender.equalsIgnoreCase("male")) {
+            if (gender.equalsIgnoreCase("мужской")) {
                 NutritionValue = 2000;
-            } else if (gender.equalsIgnoreCase("female")) {
+            } else if (gender.equalsIgnoreCase("женский")) {
                 NutritionValue = 1600;
             }
         }
