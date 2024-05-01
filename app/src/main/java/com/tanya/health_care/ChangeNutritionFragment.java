@@ -143,6 +143,18 @@ public class ChangeNutritionFragment extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setAdapter(adapter);
 
+        if ("Завтрак".equals(nutritionType)) {
+            typeFood.setSelection(0);
+        } else if ("Обед".equals(nutritionType)) {
+            typeFood.setSelection(1);
+        } else if ("Ужин".equals(nutritionType)) {
+            typeFood.setSelection(2);
+        } else if ("Перекус".equals(nutritionType)) {
+            typeFood.setSelection(3);
+        } else {
+            typeFood.setSelection(0);
+        }
+
         if (selectedFoods != null && !selectedFoods.isEmpty()) {
             foodDataArrayList.addAll(selectedFoods);
             float calories = 0, weightFood = 0;
@@ -168,7 +180,7 @@ public class ChangeNutritionFragment extends Fragment {
         save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String selectedType = typeFood.getSelectedItem().toString();
+                String selectedType = typeFood.getSelectedItem().toString().trim();
 
                 if (TextUtils.isEmpty(selectedType) || selectedFoods.isEmpty()) {
                     CustomDialog dialogFragment = new CustomDialog("Ошибка", "Пожалуйста, заполните все поля!");

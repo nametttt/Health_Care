@@ -68,11 +68,10 @@ public class ArticleFragment extends Fragment {
                     articleDataArrayList.clear();
                 }
                 for (DataSnapshot ds : snapshot.getChildren()) {
-                    ds.getValue();
                     ArticleData ps = ds.getValue(ArticleData.class);
-                    assert ps != null;
+                    if (ps != null && "Здоровое питание".equals(ps.getCategory())) {
                         articleDataArrayList.add(ps);
-
+                    }
                 }
                 adapter.notifyDataSetChanged();
             }
@@ -83,7 +82,6 @@ public class ArticleFragment extends Fragment {
             }
         };
         ref = mDb.getReference().child("articles");
-
         ref.addValueEventListener(valueEventListener);
     }
 
