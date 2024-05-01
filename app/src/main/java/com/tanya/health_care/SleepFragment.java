@@ -81,17 +81,29 @@ public class SleepFragment extends Fragment {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 long totalDurationMillis = 0;
+                Date today = new Date(); // Получаем текущую дату
+
+                if (sleepData.size() > 0) {
+                    sleepData.clear();
+                    isExist = false;
+                }
 
                 for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
                     SleepData sleep = dataSnapshot.getValue(SleepData.class);
-                    long durationMillis = calculateDurationMillis(sleep);
-                    totalDurationMillis += durationMillis;
+
+                    // Проверяем, является ли запись о сне для текущего дня
+                    if (isSameDay(sleep.addTime, today)) {
+                        sleepData.add(sleep); // Добавляем запись в список для отображения
+                        totalDurationMillis += calculateDurationMillis(sleep); // Увеличиваем общую продолжительность сна
+                    }
                 }
+
+                adapter.notifyDataSetChanged();
 
                 if (totalDurationMillis > 0) {
                     long totalHours = totalDurationMillis / (1000 * 60 * 60);
                     long totalMinutes = (totalDurationMillis % (1000 * 60 * 60)) / (1000 * 60);
-                    duration.setText(String.format("%dч %dмин", totalHours, totalMinutes));
+                    duration.setText(String.format(Locale.getDefault(), "%dч %dмин", totalHours, totalMinutes));
                 } else {
                     duration.setText("не отмечено");
                 }

@@ -49,7 +49,7 @@ import in.akshit.horizontalcalendar.Tools;
 
 
 public class DrinkingFragment extends Fragment {
-    private TextView drunkCount, dateText;
+    private TextView drunkCount, dateText, myNormal;
     private Date selectedDate = new Date();
     private Button addWater, save;
     RecyclerView recyclerView;
@@ -58,7 +58,7 @@ public class DrinkingFragment extends Fragment {
     WaterRecyclerView adapter;
     FirebaseUser user;
     WaterData waterData;
-    DatabaseReference ref;
+    DatabaseReference ref, userValuesRef;
     GetSplittedPathChild pC = new GetSplittedPathChild();
     HorizontalCalendarView calendarView;
     FirebaseDatabase mDb;
@@ -101,6 +101,7 @@ public class DrinkingFragment extends Fragment {
         mDb = FirebaseDatabase.getInstance();
         drunkCount = v.findViewById(R.id.drunkCount);
         dateText = v.findViewById(R.id.dateText);
+        myNormal = v.findViewById(R.id.myNormal);
         waterDataArrayList = new ArrayList<WaterData>();
         adapter = new WaterRecyclerView(getContext(), waterDataArrayList);
         recyclerView = v.findViewById(R.id.recyclerView);
@@ -115,6 +116,27 @@ public class DrinkingFragment extends Fragment {
 
         calendarView = v.findViewById(R.id.calendar);
         MyCalendar();
+
+        userValuesRef = mDb.getReference("users")
+                .child(pC.getSplittedPathChild(user.getEmail()))
+                .child("values")
+                .child("WaterValue");
+
+        userValuesRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    int waterValue = snapshot.getValue(int.class);
+                    myNormal.setText(String.valueOf(waterValue));
+                } else {
+                    myNormal.setText("Не найдено");
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+            }
+        });
 
         save.setOnClickListener(new View.OnClickListener() {
             @Override

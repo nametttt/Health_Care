@@ -44,12 +44,12 @@
                     android:layout_marginVertical="10dp"
                     android:textAlignment="textStart"
                     android:textStyle="bold"/>
-
+я
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textColor="@color/black"
-                    android:text="Хорошее здоровье начинается с употребления воды! Установите дневную норму потребления воды, чтобы отслеживать ее."
+                    android:text="Здоровое питание - ключ к вашему благополучию! Установите вашу норму питания, чтобы поддерживать свое здоровье и чувствовать себя прекрасно."
                     android:textSize="20dp"
                     android:layout_marginVertical="5dp"
                     android:justificationMode="inter_word"/>
@@ -64,7 +64,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="10dp"
-                        android:text="Ежедневное потребление воды (мл)"
+                        android:text="Ежедневное потребление калорий"
                         android:textAlignment="textStart"
                         android:textColor="@color/black"
                         android:textSize="20dp"

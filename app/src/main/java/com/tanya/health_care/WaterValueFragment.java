@@ -28,7 +28,7 @@ public class WaterValueFragment extends Fragment {
     DatabaseReference userValuesRef;
     GetSplittedPathChild pC = new GetSplittedPathChild();
     FirebaseDatabase mDb;
-    int waterValue = 100;
+    int waterValue = 1000;
     NumberPicker numberPicker;
 
     @Override

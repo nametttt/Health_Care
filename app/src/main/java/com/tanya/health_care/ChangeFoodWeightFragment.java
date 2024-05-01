@@ -45,15 +45,22 @@ public class ChangeFoodWeightFragment extends Fragment {
         FragmentManager fragmentManager = homeActivity.getSupportFragmentManager();
 
         countText.setText(s);
-       save.setOnClickListener(new View.OnClickListener() {
-           @Override
-           public void onClick(View v) {
-                float a = Float.parseFloat(countText.getText().toString());
-               selectedFood.setWeight(a);
+        save.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                float newWeight = Float.parseFloat(countText.getText().toString());
 
-               fragmentManager.popBackStack();
-           }
-       });
+                float oldWeight = selectedFood.getWeight();
+                float oldCalories = selectedFood.getCalories();
+                float newCalories = (newWeight / oldWeight) * oldCalories;
+
+                selectedFood.setWeight(newWeight);
+                selectedFood.setCalories((int) newCalories);
+
+                fragmentManager.popBackStack();
+            }
+        });
+
 
         back.setOnClickListener(new View.OnClickListener() {
             @Override

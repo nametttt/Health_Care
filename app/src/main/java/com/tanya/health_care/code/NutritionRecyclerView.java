@@ -52,7 +52,17 @@ public class NutritionRecyclerView extends RecyclerView.Adapter<NutritionRecycle
             for (FoodData foodData : foods) {
                 if (foodData.getUid().equals(uid)) {
                     selectedFoods.add(foodData);
-                    totalCalories += foodData.getCalories();
+                    float oldWeight = foodData.getWeight();
+                    float newWeight = food.coef;
+                    if (oldWeight != newWeight) {
+                        float calorieDifference = (newWeight / oldWeight) * foodData.getCalories();
+                        totalCalories += Math.round(calorieDifference);
+                        // Обновляем калории и вес в списке selectedFoods
+                        foodData.setCalories(Math.round(calorieDifference));
+                        foodData.setWeight(newWeight);
+                    } else {
+                        totalCalories += foodData.getCalories();
+                    }
                 }
             }
         }
@@ -64,13 +74,11 @@ public class NutritionRecyclerView extends RecyclerView.Adapter<NutritionRecycle
             public void onClick(View v) {
                 HomeActivity homeActivity = (HomeActivity) v.getContext();
                 ChangeNutritionFragment fragment = new ChangeNutritionFragment(currentNutrition.nutritionId, currentNutrition.nutritionTime, currentNutrition.nutritionType, selectedFoods, null);
-//                Bundle args = new Bundle();
-//                args.putString("Add", null);
-//                fragment.setArguments(args);
                 homeActivity.replaceFragment(fragment);
             }
         });
     }
+
 
     @Override
     public int getItemCount() {

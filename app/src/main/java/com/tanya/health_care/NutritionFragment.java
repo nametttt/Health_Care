@@ -52,7 +52,7 @@ import in.akshit.horizontalcalendar.Tools;
 public class NutritionFragment extends Fragment {
 
     Button exit, addNutrition;
-    TextView dateText, userCalories;
+    TextView dateText, userCalories, myNormal;
     private Date selectedDate = new Date();
     RecyclerView recyclerView;
     ArrayList<NutritionData> nutritionDataArrayList;
@@ -64,7 +64,7 @@ public class NutritionFragment extends Fragment {
     ArrayList<FoodData> foods = new ArrayList<>();
     FirebaseDatabase mDb;
     HorizontalCalendarView calendarView;
-
+    DatabaseReference userValuesRef;
     private Date newDate;
     Toolbar toolbar;
 
@@ -87,11 +87,7 @@ public class NutritionFragment extends Fragment {
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.water_menu, menu);
-        MenuItem normalItem = menu.findItem(R.id.normal);
-        MenuItem aboutCharacteristicItem = menu.findItem(R.id.aboutCharacteristic);
-
-        aboutCharacteristicItem.setTitle("О питании");
+        inflater.inflate(R.menu.nutrition_menu, menu);
     }
 
     @Override
@@ -99,10 +95,13 @@ public class NutritionFragment extends Fragment {
         HomeActivity homeActivity = (HomeActivity) getActivity();
         switch (item.getItemId()) {
             case R.id.normal:
-                homeActivity.replaceFragment(new WaterValueFragment());
+                homeActivity.replaceFragment(new NutritionValueFragment());
                 return true;
             case R.id.aboutCharacteristic:
-                homeActivity.replaceFragment(new AboutWaterFragment());
+                homeActivity.replaceFragment(new AboutNutritionFragment());
+                return true;
+            case R.id.myProduct:
+                homeActivity.replaceFragment(new MyProductsFragment());
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -115,6 +114,7 @@ public class NutritionFragment extends Fragment {
         addNutrition = v.findViewById(R.id.addNutrition);
         dateText = v.findViewById(R.id.dateText);
         userCalories = v.findViewById(R.id.userCalories);
+        myNormal = v.findViewById(R.id.myNormal);
         user = FirebaseAuth.getInstance().getCurrentUser();
         mDb = FirebaseDatabase.getInstance();
         dateText = v.findViewById(R.id.dateText);
@@ -130,6 +130,26 @@ public class NutritionFragment extends Fragment {
         calendarView = v.findViewById(R.id.calendar);
         MyCalendar();
         GetData();
+        userValuesRef = mDb.getReference("users")
+                .child(pC.getSplittedPathChild(user.getEmail()))
+                .child("values")
+                .child("NutritionValue");
+
+        userValuesRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    int nutritionValue = snapshot.getValue(int.class);
+                    myNormal.setText(String.valueOf(nutritionValue));
+                } else {
+                    myNormal.setText("Не найдено");
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+            }
+        });
 
         if(newDate != null){
             updateNutritionDataForSelectedDate(newDate);
@@ -184,7 +204,14 @@ public class NutritionFragment extends Fragment {
                             String uid = food.Uid;
                             for (FoodData foodData : foods) {
                                 if (foodData.getUid().equals(uid)) {
-                                    count += foodData.getCalories();
+                                    float oldWeight = foodData.getWeight();
+                                    float newWeight = food.coef;
+                                    if (oldWeight != newWeight) {
+                                        float calorieDifference = (newWeight / oldWeight) * foodData.getCalories();
+                                        count += Math.round(calorieDifference);
+                                    } else {
+                                        count += foodData.getCalories();
+                                    }
                                 }
                             }
                         }
