@@ -7,6 +7,11 @@ android {
     namespace 'com.tanya.health_care'
     compileSdk 34
 
+    packagingOptions {
+        pickFirst 'META-INF/INDEX.LIST'
+        pickFirst 'META-INF/DEPENDENCIES'
+    }
+
     defaultConfig {
         applicationId "com.tanya.health_care"
         minSdk 28
@@ -58,6 +63,7 @@ dependencies {
     implementation 'com.github.mahdizareeii:MZTimePicker:1.8'
     implementation 'com.squareup.okhttp3:okhttp:5.0.0-alpha.14'
     implementation 'com.google.code.gson:gson:2.10.1'
+    implementation 'com.google.auth:google-auth-library-appengine:1.23.0'
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'

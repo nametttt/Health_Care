@@ -1,5 +1,8 @@
 package com.tanya.health_care;
 
+import static com.google.common.reflect.Reflection.getPackageName;
+
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,12 +13,28 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.google.auth.oauth2.GoogleCredentials;
+import com.google.gson.Gson;
 import com.tanya.health_care.code.FirebaseMessaging;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
 import java.net.URISyntaxException;
+import java.net.URL;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 public class HomeFragment extends Fragment {
+
+
 
 
 
@@ -63,11 +82,7 @@ public class HomeFragment extends Fragment {
             @Override
             public void onClick(View v) {
 
-                FirebaseMessaging.send("dVPvqWjcSP2TLJouaCLNln:APA91bHxvQ4RWf_0R94VvcaAQpOnQ2HoRf5ZXb7jTiLlqqtKeg-T-1Jw5gQSTN4dbXDUNSWikECO3QVphZuBbUi-TzX_LsolXhv7dxdQhSpY0S8hofkzRG-KX8iq86aG2fMJYUf0eSHj",
-                        "Имя отправителя",
-                        "Заголовок уведомления",
-                        "Текст уведомления");
-
+//
                 HomeActivity homeActivity = (HomeActivity) getActivity();
                 homeActivity.replaceFragment(new HealthCommonFragment());
             }
@@ -81,5 +96,6 @@ public class HomeFragment extends Fragment {
             }
         });
     }
+
 
 }
