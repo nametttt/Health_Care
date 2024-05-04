@@ -8,6 +8,9 @@ import androidx.fragment.app.FragmentTransaction;
 import android.os.Bundle;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.tanya.health_care.code.FirebaseMessaging;
+
+import java.io.IOException;
 
 public class AdminHomeActivity extends AppCompatActivity {
 
@@ -16,6 +19,10 @@ public class AdminHomeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_admin_home);
         replaceFragment(new AdminUsersFragment());
+
+        FirebaseMessaging msg = new FirebaseMessaging();
+
+
 
         BottomNavigationView navView = findViewById(R.id.nav_view);
         navView.setOnItemSelectedListener(item -> {

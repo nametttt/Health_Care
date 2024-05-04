@@ -11,8 +11,10 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import okhttp3.*;
@@ -25,7 +27,7 @@ public class FirebaseMessaging {
     private String beaerertoken;
     private String BEARERTOKEN;
 
-    public void send(String title, String body, String token, Context context) throws IOException {
+    public void send(String title, String bodys, ArrayList<String> token, Context context) throws IOException {
 
         jasonfile = context.getResources().openRawResource(context.getResources().getIdentifier("serviceaccount","raw", context.getPackageName()));
 
@@ -67,59 +69,63 @@ public class FirebaseMessaging {
                                 json.put("client_x509_cert_url", "https://www.googleapis.com/robot/v1/metadata/x509/firebase-adminsdk-cr2l6%40health-care-16fe6.iam.gserviceaccount.com");
                                 json.put("universe_domain", "googleapis.com");
 
-                                String scope = "https://www.googleapis.com/auth/firebase.messaging";
+                                for(String item : token){
+                                    String scope = "https://www.googleapis.com/auth/firebase.messaging";
 
-                                RequestBody requestBody = RequestBody.create(MediaType.get("application/json"), json.toString());
-
-
-                                // Request to get credentials
-                                Request request = new Request.Builder()
-                                        .url("https://oauth2.googleapis.com/token")
-                                        .post(requestBody)
-                                        .build();
-
-                                Response response = client.newCall(request).execute();
-
-                                String accessToken = response.body().string().replace("\n", "");
+                                    RequestBody requestBody = RequestBody.create(MediaType.get("application/json"), json.toString());
 
 
-                                // Constructing message body
-                                Map<String, Object> body = new HashMap<>();
-                                Map<String, Object> message = new HashMap<>();
-                                Map<String, Object> notification = new HashMap<>();
-                                Map<String, Object> data = new HashMap<>();
+                                    // Request to get credentials
+                                    Request request = new Request.Builder()
+                                            .url("https://oauth2.googleapis.com/token")
+                                            .post(requestBody)
+                                            .build();
 
-                                notification.put("title", title);
-                                notification.put("body", body);
+                                    Response response = client.newCall(request).execute();
+
+                                    String accessToken = response.body().string().replace("\n", "");
 
 
-                                message.put("token", token);
-                                message.put("notification", notification);
-                                message.put("data", data);
+                                    // Constructing message body
+                                    Map<String, Object> body = new HashMap<>();
+                                    Map<String, Object> message = new HashMap<>();
+                                    Map<String, Object> notification = new HashMap<>();
+                                    Map<String, Object> data = new HashMap<>();
 
-                                body.put("message", message);
+                                    notification.put("title", title);
+                                    notification.put("body", bodys);
 
-                                // Constructing request URL
-                                String projectId = "health-care-16fe6";
-                                String url = "https://fcm.googleapis.com/v1/projects/" + projectId + "/messages:send";
 
-                                // Constructing headers
-                                Map<String, String> headers = new HashMap<>();
-                                headers.put("Authorization", "Bearer " + beaerertoken);
+                                    message.put("token", item);
+                                    message.put("notification", notification);
+                                    message.put("data", data);
 
-                                // Making request to send message
-                                okhttp3.Request.Builder requestBuilder = new okhttp3.Request.Builder().url(url);
-                                for (Map.Entry<String, String> entry : headers.entrySet()) {
-                                    requestBuilder.addHeader(entry.getKey(), entry.getValue());
+                                    body.put("message", message);
+
+                                    // Constructing request URL
+                                    String projectId = "health-care-16fe6";
+                                    String url = "https://fcm.googleapis.com/v1/projects/" + projectId + "/messages:send";
+
+                                    // Constructing headers
+                                    Map<String, String> headers = new HashMap<>();
+                                    headers.put("Authorization", "Bearer " + beaerertoken);
+
+                                    // Making request to send message
+                                    okhttp3.Request.Builder requestBuilder = new okhttp3.Request.Builder().url(url);
+                                    for (Map.Entry<String, String> entry : headers.entrySet()) {
+                                        requestBuilder.addHeader(entry.getKey(), entry.getValue());
+                                    }
+                                    requestBuilder.post(RequestBody.create(MediaType.parse("application/json"), new Gson().toJson(body)));
+                                    Response sendMessageResponse = client.newCall(requestBuilder.build()).execute();
+
+                                    if (sendMessageResponse.isSuccessful()) {
+                                        System.out.println("Message sent: " + sendMessageResponse.body().string());
+                                    } else {
+                                        System.out.println("Error sending message: " + sendMessageResponse.body().string());
+                                    }
                                 }
-                                requestBuilder.post(RequestBody.create(MediaType.parse("application/json"), new Gson().toJson(body)));
-                                Response sendMessageResponse = client.newCall(requestBuilder.build()).execute();
 
-                                if (sendMessageResponse.isSuccessful()) {
-                                    System.out.println("Message sent: " + sendMessageResponse.body().string());
-                                } else {
-                                    System.out.println("Error sending message: " + sendMessageResponse.body().string());
-                                }
+
 
 
                             } catch (IOException e) {

@@ -207,7 +207,6 @@ public class PhysicalParametersFragment extends Fragment {
                 }
 
                 for (DataSnapshot ds : snapshot.getChildren()) {
-                    ds.getValue();
                     PhysicalParametersData ps = ds.getValue(PhysicalParametersData.class);
                     assert ps != null;
                     if (isSameDay(ps.lastAdded, selectedDate)) {
