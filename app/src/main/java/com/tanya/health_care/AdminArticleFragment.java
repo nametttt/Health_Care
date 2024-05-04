@@ -16,6 +16,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ProgressBar;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -34,6 +35,7 @@ import java.util.ArrayList;
 
 public class AdminArticleFragment extends Fragment {
 
+    ProgressBar progressBar;
     RecyclerView recyclerView;
     ArrayList<ArticleData> articles;
     AdminArticleRecyclerView adapter;
@@ -70,6 +72,8 @@ public class AdminArticleFragment extends Fragment {
         recyclerView = v.findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setAdapter(adapter);
+        progressBar = v.findViewById(R.id.progressBar);
+
         addDataOnRecyclerView();
 
         addArticle.setOnClickListener(new View.OnClickListener() {
@@ -118,6 +122,8 @@ public class AdminArticleFragment extends Fragment {
     }
     private void addDataOnRecyclerView() {
         try {
+            progressBar.setVisibility(View.VISIBLE);
+
             ValueEventListener valueEventListener = new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -131,11 +137,13 @@ public class AdminArticleFragment extends Fragment {
                         articles.add(ps);
 
                     }
+                    progressBar.setVisibility(View.GONE);
                     adapter.notifyDataSetChanged();
                 }
 
                 @Override
                 public void onCancelled(@NonNull DatabaseError error) {
+                    progressBar.setVisibility(View.GONE);
 
                 }
             };

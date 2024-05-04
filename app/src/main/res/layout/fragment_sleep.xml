@@ -94,9 +94,9 @@
                             android:orientation="horizontal">
 
                             <TextView
+                                android:id="@+id/sleepDuration"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:id="@+id/sleepDuration"
                                 android:textColor="@color/black"
                                 android:textSize="28dp"
                                 android:text="загрузка..."

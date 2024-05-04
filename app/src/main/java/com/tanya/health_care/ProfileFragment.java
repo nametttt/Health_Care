@@ -53,15 +53,31 @@ public class ProfileFragment extends Fragment {
             imageView = v.findViewById(R.id.imageView);
 
             viewData();
-            HomeActivity activity = (HomeActivity) getActivity();
 
-            lnUserProfile.setOnClickListener(v1 -> activity.replaceFragment(new UserProfileFragment()));
+            lnUserProfile.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v1) {
+                    if (getActivity() instanceof HomeActivity) {
+                        HomeActivity homeActivity = (HomeActivity) getActivity();
+                        homeActivity.replaceFragment(new UserProfileFragment());
+                    } else if (getActivity() instanceof AdminHomeActivity) {
+                        AdminHomeActivity adminHomeActivity = (AdminHomeActivity) getActivity();
+                        adminHomeActivity.replaceFragment(new UserProfileFragment());
+                    }
+                }
+            });
 
-            lnChangePassword.setOnClickListener(v12 -> activity.replaceFragment(new ChangePasswordFragment()));
-
-            lnDeleteProfile.setOnClickListener(v13 -> {
-                deleteDialog myDialogFragment = new deleteDialog();
-                myDialogFragment.show(getChildFragmentManager(), "dialog");
+            lnChangePassword.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v12) {
+                    if (getActivity() instanceof HomeActivity) {
+                        HomeActivity homeActivity = (HomeActivity) getActivity();
+                        homeActivity.replaceFragment(new ChangePasswordFragment());
+                    } else if (getActivity() instanceof AdminHomeActivity) {
+                        AdminHomeActivity adminHomeActivity = (AdminHomeActivity) getActivity();
+                        adminHomeActivity.replaceFragment(new ChangePasswordFragment());
+                    }
+                }
             });
 
             lnExitProfile.setOnClickListener(v14 -> {

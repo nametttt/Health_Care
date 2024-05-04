@@ -1,4 +1,5 @@
 package com.tanya.health_care.dialog;
+
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.TimePickerDialog;
@@ -9,7 +10,11 @@ import android.widget.TimePicker;
 
 import androidx.fragment.app.DialogFragment;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
 
 public class DateTimePickerDialog extends DialogFragment
         implements DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener {
@@ -23,21 +28,29 @@ public class DateTimePickerDialog extends DialogFragment
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        // Use the current date as the default date in the picker.
-        final Calendar c = Calendar.getInstance();
-        int year = c.get(Calendar.YEAR);
-        int month = c.get(Calendar.MONTH);
-        int day = c.get(Calendar.DAY_OF_MONTH);
+        selectedDateTime = Calendar.getInstance();
+        if (targetButton != null && targetButton.getText() != null && !targetButton.getText().toString().isEmpty()) {
+            String dateString = targetButton.getText().toString();
+            try {
+                SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM HH:mm", Locale.getDefault());
+                Date date = dateFormat.parse(dateString);
+                selectedDateTime.setTime(date);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        }
 
-        // Create a new instance of DatePickerDialog and return it.
+        int year = selectedDateTime.get(Calendar.YEAR);
+        int month = selectedDateTime.get(Calendar.MONTH);
+        int day = selectedDateTime.get(Calendar.DAY_OF_MONTH);
         return new DatePickerDialog(requireContext(), this, year, month, day);
     }
 
     @Override
     public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-        selectedDateTime = Calendar.getInstance();
         selectedDateTime.set(year, month, dayOfMonth);
 
+        // Extract the hour and minute from the selectedDateTime
         int hour = selectedDateTime.get(Calendar.HOUR_OF_DAY);
         int minute = selectedDateTime.get(Calendar.MINUTE);
 
@@ -49,9 +62,9 @@ public class DateTimePickerDialog extends DialogFragment
         selectedDateTime.set(Calendar.HOUR_OF_DAY, hourOfDay);
         selectedDateTime.set(Calendar.MINUTE, minute);
 
-        // Update the text of the target button with the selected date and time
         if (targetButton != null) {
-            String formattedDateTime = android.text.format.DateFormat.format("dd.MM HH:mm", selectedDateTime).toString();
+            SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM HH:mm", Locale.getDefault());
+            String formattedDateTime = dateFormat.format(selectedDateTime.getTime());
             targetButton.setText(formattedDateTime);
         }
     }

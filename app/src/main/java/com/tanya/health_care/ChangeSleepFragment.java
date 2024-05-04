@@ -34,6 +34,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
+import nl.joery.timerangepicker.TimeRangePicker;
+
 public class ChangeSleepFragment extends Fragment {
 
     TextView nameFragment, textFragment, dateText;
@@ -42,11 +44,14 @@ public class ChangeSleepFragment extends Fragment {
     DatabaseReference ref;
     GetSplittedPathChild pC = new GetSplittedPathChild();
     FirebaseDatabase mDb;
-    public String path;
+    public String path, Add;
 
-    public Date date, start, finish;
+    public Date date, start, finish, selectedDate;
 
-
+    public ChangeSleepFragment(Date selectedDate, String add) {
+        this.selectedDate = selectedDate;
+        Add = add;
+    }
     public ChangeSleepFragment(){}
 
     public ChangeSleepFragment(String uid, Date start, Date finish, Date date) {
@@ -75,48 +80,69 @@ public class ChangeSleepFragment extends Fragment {
             dateText = v.findViewById(R.id.dateText);
             dateButton = v.findViewById(R.id.dateButton);
 
-            sleepStart = v.findViewById(R.id.sleepStart);
-            sleepFinish = v.findViewById(R.id.sleepFinish);
+            TextView sleepStart = v.findViewById(R.id.sleepStart);
+            TextView sleepFinish = v.findViewById(R.id.sleepEnd);
+//            sleepStart = v.findViewById(R.id.sleepStart);
+//            sleepFinish = v.findViewById(R.id.sleepFinish);
             nameFragment = v.findViewById(R.id.textSleep);
             textFragment = v.findViewById(R.id.textDescription);
 
             user = FirebaseAuth.getInstance().getCurrentUser();
             mDb = FirebaseDatabase.getInstance();
 
-            Bundle args = getArguments();
-            if (args != null) {
-                String addCommon = args.getString("Add");
-                if ("Добавить".equals(addCommon)) {
-                    save.setText("Добавить");
-                    nameFragment.setText("Добавление записи о сне");
-                    textFragment.setText("Введите данные для добавления новой записи о сне");
-                    delete.setVisibility(View.INVISIBLE);
-                } else {
-                    dateButton.setVisibility(View.VISIBLE);
-                    dateText.setVisibility(View.VISIBLE);
-                    sleepStart.setText(fmt1.format(start));
-                    sleepFinish.setText(fmt1.format(finish));
-                    dateButton.setText(fmt.format(date));
+            TimeRangePicker picker = v.findViewById(R.id.picker);
 
-                    dateButton.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            DateTimePickerDialog dateTimePickerDialog = new DateTimePickerDialog();
-                            dateTimePickerDialog.setTargetButton(dateButton);
-                            dateTimePickerDialog.show(getParentFragmentManager(), "dateTimePicker");
-                        }
-                    });
-                }
-            }
-
-            sleepStart.setOnClickListener(new View.OnClickListener() {
+            picker.setOnTimeChangeListener(new TimeRangePicker.OnTimeChangeListener() {
                 @Override
-                public void onClick(View v) {
-                    TimePicker datePickerModal = new TimePicker();
-                    datePickerModal.setTargetButton(sleepStart);
-                    datePickerModal.show(getParentFragmentManager(), "timepicker");
+                public void onStartTimeChange(TimeRangePicker.Time startTime) {
+                    sleepStart.setText(startTime.toString());
+                }
+
+                @Override
+                public void onEndTimeChange(TimeRangePicker.Time endTime) {
+                    sleepFinish.setText(endTime.toString());
+                }
+
+                @Override
+                public void onDurationChange(TimeRangePicker.TimeDuration duration) {
+                    Toast.makeText(getContext(), duration.toString(), Toast.LENGTH_SHORT).show();
                 }
             });
+
+
+
+            if (Add != null)
+            {
+                save.setText("Добавить");
+                nameFragment.setText("Добавление записи о сне");
+                textFragment.setText("Введите данные для добавления новой записи о сне");
+                delete.setVisibility(View.GONE);
+            }
+            else
+            {
+                dateButton.setVisibility(View.VISIBLE);
+                dateText.setVisibility(View.VISIBLE);
+                sleepStart.setText(fmt1.format(start));
+                sleepFinish.setText(fmt1.format(finish));
+                dateButton.setText(fmt.format(date));
+
+                dateButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        DateTimePickerDialog dateTimePickerDialog = new DateTimePickerDialog();
+                        dateTimePickerDialog.setTargetButton(dateButton);
+                        dateTimePickerDialog.show(getParentFragmentManager(), "dateTimePicker");
+                    }
+                });
+            }
+//            sleepStart.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    TimePicker datePickerModal = new TimePicker();
+//                    datePickerModal.setTargetButton(sleepStart);
+//                    datePickerModal.show(getParentFragmentManager(), "timepicker");
+//                }
+//            });
 
 
             delete.setOnClickListener(new View.OnClickListener() {
@@ -159,74 +185,54 @@ public class ChangeSleepFragment extends Fragment {
                 }
             });
 
-            sleepFinish.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    TimePicker datePickerModal = new TimePicker();
-                    datePickerModal.setTargetButton(sleepFinish);
-                    datePickerModal.show(getParentFragmentManager(), "timepicker");
-                }
-            });
+//            sleepFinish.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    TimePicker datePickerModal = new TimePicker();
+//                    datePickerModal.setTargetButton(sleepFinish);
+//                    datePickerModal.show(getParentFragmentManager(), "timepicker");
+//                }
+//            });
 
             save.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     HomeActivity homeActivity = (HomeActivity) getActivity();
-
-                    String sleepStartText = sleepStart.getText().toString().trim();
-                    String sleepFinishText = sleepFinish.getText().toString().trim();
-
-                    if (TextUtils.isEmpty(sleepStartText) || TextUtils.isEmpty(sleepFinishText)) {
-                        CustomDialog dialogFragment = new CustomDialog("Ошибка", "Пожалуйста, заполните все поля!");
-                        dialogFragment.show(getParentFragmentManager(), "custom_dialog");
-                        return;
-                    }
-
-                    String dateTimeString = dateButton.getText().toString();
-                    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-
-                    String[] startParts = sleepStartText.split(":");
-                    int startHour = Integer.parseInt(startParts[0]);
-                    int startMinute = Integer.parseInt(startParts[1]);
-
-                    String[] finishParts = sleepFinishText.split(":");
-                    int finishHour = Integer.parseInt(finishParts[0]);
-                    int finishMinute = Integer.parseInt(finishParts[1]);
-
-                    Calendar calStart = Calendar.getInstance();
-                    calStart.set(Calendar.HOUR_OF_DAY, startHour);
-                    calStart.set(Calendar.MINUTE, startMinute);
-
-                    Calendar calFinish = Calendar.getInstance();
-                    calFinish.set(Calendar.HOUR_OF_DAY, finishHour);
-                    calFinish.set(Calendar.MINUTE, finishMinute);
-
-                    if (startHour > finishHour || (startHour == finishHour && startMinute >= finishMinute)) {
-                        CustomDialog dialogFragment = new CustomDialog("Ошибка", "Время начала сна не может быть больше или равно времени окончания сна!");
-                        dialogFragment.show(getParentFragmentManager(), "custom_dialog");
-                        return;
-                    }
-
-                    if (finishHour < startHour || (finishHour == startHour && finishMinute <= startMinute)) {
-                        CustomDialog dialogFragment = new CustomDialog("Ошибка", "Время начала сна не может быть меньше или равно времени окончания сна!");
-                        dialogFragment.show(getParentFragmentManager(), "custom_dialog");
-                        return;
-                    }
-
-                    Date startSleep = calStart.getTime();
-                    Date finishSleep = calFinish.getTime();
-
-                    SleepData sleepData;
+                    SleepData sleepData = new SleepData();
                     DatabaseReference reference;
+                    Calendar calendarStart = Calendar.getInstance();
+                    Calendar calendarFinish = Calendar.getInstance();
+
+                    TimeRangePicker.Time startTime = picker.getStartTime();
+                    TimeRangePicker.Time endTime = picker.getEndTime();
+
+                    if (startTime.getHour() > endTime.getHour() ||
+                            (startTime.getHour() == endTime.getHour() && startTime.getMinute() > endTime.getMinute())) {
+                        calendarStart.add(Calendar.DATE, -1);
+                    }
+
+                    int selectedStartHour = startTime.getHour();
+                    int selectedStartMinute = startTime.getMinute();
+
+                    calendarStart.set(Calendar.HOUR_OF_DAY, selectedStartHour);
+                    calendarStart.set(Calendar.MINUTE, selectedStartMinute);
+                    Date startSleepTime = calendarStart.getTime();
+
+                    int selectedEndHour = endTime.getHour();
+                    int selectedEndMinute = endTime.getMinute();
+
+                    calendarFinish.set(Calendar.HOUR_OF_DAY, selectedEndHour);
+                    calendarFinish.set(Calendar.MINUTE, selectedEndMinute);
+                    Date finishSleepTime = calendarFinish.getTime();
 
                     if ("Добавить".equals(save.getText())) {
                         reference = mDb.getReference("users").child(pC.getSplittedPathChild(user.getEmail())).child("characteristic").child("sleep").push();
-                        sleepData = new SleepData(reference.getKey(), startSleep, finishSleep, new Date());
+                        sleepData = new SleepData(reference.getKey(), startSleepTime, finishSleepTime, selectedDate);
                         CustomDialog dialogFragment = new CustomDialog("Успех", "Добавление прошло успешно!");
                         dialogFragment.show(getParentFragmentManager(), "custom_dialog");
                     } else {
                         reference = mDb.getReference("users").child(pC.getSplittedPathChild(user.getEmail())).child("characteristic").child("sleep").child(path);
-                        sleepData = new SleepData(path, startSleep, finishSleep, calStart.getTime());
+                        //sleepData = new SleepData(path, startSleep, finishSleep, calStart.getTime());
                         CustomDialog dialogFragment = new CustomDialog("Успех", "Изменение прошло успешно!");
                         dialogFragment.show(getParentFragmentManager(), "custom_dialog");
                     }
@@ -235,11 +241,81 @@ public class ChangeSleepFragment extends Fragment {
                         reference.setValue(sleepData);
                     }
 
-                    homeActivity.replaceFragment(new SleepFragment());
-
+                    homeActivity.replaceFragment(new SleepFragment(selectedDate));
                 }
-
             });
+//            save.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    HomeActivity homeActivity = (HomeActivity) getActivity();
+//
+//                    String sleepStartText = sleepStart.getText().toString().trim();
+//                    String sleepFinishText = sleepFinish.getText().toString().trim();
+//
+//                    if (TextUtils.isEmpty(sleepStartText) || TextUtils.isEmpty(sleepFinishText)) {
+//                        CustomDialog dialogFragment = new CustomDialog("Ошибка", "Пожалуйста, заполните все поля!");
+//                        dialogFragment.show(getParentFragmentManager(), "custom_dialog");
+//                        return;
+//                    }
+//
+//                    String dateTimeString = dateButton.getText().toString();
+//                    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+//
+//                    String[] startParts = sleepStartText.split(":");
+//                    int startHour = Integer.parseInt(startParts[0]);
+//                    int startMinute = Integer.parseInt(startParts[1]);
+//
+//                    String[] finishParts = sleepFinishText.split(":");
+//                    int finishHour = Integer.parseInt(finishParts[0]);
+//                    int finishMinute = Integer.parseInt(finishParts[1]);
+//
+//                    Calendar calStart = Calendar.getInstance();
+//                    calStart.set(Calendar.HOUR_OF_DAY, startHour);
+//                    calStart.set(Calendar.MINUTE, startMinute);
+//
+//                    Calendar calFinish = Calendar.getInstance();
+//                    calFinish.set(Calendar.HOUR_OF_DAY, finishHour);
+//                    calFinish.set(Calendar.MINUTE, finishMinute);
+//
+//                    if (startHour > finishHour || (startHour == finishHour && startMinute >= finishMinute)) {
+//                        CustomDialog dialogFragment = new CustomDialog("Ошибка", "Время начала сна не может быть больше или равно времени окончания сна!");
+//                        dialogFragment.show(getParentFragmentManager(), "custom_dialog");
+//                        return;
+//                    }
+//
+//                    if (finishHour < startHour || (finishHour == startHour && finishMinute <= startMinute)) {
+//                        CustomDialog dialogFragment = new CustomDialog("Ошибка", "Время начала сна не может быть меньше или равно времени окончания сна!");
+//                        dialogFragment.show(getParentFragmentManager(), "custom_dialog");
+//                        return;
+//                    }
+//
+//                    Date startSleep = calStart.getTime();
+//                    Date finishSleep = calFinish.getTime();
+//
+//                    SleepData sleepData;
+//                    DatabaseReference reference;
+//
+//                    if ("Добавить".equals(save.getText())) {
+//                        reference = mDb.getReference("users").child(pC.getSplittedPathChild(user.getEmail())).child("characteristic").child("sleep").push();
+//                        sleepData = new SleepData(reference.getKey(), startSleep, finishSleep, selectedDate);
+//                        CustomDialog dialogFragment = new CustomDialog("Успех", "Добавление прошло успешно!");
+//                        dialogFragment.show(getParentFragmentManager(), "custom_dialog");
+//                    } else {
+//                        reference = mDb.getReference("users").child(pC.getSplittedPathChild(user.getEmail())).child("characteristic").child("sleep").child(path);
+//                        sleepData = new SleepData(path, startSleep, finishSleep, calStart.getTime());
+//                        CustomDialog dialogFragment = new CustomDialog("Успех", "Изменение прошло успешно!");
+//                        dialogFragment.show(getParentFragmentManager(), "custom_dialog");
+//                    }
+//
+//                    if (reference != null) {
+//                        reference.setValue(sleepData);
+//                    }
+//
+//                    homeActivity.replaceFragment(new SleepFragment(selectedDate));
+//
+//                }
+//
+//            });
         }
         catch (Exception e) {
             CustomDialog dialogFragment = new CustomDialog("Ошибка", e.getMessage());
