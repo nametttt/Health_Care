@@ -230,7 +230,7 @@ public class ChangeSleepFragment extends Fragment {
                         checkTimeOverlap(selectedDate, startSleepTime, finishSleepTime, new OnOverlapCheckListener() {
                             @Override
                             public void onOverlapChecked(boolean overlap) {
-                                if (!overlap) {
+                                if (overlap) {
                                     Toast.makeText(getContext(), "В этот день уже есть записи на это время!", Toast.LENGTH_SHORT).show();
                                 }
                                 else{
@@ -318,33 +318,38 @@ public class ChangeSleepFragment extends Fragment {
                 .child("characteristic")
                 .child("sleep");
 
-        sleepRef.orderByChild("addTime").equalTo(selectedDate.getTime())
-                .addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        boolean overlap = false;
-                        for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                            SleepData sleepData = snapshot.getValue(SleepData.class);
-                            if (sleepData != null) {
-                                Date start = sleepData.sleepStart;
-                                Date end = sleepData.sleepFinish;
-                                if ((start.before(startSleepTime) && end.after(startSleepTime)) ||
-                                        (start.before(finishSleepTime) && end.after(finishSleepTime)) ||
-                                        (start.after(startSleepTime) && end.before(finishSleepTime))) {
-                                    overlap = true;
-                                    break;
-                                }
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM", Locale.getDefault());
+        String selectedDateFormatted = dateFormat.format(selectedDate);
+
+        sleepRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                boolean overlap = false;
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    SleepData sleepData = snapshot.getValue(SleepData.class);
+                    if (sleepData != null) {
+                        String sleepDataDateFormatted = dateFormat.format(sleepData.addTime);
+                        if (selectedDateFormatted.equals(sleepDataDateFormatted)) {
+                            Date start = sleepData.sleepStart;
+                            Date end = sleepData.sleepFinish;
+                            if ((start.before(startSleepTime) && end.after(startSleepTime)) ||
+                                    (start.before(finishSleepTime) && end.after(finishSleepTime)) ||
+                                    (start.after(startSleepTime) && end.before(finishSleepTime))) {
+                                overlap = true;
+                                break;
                             }
                         }
-                        listener.onOverlapChecked(overlap);
                     }
+                }
+                listener.onOverlapChecked(overlap);
+            }
 
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
-                        // Обработка ошибки запроса
-                        listener.onOverlapChecked(false); // В случае ошибки предполагаем, что перекрытия нет
-                    }
-                });
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                // Обработка ошибки запроса
+                listener.onOverlapChecked(false); // В случае ошибки предполагаем, что перекрытия нет
+            }
+        });
     }
 
     private void updateDuration() {
