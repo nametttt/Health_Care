@@ -30,6 +30,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import java.util.ArrayList;
+import java.util.Locale;
 import java.util.Map;
 
 public class HomeActivity extends AppCompatActivity {
@@ -41,6 +42,9 @@ public class HomeActivity extends AppCompatActivity {
         setContentView(R.layout.activity_home);
         replaceFragment(new HomeFragment());
         askNotificationPermission();
+        Locale locale = new Locale("ru");
+        Locale.setDefault(locale);
+
 
         FirebaseMessaging.getInstance().getToken().addOnCompleteListener(new OnCompleteListener<String>() {
             @Override

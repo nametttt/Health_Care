@@ -28,7 +28,21 @@ public class DateTimePickerDialog extends DialogFragment
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
+
         selectedDateTime = Calendar.getInstance();
+
+        int year = selectedDateTime.get(Calendar.YEAR);
+        int month = selectedDateTime.get(Calendar.MONTH);
+        int day = selectedDateTime.get(Calendar.DAY_OF_MONTH);
+
+        Calendar maxDate = Calendar.getInstance();
+        Calendar minDate = Calendar.getInstance();
+        minDate.add(Calendar.MONTH, -1);
+
+        DatePickerDialog datePickerDialog = new DatePickerDialog(requireContext(), this, year, month, day);
+        datePickerDialog.getDatePicker().setMinDate(minDate.getTimeInMillis());
+        datePickerDialog.getDatePicker().setMaxDate(maxDate.getTimeInMillis());
+
         if (targetButton != null && targetButton.getText() != null && !targetButton.getText().toString().isEmpty()) {
             String dateString = targetButton.getText().toString();
             try {
@@ -40,10 +54,8 @@ public class DateTimePickerDialog extends DialogFragment
             }
         }
 
-        int year = selectedDateTime.get(Calendar.YEAR);
-        int month = selectedDateTime.get(Calendar.MONTH);
-        int day = selectedDateTime.get(Calendar.DAY_OF_MONTH);
-        return new DatePickerDialog(requireContext(), this, year, month, day);
+
+        return datePickerDialog;
     }
 
     @Override

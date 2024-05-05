@@ -66,8 +66,7 @@ public class DrinkingFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        Locale locale = new Locale("ru");
-        Locale.setDefault(locale);
+
         View v = inflater.inflate(R.layout.fragment_drinking, container, false);
         init(v);
         updateWaterDataForSelectedDate(selectedDate);
