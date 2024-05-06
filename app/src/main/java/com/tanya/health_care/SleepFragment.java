@@ -73,8 +73,6 @@ public class SleepFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_sleep, container, false);
-        Locale locale = new Locale("ru");
-        Locale.setDefault(locale);
         init(v);
         return v;
     }

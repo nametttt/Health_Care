@@ -6,6 +6,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.storage.UploadTask;
 import com.tanya.health_care.code.UserValues;
+import com.tanya.health_care.dialog.ProgressBarDialog;
 import com.theartofdev.edmodo.cropper.CropImage; // Добавляем библиотеку для обрезки изображений
 
 import android.app.Activity;
@@ -291,8 +292,6 @@ public class UserProfileFragment extends Fragment {
 
     // Добавляем метод для сохранения данных и изображения в Firebase
     private void saveDataAndImage() {
-        Toast.makeText(getContext(), "Начали сохранять данные!", Toast.LENGTH_SHORT).show();
-
         FirebaseUser user = mAuth.getCurrentUser();
         if (user != null) {
             String email = user.getEmail();
@@ -304,7 +303,11 @@ public class UserProfileFragment extends Fragment {
                 updateMap.put("birthday", pickDate.getText().toString());
 
                 if (selectedImageUri != null) {
-                    // Если выбрано новое изображение, загрузить его в Storage и сохранить ссылку
+
+                    long timeoutMs = 3000;
+                    ProgressBarDialog progressDialogFragment = ProgressBarDialog.newInstance(timeoutMs);
+                    progressDialogFragment.show(getParentFragmentManager(), "ProgressDialog");
+
                     StorageReference imageRef = storageReference.child(email + ".jpg");
                     imageRef.putFile(selectedImageUri)
                             .addOnSuccessListener(taskSnapshot -> {
@@ -337,6 +340,7 @@ public class UserProfileFragment extends Fragment {
                     if (task.isSuccessful()) {
                         // Обновление успешно
                         updateNorms(email);
+
                         Toast.makeText(getContext(), "Данные успешно обновлены", Toast.LENGTH_SHORT).show();
                     } else {
                         // Ошибка при обновлении данных

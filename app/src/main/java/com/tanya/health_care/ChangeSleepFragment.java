@@ -171,7 +171,7 @@ public class ChangeSleepFragment extends Fragment {
                             dialogFragment.show(getParentFragmentManager(), "custom_dialog");
 
                             HomeActivity homeActivity = (HomeActivity) getActivity();
-                            homeActivity.replaceFragment(new SleepFragment());
+                            homeActivity.replaceFragment(new SleepFragment(selectedDate));
                         }
                     });
 
@@ -190,7 +190,7 @@ public class ChangeSleepFragment extends Fragment {
                 @Override
                 public void onClick(View v) {
                     HomeActivity homeActivity = (HomeActivity) getActivity();
-                    homeActivity.replaceFragment(new SleepFragment());
+                    homeActivity.replaceFragment(new SleepFragment(selectedDate));
                 }
             });
 
@@ -231,7 +231,8 @@ public class ChangeSleepFragment extends Fragment {
                             @Override
                             public void onOverlapChecked(boolean overlap) {
                                 if (overlap) {
-                                    Toast.makeText(getContext(), "В этот день уже есть записи на это время!", Toast.LENGTH_SHORT).show();
+                                    CustomDialog dialogFragment = new CustomDialog("Ошибка", "В этот день уже есть записи на это время!");
+                                    dialogFragment.show(getParentFragmentManager(), "custom_dialog");
                                 }
                                 else{
                                     DatabaseReference reference;
@@ -244,6 +245,8 @@ public class ChangeSleepFragment extends Fragment {
 
                                     CustomDialog dialogFragment = new CustomDialog("Успех", "Добавление прошло успешно!");
                                     dialogFragment.show(getParentFragmentManager(), "custom_dialog");
+                                    homeActivity.replaceFragment(new SleepFragment(selectedDate));
+
                                 }
                             }
                         });
@@ -277,12 +280,23 @@ public class ChangeSleepFragment extends Fragment {
 
                             Date date = cal.getTime();
 
-                            SleepData sleepData = new SleepData(path, startSleepTime, finishSleepTime, date);
-                            ref.setValue(sleepData);
+                            checkTimeOverlap(date, startSleepTime, finishSleepTime, new OnOverlapCheckListener() {
+                                @Override
+                                public void onOverlapChecked(boolean overlap) {
+                                    if (overlap) {
+                                        CustomDialog dialogFragment = new CustomDialog("Ошибка", "В этот день уже есть записи на это время!");
+                                        dialogFragment.show(getParentFragmentManager(), "custom_dialog");
+                                    }
+                                    else {
+                                        SleepData sleepData = new SleepData(path, startSleepTime, finishSleepTime, date);
+                                        ref.setValue(sleepData);
 
-                            CustomDialog dialogFragment = new CustomDialog("Успех", "Изменение прошло успешно!");
-                            dialogFragment.show(getParentFragmentManager(), "custom_dialog");
-
+                                        CustomDialog dialogFragment = new CustomDialog("Успех", "Изменение прошло успешно!");
+                                        dialogFragment.show(getParentFragmentManager(), "custom_dialog");
+                                        homeActivity.replaceFragment(new SleepFragment(date));
+                                    }
+                                }
+                            });
 
                         } catch (Exception e) {
                             e.printStackTrace();
@@ -292,7 +306,6 @@ public class ChangeSleepFragment extends Fragment {
                     }
 
 
-                    homeActivity.replaceFragment(new SleepFragment(selectedDate));
                 }
             });
 
@@ -328,6 +341,9 @@ public class ChangeSleepFragment extends Fragment {
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     SleepData sleepData = snapshot.getValue(SleepData.class);
                     if (sleepData != null) {
+                        if (path != null && path.equals(sleepData.uid)) {
+                            continue;
+                        }
                         String sleepDataDateFormatted = dateFormat.format(sleepData.addTime);
                         if (selectedDateFormatted.equals(sleepDataDateFormatted)) {
                             Date start = sleepData.sleepStart;
