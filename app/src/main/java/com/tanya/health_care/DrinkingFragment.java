@@ -20,6 +20,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CalendarView;
+import android.widget.ImageView;
 import android.widget.NumberPicker;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -62,6 +63,7 @@ public class DrinkingFragment extends Fragment {
     GetSplittedPathChild pC = new GetSplittedPathChild();
     HorizontalCalendarView calendarView;
     FirebaseDatabase mDb;
+    ImageView statsIcon;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
@@ -112,7 +114,7 @@ public class DrinkingFragment extends Fragment {
 
         setHasOptionsMenu(true);
         save = v.findViewById(R.id.back);
-
+        statsIcon = v.findViewById(R.id.statsIcon);
         calendarView = v.findViewById(R.id.calendar);
         MyCalendar();
 
@@ -142,6 +144,14 @@ public class DrinkingFragment extends Fragment {
             public void onClick(View v) {
                 HomeActivity homeActivity = (HomeActivity) getActivity();
                 homeActivity.replaceFragment(new HomeFragment());
+            }
+        });
+
+        statsIcon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                HomeActivity homeActivity = (HomeActivity) getActivity();
+                homeActivity.replaceFragment(new DrinkingStatisticFragment());
             }
         });
 
