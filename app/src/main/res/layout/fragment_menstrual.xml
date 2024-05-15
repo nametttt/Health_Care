@@ -44,27 +44,81 @@
                     android:textAlignment="textStart"
                     android:textStyle="bold"/>
 
-                <TextView
+                <CalendarView
+                    android:id="@+id/calendarView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/black"
-                    android:text="Выбранная дата"
-                    android:textSize="24dp"
-                    android:id="@+id/dateText"
-                    android:layout_marginVertical="15dp"
-                    android:textAlignment="textStart"
-                    android:textStyle="bold"/>
+                    android:layout_marginBottom="16dp"/>
+
+                <!-- Кнопка для добавления даты менструации -->
+                <Button
+                    android:id="@+id/addPeriodButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Добавить дату менструации"
+                    android:layout_gravity="center_horizontal"/>
+
+                <!-- Список добавленных дат менструации -->
+                <ListView
+                    android:id="@+id/periodListView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"/>
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/calendar_asset">
+                    android:layout_marginTop="25dp"
+                    android:background="@drawable/health_asset"
+                    android:padding="15dp">
 
-                    <in.akshit.horizontalcalendar.HorizontalCalendarView
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:id="@+id/calendar"/>
+                        android:orientation="vertical">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:orientation="horizontal">
+
+                            <ImageView
+                                android:layout_width="25dp"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:adjustViewBounds="true"
+                                android:scaleType="centerInside"
+                                android:src="@drawable/main_about_app" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginHorizontal="7dp"
+                                android:text="Ваши месячные"
+                                android:layout_gravity="center"
+                                android:textColor="@color/black"
+                                android:textSize="22dp"
+                                android:textStyle="bold" />
+
+                        </LinearLayout>
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="10dp"
+                            android:layout_marginHorizontal="10dp"
+                            android:gravity="center"
+                            android:text="Через 8 дней"
+                            android:textColor="@color/black"
+                            android:textSize="24dp" />
+
+                    </LinearLayout>
+
+
 
                 </LinearLayout>
+
             </LinearLayout>
 
         </LinearLayout>

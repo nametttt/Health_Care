@@ -56,10 +56,6 @@ public class LoginActivity extends AppCompatActivity {
 
     private void init(){
         try{
-            YaGPTAPI ya = new YaGPTAPI();
-            ArrayList<String> vvv = new ArrayList<String>();
-            vvv.add("dasda");
-            ya.send("ffk", "kfkdkf", vvv , getApplicationContext());
 
 
             imgBtn = findViewById(R.id.eye);

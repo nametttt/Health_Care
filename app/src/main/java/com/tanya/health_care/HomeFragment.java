@@ -51,10 +51,16 @@ public class HomeFragment extends Fragment {
         Button sleep = v.findViewById(R.id.sleep);
         Button health = v.findViewById(R.id.health_common);
         Button nutrition = v.findViewById(R.id.nutrition);
+        Button period = v.findViewById(R.id.period);
 
 
-
-
+        period.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                HomeActivity homeActivity = (HomeActivity) getActivity();
+                homeActivity.replaceFragment(new MenstrualFragment());
+            }
+        });
 
         waterData.setOnClickListener(new View.OnClickListener() {
             @Override
