@@ -30,8 +30,10 @@ import com.google.firebase.database.ValueEventListener;
 import com.tanya.health_care.code.EyeVisibility;
 import com.tanya.health_care.code.GetEmail;
 import com.tanya.health_care.code.GetSplittedPathChild;
+import com.tanya.health_care.code.YaGPTAPI;
 import com.tanya.health_care.dialog.CustomDialog;
 
+import java.util.ArrayList;
 import java.util.Objects;
 
 public class LoginActivity extends AppCompatActivity {
@@ -54,6 +56,12 @@ public class LoginActivity extends AppCompatActivity {
 
     private void init(){
         try{
+            YaGPTAPI ya = new YaGPTAPI();
+            ArrayList<String> vvv = new ArrayList<String>();
+            vvv.add("dasda");
+            ya.send("ffk", "kfkdkf", vvv , getApplicationContext());
+
+
             imgBtn = findViewById(R.id.eye);
             loginEdit = findViewById(R.id.loginEdit);
             password = findViewById(R.id.password);

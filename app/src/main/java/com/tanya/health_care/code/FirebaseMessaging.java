@@ -30,10 +30,7 @@ public class FirebaseMessaging {
     public void send(String title, String bodys, ArrayList<String> token, Context context) throws IOException {
 
         jasonfile = context.getResources().openRawResource(context.getResources().getIdentifier("serviceaccount","raw", context.getPackageName()));
-
-
         new Thread(new Runnable() {
-
             @Override
             public void run() {
 

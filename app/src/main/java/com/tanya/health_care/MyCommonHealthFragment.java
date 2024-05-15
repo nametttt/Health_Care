@@ -1,7 +1,5 @@
 package com.tanya.health_care;
 
-import androidx.lifecycle.ViewModelProvider;
-
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -12,21 +10,17 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-public class ChatFragment extends Fragment {
+public class MyCommonHealthFragment extends Fragment {
 
-    public static ChatFragment newInstance() {
-        return new ChatFragment();
+    public static MyCommonHealthFragment newInstance() {
+        return new MyCommonHealthFragment();
     }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_chat, container, false);
+        return inflater.inflate(R.layout.fragment_mycommon_health, container, false);
     }
 
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-    }
 
 }

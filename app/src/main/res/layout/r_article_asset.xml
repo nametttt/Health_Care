@@ -17,14 +17,14 @@
         <androidx.cardview.widget.CardView
             android:layout_width="90dp"
             android:layout_height="90dp"
-            app:cardCornerRadius="10dp">
+            app:cardCornerRadius="20dp">
 
         <ImageView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:adjustViewBounds="true"
             android:id="@+id/image"
-            android:foreground="@drawable/image_asset"
+            android:foreground="@drawable/article_image_asset"
             android:scaleType="centerCrop"
             android:src="@drawable/cat" />
 

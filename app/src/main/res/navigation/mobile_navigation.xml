@@ -13,9 +13,9 @@
 
     <fragment
         android:id="@+id/navigation_chat"
-        android:name="com.tanya.health_care.ChatFragment"
+        android:name="com.tanya.health_care.MyCommonHealthFragment"
         android:label="Chat"
-        tools:layout="@layout/fragment_chat" />
+        tools:layout="@layout/fragment_mycommon_health" />
 
     <fragment
         android:id="@+id/navigation_article"

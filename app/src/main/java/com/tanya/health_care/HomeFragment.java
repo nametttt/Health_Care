@@ -16,12 +16,14 @@ import androidx.fragment.app.Fragment;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.gson.Gson;
 import com.tanya.health_care.code.FirebaseMessaging;
+import com.tanya.health_care.code.YaGPTAPI;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -34,10 +36,6 @@ import okhttp3.Response;
 
 public class HomeFragment extends Fragment {
 
-
-
-
-
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
@@ -47,12 +45,16 @@ public class HomeFragment extends Fragment {
     }
 
 
-    private  void init(View v){
+    private  void init(View v) {
         Button waterData = v.findViewById(R.id.waterData);
         Button parameters = v.findViewById(R.id.parameters);
         Button sleep = v.findViewById(R.id.sleep);
         Button health = v.findViewById(R.id.health_common);
         Button nutrition = v.findViewById(R.id.nutrition);
+
+
+
+
 
         waterData.setOnClickListener(new View.OnClickListener() {
             @Override
