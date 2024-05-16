@@ -2,8 +2,6 @@ package com.tanya.health_care.code;
 
 import android.content.Context;
 import android.os.AsyncTask;
-import android.os.Bundle;
-import android.util.Log;
 
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.gson.Gson;
@@ -23,18 +21,20 @@ import okhttp3.Response;
 
 public class YaGPTAPI {
 
-    private static final String[] SCOPES = {"https://www.googleapis.com/auth/firebase.messaging"};
+    private static final String[] SCOPES = { "https://www.googleapis.com/auth/firebase.messaging" };
     private GoogleCredentials googleCredentials;
     private InputStream jasonfile;
     private String beaerertoken;
     private String BEARERTOKEN;
 
-    public void send(ArrayList<String> token, String text, Context context, CompletionCallback callback) {
+    public void send(String text, Context context, ResponseCallback callback) throws IOException {
+
         jasonfile = context.getResources().openRawResource(context.getResources().getIdentifier("serviceaccount", "raw", context.getPackageName()));
 
-        new AsyncTask<Void, Void, Void>() {
+        new Thread(new Runnable() {
             @Override
-            protected Void doInBackground(Void... voids) {
+            public void run() {
+
                 try {
                     googleCredentials = GoogleCredentials
                             .fromStream(jasonfile)
@@ -43,7 +43,6 @@ public class YaGPTAPI {
                     googleCredentials.refreshAccessToken().getTokenValue();
 
                     beaerertoken = "y0_AgAAAAA8M1WcAATuwQAAAAEE1-eFAAC3AceNKadC7qc0fRbzbYfZaXA7og";
-
                     BEARERTOKEN = "y0_AgAAAAA8M1WcAATuwQAAAAEE1-eFAAC3AceNKadC7qc0fRbzbYfZaXA7og";
 
                     OkHttpClient client = new OkHttpClient();
@@ -57,44 +56,54 @@ public class YaGPTAPI {
                     form.put("role", "user");
                     form.put("text", text);
 
-                    ArrayList<Map<String, Object>> da = new ArrayList<>();
-                    da.add(form);
+                    Map<String, Object> json = new HashMap<>();
 
-                    Map<String, Object> body = new HashMap<>();
-                    body.put("modelUri", "gpt://b1gpel67poamsv8n7e04/yandexgpt/latest");
-                    body.put("completionOptions", mapa);
-                    body.put("messages", da);
-
-                    RequestBody requestBody = RequestBody.create(MediaType.get("application/json"), new Gson().toJson(body));
+                    RequestBody requestBody = RequestBody.create(MediaType.get("application/json"), json.toString());
 
                     // Request to get credentials
                     Request request = new Request.Builder()
                             .url("https://llm.api.cloud.yandex.net/foundationModels/v1/completion")
                             .post(requestBody)
-                            .addHeader("Authorization", "Bearer " + "YOUR_ACCESS_TOKEN") // Add your access token here
                             .build();
 
                     Response response = client.newCall(request).execute();
 
-                    if (response.isSuccessful()) {
-                        String responseBody = response.body().string();
-                        callback.onComplete(responseBody);
-                    } else {
-                        callback.onError(new Exception("Error sending request: " + response.code() + " " + response.message()));
-                    }
+                    // Constructing message body
+                    Map<String, Object> body = new HashMap<>();
 
+                    Map<String, String> headers = new HashMap<>();
+
+                    ArrayList<Map<String, Object>> da = new ArrayList<>();
+                    da.add(form);
+
+                    headers.put("Authorization", "Bearer " + "t1.9euelZqdyJKPl4mdzJaJjI3Ll4qLjO3rnpWay4yXm52Rk5rNjo3Pz5TIlovl9PcwMGlN-e8mcH-53fT3cF5mTfnvJnB_uc3n9euelZrNnJSOiYrOlZWMls7Ij5Sbke_8xeuelZrNnJSOiYrOlZWMls7Ij5SbkQ.R22grq7nY_zORCXgM5Gc231Ei-ZH_N3MYOreNwIBz0WkHTfj0x1Vz1lIX74d-Mg8BylXlJEMZYBAd3n4cB5yAQ");
+                    body.put("modelUri", "gpt://b1gpel67poamsv8n7e04/yandexgpt/latest");
+                    body.put("completionOptions", mapa);
+
+                    body.put("messages", da);
+
+                    // Making request to send message
+                    okhttp3.Request.Builder requestBuilder = new okhttp3.Request.Builder().url("https://llm.api.cloud.yandex.net/foundationModels/v1/completion");
+                    for (Map.Entry<String, String> entry : headers.entrySet()) {
+                        requestBuilder.addHeader(entry.getKey(), entry.getValue());
+                    }
+                    requestBuilder.post(RequestBody.create(MediaType.parse("application/json"), new Gson().toJson(body)));
+                    Response sendMessageResponse = client.newCall(requestBuilder.build()).execute();
+
+                    if (sendMessageResponse.isSuccessful()) {
+                        String responses = sendMessageResponse.body().string();
+                        callback.onResponseReceived(responses);
+                    } else {
+                        callback.onResponseReceived("Error sending message: " + sendMessageResponse.body().string());
+                    }
                 } catch (IOException e) {
-                    e.printStackTrace();
-                    callback.onError(e);
+                    callback.onResponseReceived("Error: " + e.getMessage());
                 }
-                return null;
             }
-        }.execute();
+        }).start();
     }
 
-    // Interface for completion callback
-    public interface CompletionCallback {
-        void onComplete(String result);
-        void onError(Exception e);
+    public interface ResponseCallback {
+        void onResponseReceived(String response);
     }
 }

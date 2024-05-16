@@ -14,6 +14,10 @@ import android.widget.TextView;
 
 import com.tanya.health_care.code.YaGPTAPI;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -56,22 +60,23 @@ public class AdviceFragment extends Fragment {
         search.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String searchText = searchEditText.getText().toString().trim();
-                if (!searchText.isEmpty()) {
-                    try {
-                        sendRequest(searchText);
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
-                    }
+                adviceLayout.setVisibility(View.GONE);
+
+                String text = "Как мое питание";
+                try {
+                    sendRequest(text);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
                 }
             }
         });
 
-        // Обработчик нажатия на кнопку "Как мое питание"
         Button nutritionButton = view.findViewById(R.id.nutrition);
         nutritionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                adviceLayout.setVisibility(View.GONE);
+
                 String text = "Как мое питание";
                 try {
                     sendRequest(text);
@@ -86,6 +91,7 @@ public class AdviceFragment extends Fragment {
         sleepButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                adviceLayout.setVisibility(View.GONE);
                 String text = "Советы по сну";
                 try {
                     sendRequest(text);
@@ -97,34 +103,36 @@ public class AdviceFragment extends Fragment {
     }
 
     private void sendRequest(String searchText) throws IOException {
-        progressBar.setVisibility(View.VISIBLE);
-        YaGPTAPI yaGPTAPI = new YaGPTAPI();
-        ArrayList<String> list = new ArrayList<>();
-        list.add("a");
-
-        yaGPTAPI.send(list, searchText, getContext(), new YaGPTAPI.CompletionCallback() {
+        progressBar.post(new Runnable() {
             @Override
-            public void onComplete(String result) {
-                getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        progressBar.setVisibility(View.GONE);
-                        header.setText(searchText);
-                        body.setText(result);
-                        adviceLayout.setVisibility(View.VISIBLE);
-                    }
-                });
+            public void run() {
+                progressBar.setVisibility(View.VISIBLE);
             }
+        });
 
+        YaGPTAPI yaGPTAPI = new YaGPTAPI();
+        yaGPTAPI.send(searchText, getContext(), new YaGPTAPI.ResponseCallback() {
             @Override
-            public void onError(Exception e) {
-                getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        progressBar.setVisibility(View.GONE);
-                        // Обработка ошибки
+            public void onResponseReceived(String response) {
+                try {
+                    JSONObject jsonObject = new JSONObject(response);
+                    JSONArray alternatives = jsonObject.getJSONObject("result").getJSONArray("alternatives");
+                    if (alternatives.length() > 0) {
+                        JSONObject lastAlternative = alternatives.getJSONObject(alternatives.length());
+                        final String text = lastAlternative.getJSONObject("message").getString("text");
+                        getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                header.setText(searchText);
+                                body.setText(text);
+                                progressBar.setVisibility(View.GONE);
+                                adviceLayout.setVisibility(View.VISIBLE);
+                            }
+                        });
                     }
-                });
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
             }
         });
     }
