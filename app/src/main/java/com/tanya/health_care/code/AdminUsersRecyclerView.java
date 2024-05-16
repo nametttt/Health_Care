@@ -12,6 +12,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.squareup.picasso.Picasso;
 import com.tanya.health_care.AdminChangeUserFragment;
 import com.tanya.health_care.AdminHomeActivity;
 import com.tanya.health_care.R;
@@ -41,12 +42,17 @@ public class AdminUsersRecyclerView extends RecyclerView.Adapter<AdminUsersRecyc
         holder.names.setText(currentCommon.email);
 
         holder.roles.setText(currentCommon.role);
-
+        String imageUrl = currentCommon.getImage();
+        if (imageUrl == null || imageUrl.isEmpty()) {
+            holder.image.setImageResource(R.drawable.notphoto);
+        } else {
+            Picasso.get().load(imageUrl).placeholder(R.drawable.notphoto).into(holder.image);
+        }
         holder.change.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 AdminHomeActivity homeActivity = (AdminHomeActivity) v.getContext();
-                homeActivity.replaceFragment(new AdminChangeUserFragment(currentCommon.name, currentCommon.email, currentCommon.role, currentCommon.gender, currentCommon.birthday));
+                homeActivity.replaceFragment(new AdminChangeUserFragment(currentCommon.image, currentCommon.name, currentCommon.email, currentCommon.role, currentCommon.gender, currentCommon.birthday));
             }
         });
     }
@@ -68,6 +74,7 @@ public class AdminUsersRecyclerView extends RecyclerView.Adapter<AdminUsersRecyc
             names = itemView.findViewById(R.id.userEmail);
             relativeLayout = itemView.findViewById(R.id.rl);
             change = itemView.findViewById(R.id.changeUser);
+            image = itemView.findViewById(R.id.userImage);
 
         }
     }

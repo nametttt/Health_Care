@@ -13,11 +13,9 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.TextView;
 
 import com.github.mikephil.charting.charts.BarChart;
-import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.Description;
 import com.github.mikephil.charting.components.LimitLine;
 import com.github.mikephil.charting.components.XAxis;
@@ -25,38 +23,48 @@ import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
-import com.github.mikephil.charting.data.Entry;
-import com.github.mikephil.charting.data.LineData;
-import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.tanya.health_care.code.GetSplittedPathChild;
+import com.tanya.health_care.code.WaterData;
 
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 public class DrinkingStatisticFragment extends Fragment {
 
-
     private BarChart barChart;
-    TextView daysTextView;
-    AppCompatButton back, week, month, year;
-    private int selectedPeriod = 7; // По умолчанию выбрано 7 дней
+    private TextView daysTextView;
+    private AppCompatButton back, week, month, year;
+    private int selectedPeriod = 7; // Default to 7 days
     private LocalDate startDate = LocalDate.now().minusDays(selectedPeriod - 1);
+    private FirebaseUser user;
+    private DatabaseReference waterRef;
+
     public DrinkingStatisticFragment() {
+        // Required empty public constructor
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_drinking_statistic, container, false);
         init(v);
         select7Days();
         return v;
     }
+
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.water_menu, menu);
@@ -78,21 +86,27 @@ public class DrinkingStatisticFragment extends Fragment {
         }
     }
 
-
-    void init(View v) {
+    private void init(View v) {
         barChart = v.findViewById(R.id.barChart);
         back = v.findViewById(R.id.back);
         week = v.findViewById(R.id.week);
         month = v.findViewById(R.id.month);
         year = v.findViewById(R.id.year);
-
         daysTextView = v.findViewById(R.id.days);
+
+        user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user != null) {
+            waterRef = FirebaseDatabase.getInstance().getReference("users")
+                    .child(new GetSplittedPathChild().getSplittedPathChild(user.getEmail()))
+                    .child("characteristic")
+                    .child("water");
+        }
 
         week.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 updateButtonAppearance(week, month, year);
-
+                select7Days();
             }
         });
 
@@ -100,6 +114,7 @@ public class DrinkingStatisticFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 updateButtonAppearance(month, week, year);
+                select30Days();
             }
         });
 
@@ -107,8 +122,10 @@ public class DrinkingStatisticFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 updateButtonAppearance(year, week, month);
+                select12Months();
             }
         });
+
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -128,87 +145,50 @@ public class DrinkingStatisticFragment extends Fragment {
         barChart.getLegend().setEnabled(false);
 
         XAxis xAxis = barChart.getXAxis();
-        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM); // Ось X снизу
-        xAxis.setGranularity(1f); // Шаг между метками по оси X
-        xAxis.setDrawAxisLine(false); // Отключаем ось X
+        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM); // X-axis on the bottom
+        xAxis.setGranularity(1f); // Step between labels on the X-axis
+        xAxis.setDrawAxisLine(false); // Disable X-axis line
 
         YAxis rightAxis = barChart.getAxisRight();
-        rightAxis.setEnabled(true); // Включаем ось Y справа
-        rightAxis.setDrawAxisLine(true); // Отключаем ось Y
-        rightAxis.setDrawLabels(true); // Отключаем метки на оси Y
+        rightAxis.setEnabled(true); // Enable right Y-axis
+        rightAxis.setDrawAxisLine(true); // Enable Y-axis line
+        rightAxis.setDrawLabels(true); // Enable labels on Y-axis
 
         YAxis leftAxis = barChart.getAxisLeft();
-        leftAxis.setEnabled(false); // Ось Y слева отключена
+        leftAxis.setEnabled(false); // Disable left Y-axis
 
-        // Добавляем горизонтальную полосу на метке 2500
+        // Add horizontal line at 2500
         LimitLine limitLine = new LimitLine(2500f);
-        limitLine.setLineColor(getResources().getColor(R.color.black)); // Цвет полосы
-        limitLine.setLineWidth(1f); // Толщина полосы
+        limitLine.setLineColor(getResources().getColor(R.color.black)); // Line color
+        limitLine.setLineWidth(1f); // Line width
         rightAxis.addLimitLine(limitLine);
 
-        // Настройка данных для графика
-        ArrayList<BarEntry> entries = new ArrayList<>();
-        entries.add(new BarEntry(0, 2000f)); // Пример данных для первого дня
-        entries.add(new BarEntry(1, 1800f)); // Пример данных для второго дня
-        entries.add(new BarEntry(2, 2200f)); // Пример данных для третьего дня
-        entries.add(new BarEntry(3, 2400f)); // Пример данных для четвертого дня
-        entries.add(new BarEntry(4, 2500f)); // Пример данных для пятого дня
-        entries.add(new BarEntry(5, 2300f)); // Пример данных для шестого дня
-        entries.add(new BarEntry(6, 2100f)); // Пример данных для седьмого дня
-
-        // Создание набора данных
-        BarDataSet dataSet = new BarDataSet(entries, "Water Intake");
-        dataSet.setColor(getResources().getColor(R.color.blue)); // Цвет столбцов
-
-
-        // Создание объекта BarData и передача в него набора данных
-        BarData barData = new BarData(dataSet);
-        barData.setBarWidth(0.2f); // Ширина столбцов
-
-        // Установка данных на график
-        barChart.setData(barData);
-
-        // Установка меток дат
-        List<String> dates = new ArrayList<>();
-        dates.add("01.05");
-        dates.add("02.05");
-        dates.add("03.05");
-        dates.add("04.05");
-        dates.add("05.05");
-        dates.add("06.05");
-        dates.add("07.05");
-        xAxis.setValueFormatter(new IndexAxisValueFormatter(dates));
-
-        // Включаем горизонтальный скроллинг
+        // Enable horizontal scrolling
         barChart.setDragEnabled(true);
 
-        // Отрисовка графика
+        // Render the chart
         barChart.invalidate();
     }
 
-    void select7Days() {
+    private void select7Days() {
         selectedPeriod = 7;
         startDate = LocalDate.now().minusDays(selectedPeriod - 1);
-        updateTextAndChart();
+        fetchAndDisplayData();
     }
 
-    // Метод для обновления текста и графика при выборе 30 дней
-    void select30Days() {
+    private void select30Days() {
         selectedPeriod = 30;
         startDate = LocalDate.now().minusDays(selectedPeriod - 1);
-        updateTextAndChart();
+        fetchAndDisplayData();
     }
 
-    // Метод для обновления текста и графика при выборе 12 месяцев
-    void select12Months() {
+    private void select12Months() {
         selectedPeriod = 365;
         startDate = LocalDate.now().minusDays(selectedPeriod - 1);
-        updateTextAndChart();
+        fetchAndDisplayData();
     }
 
-    // Метод для обновления текста и графика
-    void updateTextAndChart() {
-        // Формируем текст для отображения дат
+    private void fetchAndDisplayData() {
         LocalDate endDate = LocalDate.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d MMMM", new Locale("ru"));
         String startDateFormatted = startDate.format(formatter);
@@ -216,17 +196,75 @@ public class DrinkingStatisticFragment extends Fragment {
         String dateRange = startDateFormatted + " - " + endDateFormatted;
         daysTextView.setText(dateRange);
 
-        // Настройка данных для графика с учетом выбранного периода
+        if (waterRef != null) {
+            waterRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    Map<LocalDate, Integer> waterDataMap = new HashMap<>();
+                    for (DataSnapshot ds : snapshot.getChildren()) {
+                        WaterData waterData = ds.getValue(WaterData.class);
+                        if (waterData != null) {
+                            LocalDate date = waterData.lastAdded.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+                            if (date.isAfter(startDate.minusDays(1)) && date.isBefore(endDate.plusDays(1))) {
+                                waterDataMap.put(date, waterDataMap.getOrDefault(date, 0) + waterData.addedValue);
+                            }
+                        }
+                    }
+
+                    // Calculate average daily intake for the selected period
+                    float totalWaterIntake = 0;
+                    for (Map.Entry<LocalDate, Integer> entry : waterDataMap.entrySet()) {
+                        totalWaterIntake += entry.getValue();
+                    }
+                    float averageWaterIntake = totalWaterIntake / selectedPeriod;
+
+                    // Round the average intake
+                    averageWaterIntake = Math.round(averageWaterIntake);
+
+                    // Update the chart with new data
+                    updateChart(waterDataMap, averageWaterIntake);
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+                    // Handle database error
+                }
+            });
+        }
+    }
+
+    private void updateChart(Map<LocalDate, Integer> waterDataMap, float averageWaterIntake) {
         ArrayList<BarEntry> entries = new ArrayList<>();
+        List<String> dates = new ArrayList<>();
+        LocalDate currentDate = startDate;
         for (int i = 0; i < selectedPeriod; i++) {
-            // Здесь добавьте логику для получения данных за выбранный период и добавления их в entries
-            // Пример:
-            // float value = // получение значения для текущей даты startDate.plusDays(i)
-            // entries.add(new BarEntry(i, value));
+            int dailyIntake = waterDataMap.getOrDefault(currentDate, 0);
+            entries.add(new BarEntry(i, dailyIntake));
+            dates.add(currentDate.format(DateTimeFormatter.ofPattern("dd.MM")));
+            currentDate = currentDate.plusDays(1);
         }
 
-        // Остальной код остается без изменений
+        BarDataSet dataSet = new BarDataSet(entries, "Water Intake");
+        dataSet.setColor(getResources().getColor(R.color.blue));
+
+        BarData barData = new BarData(dataSet);
+        barChart.setData(barData);
+
+        XAxis xAxis = barChart.getXAxis();
+        xAxis.setValueFormatter(new IndexAxisValueFormatter(dates));
+        xAxis.setLabelCount(dates.size());
+
+        // Update the right axis to display average water intake
+        YAxis rightAxis = barChart.getAxisRight();
+        rightAxis.removeAllLimitLines();
+        LimitLine limitLine = new LimitLine(averageWaterIntake);
+        limitLine.setLineColor(getResources().getColor(R.color.black)); // Line color
+        limitLine.setLineWidth(1f); // Line width
+        rightAxis.addLimitLine(limitLine);
+
+        barChart.invalidate(); // Refresh the chart
     }
+
     private void updateButtonAppearance(AppCompatButton selectedButton, AppCompatButton... otherButtons) {
         for (AppCompatButton button : otherButtons) {
             button.setBackgroundColor(getResources().getColor(R.color.transparent));
@@ -235,5 +273,4 @@ public class DrinkingStatisticFragment extends Fragment {
         selectedButton.setBackgroundResource(R.drawable.button_statistic_asset);
         selectedButton.setTextColor(getResources().getColor(R.color.black));
     }
-
 }

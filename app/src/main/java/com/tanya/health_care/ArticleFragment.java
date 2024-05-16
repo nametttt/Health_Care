@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -28,12 +29,12 @@ import java.util.ArrayList;
 
 public class ArticleFragment extends Fragment {
 
-
-    RecyclerView recyclerView;
+    RecyclerView recyclerView, recyclerView1, recyclerView2;
     ArrayList<ArticleData> articleDataArrayList;
     ArticleRecyclerView adapter;
     FirebaseUser user;
     DatabaseReference ref;
+    ProgressBar progressBar, progressBar1, progressBar2;
 
     FirebaseDatabase mDb;
     @Override
@@ -47,6 +48,7 @@ public class ArticleFragment extends Fragment {
     void init(View v){
         user = FirebaseAuth.getInstance().getCurrentUser();
         mDb = FirebaseDatabase.getInstance();
+        progressBar = v.findViewById(R.id.progressBar);
 
         articleDataArrayList = new ArrayList<ArticleData>();
         adapter = new ArticleRecyclerView(getContext(), articleDataArrayList);
@@ -56,11 +58,29 @@ public class ArticleFragment extends Fragment {
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         layoutManager.setOrientation(RecyclerView.HORIZONTAL);
         recyclerView.setLayoutManager(layoutManager);
+
+        recyclerView1 = v.findViewById(R.id.recyclerView1);
+        recyclerView1.setLayoutManager(new LinearLayoutManager(getActivity()));
+        recyclerView1.setAdapter(adapter);
+        LinearLayoutManager layoutManager1 = new LinearLayoutManager(getContext());
+        layoutManager1.setOrientation(RecyclerView.HORIZONTAL);
+        recyclerView1.setLayoutManager(layoutManager1);
+
+
+        recyclerView2 = v.findViewById(R.id.recyclerView2);
+        recyclerView2.setLayoutManager(new LinearLayoutManager(getActivity()));
+        recyclerView2.setAdapter(adapter);
+        LinearLayoutManager layoutManager2 = new LinearLayoutManager(getContext());
+        layoutManager2.setOrientation(RecyclerView.HORIZONTAL);
+        recyclerView2.setLayoutManager(layoutManager2);
         addDataOnRecyclerView();
     }
 
-
     private void addDataOnRecyclerView() {
+        progressBar.setVisibility(View.VISIBLE);
+        progressBar1.setVisibility(View.VISIBLE);
+        progressBar2.setVisibility(View.VISIBLE);
+
         ValueEventListener valueEventListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -73,6 +93,10 @@ public class ArticleFragment extends Fragment {
                         articleDataArrayList.add(ps);
                     }
                 }
+                progressBar.setVisibility(View.GONE);
+                progressBar1.setVisibility(View.GONE);
+                progressBar2.setVisibility(View.GONE);
+
                 adapter.notifyDataSetChanged();
             }
 

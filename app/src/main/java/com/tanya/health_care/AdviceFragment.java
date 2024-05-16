@@ -63,9 +63,9 @@ public class AdviceFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 adviceLayout.setVisibility(View.GONE);
-                String searchText = searchEditText.getText().toString().trim() + "Напиши мне не знаю ответа, если мой вопрос не связан со здоровеьм";
+                String searchText = searchEditText.getText().toString().trim() + " Если это не связано со здоровьем, напиши, что отвечать не будешь. Отвечай только по здоровью! Никогда не пиши, кто ты и отвечай покроче и попроще!";
                 try {
-                    sendRequest(searchText);
+                    sendRequest(searchText, searchEditText.getText().toString().trim());
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
@@ -78,24 +78,53 @@ public class AdviceFragment extends Fragment {
             public void onClick(View v) {
                 adviceLayout.setVisibility(View.GONE);
 
-                String text = "Как мое питание";
+                String text = "Как мое питание" + "Сформулируй короче";
                 try {
-                    sendRequest(text);
+                    sendRequest(text, nutritionButton.getText().toString());
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
             }
         });
 
-        // Обработчик нажатия на кнопку "Советы по сну"
+        Button waterButton = view.findViewById(R.id.water);
+        waterButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                adviceLayout.setVisibility(View.GONE);
+
+                String text = "Напиши про питьевой режим " + "Сформулируй короче";
+                try {
+                    sendRequest(text, waterButton.getText().toString());
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        });
+
+        Button gigienaButton = view.findViewById(R.id.gigiena);
+        gigienaButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                adviceLayout.setVisibility(View.GONE);
+
+                String text = "Расскажи правила личной гигиены" + " Сформулируй короче";
+                try {
+                    sendRequest(text, gigienaButton.getText().toString());
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        });
+
         Button sleepButton = view.findViewById(R.id.sleep);
         sleepButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 adviceLayout.setVisibility(View.GONE);
-                String text = "Советы по сну";
+                String text = "Советы по сну" + "Сформулируй короче";
                 try {
-                    sendRequest(text);
+                    sendRequest(text, sleepButton.getText().toString());
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
@@ -103,7 +132,7 @@ public class AdviceFragment extends Fragment {
         });
     }
 
-    private void sendRequest(String searchText) throws IOException {
+    private void sendRequest(String searchText, String bodys) throws IOException {
         progressBar.post(new Runnable() {
             @Override
             public void run() {
@@ -119,21 +148,26 @@ public class AdviceFragment extends Fragment {
                     @Override
                     public void run() {
                         try {
-                            // Разбиваем строку JSON на отдельные объекты
-                            String[] responsesArray = response.split("\n");
-                            String lastResponse = responsesArray[responsesArray.length - 1];
+                            String lastResponse = null;
 
-                            JSONObject jsonObject = new JSONObject(lastResponse);
-                            JSONArray alternatives = jsonObject.getJSONObject("result").getJSONArray("alternatives");
-                            if (alternatives.length() > 0) {
-                                JSONObject lastAlternative = alternatives.getJSONObject(alternatives.length() - 1); // Получаем последний фрагмент
-                                final String text = lastAlternative.getJSONObject("message").getString("text");
-                                header.setText(searchText);
-                                body.setText(text);
-                                progressBar.setVisibility(View.GONE);
-                                adviceLayout.setVisibility(View.VISIBLE);
+                            for (String resp : response.split("\n")) {
+                                lastResponse = resp;
                             }
-                        } catch (JSONException e) {
+
+                            if (lastResponse != null) {
+                                JSONObject jsonObject = new JSONObject(lastResponse);
+                                JSONArray alternatives = jsonObject.getJSONObject("result").getJSONArray("alternatives");
+                                if (alternatives.length() > 0) {
+                                    JSONObject lastAlternative = alternatives.getJSONObject(alternatives.length() - 1); // Получаем последний фрагмент
+                                    final String text = lastAlternative.getJSONObject("message").getString("text");
+                                    header.setText(bodys);
+                                    body.setText(text);
+                                    progressBar.setVisibility(View.GONE);
+                                    adviceLayout.setVisibility(View.VISIBLE);
+                                }
+                            }
+                        }
+                        catch (JSONException e) {
                             e.printStackTrace();
                             header.setText(searchText);
                             body.setText("Что-то не так");
