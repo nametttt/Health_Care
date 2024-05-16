@@ -16,6 +16,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -41,7 +42,7 @@ public class AdminUsersFragment extends Fragment {
     FirebaseDatabase mDb;
     ImageButton searchButton;
     EditText searchEditText;
-    TextView loading;
+    ProgressBar progressBar;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
@@ -56,7 +57,7 @@ public class AdminUsersFragment extends Fragment {
 
         user = FirebaseAuth.getInstance().getCurrentUser();
         mDb = FirebaseDatabase.getInstance();
-        loading = v.findViewById(R.id.loading);
+        progressBar = v.findViewById(R.id.progressBar);
         users = new ArrayList<UserData>();
         adapter = new AdminUsersRecyclerView(getContext(), users);
         recyclerView = v.findViewById(R.id.recyclerView);
@@ -109,6 +110,8 @@ public class AdminUsersFragment extends Fragment {
 
     }
     private void addDataOnRecyclerView() {
+        progressBar.setVisibility(View.VISIBLE);
+
         ref = mDb.getReference().child("users");
         ref.addValueEventListener(new ValueEventListener() {
             @Override
@@ -120,13 +123,13 @@ public class AdminUsersFragment extends Fragment {
                         users.add(userData);
                     }
                 }
-                loading.setVisibility(View.GONE);
+                progressBar.setVisibility(View.GONE);
                 adapter.notifyDataSetChanged();
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-
+                progressBar.setVisibility(View.GONE);
             }
         });
     }

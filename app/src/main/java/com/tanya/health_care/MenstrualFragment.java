@@ -18,8 +18,6 @@ import java.util.Calendar;
 public class MenstrualFragment extends Fragment {
 
     private CalendarView calendarView;
-    private Button addPeriodButton;
-    private ListView periodListView;
     private ArrayList<String> periodDates;
     private ArrayAdapter<String> periodAdapter;
     private ArrayList<Long> menstrualDates;
@@ -36,17 +34,9 @@ public class MenstrualFragment extends Fragment {
     }
     private void init(View view){
         calendarView = view.findViewById(R.id.calendarView);
-        addPeriodButton = view.findViewById(R.id.addPeriodButton);
-        periodListView = view.findViewById(R.id.periodListView);
-
-        // Инициализация списка для дат менструации
-        periodDates = new ArrayList<>();
-        //periodAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, periodDates);
-        periodListView.setAdapter(periodAdapter);
 
         menstrualDates = new ArrayList<>();
 
-        // Установка обработчика изменения даты в календаре
         calendarView.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
             @Override
             public void onSelectedDayChange(CalendarView view, int year, int month, int dayOfMonth) {
@@ -62,17 +52,9 @@ public class MenstrualFragment extends Fragment {
             }
         });
 
-        // Установка обработчика нажатия на кнопку "Добавить дату менструации"
-        addPeriodButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                menstrualDates.add(calendarView.getDate());
-                updateCalendar();
-            }
-        });
+
     }
 
-    // Обновление календаря с отмеченными датами менструаций
     private void updateCalendar() {
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(calendarView.getDate());

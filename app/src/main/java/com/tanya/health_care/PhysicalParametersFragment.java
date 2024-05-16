@@ -51,7 +51,6 @@ import in.akshit.horizontalcalendar.Tools;
 public class PhysicalParametersFragment extends Fragment {
 
     Button exit, add;
-    private androidx.appcompat.widget.Toolbar toolbar;
     TextView imt, height, weight, aboutImt, dateText;
     DatabaseReference ref;
     GetSplittedPathChild pC = new GetSplittedPathChild();
@@ -78,32 +77,10 @@ public class PhysicalParametersFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_physical_parameters, container, false);
 
-        toolbar = v.findViewById(R.id.toolbar);
-        ((AppCompatActivity) requireActivity()).setSupportActionBar(toolbar);
-
-        setHasOptionsMenu(true);
-
-        Locale locale = new Locale("ru");
-        Locale.setDefault(locale);
         initViews(v);
         return v;
     }
 
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.fragment_menu, menu); // Загрузка меню
-        super.onCreateOptionsMenu(menu, inflater);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        if (id == R.id.action_settings) {
-            // Обработка нажатия на пункт меню "Настройки"
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
 
     private void initViews(View v) {
         user = FirebaseAuth.getInstance().getCurrentUser();

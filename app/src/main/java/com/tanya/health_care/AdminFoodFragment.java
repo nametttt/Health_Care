@@ -8,12 +8,15 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ProgressBar;
 
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -31,6 +34,7 @@ import java.util.ArrayList;
 public class AdminFoodFragment extends Fragment {
 
     Button addProduct;
+    ProgressBar progressBar;
     RecyclerView recyclerView;
     ArrayList<FoodData> foods;
     AdminFoodRecyclerView adapter;
@@ -53,6 +57,7 @@ public class AdminFoodFragment extends Fragment {
         searchButton = v.findViewById(R.id.search);
         searchEditText = v.findViewById(R.id.searchEditText);
 
+        progressBar = v.findViewById(R.id.progressBar);
         foods = new ArrayList<FoodData>();
         adapter = new AdminFoodRecyclerView(getContext(), foods);
         recyclerView = v.findViewById(R.id.recyclerView);
@@ -61,9 +66,12 @@ public class AdminFoodFragment extends Fragment {
         addDataOnRecyclerView();
 
 
-        searchButton.setOnClickListener(new View.OnClickListener() {
+        searchEditText.addTextChangedListener(new TextWatcher() {
             @Override
-            public void onClick(View v) {
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
                 String searchText = searchEditText.getText().toString().trim();
                 if (searchText.isEmpty()) {
                     searchButton.setClickable(false);
@@ -75,7 +83,20 @@ public class AdminFoodFragment extends Fragment {
                     filterFood(searchText);
                 }
             }
+
+            @Override
+            public void afterTextChanged(Editable s) {}
         });
+
+        searchButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                searchEditText.setText(null);
+                searchButton.setClickable(false);
+                searchButton.setImageResource(R.drawable.search);
+            }
+        });
+
         addProduct.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -98,6 +119,8 @@ public class AdminFoodFragment extends Fragment {
         });
     }
     private void addDataOnRecyclerView() {
+        progressBar.setVisibility(View.VISIBLE);
+
         ValueEventListener valueEventListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -111,6 +134,8 @@ public class AdminFoodFragment extends Fragment {
                     foods.add(ps);
 
                 }
+                progressBar.setVisibility(View.GONE);
+
                 adapter.notifyDataSetChanged();
             }
 

@@ -44,26 +44,18 @@
                     android:textAlignment="textStart"
                     android:textStyle="bold"/>
 
-                <CalendarView
-                    android:id="@+id/calendarView"
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="16dp"/>
+                    android:background="@drawable/calendar_asset">
 
-                <!-- Кнопка для добавления даты менструации -->
-                <Button
-                    android:id="@+id/addPeriodButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Добавить дату менструации"
-                    android:layout_gravity="center_horizontal"/>
+                    <CalendarView
+                        android:id="@+id/calendarView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="16dp"/>
 
-                <!-- Список добавленных дат менструации -->
-                <ListView
-                    android:id="@+id/periodListView"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"/>
+                </LinearLayout>
 
                 <LinearLayout
                     android:layout_width="match_parent"

@@ -6,6 +6,8 @@ import android.os.AsyncTask;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.gson.Gson;
 
+import org.apache.commons.logging.Log;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -82,7 +84,6 @@ public class YaGPTAPI {
 
                     body.put("messages", da);
 
-                    // Making request to send message
                     okhttp3.Request.Builder requestBuilder = new okhttp3.Request.Builder().url("https://llm.api.cloud.yandex.net/foundationModels/v1/completion");
                     for (Map.Entry<String, String> entry : headers.entrySet()) {
                         requestBuilder.addHeader(entry.getKey(), entry.getValue());

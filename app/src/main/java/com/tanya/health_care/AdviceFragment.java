@@ -4,6 +4,7 @@ import android.os.Bundle;
 import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.util.Log;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
@@ -20,6 +21,7 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 public class AdviceFragment extends Fragment {
 
@@ -61,10 +63,9 @@ public class AdviceFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 adviceLayout.setVisibility(View.GONE);
-
-                String text = "Как мое питание";
+                String searchText = searchEditText.getText().toString().trim() + "Напиши мне не знаю ответа, если мой вопрос не связан со здоровеьм";
                 try {
-                    sendRequest(text);
+                    sendRequest(searchText);
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
@@ -113,26 +114,34 @@ public class AdviceFragment extends Fragment {
         YaGPTAPI yaGPTAPI = new YaGPTAPI();
         yaGPTAPI.send(searchText, getContext(), new YaGPTAPI.ResponseCallback() {
             @Override
-            public void onResponseReceived(String response) {
-                try {
-                    JSONObject jsonObject = new JSONObject(response);
-                    JSONArray alternatives = jsonObject.getJSONObject("result").getJSONArray("alternatives");
-                    if (alternatives.length() > 0) {
-                        JSONObject lastAlternative = alternatives.getJSONObject(alternatives.length());
-                        final String text = lastAlternative.getJSONObject("message").getString("text");
-                        getActivity().runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
+            public void onResponseReceived(final String response) {
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            // Разбиваем строку JSON на отдельные объекты
+                            String[] responsesArray = response.split("\n");
+                            String lastResponse = responsesArray[responsesArray.length - 1];
+
+                            JSONObject jsonObject = new JSONObject(lastResponse);
+                            JSONArray alternatives = jsonObject.getJSONObject("result").getJSONArray("alternatives");
+                            if (alternatives.length() > 0) {
+                                JSONObject lastAlternative = alternatives.getJSONObject(alternatives.length() - 1); // Получаем последний фрагмент
+                                final String text = lastAlternative.getJSONObject("message").getString("text");
                                 header.setText(searchText);
                                 body.setText(text);
                                 progressBar.setVisibility(View.GONE);
                                 adviceLayout.setVisibility(View.VISIBLE);
                             }
-                        });
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                            header.setText(searchText);
+                            body.setText("Что-то не так");
+                            progressBar.setVisibility(View.GONE);
+                            adviceLayout.setVisibility(View.VISIBLE);
+                        }
                     }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
+                });
             }
         });
     }
