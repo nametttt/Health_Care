@@ -49,6 +49,8 @@ public class ArticleFragment extends Fragment {
         user = FirebaseAuth.getInstance().getCurrentUser();
         mDb = FirebaseDatabase.getInstance();
         progressBar = v.findViewById(R.id.progressBar);
+        progressBar1 = v.findViewById(R.id.progressBar1);
+        progressBar2 = v.findViewById(R.id.progressBar2);
 
         articleDataArrayList = new ArrayList<ArticleData>();
         adapter = new ArticleRecyclerView(getContext(), articleDataArrayList);

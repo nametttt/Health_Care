@@ -18,14 +18,22 @@ import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.tanya.health_care.code.EyeVisibility;
+import com.tanya.health_care.code.GetSplittedPathChild;
+import com.tanya.health_care.code.UserData;
 import com.tanya.health_care.dialog.CustomDialog;
 
 public class ChangePasswordFragment extends Fragment {
 
     private ImageButton newEye, nowEye, repeatEye;
     private EditText nowPassword, newPassword, repeatPassword;
-
+    AdminHomeActivity adminHomeActivity = null;
+    HomeActivity homeActivity = null;
     private Button back, save;
 
     @Override
@@ -74,8 +82,42 @@ public class ChangePasswordFragment extends Fragment {
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                HomeActivity homeActivity = (HomeActivity) getActivity();
-                homeActivity.replaceFragment(new ProfileFragment());
+                FirebaseDatabase db = FirebaseDatabase.getInstance();
+                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                DatabaseReference ref = db.getReference("users");
+                GetSplittedPathChild pC = new GetSplittedPathChild();
+
+
+
+                ref.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        UserData user1 = snapshot.child(pC.getSplittedPathChild(user.getEmail())).getValue(UserData.class);
+
+                        String userRole = user1.getRole();
+
+                        if ("Администратор".equals(userRole)) {
+                            adminHomeActivity = (AdminHomeActivity) getActivity();
+
+
+                        } else {
+                            homeActivity = (HomeActivity) getActivity();
+
+                        }
+
+                        if(homeActivity != null){
+                            homeActivity.replaceFragment(new ProfileFragment());
+                        }else  if(adminHomeActivity != null){
+                            adminHomeActivity.replaceFragment(new ProfileFragment());
+
+                        }
+
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+                    }
+                });
             }
         });
 
