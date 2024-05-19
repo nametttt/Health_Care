@@ -121,7 +121,7 @@ public class AdminChangeFoodFragment extends Fragment {
 
                         ref = mDb.getReference("foods").push();
                         String path = ref.getKey();
-                        FoodData newFoodData = new FoodData(path, nameText, caloriesValue, weightValue, proteinValue, carbohydratesValue, fatValue);
+                        FoodData newFoodData = new FoodData(path, nameText, caloriesValue, weightValue, proteinValue, carbohydratesValue, fatValue, null);
                         ref.setValue(newFoodData);
 
                         CustomDialog dialogFragment = new CustomDialog("Успех", "Продукт успешно добавлен!");

@@ -11,12 +11,13 @@ public class FoodData {
     public int protein;
     public int carbohydrates;
     public int fat;
+    private String UserUid;
     private boolean isSelected;
 
     public FoodData() {
     }
 
-    public FoodData(String uid, String name, int calories, float weight, int protein, int carbohydrates, int fat) {
+    public FoodData(String uid, String name, int calories, float weight, int protein, int carbohydrates, int fat, String UserUid) {
         this.uid = uid;
         this.name = name;
         this.calories = calories;
@@ -24,6 +25,7 @@ public class FoodData {
         this.protein = protein;
         this.carbohydrates = carbohydrates;
         this.fat = fat;
+        this.UserUid = UserUid;
     }
 
 

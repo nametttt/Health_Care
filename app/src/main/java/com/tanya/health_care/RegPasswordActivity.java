@@ -153,7 +153,7 @@ public class RegPasswordActivity extends AppCompatActivity {
                                 if (firebaseUser != null) {
                                     String userId = firebaseUser.getUid();
 
-                                    UserData user = new UserData(email, name, gender, "Пользователь", birthday, "notphoto.png", "");
+                                    UserData user = new UserData(email, name, gender, "Пользователь", birthday, "", "");
 
                                     DatabaseReference userRef = ref.child(splittedPathChild);
 

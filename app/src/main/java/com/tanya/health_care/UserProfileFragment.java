@@ -66,15 +66,11 @@ public class UserProfileFragment extends Fragment {
     ImageView imageView;
     AdminHomeActivity adminHomeActivity = null;
     HomeActivity homeActivity = null;
-
-
     private static final int PICK_IMAGE_REQUEST = 1;
     private static final int REQUEST_IMAGE_CAPTURE = 2;
     private static final int CROP_IMAGE_ACTIVITY_REQUEST_CODE = 3;
     private Uri selectedImageUri;
     private StorageReference storageReference;
-
-
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
@@ -279,18 +275,6 @@ public class UserProfileFragment extends Fragment {
         }
     }
 
-
-    // Метод для получения Uri из Bitmap
-    private Uri getImageUri(Context context, Bitmap bitmap) {
-        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
-        String path = MediaStore.Images.Media.insertImage(context.getContentResolver(), bitmap, "Title", null);
-        return Uri.parse(path);
-    }
-
-
-
-    // Добавляем метод для сохранения данных и изображения в Firebase
     private void saveDataAndImage() {
         FirebaseUser user = mAuth.getCurrentUser();
         if (user != null) {
@@ -333,7 +317,6 @@ public class UserProfileFragment extends Fragment {
         }
     }
 
-    // Метод для обновления данных профиля пользователя
     private void updateUserProfile(String email, Map<String, Object> updateMap) {
         userRef.child(pC.getSplittedPathChild(email)).updateChildren(updateMap)
                 .addOnCompleteListener(task -> {

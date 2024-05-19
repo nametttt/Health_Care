@@ -1,7 +1,10 @@
 package com.tanya.health_care;
 
+import static android.app.Activity.RESULT_OK;
+
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
@@ -11,6 +14,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,19 +31,21 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.StorageReference;
 import com.tanya.health_care.code.ArticleData;
 import com.tanya.health_care.code.FirebaseMessaging;
 import com.tanya.health_care.code.GetSplittedPathChild;
 import com.tanya.health_care.code.PhysicalParametersData;
 import com.tanya.health_care.code.UserData;
 import com.tanya.health_care.dialog.CustomDialog;
+import com.theartofdev.edmodo.cropper.CropImage;
+import com.theartofdev.edmodo.cropper.CropImageView;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Random;
 
 public class AdminChangeArticleFragment extends Fragment {
-
 
     ImageView image;
     EditText title, description;
@@ -49,7 +55,11 @@ public class AdminChangeArticleFragment extends Fragment {
     DatabaseReference ref;
     GetSplittedPathChild pC = new GetSplittedPathChild();
     FirebaseDatabase mDb;
-    private static final int GALLERY_REQUEST_CODE = 1001;
+    private static final int PICK_IMAGE_REQUEST = 1;
+    private static final int REQUEST_IMAGE_CAPTURE = 2;
+    private static final int CROP_IMAGE_ACTIVITY_REQUEST_CODE = 3;
+    private Uri selectedImageUri;
+    private StorageReference storageReference;
 
     String uid, titl, desc, category, access;
     int finalResId;
@@ -119,36 +129,12 @@ public class AdminChangeArticleFragment extends Fragment {
 
 
 
-        image.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                try{
-                    AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                    builder.setTitle("Выберите изображение из галереи")
-                            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    Intent galleryIntent = new Intent(Intent.ACTION_GET_CONTENT);
-                                    galleryIntent.setType("image/*");
-                                    startActivityForResult(galleryIntent, GALLERY_REQUEST_CODE);
-                                }
-                            })
-                            .setNegativeButton("Отмена", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    dialog.dismiss();
-                                }
-                            })
-                            .show();
+            image.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    ChangePhoto();
                 }
-                catch (Exception e) {
-                    CustomDialog dialogFragment = new CustomDialog("Ошибка", e.getMessage());
-                    dialogFragment.show(getParentFragmentManager(), "custom_dialog");
-                }
-
-            }
-        });
-
+            });
         continu.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -275,17 +261,6 @@ public class AdminChangeArticleFragment extends Fragment {
             dialogFragment.show(getParentFragmentManager(), "custom_dialog");
         }
     }
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if (requestCode == GALLERY_REQUEST_CODE && resultCode == Activity.RESULT_OK && data != null) {
-            Uri selectedImageUri = data.getData();
-
-            image.setImageURI(selectedImageUri);
-        }
-    }
-
     private void deleteArticle() {
         try {
             DatabaseReference articleRef = FirebaseDatabase.getInstance().getReference().child("articles");
@@ -309,5 +284,64 @@ public class AdminChangeArticleFragment extends Fragment {
         }
 
     }
+    public void ChangePhoto() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setTitle("Выберите способ");
+        String[] options = {"Галерея", "Камера"};
+        builder.setItems(options, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                if (which == 0) {
+                    Intent galleryIntent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                    startActivityForResult(galleryIntent, PICK_IMAGE_REQUEST);
+                } else if (which == 1) {
+                    dispatchTakePictureIntent();
+                }
+            }
+        });
+        builder.show();
+    }
+
+    private void dispatchTakePictureIntent() {
+        ContentValues values = new ContentValues();
+        values.put(MediaStore.Images.Media.TITLE, "New Picture");
+        values.put(MediaStore.Images.Media.DESCRIPTION, "From your Camera");
+        selectedImageUri = getContext().getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, selectedImageUri);
+        startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+    }
+
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK) {
+            if (requestCode == PICK_IMAGE_REQUEST && data != null) {
+                Uri selectedImage = data.getData();
+                CropImage.activity(selectedImage)
+                        .setAspectRatio(1, 1)
+                        .setRequestedSize(600, 600)
+                        .setCropShape(CropImageView.CropShape.OVAL)
+                        .start(getContext(), this);
+            } else if (requestCode == REQUEST_IMAGE_CAPTURE && selectedImageUri != null) {
+                CropImage.activity(selectedImageUri)
+                        .setAspectRatio(1, 1)
+                        .setRequestedSize(600, 600)
+                        .setCropShape(CropImageView.CropShape.OVAL)
+                        .start(getContext(), this);
+            } else if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE && data != null) {
+                CropImage.ActivityResult result = CropImage.getActivityResult(data);
+                if (resultCode == RESULT_OK) {
+                    selectedImageUri = result.getUri();
+                    image.setImageURI(selectedImageUri);
+                } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
+                    Exception error = result.getError();
+                    Toast.makeText(getContext(), "Ошибка при обрезке изображения: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+                }
+            }
+        }
+    }
+
 
 }

@@ -95,8 +95,9 @@ public class FoodFragment extends Fragment {
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                ChangeNutritionFragment fragment = new ChangeNutritionFragment(nutritionId, nutritionDate, nutritionType, selectedFoods, Add);
                 HomeActivity homeActivity = (HomeActivity) getActivity();
-                homeActivity.replaceFragment(new ChangeNutritionFragment());
+                homeActivity.replaceFragment(fragment);
             }
         });
 
@@ -106,8 +107,6 @@ public class FoodFragment extends Fragment {
                 for (FoodData food : foodDataArrayList) {
                     if (food.isSelected()) {
                         selectedFoods.add(food);
-//                        FoodData a = new FoodData(food.uid, (float) food.weight);
-//                        selectedFoods.add(a);
                     }
                 }
                 ChangeNutritionFragment fragment = new ChangeNutritionFragment(nutritionId, nutritionDate, nutritionType, selectedFoods, Add);
