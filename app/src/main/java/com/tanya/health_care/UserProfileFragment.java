@@ -110,9 +110,6 @@ public class UserProfileFragment extends Fragment {
                     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                     DatabaseReference ref = db.getReference("users");
                     GetSplittedPathChild pC = new GetSplittedPathChild();
-
-
-
                     ref.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -218,11 +215,9 @@ public class UserProfileFragment extends Fragment {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 if (which == 0) {
-                    // Выбор изображения из галереи
                     Intent galleryIntent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                     startActivityForResult(galleryIntent, PICK_IMAGE_REQUEST);
                 } else if (which == 1) {
-                    // Выбор изображения с помощью камеры
                     dispatchTakePictureIntent();
                 }
             }
@@ -230,7 +225,6 @@ public class UserProfileFragment extends Fragment {
         builder.show();
     }
 
-    // Метод для запуска камеры
     private void dispatchTakePictureIntent() {
         ContentValues values = new ContentValues();
         values.put(MediaStore.Images.Media.TITLE, "New Picture");

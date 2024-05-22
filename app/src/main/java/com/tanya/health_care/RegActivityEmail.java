@@ -118,14 +118,15 @@ public class RegActivityEmail extends AppCompatActivity {
     }
 
     private static void sendEmailInBackground(String toEmail, String pinCode) {
-        final String username = "ochy.tickets@gmail.com";
-        final String password = "ivrcjihrdhacolge";
+        final String username = "healthcaree.mycare@gmail.com";
+        final String password = "puws knlb onmh nwqy";
 
         Properties props = new Properties();
         props.put("mail.smtp.host", "smtp.gmail.com");
         props.put("mail.smtp.port", "587");
         props.put("mail.smtp.auth", "true");
         props.put("mail.smtp.starttls.enable", "true");
+        props.put("mail.debug", "true");
 
         Session session = Session.getInstance(props, new javax.mail.Authenticator() {
             @Override
@@ -138,14 +139,27 @@ public class RegActivityEmail extends AppCompatActivity {
             Message message = new MimeMessage(session);
             message.setFrom(new InternetAddress(username));
             message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(toEmail));
-            message.setSubject("Подтверждение пин-кода");
-            message.setText("Для подтверждения электронной почты используйте пин-код: " + pinCode);
+            message.setSubject("Подтверждение почты");
+
+            String emailBody = "<html>\n" +
+                    " <body style=\"font-family: Arial, sans-serif;\">\n" +
+                    "     <h1 style=\"color: black;\">Подтверждение почты</h1>\n" +
+                    "     <p style=\"color: black; font-size: 16px;\">Для продолжения регистрации на Health_Care - Забота о здоровье, введите следующий код подтверждения:</p>\n" +
+                    "     <h2 style=\"background-color: #f5f5f5; padding: 10px; border-radius: 5px; color: black;\">" + pinCode + "</h2>\n" +
+                    "     <p style=\"color: black; font-size: 16px;\">Спасибо за регистрацию!</p>\n" +
+                    "     <p style=\"color: black; font-size: 16px;\">Команда Health_Care - Забота о здоровье</p>\n" +
+                    " </body>\n" +
+                    " </html>";
+
+            message.setContent(emailBody, "text/html; charset=utf-8");
 
             Transport.send(message);
 
             System.out.println("Email sent successfully!");
 
         } catch (MessagingException e) {
+            e.printStackTrace();
+            System.err.println("Error: " + e.getMessage());
             throw new RuntimeException(e);
         }
     }
