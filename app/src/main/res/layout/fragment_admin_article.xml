@@ -61,13 +61,15 @@
         <ImageButton
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="0.12"
+            android:layout_weight="0.06"
             android:adjustViewBounds="true"
             android:scaleType="centerInside"
-            android:id="@+id/search"
             android:src="@drawable/search"
+            android:clickable="false"
+            android:background="@color/transparent"
+            android:id="@+id/searchImage"
             android:layout_gravity="center"
-            android:layout_marginRight="5dp"
+            android:layout_marginRight="15dp"
             />
     </LinearLayout>
 

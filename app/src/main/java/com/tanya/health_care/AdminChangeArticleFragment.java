@@ -233,9 +233,10 @@ public class AdminChangeArticleFragment extends Fragment {
             String imagePath = "articleImages/" + path + ".jpg";
 
             StorageReference imageRef = FirebaseStorage.getInstance().getReference().child(imagePath);
-
-            // Сохраняем ссылку на изображение как финальную переменную, чтобы использовать в лямбда-выражении
             final Uri selectedImageUriFinal = selectedImageUri;
+            long timeoutMs = 3000;
+            ProgressBarDialog progressDialogFragment = ProgressBarDialog.newInstance(timeoutMs);
+            progressDialogFragment.show(getParentFragmentManager(), "ProgressDialog");
 
             imageRef.putFile(selectedImageUriFinal)
                     .addOnSuccessListener(taskSnapshot -> {
@@ -258,9 +259,8 @@ public class AdminChangeArticleFragment extends Fragment {
                                     }
                                     try {
                                         FirebaseMessaging messaging = new FirebaseMessaging();
-
-                                        String tex = descriptionText.substring(0, descriptionText.length() / 3) + "...";
-                                        messaging.send("Новая статья", "Была добавлена новая статья " + titleText, list, getContext());
+                                        String tex = descriptionText.length() > 20 ? descriptionText.substring(0, 20) + "..." : descriptionText;
+                                        messaging.send("Новая статья" + titleText, "Была добавлена новая статья " + tex, list, getContext());
                                     } catch (IOException e) {
                                         throw new RuntimeException(e);
                                     }

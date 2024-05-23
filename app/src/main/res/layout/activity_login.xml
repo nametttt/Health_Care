@@ -104,6 +104,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="0.1"
                 android:src="@drawable/eye"
+                android:background="@color/transparent"
                 android:layout_gravity="center"
                 android:layout_marginRight="5dp"
                 android:contentDescription="Скрытие пароля"
