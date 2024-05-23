@@ -1,7 +1,5 @@
 package com.tanya.health_care.code;
 
-import java.util.ArrayList;
-
 public class FoodData {
 
     public String uid;
@@ -28,7 +26,6 @@ public class FoodData {
         this.UserUid = UserUid;
     }
 
-
     public String getUid() {
         return uid;
     }
@@ -36,6 +33,7 @@ public class FoodData {
     public void setUid(String uid) {
         this.uid = uid;
     }
+
     public String getName() {
         return name;
     }
@@ -58,6 +56,38 @@ public class FoodData {
 
     public void setWeight(float weight) {
         this.weight = weight;
+    }
+
+    public int getProtein() {
+        return protein;
+    }
+
+    public void setProtein(int protein) {
+        this.protein = protein;
+    }
+
+    public int getCarbohydrates() {
+        return carbohydrates;
+    }
+
+    public void setCarbohydrates(int carbohydrates) {
+        this.carbohydrates = carbohydrates;
+    }
+
+    public int getFat() {
+        return fat;
+    }
+
+    public void setFat(int fat) {
+        this.fat = fat;
+    }
+
+    public String getUserUid() {
+        return UserUid;
+    }
+
+    public void setUserUid(String userUid) {
+        UserUid = userUid;
     }
 
     public boolean isSelected() {

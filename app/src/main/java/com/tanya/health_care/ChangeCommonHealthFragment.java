@@ -86,7 +86,7 @@ public class ChangeCommonHealthFragment extends Fragment {
             if (Add != null)
             {
                 add.setText("Добавить");
-                delete.setVisibility(View.INVISIBLE);
+                delete.setVisibility(View.GONE);
             }
             else
             {

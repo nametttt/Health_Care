@@ -1,5 +1,6 @@
 package com.tanya.health_care;
 
+import androidx.appcompat.widget.AppCompatButton;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.os.Bundle;
@@ -48,6 +49,8 @@ public class FoodFragment extends Fragment {
     DatabaseReference ref;
     FirebaseDatabase mDb;
     Button back, save;
+    private AppCompatButton allFoods, myFoods;
+
     ArrayList<FoodData> selectedFoods;
     EditText searchEditText;
     String searchText;
@@ -78,7 +81,8 @@ public class FoodFragment extends Fragment {
 
     void init (View v) {
         viewModel = new ViewModelProvider(requireActivity()).get(SelectedFoodViewModel.class);
-
+        allFoods = v.findViewById(R.id.allFoods);
+        myFoods = v.findViewById(R.id.myFoods);
         foodDataArrayList = new ArrayList<FoodData>();
         adapter = new SelectFoodRecyclerView(getContext(), foodDataArrayList);
         recyclerView = v.findViewById(R.id.recyclerViews);
@@ -92,6 +96,19 @@ public class FoodFragment extends Fragment {
 
         addDataOnRecyclerView();
 
+        allFoods.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                updateButtonAppearance(allFoods, myFoods);
+            }
+        });
+
+        myFoods.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                updateButtonAppearance(myFoods, allFoods);
+            }
+        });
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -217,7 +234,14 @@ public class FoodFragment extends Fragment {
             }
         });
     }
-
+    private void updateButtonAppearance(AppCompatButton selectedButton, AppCompatButton... otherButtons) {
+        for (AppCompatButton button : otherButtons) {
+            button.setBackgroundColor(getResources().getColor(R.color.transparent));
+            button.setTextColor(getResources().getColor(R.color.gray));
+        }
+        selectedButton.setBackgroundResource(R.drawable.button_statistic_asset);
+        selectedButton.setTextColor(getResources().getColor(R.color.black));
+    }
 
 
 }
