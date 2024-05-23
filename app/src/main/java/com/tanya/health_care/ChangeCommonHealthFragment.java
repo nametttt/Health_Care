@@ -145,16 +145,16 @@ public class ChangeCommonHealthFragment extends Fragment {
                     String temperatureValue = temperature.getText().toString().trim();
 
                     if (TextUtils.isEmpty(pressureValue) || TextUtils.isEmpty(pulseValue) || TextUtils.isEmpty(temperatureValue)) {
-                        CustomDialog dialogFragment = new CustomDialog("Ошибка", "Пожалуйста, заполните все поля!");
-                        dialogFragment.show(getParentFragmentManager(), "custom_dialog");
+//                        CustomDialog dialogFragment = new CustomDialog("Ошибка", "Пожалуйста, заполните все поля!");
+//                        dialogFragment.show(getParentFragmentManager(), "custom_dialog");
 
                         return;
                     }
 
                     String[] pressureParts = pressureValue.split("/");
                     if (pressureParts.length != 2 || !TextUtils.isDigitsOnly(pressureParts[0]) || !TextUtils.isDigitsOnly(pressureParts[1])) {
-                        CustomDialog dialogFragment = new CustomDialog("Ошибка", "Неправильный формат давления. Используйте, например, 120/80!");
-                        dialogFragment.show(getParentFragmentManager(), "custom_dialog");
+//                        CustomDialog dialogFragment = new CustomDialog("Ошибка", "Неправильный формат давления. Используйте, например, 120/80!");
+//                        dialogFragment.show(getParentFragmentManager(), "custom_dialog");
                         return;
                     }
 
@@ -162,15 +162,15 @@ public class ChangeCommonHealthFragment extends Fragment {
                     float temperatureFloat = Float.parseFloat(temperatureValue);
 
                     if (pulseInt < 0 || pulseInt > 200) {
-                        CustomDialog dialogFragment = new CustomDialog("Ошибка", "Недопустимые значения для пульса!");
-                        dialogFragment.show(getParentFragmentManager(), "custom_dialog");
+//                        CustomDialog dialogFragment = new CustomDialog("Ошибка", "Недопустимые значения для пульса!");
+//                        dialogFragment.show(getParentFragmentManager(), "custom_dialog");
                         return;
                     }
 
                     if(temperatureFloat < 35 || temperatureFloat > 40)
                     {
-                        CustomDialog dialogFragment = new CustomDialog("Ошибка", "Недопустимые значения для температуры!");
-                        dialogFragment.show(getParentFragmentManager(), "custom_dialog");
+//                        CustomDialog dialogFragment = new CustomDialog("Ошибка", "Недопустимые значения для температуры!");
+//                        dialogFragment.show(getParentFragmentManager(), "custom_dialog");
                         return;
                     }
 
@@ -184,8 +184,8 @@ public class ChangeCommonHealthFragment extends Fragment {
                         if ( ref != null){
                             ref.setValue(commonHealthData);
                         }
-                        CustomDialog dialogFragment = new CustomDialog("Успех", "Добавление прошло успешно!");
-                        dialogFragment.show(getParentFragmentManager(), "custom_dialog");
+//                        CustomDialog dialogFragment = new CustomDialog("Успех", "Добавление прошло успешно!");
+//                        dialogFragment.show(getParentFragmentManager(), "custom_dialog");
                     }
 
                     else
@@ -219,14 +219,14 @@ public class ChangeCommonHealthFragment extends Fragment {
                             CommonHealthData newCommon = new CommonHealthData(path, pressureValue, pulseInt, temperatureFloat, date);
                             ref.setValue(newCommon);
 
-                            CustomDialog dialogFragment = new CustomDialog("Успех", "Изменение прошло успешно!");
-                            dialogFragment.show(getParentFragmentManager(), "custom_dialog");
+//                            CustomDialog dialogFragment = new CustomDialog("Успех", "Изменение прошло успешно!");
+//                            dialogFragment.show(getParentFragmentManager(), "custom_dialog");
 
 
                         } catch (Exception e) {
                             e.printStackTrace();
-                            CustomDialog dialogFragment = new CustomDialog("Ошибка", "Ошибка при разборе даты!");
-                            dialogFragment.show(getParentFragmentManager(), "custom_dialog");
+//                            CustomDialog dialogFragment = new CustomDialog("Ошибка", "Ошибка при разборе даты!");
+//                            dialogFragment.show(getParentFragmentManager(), "custom_dialog");
                         }
                     }
 
@@ -248,8 +248,8 @@ public class ChangeCommonHealthFragment extends Fragment {
                             FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                             ref = mDb.getReference("users").child(pC.getSplittedPathChild(user.getEmail())).child("characteristic").child("commonHealth").child(path);
                             ref.removeValue();
-                            CustomDialog dialogFragment = new CustomDialog("Успех", "Удаление прошло успешно!");
-                            dialogFragment.show(getParentFragmentManager(), "custom_dialog");
+//                            CustomDialog dialogFragment = new CustomDialog("Успех", "Удаление прошло успешно!");
+//                            dialogFragment.show(getParentFragmentManager(), "custom_dialog");
 
                             HomeActivity homeActivity = (HomeActivity) getActivity();
                             homeActivity.replaceFragment(new HealthCommonFragment());
@@ -267,8 +267,8 @@ public class ChangeCommonHealthFragment extends Fragment {
             });
         }
         catch (Exception e) {
-            CustomDialog dialogFragment = new CustomDialog("Ошибка", e.getMessage());
-            dialogFragment.show(getParentFragmentManager(), "custom_dialog");
+//            CustomDialog dialogFragment = new CustomDialog("Ошибка", e.getMessage());
+//            dialogFragment.show(getParentFragmentManager(), "custom_dialog");
         }
 
     }

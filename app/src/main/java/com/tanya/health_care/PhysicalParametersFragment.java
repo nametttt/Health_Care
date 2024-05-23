@@ -202,8 +202,8 @@ public class PhysicalParametersFragment extends Fragment {
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                CustomDialog dialogFragment = new CustomDialog("Ошибка", error.getMessage());
-                dialogFragment.show(getChildFragmentManager(), "custom_dialog");
+//                CustomDialog dialogFragment = new CustomDialog("Ошибка", error.getMessage());
+//                dialogFragment.show(getChildFragmentManager(), "custom_dialog");
 
             }
         };

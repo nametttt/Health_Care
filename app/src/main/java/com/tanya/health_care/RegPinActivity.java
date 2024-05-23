@@ -75,21 +75,21 @@ public class RegPinActivity extends AppCompatActivity {
             String enteredPin = firstPinView.getText().toString();
 
             if (enteredPin.isEmpty()) {
-                CustomDialog dialogFragment = new CustomDialog("Ошибка", "Пожалуйста, введите пин-код!");
-                dialogFragment.show(getSupportFragmentManager(), "custom_dialog");
+//                CustomDialog dialogFragment = new CustomDialog("Ошибка", "Пожалуйста, введите пин-код!");
+//                dialogFragment.show(getSupportFragmentManager(), "custom_dialog");
             } else if (enteredPin.equals(expectedPinCode)) {
                 Intent intent = new Intent(RegPinActivity.this, RegGenderActivity.class);
                 intent.putExtra("userEmail", userEmail);
                 intent.putExtra("UserCode", expectedPinCode);
                 startActivity(intent);
             } else {
-                CustomDialog dialogFragment = new CustomDialog("Ошибка", "Вы ввели неверный пин-код!");
-                dialogFragment.show(getSupportFragmentManager(), "custom_dialog");
+//                CustomDialog dialogFragment = new CustomDialog("Ошибка", "Вы ввели неверный пин-код!");
+//                dialogFragment.show(getSupportFragmentManager(), "custom_dialog");
             }
         }
         catch (Exception e) {
-            CustomDialog dialogFragment = new CustomDialog("Ошибка", e.getMessage());
-            dialogFragment.show(getSupportFragmentManager(), "custom_dialog");
+//            CustomDialog dialogFragment = new CustomDialog("Ошибка", e.getMessage());
+//            dialogFragment.show(getSupportFragmentManager(), "custom_dialog");
         }
 
     }
@@ -99,17 +99,17 @@ public class RegPinActivity extends AppCompatActivity {
             if (!newPinRequested) {
                 expectedPinCode = GeneratePin.generatePinCode();
                 emailTextView.setText("Новый код подтверждения отправлен на почту");
-                CustomDialog dialogFragment = new CustomDialog("Успех", "Новый пин-код отправлен на почту!");
-                dialogFragment.show(getSupportFragmentManager(), "custom_dialog");
+//                CustomDialog dialogFragment = new CustomDialog("Успех", "Новый пин-код отправлен на почту!");
+//                dialogFragment.show(getSupportFragmentManager(), "custom_dialog");
                 newPinRequested = true;
             } else {
-                CustomDialog dialogFragment = new CustomDialog("Ошибка", "Вы уже запросили новый пин-код!");
-                dialogFragment.show(getSupportFragmentManager(), "custom_dialog");
+//                CustomDialog dialogFragment = new CustomDialog("Ошибка", "Вы уже запросили новый пин-код!");
+//                dialogFragment.show(getSupportFragmentManager(), "custom_dialog");
             }
         }
         catch (Exception e) {
-            CustomDialog dialogFragment = new CustomDialog("Ошибка", e.getMessage());
-            dialogFragment.show(getSupportFragmentManager(), "custom_dialog");
+//            CustomDialog dialogFragment = new CustomDialog("Ошибка", e.getMessage());
+//            dialogFragment.show(getSupportFragmentManager(), "custom_dialog");
         }
 
     }

@@ -1,7 +1,6 @@
 package com.tanya.health_care;
 
 import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -10,6 +9,7 @@ import android.widget.TextView;
 import androidx.viewpager.widget.ViewPager;
 import android.widget.ImageView;
 
+import com.tanya.health_care.code.DepthPageTransformer;
 import com.tanya.health_care.code.MyPagerAdapter;
 
 public class MainActivity extends AppCompatActivity {
@@ -37,6 +37,7 @@ public class MainActivity extends AppCompatActivity {
 
             MyPagerAdapter adapter = new MyPagerAdapter(getSupportFragmentManager());
             viewPager.setAdapter(adapter);
+            viewPager.setPageTransformer(true, new DepthPageTransformer());
 
             viewPager.addOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
                 @Override
@@ -112,6 +113,5 @@ public class MainActivity extends AppCompatActivity {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
     }
 }

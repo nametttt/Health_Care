@@ -126,14 +126,14 @@ public class ChangePasswordFragment extends Fragment {
             public void onClick(View v) {
                 try {
                     if (newPassword.getText().length() < 6 || repeatPassword.getText().length() < 6) {
-                        CustomDialog dialogFragment = new CustomDialog("Ошибка", "Длина пароля должна быть более 6 символов!");
-                        dialogFragment.show(getParentFragmentManager(), "custom_dialog");
+                        CustomDialog dialog = new CustomDialog("Ошибка!", "Длина пароля должна быть более 6 символов!", false);
+                        dialog.show(getParentFragmentManager(), "customDialog");
                         return;
                     }
 
                     if (!newPassword.getText().toString().equals(repeatPassword.getText().toString())) {
-                        CustomDialog dialogFragment = new CustomDialog("Ошибка", "Пароли не совпадают!");
-                        dialogFragment.show(getParentFragmentManager(), "custom_dialog");
+                        CustomDialog dialog = new CustomDialog("Ошибка!", "Пароли не совпадают!", false);
+                        dialog.show(getParentFragmentManager(), "customDialog");
                         return;
                     }
 
@@ -150,23 +150,23 @@ public class ChangePasswordFragment extends Fragment {
                                         user.updatePassword(newPass)
                                                 .addOnCompleteListener(updateTask -> {
                                                     if (updateTask.isSuccessful()) {
-                                                        CustomDialog dialogFragment = new CustomDialog("Успех", "Пароль успешно изменен!");
-                                                        dialogFragment.show(getParentFragmentManager(), "custom_dialog");
+                                                        CustomDialog dialog = new CustomDialog("Успех!", "Пароль успешно изменен!", true);
+                                                        dialog.show(getParentFragmentManager(), "customDialog");
                                                         nowPassword.getText().clear();
                                                         newPassword.getText().clear();
                                                         repeatPassword.getText().clear();
                                                     } else {
-                                                        CustomDialog dialogFragment = new CustomDialog("Ошибка", "Произошла непредвиденная ошибка при обновлении пароля!");
-                                                        dialogFragment.show(getParentFragmentManager(), "custom_dialog");                                                    }
+                                                        CustomDialog dialog = new CustomDialog("Ошибка!", "Произошла непредвиденная ошибка при обновлении пароля!", false);
+                                                        dialog.show(getParentFragmentManager(), "customDialog");                                                  }
                                                 });
                                     } else {
-                                        CustomDialog dialogFragment = new CustomDialog("Ошибка", "Ошибка при повторной аутентификации пользователя: " + reauthTask.getException());
-                                        dialogFragment.show(getParentFragmentManager(), "custom_dialog");                                    }
+                                        CustomDialog dialog = new CustomDialog("Ошибка!", "Ошибка при повторной аутентификации пользователя: " + reauthTask.getException(), false);
+                                        dialog.show(getParentFragmentManager(), "customDialog");                                   }
                                 });
                     }
                 } catch (Exception e) {
-                    CustomDialog dialogFragment = new CustomDialog("Ошибка", e.getMessage());
-                    dialogFragment.show(getParentFragmentManager(), "custom_dialog");
+                    CustomDialog dialog = new CustomDialog("Ошибка!", "Ошибка " + e.getMessage(), false);
+                    dialog.show(getParentFragmentManager(), "customDialog");
                 }
             }
         });

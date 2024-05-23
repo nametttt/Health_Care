@@ -81,8 +81,8 @@ public class LoginActivity extends AppCompatActivity {
 
                     if (loginEdit.getText().toString().isEmpty() ||
                             password.getText().toString().isEmpty()){
-                        CustomDialog dialogFragment = new CustomDialog("Ошибка", "Пожалуйста, введите все данные!");
-                        dialogFragment.show(getSupportFragmentManager(), "custom_dialog");
+//                        CustomDialog dialogFragment = new CustomDialog("Ошибка", "Пожалуйста, введите все данные!");
+//                        dialogFragment.show(getSupportFragmentManager(), "custom_dialog");
 
                         return;
                     }
@@ -91,8 +91,8 @@ public class LoginActivity extends AppCompatActivity {
                     }
 
                     if (!GetEmail.isValidEmail(loginEdit.getText())){
-                        CustomDialog dialogFragment = new CustomDialog("Ошибка", "Пожалуйста, введите корректную почту!");
-                        dialogFragment.show(getSupportFragmentManager(), "custom_dialog");
+//                        CustomDialog dialogFragment = new CustomDialog("Ошибка", "Пожалуйста, введите корректную почту!");
+//                        dialogFragment.show(getSupportFragmentManager(), "custom_dialog");
 
                         return;
                     }
@@ -118,8 +118,8 @@ public class LoginActivity extends AppCompatActivity {
             });
         }
         catch (Exception e) {
-            CustomDialog dialogFragment = new CustomDialog("Ошибка", e.getMessage());
-            dialogFragment.show(getSupportFragmentManager(), "custom_dialog");
+//            CustomDialog dialogFragment = new CustomDialog("Ошибка", e.getMessage());
+//            dialogFragment.show(getSupportFragmentManager(), "custom_dialog");
         }
 
     }
@@ -154,31 +154,31 @@ public class LoginActivity extends AppCompatActivity {
                                                     startActivity(x);
                                                 }
                                             } else {
-                                                CustomDialog dialogFragment = new CustomDialog("Ошибка", "Роль пользователя не определена!");
-                                                dialogFragment.show(getSupportFragmentManager(), "custom_dialog");
+//                                                CustomDialog dialogFragment = new CustomDialog("Ошибка", "Роль пользователя не определена!");
+//                                                dialogFragment.show(getSupportFragmentManager(), "custom_dialog");
                                             }
                                             finish();
                                         }
 
                                         @Override
                                         public void onCancelled(@NonNull DatabaseError databaseError) {
-                                            CustomDialog dialogFragment = new CustomDialog("Ошибка", "Ошибка получения данных пользователя из базы данных!");
-                                            dialogFragment.show(getSupportFragmentManager(), "custom_dialog");
+//                                            CustomDialog dialogFragment = new CustomDialog("Ошибка", "Ошибка получения данных пользователя из базы данных!");
+//                                            dialogFragment.show(getSupportFragmentManager(), "custom_dialog");
                                         }
                                     });
                                 }
                             } else {
                                 // Обработка ошибок входа
-                                CustomDialog dialogFragment = new CustomDialog("Ошибка", "Вы ввели неверные данные пользователя!");
-                                dialogFragment.show(getSupportFragmentManager(), "custom_dialog");
+//                                CustomDialog dialogFragment = new CustomDialog("Ошибка", "Вы ввели неверные данные пользователя!");
+//                                dialogFragment.show(getSupportFragmentManager(), "custom_dialog");
                             }
                         }
                     });
 
         }
         catch (Exception e) {
-            CustomDialog dialogFragment = new CustomDialog("Ошибка", e.getMessage());
-            dialogFragment.show(getSupportFragmentManager(), "custom_dialog");
+//            CustomDialog dialogFragment = new CustomDialog("Ошибка", e.getMessage());
+//            dialogFragment.show(getSupportFragmentManager(), "custom_dialog");
         }
 
     }

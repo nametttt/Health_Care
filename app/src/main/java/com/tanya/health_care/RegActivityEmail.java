@@ -68,14 +68,14 @@ public class RegActivityEmail extends AppCompatActivity {
             public void onClick(View view) {
                 try{
                     if (email.getText().toString().isEmpty()) {
-                        CustomDialog dialogFragment = new CustomDialog("Ошибка", "Пожалуйста, введите почту!");
-                        dialogFragment.show(getSupportFragmentManager(), "custom_dialog");
+//                        CustomDialog dialogFragment = new CustomDialog("Ошибка", "Пожалуйста, введите почту!");
+//                        dialogFragment.show(getSupportFragmentManager(), "custom_dialog");
                     } else if (!GetEmail.isValidEmail(email.getText())) {
-                        CustomDialog dialogFragment = new CustomDialog("Ошибка", "Пожалуйста, введите корректную почту!");
-                        dialogFragment.show(getSupportFragmentManager(), "custom_dialog");
+//                        CustomDialog dialogFragment = new CustomDialog("Ошибка", "Пожалуйста, введите корректную почту!");
+//                        dialogFragment.show(getSupportFragmentManager(), "custom_dialog");
                     } else if (!userAgree.isChecked()) {
-                        CustomDialog dialogFragment = new CustomDialog("Ошибка", "Пожалуйста, примите пользовательское соглашение!");
-                        dialogFragment.show(getSupportFragmentManager(), "custom_dialog");
+//                        CustomDialog dialogFragment = new CustomDialog("Ошибка", "Пожалуйста, примите пользовательское соглашение!");
+//                        dialogFragment.show(getSupportFragmentManager(), "custom_dialog");
                     } else {
                         final String userEmail = email.getText().toString().trim();
                         FirebaseAuth.getInstance().fetchSignInMethodsForEmail(userEmail)
@@ -97,8 +97,8 @@ public class RegActivityEmail extends AppCompatActivity {
                     }
                 }
                 catch (Exception e) {
-                    CustomDialog dialogFragment = new CustomDialog("Ошибка", e.getMessage());
-                    dialogFragment.show(getSupportFragmentManager(), "custom_dialog");
+//                    CustomDialog dialogFragment = new CustomDialog("Ошибка", e.getMessage());
+//                    dialogFragment.show(getSupportFragmentManager(), "custom_dialog");
                 }
 
             }

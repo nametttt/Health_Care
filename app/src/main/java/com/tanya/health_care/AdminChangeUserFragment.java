@@ -169,8 +169,8 @@ public class AdminChangeUserFragment extends Fragment {
             });
 
         } catch (Exception e) {
-            CustomDialog dialogFragment = new CustomDialog("Ошибка", e.getMessage());
-            dialogFragment.show(getParentFragmentManager(), "custom_dialog");
+//            CustomDialog dialogFragment = new CustomDialog("Ошибка", e.getMessage());
+//            dialogFragment.show(getParentFragmentManager(), "custom_dialog");
         }
     }
 
@@ -179,8 +179,8 @@ public class AdminChangeUserFragment extends Fragment {
             String selectedEmail = emails.getText().toString().trim();
 
             if (selectedEmail.isEmpty()) {
-                CustomDialog dialogFragment = new CustomDialog("Ошибка", "Не удалось определить пользователя!");
-                dialogFragment.show(getParentFragmentManager(), "custom_dialog");
+//                CustomDialog dialogFragment = new CustomDialog("Ошибка", "Не удалось определить пользователя!");
+//                dialogFragment.show(getParentFragmentManager(), "custom_dialog");
                 return;
             }
 
@@ -190,19 +190,19 @@ public class AdminChangeUserFragment extends Fragment {
             userRef.child(selectedUserPath).removeValue()
                     .addOnCompleteListener(task -> {
                         if (task.isSuccessful()) {
-                            CustomDialog dialogFragment = new CustomDialog("Успех", "Пользователь успешно удален!");
-                            dialogFragment.show(getParentFragmentManager(), "custom_dialog");
+//                            CustomDialog dialogFragment = new CustomDialog("Успех", "Пользователь успешно удален!");
+//                            dialogFragment.show(getParentFragmentManager(), "custom_dialog");
                             AdminHomeActivity homeActivity = (AdminHomeActivity) getActivity();
                             homeActivity.replaceFragment(new AdminUsersFragment());
                         } else {
-                            CustomDialog dialogFragment = new CustomDialog("Ошибка", "Ошибка при удалении пользователя!");
-                            dialogFragment.show(getParentFragmentManager(), "custom_dialog");
+//                            CustomDialog dialogFragment = new CustomDialog("Ошибка", "Ошибка при удалении пользователя!");
+//                            dialogFragment.show(getParentFragmentManager(), "custom_dialog");
 
                         }
                     });
         } catch (Exception e) {
-            CustomDialog dialogFragment = new CustomDialog("Ошибка", e.getMessage());
-            dialogFragment.show(getParentFragmentManager(), "custom_dialog");
+//            CustomDialog dialogFragment = new CustomDialog("Ошибка", e.getMessage());
+//            dialogFragment.show(getParentFragmentManager(), "custom_dialog");
         }
     }
 
@@ -313,8 +313,8 @@ public class AdminChangeUserFragment extends Fragment {
                         }
                     });
         } catch (Exception e) {
-            CustomDialog dialogFragment = new CustomDialog("Ошибка", e.getMessage());
-            dialogFragment.show(getParentFragmentManager(), "custom_dialog");
+//            CustomDialog dialogFragment = new CustomDialog("Ошибка", e.getMessage());
+//            dialogFragment.show(getParentFragmentManager(), "custom_dialog");
         }
     }
 }

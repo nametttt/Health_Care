@@ -183,8 +183,8 @@ public class ChangeNutritionFragment extends Fragment {
                 String selectedType = typeFood.getSelectedItem().toString().trim();
 
                 if (TextUtils.isEmpty(selectedType) || selectedFoods.isEmpty()) {
-                    CustomDialog dialogFragment = new CustomDialog("Ошибка", "Пожалуйста, заполните все поля!");
-                    dialogFragment.show(getParentFragmentManager(), "custom_dialog");
+//                    CustomDialog dialogFragment = new CustomDialog("Ошибка", "Пожалуйста, заполните все поля!");
+//                    dialogFragment.show(getParentFragmentManager(), "custom_dialog");
                     return;
                 }
 
@@ -206,8 +206,8 @@ public class ChangeNutritionFragment extends Fragment {
 
                     nutritionRef.setValue(nutritionData);
 
-                    CustomDialog dialogFragment = new CustomDialog("Успех", "Данные о питании сохранены успешно!");
-                    dialogFragment.show(getParentFragmentManager(), "custom_dialog");
+//                    CustomDialog dialogFragment = new CustomDialog("Успех", "Данные о питании сохранены успешно!");
+//                    dialogFragment.show(getParentFragmentManager(), "custom_dialog");
 
                 }
                 else{
@@ -246,13 +246,13 @@ public class ChangeNutritionFragment extends Fragment {
                         NutritionData nutritionData = new NutritionData(path, date, selectedType, food);
                         ref.setValue(nutritionData);
 
-                        CustomDialog dialogFragment = new CustomDialog("Успех", "Изменение прошло успешно!");
-                        dialogFragment.show(getParentFragmentManager(), "custom_dialog");
+//                        CustomDialog dialogFragment = new CustomDialog("Успех", "Изменение прошло успешно!");
+//                        dialogFragment.show(getParentFragmentManager(), "custom_dialog");
 
                     } catch (Exception e) {
                         e.printStackTrace();
-                        CustomDialog dialogFragment = new CustomDialog("Ошибка", "Ошибка при разборе даты!");
-                        dialogFragment.show(getParentFragmentManager(), "custom_dialog");
+//                        CustomDialog dialogFragment = new CustomDialog("Ошибка", "Ошибка при разборе даты!");
+//                        dialogFragment.show(getParentFragmentManager(), "custom_dialog");
                     }
                 }
 
@@ -274,8 +274,8 @@ public class ChangeNutritionFragment extends Fragment {
                         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                         ref = mDb.getReference("users").child(pC.getSplittedPathChild(user.getEmail())).child("characteristic").child("nutrition").child(path);
                         ref.removeValue();
-                        CustomDialog dialogFragment = new CustomDialog("Успех", "Удаление прошло успешно!");
-                        dialogFragment.show(getParentFragmentManager(), "custom_dialog");
+//                        CustomDialog dialogFragment = new CustomDialog("Успех", "Удаление прошло успешно!");
+//                        dialogFragment.show(getParentFragmentManager(), "custom_dialog");
 
                         HomeActivity homeActivity = (HomeActivity) getActivity();
                         homeActivity.replaceFragment(new NutritionFragment());

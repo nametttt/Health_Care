@@ -144,8 +144,8 @@ public class UserProfileFragment extends Fragment {
                 }
             });
         } catch (Exception e) {
-            CustomDialog dialogFragment = new CustomDialog("Ошибка", e.getMessage());
-            dialogFragment.show(getChildFragmentManager(), "custom_dialog");
+//            CustomDialog dialogFragment = new CustomDialog("Ошибка", e.getMessage());
+//            dialogFragment.show(getChildFragmentManager(), "custom_dialog");
         }
     }
 
@@ -191,8 +191,8 @@ public class UserProfileFragment extends Fragment {
                 }
             });
         } catch (Exception e) {
-            CustomDialog dialogFragment = new CustomDialog("Ошибка", e.getMessage());
-            dialogFragment.show(getChildFragmentManager(), "custom_dialog");
+//            CustomDialog dialogFragment = new CustomDialog("Ошибка", e.getMessage());
+//            dialogFragment.show(getChildFragmentManager(), "custom_dialog");
         }
     }
 

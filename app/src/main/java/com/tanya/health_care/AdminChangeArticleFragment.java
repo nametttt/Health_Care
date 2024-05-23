@@ -156,7 +156,7 @@ public class AdminChangeArticleFragment extends Fragment {
                                 Toast.makeText(getContext(), "Выберите изображение", Toast.LENGTH_SHORT).show();
                             }
                         } else {
-                            CustomDialog dialogFragment = new CustomDialog("Ошибка", "Пожалуйста, заполните все поля!");
+                            CustomDialog dialogFragment = new CustomDialog("Ошибка!", "Пожалуйста, заполните все поля!", false);
                             dialogFragment.show(getParentFragmentManager(), "custom_dialog");
                         }
                     }
@@ -175,7 +175,7 @@ public class AdminChangeArticleFragment extends Fragment {
                                 Toast.makeText(getContext(), "Выберите изображение", Toast.LENGTH_SHORT).show();
                             }
                             } else {
-                            CustomDialog dialogFragment = new CustomDialog("Ошибка", "Пожалуйста, заполните все поля!");
+                            CustomDialog dialogFragment = new CustomDialog("Ошибка!", "Пожалуйста, заполните все поля!", false);
                             dialogFragment.show(getParentFragmentManager(), "custom_dialog");
                         }
                     }
@@ -219,7 +219,7 @@ public class AdminChangeArticleFragment extends Fragment {
             });
         }
         catch (Exception e) {
-            CustomDialog dialogFragment = new CustomDialog("Ошибка", e.getMessage());
+            CustomDialog dialogFragment = new CustomDialog("Ошибка!", e.getMessage(), false);
             dialogFragment.show(getParentFragmentManager(), "custom_dialog");
         }
     }
@@ -244,7 +244,7 @@ public class AdminChangeArticleFragment extends Fragment {
                             ref.setValue(new ArticleData(
                                     path, titleText, descriptionText, uri.toString(), categoryText, accessText
                             ));
-                            CustomDialog dialogFragment = new CustomDialog("Успех", "Cтатья успешно добавлена!");
+                            CustomDialog dialogFragment = new CustomDialog("Успех!", "Cтатья успешно добавлена!", true);
                             dialogFragment.show(getParentFragmentManager(), "custom_dialog");
                             DatabaseReference Newref = mDb.getReference("users");
                             Newref.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -281,7 +281,7 @@ public class AdminChangeArticleFragment extends Fragment {
                         Toast.makeText(getContext(), "Ошибка при загрузке изображения в Storage", Toast.LENGTH_SHORT).show();
                     });
         } catch (Exception e) {
-            CustomDialog dialogFragment = new CustomDialog("Ошибка", e.getMessage());
+            CustomDialog dialogFragment = new CustomDialog("Ошибка!", e.getMessage(), false);
             dialogFragment.show(getParentFragmentManager(), "custom_dialog");
         }
     }
@@ -351,17 +351,17 @@ public class AdminChangeArticleFragment extends Fragment {
             articleRef.child(uid).removeValue()
                     .addOnCompleteListener(task -> {
                         if (task.isSuccessful()) {
-                            CustomDialog dialogFragment = new CustomDialog("Успех", "Cтатья успешно удалена!");
+                            CustomDialog dialogFragment = new CustomDialog("Успех!", "Cтатья успешно удалена!", true);
                             dialogFragment.show(getParentFragmentManager(), "custom_dialog");
                             AdminHomeActivity homeActivity = (AdminHomeActivity) getActivity();
                             homeActivity.replaceFragment(new AdminArticleFragment());
                         } else {
-                            CustomDialog dialogFragment = new CustomDialog("Ошибка", "Ошибка при удалении статьи!");
+                            CustomDialog dialogFragment = new CustomDialog("Ошибка!", "Ошибка при удалении статьи!", false);
                             dialogFragment.show(getParentFragmentManager(), "custom_dialog");
                         }
                     });
         } catch (Exception e) {
-            CustomDialog dialogFragment = new CustomDialog("Ошибка", e.getMessage());
+            CustomDialog dialogFragment = new CustomDialog("Ошибка!", e.getMessage(), false);
             dialogFragment.show(getParentFragmentManager(), "custom_dialog");
         }
     }
