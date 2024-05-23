@@ -92,8 +92,8 @@ public class WaterValueFragment extends Fragment {
                 int selectedValue = numberPicker.getValue() * 50;
                 userValuesRef.setValue(selectedValue);
 
-//                CustomDialog dialogFragment = new CustomDialog("Успех", "Успешное установление нормы!");
-//                dialogFragment.show(getParentFragmentManager(), "custom_dialog");
+                CustomDialog dialogFragment = new CustomDialog( "Успешное установление нормы!", true);
+                dialogFragment.show(getParentFragmentManager(), "custom_dialog");
             }
         });
 

@@ -41,14 +41,14 @@ public class ResetEmailActivity extends AppCompatActivity {
                 try{
                     if (email.getText().toString().isEmpty())
                     {
-//                        CustomDialog dialogFragment = new CustomDialog("Ошибка", "Пожалуйста, введите почту!");
-//                        dialogFragment.show(getSupportFragmentManager(), "custom_dialog");
+                        CustomDialog dialogFragment = new CustomDialog("Пожалуйста, введите почту!", false);
+                        dialogFragment.show(getSupportFragmentManager(), "custom_dialog");
                         return;
                     }
 
                     if (!GetEmail.isValidEmail(email.getText())){
-//                        CustomDialog dialogFragment = new CustomDialog("Ошибка", "Пожалуйста, введите корректную почту!");
-//                        dialogFragment.show(getSupportFragmentManager(), "custom_dialog");
+                        CustomDialog dialogFragment = new CustomDialog("Пожалуйста, введите корректную почту!", false);
+                        dialogFragment.show(getSupportFragmentManager(), "custom_dialog");
                         return;
                     }
 
@@ -57,8 +57,8 @@ public class ResetEmailActivity extends AppCompatActivity {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
                             if (task.isSuccessful()) {
-//                                CustomDialog dialogFragment = new CustomDialog("Успех", "Письмо с инструкцией отправлено на почту!");
-//                                dialogFragment.show(getSupportFragmentManager(), "custom_dialog");
+                                CustomDialog dialogFragment = new CustomDialog("Письмо с инструкцией отправлено на почту!", true);
+                                dialogFragment.show(getSupportFragmentManager(), "custom_dialog");
                                 Intent intent = new Intent(ResetEmailActivity.this, LoginActivity.class);
                                 startActivity(intent);
                                 ResetEmailActivity.this.finish();
@@ -66,8 +66,8 @@ public class ResetEmailActivity extends AppCompatActivity {
                             else{
                                 switch (task.getException().toString()){
                                     case "FirebaseAuthInvalidUserException":
-//                                        CustomDialog dialogFragment = new CustomDialog("Успех", "Аккаунта с такой почтой не существует!");
-//                                        dialogFragment.show(getSupportFragmentManager(), "custom_dialog");
+                                        CustomDialog dialogFragment = new CustomDialog( "Аккаунта с такой почтой не существует!", false);
+                                        dialogFragment.show(getSupportFragmentManager(), "custom_dialog");
                                         break;
                                 }
                             }
@@ -75,8 +75,8 @@ public class ResetEmailActivity extends AppCompatActivity {
                     });
                 }
                 catch (Exception e) {
-//                    CustomDialog dialogFragment = new CustomDialog("Ошибка", e.getMessage());
-//                    dialogFragment.show(getSupportFragmentManager(), "custom_dialog");
+                    CustomDialog dialogFragment = new CustomDialog( e.getMessage(), false);
+                    dialogFragment.show(getSupportFragmentManager(), "custom_dialog");
                 }
 
 

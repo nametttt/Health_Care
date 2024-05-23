@@ -151,7 +151,7 @@ public class AdminArticleFragment extends Fragment {
 
             ref.addValueEventListener(valueEventListener);
         } catch (Exception e) {
-            CustomDialog dialogFragment = new CustomDialog("Ошибка!", e.getMessage(), false);
+            CustomDialog dialogFragment = new CustomDialog( e.getMessage(), false);
             dialogFragment.show(getParentFragmentManager(), "custom_dialog");
         }
     }

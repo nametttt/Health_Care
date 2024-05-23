@@ -17,12 +17,10 @@ import com.tanya.health_care.R;
 
 public class CustomDialog extends DialogFragment {
 
-    private String title;
     private String message;
     private boolean isSuccess;
 
-    public CustomDialog(String title, String message, boolean isSuccess) {
-        this.title = title;
+    public CustomDialog(String message, boolean isSuccess) {
         this.message = message;
         this.isSuccess = isSuccess;
     }

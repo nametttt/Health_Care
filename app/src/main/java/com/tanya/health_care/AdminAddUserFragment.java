@@ -88,14 +88,14 @@ public class AdminAddUserFragment extends Fragment {
             String userGender = gender.getSelectedItem().toString();
 
             if (userEmail.isEmpty() || userPassword.isEmpty() || userRole.isEmpty() || userBirthday.isEmpty() || userGender.isEmpty()) {
-                //CustomDialog dialogFragment = new CustomDialog("Ошибка", "Заполните все поля!");
-                //dialogFragment.show(getParentFragmentManager(), "custom_dialog");
+                CustomDialog dialogFragment = new CustomDialog("Заполните все поля!", false);
+                dialogFragment.show(getParentFragmentManager(), "custom_dialog");
                 return;
             }
 
             if (userPassword.length() < 6) {
-                //CustomDialog dialogFragment = new CustomDialog("Ошибка", "Пароль должен содержать не менее 6 символов!");
-                //dialogFragment.show(getParentFragmentManager(), "custom_dialog");
+                CustomDialog dialogFragment = new CustomDialog("Пароль должен содержать не менее 6 символов!", false);
+                dialogFragment.show(getParentFragmentManager(), "custom_dialog");
                 return;
             }
 
@@ -110,8 +110,6 @@ public class AdminAddUserFragment extends Fragment {
             int atIndex = userEmail.indexOf('@');
             String name = atIndex != -1 ? userEmail.substring(0, atIndex) : userEmail;
 
-            String userId = firebaseUser != null ? firebaseUser.getUid() : "";
-
             UserData user = new UserData(userEmail, name, userGender, userRole, userBirthday, "", "");
 
             DatabaseReference userRef = ref.child(splittedPathChild);
@@ -120,22 +118,22 @@ public class AdminAddUserFragment extends Fragment {
                 @Override
                 public void onComplete(@NonNull Task<Void> databaseTask) {
                     if (databaseTask.isSuccessful()) {
-                        //CustomDialog dialogFragment = new CustomDialog("Успех", "Успешное добавление пользователя!");
-                        //dialogFragment.show(getParentFragmentManager(), "custom_dialog");
+                        CustomDialog dialogFragment = new CustomDialog("Успешное добавление пользователя!", true);
+                        dialogFragment.show(getParentFragmentManager(), "custom_dialog");
                         AdminHomeActivity homeActivity = (AdminHomeActivity) getActivity();
                         AdminUsersFragment fragment = new AdminUsersFragment();
                         homeActivity.replaceFragment(fragment);
                     } else {
                         String errorMessage = databaseTask.getException().getMessage();
-                        //CustomDialog dialogFragment = new CustomDialog("Ошибка", errorMessage);
-                        //dialogFragment.show(getParentFragmentManager(), "custom_dialog");
+                        CustomDialog dialogFragment = new CustomDialog( errorMessage, false);
+                        dialogFragment.show(getParentFragmentManager(), "custom_dialog");
                     }
                 }
             });
         }
         catch (Exception e) {
-            //CustomDialog dialogFragment = new CustomDialog("Ошибка", e.getMessage());
-            //dialogFragment.show(getParentFragmentManager(), "custom_dialog");
+            CustomDialog dialogFragment = new CustomDialog(e.getMessage(), false);
+            dialogFragment.show(getParentFragmentManager(), "custom_dialog");
         }
 
     }

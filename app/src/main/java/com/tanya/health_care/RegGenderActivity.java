@@ -54,8 +54,8 @@ public class RegGenderActivity extends AppCompatActivity {
                 try{
                     if(!men.isChecked() && !woman.isChecked())
                     {
-//                        CustomDialog dialogFragment = new CustomDialog("Ошибка", "Выберите ваш пол!");
-//                        dialogFragment.show(getSupportFragmentManager(), "custom_dialog");
+                        CustomDialog dialogFragment = new CustomDialog( "Выберите ваш пол!", false);
+                        dialogFragment.show(getSupportFragmentManager(), "custom_dialog");
                     }
                     else
                     {
@@ -71,8 +71,8 @@ public class RegGenderActivity extends AppCompatActivity {
                     }
                 }
                 catch (Exception e) {
-//                    CustomDialog dialogFragment = new CustomDialog("Ошибка", e.getMessage());
-//                    dialogFragment.show(getSupportFragmentManager(), "custom_dialog");
+                    CustomDialog dialogFragment = new CustomDialog( e.getMessage(), false);
+                    dialogFragment.show(getSupportFragmentManager(), "custom_dialog");
                 }
             }
         });

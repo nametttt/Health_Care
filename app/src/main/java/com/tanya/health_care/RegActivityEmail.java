@@ -10,17 +10,20 @@ import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.SignInMethodQueryResult;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.tanya.health_care.code.GeneratePin;
 import com.tanya.health_care.code.GetEmail;
+import com.tanya.health_care.code.UserData;
 import com.tanya.health_care.dialog.CustomDialog;
-
 import java.util.Properties;
-
 import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.PasswordAuthentication;
@@ -28,7 +31,6 @@ import javax.mail.Session;
 import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
-
 
 public class RegActivityEmail extends AppCompatActivity {
 
@@ -68,39 +70,51 @@ public class RegActivityEmail extends AppCompatActivity {
             public void onClick(View view) {
                 try{
                     if (email.getText().toString().isEmpty()) {
-//                        CustomDialog dialogFragment = new CustomDialog("Ошибка", "Пожалуйста, введите почту!");
-//                        dialogFragment.show(getSupportFragmentManager(), "custom_dialog");
+                        CustomDialog dialogFragment = new CustomDialog("Пожалуйста, введите почту!", false);
+                        dialogFragment.show(getSupportFragmentManager(), "custom_dialog");
                     } else if (!GetEmail.isValidEmail(email.getText())) {
-//                        CustomDialog dialogFragment = new CustomDialog("Ошибка", "Пожалуйста, введите корректную почту!");
-//                        dialogFragment.show(getSupportFragmentManager(), "custom_dialog");
+                        CustomDialog dialogFragment = new CustomDialog("Пожалуйста, введите корректную почту!", false);
+                        dialogFragment.show(getSupportFragmentManager(), "custom_dialog");
                     } else if (!userAgree.isChecked()) {
-//                        CustomDialog dialogFragment = new CustomDialog("Ошибка", "Пожалуйста, примите пользовательское соглашение!");
-//                        dialogFragment.show(getSupportFragmentManager(), "custom_dialog");
+                        CustomDialog dialogFragment = new CustomDialog( "Пожалуйста, примите пользовательское соглашение!", false);
+                        dialogFragment.show(getSupportFragmentManager(), "custom_dialog");
                     } else {
                         final String userEmail = email.getText().toString().trim();
-                        FirebaseAuth.getInstance().fetchSignInMethodsForEmail(userEmail)
-                                .addOnCompleteListener(new OnCompleteListener<SignInMethodQueryResult>() {
-                                    @Override
-                                    public void onComplete(@NonNull Task<SignInMethodQueryResult> task) {
-                                        if (task.isSuccessful()) {
-                                            final String pinCode = GeneratePin.generatePinCode();
-                                            sendEmail(email.getText().toString(), pinCode);
-                                            Intent intent = new Intent(RegActivityEmail.this, RegPinActivity.class);
-                                            intent.putExtra("userEmail", userEmail);
-                                            intent.putExtra("pinCode", pinCode);
-                                            startActivity(intent);
-                                        } else {
-                                            Toast.makeText(RegActivityEmail.this, "Пользователь уже существует", Toast.LENGTH_SHORT).show();
-                                        }
+                        DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference("users");
+                        usersRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                boolean userExists = false;
+                                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                                    UserData user = snapshot.getValue(UserData.class);
+                                    if (user != null && user.getEmail().equals(userEmail)) {
+                                        userExists = true;
+                                        break;
                                     }
-                                });
+                                }
+                                if (userExists) {
+                                    Toast.makeText(RegActivityEmail.this, "Пользователь уже существует", Toast.LENGTH_SHORT).show();
+                                } else {
+                                    final String pinCode = GeneratePin.generatePinCode();
+                                    sendEmail(userEmail, pinCode);
+                                    Intent intent = new Intent(RegActivityEmail.this, RegPinActivity.class);
+                                    intent.putExtra("userEmail", userEmail);
+                                    intent.putExtra("pinCode", pinCode);
+                                    startActivity(intent);
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
+                                Toast.makeText(RegActivityEmail.this, "Ошибка при проверке пользователя", Toast.LENGTH_SHORT).show();
+                            }
+                        });
                     }
                 }
                 catch (Exception e) {
-//                    CustomDialog dialogFragment = new CustomDialog("Ошибка", e.getMessage());
-//                    dialogFragment.show(getSupportFragmentManager(), "custom_dialog");
+                    CustomDialog dialogFragment = new CustomDialog(e.getMessage(), false);
+                    dialogFragment.show(getSupportFragmentManager(), "custom_dialog");
                 }
-
             }
         });
     }

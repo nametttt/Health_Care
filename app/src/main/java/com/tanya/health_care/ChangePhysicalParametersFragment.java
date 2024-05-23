@@ -123,8 +123,8 @@ public class ChangePhysicalParametersFragment extends Fragment {
                     String weightValue = txtweight.getText().toString().trim();
 
                     if (TextUtils.isEmpty(heightValue) || TextUtils.isEmpty(weightValue)) {
-//                        CustomDialog dialogFragment = new CustomDialog("Ошибка", "Пожалуйста, заполните все поля!");
-//                        dialogFragment.show(getParentFragmentManager(), "custom_dialog");
+                        CustomDialog dialogFragment = new CustomDialog( "Пожалуйста, заполните все поля!", false);
+                        dialogFragment.show(getParentFragmentManager(), "custom_dialog");
 
                         return;
                     }
@@ -133,15 +133,15 @@ public class ChangePhysicalParametersFragment extends Fragment {
                     float weightFloat = Float.parseFloat(weightValue);
 
                     if (heightFloat < 0 || heightFloat > 250) {
-//                        CustomDialog dialogFragment = new CustomDialog("Ошибка", "Недопустимые значения для роста!");
-//                        dialogFragment.show(getParentFragmentManager(), "custom_dialog");
+                        CustomDialog dialogFragment = new CustomDialog("Недопустимые значения для роста!", false);
+                        dialogFragment.show(getParentFragmentManager(), "custom_dialog");
                         return;
                     }
 
                     if(weightFloat < 0 || weightFloat > 500)
                     {
-//                        CustomDialog dialogFragment = new CustomDialog("Ошибка", "Недопустимые значения для веса!");
-//                        dialogFragment.show(getParentFragmentManager(), "custom_dialog");
+                        CustomDialog dialogFragment = new CustomDialog("Недопустимые значения для веса!", false);
+                        dialogFragment.show(getParentFragmentManager(), "custom_dialog");
                         return;
                     }
 
@@ -155,8 +155,8 @@ public class ChangePhysicalParametersFragment extends Fragment {
                         if ( ref != null){
                             ref.setValue(physicalParametersData);
                         }
-//                        CustomDialog dialogFragment = new CustomDialog("Успех", "Добавление прошло успешно!");
-//                        dialogFragment.show(getParentFragmentManager(), "custom_dialog");
+                        CustomDialog dialogFragment = new CustomDialog("Добавление прошло успешно!", true);
+                        dialogFragment.show(getParentFragmentManager(), "custom_dialog");
                     }
 
                     else
@@ -190,14 +190,14 @@ public class ChangePhysicalParametersFragment extends Fragment {
                             PhysicalParametersData physicalParametersData = new PhysicalParametersData(path, heightFloat, weightFloat, date);
                             ref.setValue(physicalParametersData);
 
-//                            CustomDialog dialogFragment = new CustomDialog("Успех", "Изменение прошло успешно!");
-//                            dialogFragment.show(getParentFragmentManager(), "custom_dialog");
+                            CustomDialog dialogFragment = new CustomDialog("Изменение прошло успешно!", true);
+                            dialogFragment.show(getParentFragmentManager(), "custom_dialog");
 
 
                         } catch (Exception e) {
                             e.printStackTrace();
-//                            CustomDialog dialogFragment = new CustomDialog("Ошибка", "Ошибка при разборе даты!");
-//                            dialogFragment.show(getParentFragmentManager(), "custom_dialog");
+                            CustomDialog dialogFragment = new CustomDialog("Ошибка при разборе даты!", false);
+                            dialogFragment.show(getParentFragmentManager(), "custom_dialog");
                         }
                     }
 
@@ -219,8 +219,8 @@ public class ChangePhysicalParametersFragment extends Fragment {
                             FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                             ref = mDb.getReference("users").child(pC.getSplittedPathChild(user.getEmail())).child("characteristic").child("physicalParameters").child(path);
                             ref.removeValue();
-//                            CustomDialog dialogFragment = new CustomDialog("Успех", "Удаление прошло успешно!");
-//                            dialogFragment.show(getParentFragmentManager(), "custom_dialog");
+                            CustomDialog dialogFragment = new CustomDialog( "Удаление прошло успешно!", true);
+                            dialogFragment.show(getParentFragmentManager(), "custom_dialog");
 
                             HomeActivity homeActivity = (HomeActivity) getActivity();
                             homeActivity.replaceFragment(new PhysicalParametersFragment());
@@ -238,8 +238,8 @@ public class ChangePhysicalParametersFragment extends Fragment {
             });
         }
         catch (Exception e) {
-//            CustomDialog dialogFragment = new CustomDialog("Ошибка", e.getMessage());
-//            dialogFragment.show(getParentFragmentManager(), "custom_dialog");
+            CustomDialog dialogFragment = new CustomDialog(e.getMessage(), false);
+            dialogFragment.show(getParentFragmentManager(), "custom_dialog");
         }
     }
 

@@ -102,7 +102,7 @@ public class AdminChangeFoodFragment extends Fragment {
                 if (TextUtils.isEmpty(nameText) || TextUtils.isEmpty(weightText)
                         || TextUtils.isEmpty(caloriesText) || TextUtils.isEmpty(proteinText)
                         || TextUtils.isEmpty(fatText) || TextUtils.isEmpty(carbohydratesText)) {
-                    CustomDialog dialogFragment = new CustomDialog("Ошибка!", "Пожалуйста, заполните все поля!", false);
+                    CustomDialog dialogFragment = new CustomDialog( "Пожалуйста, заполните все поля!", false);
                     dialogFragment.show(getParentFragmentManager(), "custom_dialog");
                     return;
                 }
@@ -124,8 +124,8 @@ public class AdminChangeFoodFragment extends Fragment {
                         FoodData newFoodData = new FoodData(path, nameText, caloriesValue, weightValue, proteinValue, carbohydratesValue, fatValue, null);
                         ref.setValue(newFoodData);
 
-//                        CustomDialog dialogFragment = new CustomDialog("Успех!", "Продукт успешно добавлен!", true);
-//                        dialogFragment.show(getParentFragmentManager(), "custom_dialog");
+                        CustomDialog dialogFragment = new CustomDialog( "Продукт успешно добавлен!", true);
+                        dialogFragment.show(getParentFragmentManager(), "custom_dialog");
                     } else {
                         ref = mDb.getReference("foods").child(uid);
 
@@ -136,7 +136,7 @@ public class AdminChangeFoodFragment extends Fragment {
                         ref.child("carbohydrates").setValue(carbohydratesValue);
                         ref.child("fat").setValue(fatValue);
 
-                        CustomDialog dialogFragment = new CustomDialog("Успех!", "Продукт успешно изменен!", true);
+                        CustomDialog dialogFragment = new CustomDialog("Продукт успешно изменен!", true);
                         dialogFragment.show(getParentFragmentManager(), "custom_dialog");
                     }
 
@@ -144,7 +144,7 @@ public class AdminChangeFoodFragment extends Fragment {
                     homeActivity.replaceFragment(new AdminFoodFragment());
 
                 } catch (NumberFormatException e) {
-                    CustomDialog dialogFragment = new CustomDialog("Ошибка!", "Ошибка при вводе числовых значений!", false);
+                    CustomDialog dialogFragment = new CustomDialog("Ошибка при вводе числовых значений!", false);
                     dialogFragment.show(getParentFragmentManager(), "custom_dialog");
                 }
             }
@@ -185,8 +185,8 @@ public class AdminChangeFoodFragment extends Fragment {
         });
         }
         catch (Exception e) {
-//            CustomDialog dialogFragment = new CustomDialog("Ошибка", e.getMessage());
-//            dialogFragment.show(getParentFragmentManager(), "custom_dialog");
+            CustomDialog dialogFragment = new CustomDialog(e.getMessage(), false);
+            dialogFragment.show(getParentFragmentManager(), "custom_dialog");
         }
 
     }
@@ -197,18 +197,18 @@ public class AdminChangeFoodFragment extends Fragment {
             foodRef.child(uid).removeValue()
                     .addOnCompleteListener(task -> {
                         if (task.isSuccessful()) {
-                            CustomDialog dialogFragment = new CustomDialog("Успех!", "Блюдо успешно удалено!", true);
+                            CustomDialog dialogFragment = new CustomDialog("Блюдо успешно удалено!", true);
                             dialogFragment.show(getParentFragmentManager(), "custom_dialog");
                             AdminHomeActivity homeActivity = (AdminHomeActivity) getActivity();
                             homeActivity.replaceFragment(new AdminFoodFragment());
                         } else {
-                            CustomDialog dialogFragment = new CustomDialog("Ошибка!", "Ошибка при удалении блюда!", false);
+                            CustomDialog dialogFragment = new CustomDialog("Ошибка при удалении блюда!", false);
                             dialogFragment.show(getParentFragmentManager(), "custom_dialog");
                         }
                     });
         }
         catch (Exception e) {
-            CustomDialog dialogFragment = new CustomDialog("Ошибка!", e.getMessage(), false);
+            CustomDialog dialogFragment = new CustomDialog( e.getMessage(), false);
             dialogFragment.show(getParentFragmentManager(), "custom_dialog");
         }
 

@@ -112,20 +112,20 @@ public class RegPasswordActivity extends AppCompatActivity {
             String pass2 = confirmPassword.getText().toString().trim();
 
             if (pass1.isEmpty() || pass2.isEmpty()) {
-//                CustomDialog dialogFragment = new CustomDialog("Ошибка", "Пожалуйста, введите оба пароля!");
-//                dialogFragment.show(getSupportFragmentManager(), "custom_dialog");
+                CustomDialog dialogFragment = new CustomDialog( "Пожалуйста, введите оба пароля!", false);
+                dialogFragment.show(getSupportFragmentManager(), "custom_dialog");
                 return;
             }
 
             if (pass1.length() < 6) {
-//                CustomDialog dialogFragment = new CustomDialog("Ошибка", "Пароль должен содержать не менее 6 символов!");
-//                dialogFragment.show(getSupportFragmentManager(), "custom_dialog");
+                CustomDialog dialogFragment = new CustomDialog( "Пароль должен содержать не менее 6 символов!", false);
+                dialogFragment.show(getSupportFragmentManager(), "custom_dialog");
                 return;
             }
 
             if (!pass1.equals(pass2)) {
-//                CustomDialog dialogFragment = new CustomDialog("Ошибка", "Пароли не совпадают!");
-//                dialogFragment.show(getSupportFragmentManager(), "custom_dialog");
+                CustomDialog dialogFragment = new CustomDialog( "Пароли не совпадают!", false);
+                dialogFragment.show(getSupportFragmentManager(), "custom_dialog");
                 return;
             }
 
@@ -170,21 +170,22 @@ public class RegPasswordActivity extends AppCompatActivity {
                                                 userValuesRef.child("WaterValue").setValue(userValues.getWaterValue());
                                                 userValuesRef.child("NutritionValue").setValue(userValues.getNutritionValue());
 
+                                                CustomDialog dialogFragment = new CustomDialog( "Успешная регистрация!", true);
+                                                dialogFragment.show(getSupportFragmentManager(), "custom_dialog");
+
                                                 Intent intent = new Intent(RegPasswordActivity.this, HomeActivity.class);
                                                 startActivity(intent);
-//                                                CustomDialog dialogFragment = new CustomDialog("Успех", "Успешная регистрация!");
-//                                                dialogFragment.show(getSupportFragmentManager(), "custom_dialog");
                                                 finish();
                                             } else {
                                                 String errorMessage = databaseTask.getException().getMessage();
-//                                                CustomDialog dialogFragment = new CustomDialog("Ошибка", errorMessage);
-//                                                dialogFragment.show(getSupportFragmentManager(), "custom_dialog");
+                                                CustomDialog dialogFragment = new CustomDialog(errorMessage, false);
+                                                dialogFragment.show(getSupportFragmentManager(), "custom_dialog");
                                             }
                                         }
                                     });
                                 } else {
-//                                    CustomDialog dialogFragment = new CustomDialog("Ошибка", "Ошибка: текущий пользователь равен null");
-//                                    dialogFragment.show(getSupportFragmentManager(), "custom_dialog");
+                                    CustomDialog dialogFragment = new CustomDialog("Ошибка: текущий пользователь равен null", false);
+                                    dialogFragment.show(getSupportFragmentManager(), "custom_dialog");
                                 }
                             } else {
                                 handleRegistrationError(task.getException());
@@ -193,8 +194,8 @@ public class RegPasswordActivity extends AppCompatActivity {
                     });
         }
         catch (Exception e) {
-//            CustomDialog dialogFragment = new CustomDialog("Ошибка", e.getMessage());
-//            dialogFragment.show(getSupportFragmentManager(), "custom_dialog");
+            CustomDialog dialogFragment = new CustomDialog( e.getMessage(), false);
+            dialogFragment.show(getSupportFragmentManager(), "custom_dialog");
         }
 
     }

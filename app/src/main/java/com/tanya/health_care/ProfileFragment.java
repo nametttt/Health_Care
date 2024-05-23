@@ -94,8 +94,8 @@ public class ProfileFragment extends Fragment {
             });
         }
         catch (Exception e) {
-//            CustomDialog dialogFragment = new CustomDialog("Ошибка", e.getMessage());
-//            dialogFragment.show(getParentFragmentManager(), "custom_dialog");
+            CustomDialog dialogFragment = new CustomDialog(e.getMessage(), false);
+            dialogFragment.show(getParentFragmentManager(), "custom_dialog");
         }
 
     }
@@ -130,8 +130,8 @@ public class ProfileFragment extends Fragment {
             }
         }
         catch (Exception e) {
-//            CustomDialog dialogFragment = new CustomDialog("Ошибка", e.getMessage());
-//            dialogFragment.show(getParentFragmentManager(), "custom_dialog");
+            CustomDialog dialogFragment = new CustomDialog( e.getMessage(), false);
+            dialogFragment.show(getParentFragmentManager(), "custom_dialog");
         }
 
     }

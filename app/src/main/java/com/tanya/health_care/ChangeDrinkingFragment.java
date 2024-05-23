@@ -107,8 +107,8 @@ public class ChangeDrinkingFragment extends Fragment {
                     date = cal.getTime();
                     WaterData newWater = new WaterData(path, Integer.parseInt(text.getText().toString()) ,date  );
                     ref.setValue(newWater);
-//                    CustomDialog dialogFragment = new CustomDialog("Успех", "Изменение прошло успешно!");
-//                    dialogFragment.show(getParentFragmentManager(), "custom_dialog");
+                    CustomDialog dialogFragment = new CustomDialog( "Изменение прошло успешно!", true);
+                    dialogFragment.show(getParentFragmentManager(), "custom_dialog");
 
                     homeActivity.replaceFragment(new DrinkingFragment());
 
@@ -128,8 +128,8 @@ public class ChangeDrinkingFragment extends Fragment {
                             FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                             ref = mDb.getReference("users").child(pC.getSplittedPathChild(user.getEmail())).child("characteristic").child("water").child(path);
                             ref.removeValue();
-//                            CustomDialog dialogFragment = new CustomDialog("Успех", "Удаление прошло успешно!");
-//                            dialogFragment.show(getParentFragmentManager(), "custom_dialog");
+                            CustomDialog dialogFragment = new CustomDialog("Удаление прошло успешно!", true);
+                            dialogFragment.show(getParentFragmentManager(), "custom_dialog");
 
                             homeActivity.replaceFragment(new DrinkingFragment());
                         }
@@ -147,8 +147,8 @@ public class ChangeDrinkingFragment extends Fragment {
             });
         }
         catch (Exception e) {
-//            CustomDialog dialogFragment = new CustomDialog("Ошибка", e.getMessage());
-//            dialogFragment.show(getParentFragmentManager(), "custom_dialog");
+            CustomDialog dialogFragment = new CustomDialog( e.getMessage(), false);
+            dialogFragment.show(getParentFragmentManager(), "custom_dialog");
         }
 
 
