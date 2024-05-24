@@ -39,6 +39,7 @@ public class CustomDialog extends DialogFragment {
         } else {
             animationView.setAnimation(R.raw.error);
         }
+        animationView.setProgress(0); // Ensures animation starts from the beginning
         animationView.playAnimation();
 
         TextView messageTextView = view.findViewById(R.id.message);
@@ -53,7 +54,6 @@ public class CustomDialog extends DialogFragment {
         });
 
         builder.setView(view);
-
 
         return builder.create();
     }

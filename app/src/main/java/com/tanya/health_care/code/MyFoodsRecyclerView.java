@@ -14,6 +14,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.tanya.health_care.AdminChangeFoodFragment;
 import com.tanya.health_care.AdminHomeActivity;
+import com.tanya.health_care.ChangeMyFoodFragment;
+import com.tanya.health_care.HomeActivity;
 import com.tanya.health_care.R;
 
 import java.util.ArrayList;
@@ -48,11 +50,8 @@ public class MyFoodsRecyclerView extends RecyclerView.Adapter<MyFoodsRecyclerVie
         holder.continu.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                AdminHomeActivity homeActivity = (AdminHomeActivity) v.getContext();
-                AdminChangeFoodFragment fragment = new AdminChangeFoodFragment(currentCommon.uid, currentCommon.name, currentCommon.calories, currentCommon.weight, currentCommon.protein, currentCommon.fat, currentCommon.carbohydrates);
-                Bundle args = new Bundle();
-                args.putString("Add", null);
-                fragment.setArguments(args);
+                HomeActivity homeActivity = (HomeActivity) v.getContext();
+                ChangeMyFoodFragment fragment = new ChangeMyFoodFragment(currentCommon.uid, currentCommon.name, currentCommon.calories, currentCommon.weight, currentCommon.protein, currentCommon.fat, currentCommon.carbohydrates);
                 homeActivity.replaceFragment(fragment);
             }
         });
@@ -62,7 +61,6 @@ public class MyFoodsRecyclerView extends RecyclerView.Adapter<MyFoodsRecyclerVie
     public int getItemCount() {
         return foods.size();
     }
-
     public static class ViewHolder extends RecyclerView.ViewHolder {
         TextView name, calory, weight, info;
         AppCompatButton continu;
