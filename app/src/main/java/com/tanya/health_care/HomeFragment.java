@@ -12,11 +12,13 @@ import android.widget.Button;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.gson.Gson;
 import com.tanya.health_care.code.FirebaseMessaging;
 import com.tanya.health_care.code.YaGPTAPI;
+import com.tanya.health_care.dialog.ProgressBarDialog;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -52,7 +54,6 @@ public class HomeFragment extends Fragment {
         Button health = v.findViewById(R.id.health_common);
         Button nutrition = v.findViewById(R.id.nutrition);
         Button period = v.findViewById(R.id.period);
-
 
         period.setOnClickListener(new View.OnClickListener() {
             @Override

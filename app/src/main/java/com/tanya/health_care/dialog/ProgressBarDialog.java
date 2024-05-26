@@ -1,18 +1,16 @@
 package com.tanya.health_care.dialog;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.os.Bundle;
-import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
+import com.airbnb.lottie.LottieAnimationView;
+import com.airbnb.lottie.LottieDrawable;
 import com.tanya.health_care.R;
 
 public class ProgressBarDialog extends DialogFragment {
@@ -29,25 +27,35 @@ public class ProgressBarDialog extends DialogFragment {
         return fragment;
     }
 
+    @NonNull
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.wait_activity, container, false);
-    }
+    public Dialog onCreateDialog(Bundle savedInstanceState) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(requireActivity());
 
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        new Handler().postDelayed(new Runnable() {
+        LayoutInflater inflater = requireActivity().getLayoutInflater();
+        View view = inflater.inflate(R.layout.dialog_loading, null);
+
+        LottieAnimationView animationView = view.findViewById(R.id.animation_view);
+        animationView.setAnimation(R.raw.loading);
+        animationView.setRepeatCount(LottieDrawable.INFINITE);
+        animationView.playAnimation();
+
+        builder.setView(view);
+
+        Dialog dialog = builder.create();
+        dialog.setCanceledOnTouchOutside(false);
+
+        view.postDelayed(new Runnable() {
             @Override
             public void run() {
                 dismiss();
             }
         }, timeout);
+
+        return dialog;
     }
 
     public void setTimeout(long timeoutMs) {
         this.timeout = timeoutMs;
     }
-
 }

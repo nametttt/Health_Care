@@ -2,20 +2,20 @@ package com.tanya.health_care;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.InputType;
-import android.text.method.HideReturnsTransformationMethod;
-import android.text.method.PasswordTransformationMethod;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -30,11 +30,8 @@ import com.google.firebase.database.ValueEventListener;
 import com.tanya.health_care.code.EyeVisibility;
 import com.tanya.health_care.code.GetEmail;
 import com.tanya.health_care.code.GetSplittedPathChild;
-import com.tanya.health_care.code.YaGPTAPI;
 import com.tanya.health_care.dialog.CustomDialog;
-
-import java.util.ArrayList;
-import java.util.Objects;
+import com.tanya.health_care.dialog.ProgressBarDialog;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -42,10 +39,11 @@ public class LoginActivity extends AppCompatActivity {
     private EditText password, loginEdit;
     private Button btn, auth;
     private TextView txt;
-
-    FirebaseAuth mAuth;
-
     private boolean isVisible = false;
+
+    private FirebaseAuth mAuth;
+    private boolean isDialogShowing = false; // Переменная для отслеживания состояния диалога
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,10 +52,8 @@ public class LoginActivity extends AppCompatActivity {
         init();
     }
 
-    private void init(){
-        try{
-
-
+    private void init() {
+        try {
             imgBtn = findViewById(R.id.eye);
             loginEdit = findViewById(R.id.loginEdit);
             password = findViewById(R.id.password);
@@ -78,27 +74,24 @@ public class LoginActivity extends AppCompatActivity {
             auth.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-
                     if (loginEdit.getText().toString().isEmpty() ||
-                            password.getText().toString().isEmpty()){
-                        CustomDialog dialogFragment = new CustomDialog("Пожалуйста, введите все данные!", false);
-                        dialogFragment.show(getSupportFragmentManager(), "custom_dialog");
-
+                            password.getText().toString().isEmpty()) {
+                        showDialogFragment(new CustomDialog("Пожалуйста, введите все данные!", false));
                         return;
                     }
-                    else{
-                        enterUser();
-                    }
 
-                    if (!GetEmail.isValidEmail(loginEdit.getText())){
-                        CustomDialog dialogFragment = new CustomDialog("Пожалуйста, введите корректную почту!", false);
-                        dialogFragment.show(getSupportFragmentManager(), "custom_dialog");
-
+                    if (!GetEmail.isValidEmail(loginEdit.getText())) {
+                        showDialogFragment(new CustomDialog("Пожалуйста, введите корректную почту!", false));
                         return;
                     }
-                    InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+
+                    InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                     imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
 
+                    ProgressBarDialog progressBarDialog = ProgressBarDialog.newInstance(60000); // Таймаут 60 секунд
+                    showDialogFragment(progressBarDialog);
+
+                    enterUser(progressBarDialog);
                 }
             });
 
@@ -116,26 +109,43 @@ public class LoginActivity extends AppCompatActivity {
                     togglePassVisibility();
                 }
             });
+        } catch (Exception e) {
+            showDialogFragment(new CustomDialog(e.getMessage(), false));
         }
-        catch (Exception e) {
-            CustomDialog dialogFragment = new CustomDialog( e.getMessage(), false);
-            dialogFragment.show(getSupportFragmentManager(), "custom_dialog");
-        }
-
     }
-
 
     private void togglePassVisibility() {
         EyeVisibility.toggleVisibility(password, imgBtn);
     }
 
+    private void showDialogFragment(DialogFragment dialogFragment) {
+        if (isDialogShowing) return;
 
-    public void enterUser(){
-        try{
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        ft.add(dialogFragment, "dialog");
+        ft.commitAllowingStateLoss();
+
+        isDialogShowing = true;
+    }
+
+    private void dismissDialogFragment() {
+        if (!isDialogShowing) return;
+
+        DialogFragment dialogFragment = (DialogFragment) getSupportFragmentManager().findFragmentByTag("dialog");
+        if (dialogFragment != null) {
+            dialogFragment.dismissAllowingStateLoss();
+        }
+
+        isDialogShowing = false;
+    }
+
+    public void enterUser(final ProgressBarDialog progressBarDialog) {
+        try {
             mAuth.signInWithEmailAndPassword(loginEdit.getText().toString(), password.getText().toString())
                     .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
+                            dismissDialogFragment(); // Скрытие прогресс-бара
                             if (task.isSuccessful()) {
                                 FirebaseUser user = mAuth.getCurrentUser();
                                 GetSplittedPathChild pC = new GetSplittedPathChild();
@@ -146,39 +156,39 @@ public class LoginActivity extends AppCompatActivity {
                                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                             String role = dataSnapshot.child("role").getValue(String.class);
                                             if (role != null) {
-                                                if (role.equals("Администратор")) {
-                                                    Intent mainIntent = new Intent(LoginActivity.this, AdminHomeActivity.class);
-                                                    startActivity(mainIntent);
-                                                } else {
-                                                    Intent x = new Intent(LoginActivity.this, HomeActivity.class);
-                                                    startActivity(x);
-                                                }
+                                                showDialogFragment(new CustomDialog("Успешная авторизация!", true));
+                                                new Handler().postDelayed(new Runnable() {
+                                                    @Override
+                                                    public void run() {
+                                                        Intent intent;
+                                                        if (role.equals("Администратор")) {
+                                                            intent = new Intent(LoginActivity.this, AdminHomeActivity.class);
+                                                        } else {
+                                                            intent = new Intent(LoginActivity.this, HomeActivity.class);
+                                                        }
+                                                        startActivity(intent);
+                                                        finish();
+                                                    }
+                                                }, 1700);
                                             } else {
-                                                CustomDialog dialogFragment = new CustomDialog("Роль пользователя не определена!", false);
-                                                dialogFragment.show(getSupportFragmentManager(), "custom_dialog");
+                                                showDialogFragment(new CustomDialog("Роль пользователя не определена!", false));
                                             }
-                                            finish();
                                         }
 
                                         @Override
                                         public void onCancelled(@NonNull DatabaseError databaseError) {
-                                            CustomDialog dialogFragment = new CustomDialog( "Ошибка получения данных пользователя из базы данных!", false);
-                                            dialogFragment.show(getSupportFragmentManager(), "custom_dialog");
+                                            showDialogFragment(new CustomDialog("Ошибка получения данных пользователя из базы данных!", false));
                                         }
                                     });
                                 }
                             } else {
-                                CustomDialog dialogFragment = new CustomDialog("Вы ввели неверные данные пользователя!", false);
-                                dialogFragment.show(getSupportFragmentManager(), "custom_dialog");
+                                showDialogFragment(new CustomDialog("Вы ввели неверные данные пользователя!", false));
                             }
                         }
                     });
-
+        } catch (Exception e) {
+            dismissDialogFragment(); // Скрытие прогресс-бара в случае исключения
+            showDialogFragment(new CustomDialog(e.getMessage(), false));
         }
-        catch (Exception e) {
-            CustomDialog dialogFragment = new CustomDialog(e.getMessage(), false);
-            dialogFragment.show(getSupportFragmentManager(), "custom_dialog");
-        }
-
     }
 }
