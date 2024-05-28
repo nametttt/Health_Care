@@ -2,18 +2,19 @@ package com.tanya.health_care;
 
 import android.graphics.Color;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.appcompat.widget.AppCompatButton;
-import androidx.fragment.app.Fragment;
-
+import android.view.GestureDetector;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.widget.AppCompatButton;
+import androidx.fragment.app.Fragment;
 
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.components.Description;
@@ -24,6 +25,8 @@ import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
+import com.github.mikephil.charting.listener.ChartTouchListener;
+import com.github.mikephil.charting.listener.OnChartGestureListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -166,6 +169,47 @@ public class DrinkingStatisticFragment extends Fragment {
         // Enable horizontal scrolling
         barChart.setDragEnabled(true);
 
+        // Set up listener for horizontal scrolling to change period
+        barChart.setOnChartGestureListener(new OnChartGestureListener() {
+            @Override
+            public void onChartGestureStart(MotionEvent me, ChartTouchListener.ChartGesture lastPerformedGesture) {}
+
+            @Override
+            public void onChartGestureEnd(MotionEvent me, ChartTouchListener.ChartGesture lastPerformedGesture) {
+                if (lastPerformedGesture == ChartTouchListener.ChartGesture.DRAG) {
+                    // Change period based on current selectedPeriod
+                    if (selectedPeriod == 7) {
+                        select30Days();
+                        updateButtonAppearance(month, week, year);
+                    } else if (selectedPeriod == 30) {
+                        select12Months();
+                        updateButtonAppearance(year, week, month);
+                    } else if (selectedPeriod == 365) {
+                        select7Days();
+                        updateButtonAppearance(week, month, year);
+                    }
+                }
+            }
+
+            @Override
+            public void onChartLongPressed(MotionEvent me) {}
+
+            @Override
+            public void onChartDoubleTapped(MotionEvent me) {}
+
+            @Override
+            public void onChartSingleTapped(MotionEvent me) {}
+
+            @Override
+            public void onChartFling(MotionEvent me1, MotionEvent me2, float velocityX, float velocityY) {}
+
+            @Override
+            public void onChartScale(MotionEvent me, float scaleX, float scaleY) {}
+
+            @Override
+            public void onChartTranslate(MotionEvent me, float dX, float dY) {}
+        });
+
         // Render the chart
         barChart.invalidate();
     }
@@ -245,7 +289,9 @@ public class DrinkingStatisticFragment extends Fragment {
         }
 
         BarDataSet dataSet = new BarDataSet(entries, "Water Intake");
-        dataSet.setColor(getResources().getColor(R.color.blue));
+        dataSet.setColor(getResources().getColor(R.color.green)); // Change color to green
+        dataSet.setDrawValues(false); // Hide values
+        dataSet.setBarBorderWidth(0.9f); // Set border width for rounded corners
 
         BarData barData = new BarData(dataSet);
         barChart.setData(barData);
