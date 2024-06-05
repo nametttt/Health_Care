@@ -35,7 +35,7 @@ import javax.mail.internet.MimeMessage;
 public class RegActivityEmail extends AppCompatActivity {
 
     private Button btn, bb;
-    private TextView email;
+    private TextView email, userAgreement;
     private CheckBox userAgree;
     private FirebaseAuth mAuth;
     private String myEmail;
@@ -51,7 +51,7 @@ public class RegActivityEmail extends AppCompatActivity {
         bb = findViewById(R.id.continu);
         email = findViewById(R.id.email);
         userAgree = findViewById(R.id.userargee);
-
+        userAgreement = findViewById(R.id.userAgreement);
         myEmail = getIntent().getStringExtra("userEmail");
         if(myEmail != null)
         {
@@ -61,6 +61,14 @@ public class RegActivityEmail extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(RegActivityEmail.this, MainActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        userAgreement.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(RegActivityEmail.this, UserAgreementActivity.class);
                 startActivity(intent);
             }
         });
