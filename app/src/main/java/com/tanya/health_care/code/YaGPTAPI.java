@@ -6,8 +6,6 @@ import android.os.AsyncTask;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.gson.Gson;
 
-import org.apache.commons.logging.Log;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -25,13 +23,11 @@ public class YaGPTAPI {
 
     private static final String[] SCOPES = { "https://www.googleapis.com/auth/firebase.messaging" };
     private GoogleCredentials googleCredentials;
-    private InputStream jasonfile;
-    private String beaerertoken;
-    private String BEARERTOKEN;
+    private InputStream jsonFile;
 
     public void send(String text, Context context, ResponseCallback callback) throws IOException {
 
-        jasonfile = context.getResources().openRawResource(context.getResources().getIdentifier("serviceaccount", "raw", context.getPackageName()));
+        jsonFile = context.getResources().openRawResource(context.getResources().getIdentifier("serviceaccount", "raw", context.getPackageName()));
 
         new Thread(new Runnable() {
             @Override
@@ -39,13 +35,11 @@ public class YaGPTAPI {
 
                 try {
                     googleCredentials = GoogleCredentials
-                            .fromStream(jasonfile)
+                            .fromStream(jsonFile)
                             .createScoped(Arrays.asList(SCOPES));
 
-                    googleCredentials.refreshAccessToken().getTokenValue();
-
-                    beaerertoken = "y0_AgAAAAA8M1WcAATuwQAAAAEE1-eFAAC3AceNKadC7qc0fRbzbYfZaXA7og";
-                    BEARERTOKEN = "y0_AgAAAAA8M1WcAATuwQAAAAEE1-eFAAC3AceNKadC7qc0fRbzbYfZaXA7og";
+                    googleCredentials.refreshIfExpired();
+                    String bearerToken = googleCredentials.getAccessToken().getTokenValue();
 
                     OkHttpClient client = new OkHttpClient();
 
@@ -78,7 +72,7 @@ public class YaGPTAPI {
                     ArrayList<Map<String, Object>> da = new ArrayList<>();
                     da.add(form);
 
-                    headers.put("Authorization", "Bearer " + "t1.9euelZrPnI-Lz8jPk8-clpyZjZuXi-3rnpWay4yXm52Rk5rNjo3Pz5TIlovl8_ckMWZN-e8rcB4h_t3z92RfY0357ytwHiH-zef1656VmpibyJ6WmpzLxsiclcyLkJDN7_zF656VmpibyJ6WmpzLxsiclcyLkJDN.r1OgSwjP-b-2rY4UDeK0fTqstPnyy5G_4Baxyql6RAZiFPLnV84M7rslNxiVgxE_8t-Q3kxkidod9bH2b60rAA");
+                    headers.put("Authorization", "Bearer " + bearerToken);
                     body.put("modelUri", "gpt://b1gpel67poamsv8n7e04/yandexgpt/latest");
                     body.put("completionOptions", mapa);
 

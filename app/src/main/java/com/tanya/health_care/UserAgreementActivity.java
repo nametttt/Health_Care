@@ -10,6 +10,7 @@ import android.widget.Button;
 public class UserAgreementActivity extends AppCompatActivity {
 
     Button back;
+    String userEmail;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -17,11 +18,14 @@ public class UserAgreementActivity extends AppCompatActivity {
         init();
     }
     private void init(){
+        Intent intent = getIntent();
+        userEmail = intent.getStringExtra("userEmail");
         back = findViewById(R.id.back);
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(UserAgreementActivity.this, RegActivityEmail.class);
+                intent.putExtra("userEmail", userEmail);
                 startActivity(intent);
             }
         });

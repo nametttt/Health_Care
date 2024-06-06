@@ -12,6 +12,7 @@
         android:layout_above="@id/bottomLayout"
         android:layout_marginHorizontal="20dp"
         android:gravity="center"
+        android:layout_marginTop="10dp"
         android:orientation="vertical">
 
         <com.tanya.health_care.code.WrapContentHeightViewPager

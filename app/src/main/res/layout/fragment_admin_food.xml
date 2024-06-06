@@ -70,7 +70,7 @@
                     android:src="@drawable/search"
                     android:clickable="false"
                     android:background="@color/transparent"
-                    android:id="@+id/searchImage"
+                    android:id="@+id/search"
                     android:layout_gravity="center"
                     android:layout_marginRight="15dp"
                     />
