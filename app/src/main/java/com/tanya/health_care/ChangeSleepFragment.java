@@ -14,10 +14,12 @@ import androidx.fragment.app.Fragment;
 
 import android.text.TextUtils;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -104,6 +106,29 @@ public class ChangeSleepFragment extends Fragment {
 
             updateTimes();
             updateDuration();
+
+            ScrollView scrollView = v.findViewById(R.id.scrollView);
+
+            TimeRangePicker timeRangePicker = v.findViewById(R.id.picker);
+
+            timeRangePicker.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                    // Блокируем скроллинг ScrollView
+                    scrollView.requestDisallowInterceptTouchEvent(true);
+                    return false;
+                }
+            });
+
+// Добавляем слушатель событий для ScrollView
+            scrollView.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                    // Разблокируем скроллинг ScrollView после окончания взаимодействия пользователя с TimeRangePicker
+                    scrollView.requestDisallowInterceptTouchEvent(false);
+                    return false;
+                }
+            });
 
             picker.setOnTimeChangeListener(new TimeRangePicker.OnTimeChangeListener() {
                 @Override

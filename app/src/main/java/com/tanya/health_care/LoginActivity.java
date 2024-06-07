@@ -42,7 +42,8 @@ public class LoginActivity extends AppCompatActivity {
     private boolean isVisible = false;
 
     private FirebaseAuth mAuth;
-    private boolean isDialogShowing = false; // Переменная для отслеживания состояния диалога
+    private boolean isDialogShowing = false;
+    private boolean isLoading = false; // Переменная для отслеживания состояния загрузки
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,6 +75,8 @@ public class LoginActivity extends AppCompatActivity {
             auth.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    if (isLoading) return; // Проверка состояния загрузки
+
                     if (loginEdit.getText().toString().isEmpty() ||
                             password.getText().toString().isEmpty()) {
                         showDialogFragment(new CustomDialog("Пожалуйста, введите все данные!", false));
@@ -87,6 +90,8 @@ public class LoginActivity extends AppCompatActivity {
 
                     InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                     imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+
+                    isLoading = true; // Установка состояния загрузки
 
                     ProgressBarDialog progressBarDialog = ProgressBarDialog.newInstance(60000); // Таймаут 60 секунд
                     showDialogFragment(progressBarDialog);
@@ -119,8 +124,6 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void showDialogFragment(DialogFragment dialogFragment) {
-        if (isDialogShowing) return;
-
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         ft.add(dialogFragment, "dialog");
         ft.commitAllowingStateLoss();
@@ -129,8 +132,6 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void dismissDialogFragment() {
-        if (!isDialogShowing) return;
-
         DialogFragment dialogFragment = (DialogFragment) getSupportFragmentManager().findFragmentByTag("dialog");
         if (dialogFragment != null) {
             dialogFragment.dismissAllowingStateLoss();
@@ -146,6 +147,7 @@ public class LoginActivity extends AppCompatActivity {
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
                             dismissDialogFragment(); // Скрытие прогресс-бара
+                            isLoading = false; // Сброс состояния загрузки
                             if (task.isSuccessful()) {
                                 FirebaseUser user = mAuth.getCurrentUser();
                                 GetSplittedPathChild pC = new GetSplittedPathChild();
@@ -188,6 +190,7 @@ public class LoginActivity extends AppCompatActivity {
                     });
         } catch (Exception e) {
             dismissDialogFragment(); // Скрытие прогресс-бара в случае исключения
+            isLoading = false; // Сброс состояния загрузки
             showDialogFragment(new CustomDialog(e.getMessage(), false));
         }
     }

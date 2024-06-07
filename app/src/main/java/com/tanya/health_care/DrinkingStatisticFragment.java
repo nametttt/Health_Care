@@ -35,6 +35,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.tanya.health_care.code.GetSplittedPathChild;
+import com.tanya.health_care.code.StraightBarChartRenderer;
 import com.tanya.health_care.code.WaterData;
 
 import java.time.LocalDate;
@@ -291,9 +292,13 @@ public class DrinkingStatisticFragment extends Fragment {
         BarDataSet dataSet = new BarDataSet(entries, "Water Intake");
         dataSet.setColor(getResources().getColor(R.color.green)); // Change color to green
         dataSet.setDrawValues(false); // Hide values
-        dataSet.setBarBorderWidth(0.9f); // Set border width for rounded corners
 
         BarData barData = new BarData(dataSet);
+
+        StraightBarChartRenderer customRenderer = new StraightBarChartRenderer(barChart, barChart.getAnimator(), barChart.getViewPortHandler());
+        customRenderer.setRadius(30); // Set your desired radius
+        barChart.setRenderer(customRenderer);
+
         barChart.setData(barData);
 
         XAxis xAxis = barChart.getXAxis();
