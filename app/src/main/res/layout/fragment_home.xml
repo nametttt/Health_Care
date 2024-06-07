@@ -387,6 +387,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="15dp"
+                android:id="@+id/linearPeriod"
                 android:layout_marginBottom="40dp"
                 android:background="@drawable/health_asset"
                 android:padding="15dp">

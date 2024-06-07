@@ -98,7 +98,7 @@
                         android:textSize="18sp"
                         android:maxLines="1"
                         android:background="@drawable/edit_text_asset"
-                        android:hint="Давление (например, 120/90)"
+                        android:hint="Давление (120/90)"
                         android:inputType="numberDecimal|text" />
 
                 <TextView
