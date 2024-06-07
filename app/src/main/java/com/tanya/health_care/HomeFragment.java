@@ -30,6 +30,7 @@ import com.google.gson.Gson;
 import com.tanya.health_care.code.FirebaseMessaging;
 import com.tanya.health_care.code.GetSplittedPathChild;
 import com.tanya.health_care.code.YaGPTAPI;
+import com.tanya.health_care.dialog.CustomDialog;
 import com.tanya.health_care.dialog.ProgressBarDialog;
 
 import java.io.IOException;
@@ -63,113 +64,120 @@ public class HomeFragment extends Fragment {
 
 
     private  void init(View v) {
-        pC = new GetSplittedPathChild();
-        Button waterData = v.findViewById(R.id.waterData);
-        Button parameters = v.findViewById(R.id.parameters);
-        Button sleep = v.findViewById(R.id.sleep);
-        Button health = v.findViewById(R.id.health_common);
-        Button nutrition = v.findViewById(R.id.nutrition);
-        Button period = v.findViewById(R.id.period);
-        linearPeriod = v.findViewById(R.id.linearPeriod);
+        try{
+            pC = new GetSplittedPathChild();
+            Button waterData = v.findViewById(R.id.waterData);
+            Button parameters = v.findViewById(R.id.parameters);
+            Button sleep = v.findViewById(R.id.sleep);
+            Button health = v.findViewById(R.id.health_common);
+            Button nutrition = v.findViewById(R.id.nutrition);
+            Button period = v.findViewById(R.id.period);
+            linearPeriod = v.findViewById(R.id.linearPeriod);
 
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        if (user != null) {
-            DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("users").child(pC.getSplittedPathChild(user.getEmail()));
-            userRef.addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    if (dataSnapshot.exists()) {
-                        String userGender = dataSnapshot.child("gender").getValue(String.class);
-                        if (TextUtils.isEmpty(userGender) || userGender.equals("Мужской")) {
-                            linearPeriod.setVisibility(View.GONE);
-                            return;
-                        } else {
-                            linearPeriod.setVisibility(View.VISIBLE);
+            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+            if (user != null) {
+                DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("users").child(pC.getSplittedPathChild(user.getEmail()));
+                userRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        if (dataSnapshot.exists()) {
+                            String userGender = dataSnapshot.child("gender").getValue(String.class);
+                            if (TextUtils.isEmpty(userGender) || userGender.equals("Мужской")) {
+                                linearPeriod.setVisibility(View.GONE);
+                                return;
+                            } else {
+                                linearPeriod.setVisibility(View.VISIBLE);
+                            }
                         }
                     }
-                }
 
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                        Log.e("FirebaseError", "Error while reading data", databaseError.toException());
+                    }
+                });
+            }
+
+            period.setOnClickListener(new View.OnClickListener() {
                 @Override
-                public void onCancelled(DatabaseError databaseError) {
-                    Log.e("FirebaseError", "Error while reading data", databaseError.toException());
+                public void onClick(View v) {
+                    // Получаем текущего пользователя
+                    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                    if (user != null) {
+                        // Получаем ссылку на узел в базе данных
+                        DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("users")
+                                .child(pC.getSplittedPathChild(user.getEmail()))
+                                .child("characteristic")
+                                .child("menstrual");
+
+                        // Добавляем слушатель для получения данных из базы данных
+                        userRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                if (dataSnapshot.exists()) {
+                                    HomeActivity homeActivity = (HomeActivity) getActivity();
+                                    homeActivity.replaceFragment(new MenstrualFragment());
+                                } else {
+                                    HomeActivity homeActivity = (HomeActivity) getActivity();
+                                    homeActivity.replaceFragment(new AddMenstrulDateFragment());                            }
+                            }
+
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+                                Log.e("FirebaseError", "Error while reading data", databaseError.toException());
+                            }
+                        });
+                    }
+                }
+            });
+
+
+            waterData.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    HomeActivity homeActivity = (HomeActivity) getActivity();
+                    homeActivity.replaceFragment(new DrinkingFragment());
+                }
+            });
+
+            parameters.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    HomeActivity homeActivity = (HomeActivity) getActivity();
+                    homeActivity.replaceFragment(new PhysicalParametersFragment());
+                }
+            });
+
+            sleep.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    HomeActivity homeActivity = (HomeActivity) getActivity();
+                    homeActivity.replaceFragment(new SleepFragment());
+                }
+            });
+
+            health.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    HomeActivity homeActivity = (HomeActivity) getActivity();
+                    homeActivity.replaceFragment(new HealthCommonFragment());
+                }
+            });
+
+            nutrition.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    HomeActivity homeActivity = (HomeActivity) getActivity();
+                    homeActivity.replaceFragment(new NutritionFragment());
                 }
             });
         }
+        catch (Exception exception) {
+            CustomDialog dialogFragment = new CustomDialog("Произошла ошибка: " + exception.getMessage(), false);
+            dialogFragment.show(getParentFragmentManager(), "custom_dialog");
+        }
 
-        period.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Получаем текущего пользователя
-                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                if (user != null) {
-                    // Получаем ссылку на узел в базе данных
-                    DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("users")
-                            .child(pC.getSplittedPathChild(user.getEmail()))
-                            .child("characteristic")
-                            .child("menstrual");
-
-                    // Добавляем слушатель для получения данных из базы данных
-                    userRef.addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(DataSnapshot dataSnapshot) {
-                            if (dataSnapshot.exists()) {
-                                HomeActivity homeActivity = (HomeActivity) getActivity();
-                                homeActivity.replaceFragment(new MenstrualFragment());
-                            } else {
-                                HomeActivity homeActivity = (HomeActivity) getActivity();
-                                homeActivity.replaceFragment(new AddMenstrulDateFragment());                            }
-                        }
-
-                        @Override
-                        public void onCancelled(DatabaseError databaseError) {
-                            Log.e("FirebaseError", "Error while reading data", databaseError.toException());
-                        }
-                    });
-                }
-            }
-        });
-
-
-        waterData.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                HomeActivity homeActivity = (HomeActivity) getActivity();
-                homeActivity.replaceFragment(new DrinkingFragment());
-            }
-        });
-
-        parameters.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                HomeActivity homeActivity = (HomeActivity) getActivity();
-                homeActivity.replaceFragment(new PhysicalParametersFragment());
-            }
-        });
-
-        sleep.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                HomeActivity homeActivity = (HomeActivity) getActivity();
-                homeActivity.replaceFragment(new SleepFragment());
-            }
-        });
-
-        health.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                HomeActivity homeActivity = (HomeActivity) getActivity();
-                homeActivity.replaceFragment(new HealthCommonFragment());
-            }
-        });
-
-        nutrition.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                HomeActivity homeActivity = (HomeActivity) getActivity();
-                homeActivity.replaceFragment(new NutritionFragment());
-            }
-        });
     }
 
 

@@ -35,6 +35,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.tanya.health_care.code.WaterData;
 import com.tanya.health_care.code.WaterRecyclerView;
 import com.tanya.health_care.code.GetSplittedPathChild;
+import com.tanya.health_care.dialog.CustomDialog;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -98,83 +99,87 @@ public class DrinkingFragment extends Fragment {
 
 
     void init (View v){
-        user = FirebaseAuth.getInstance().getCurrentUser();
-        mDb = FirebaseDatabase.getInstance();
-        drunkCount = v.findViewById(R.id.drunkCount);
-        dateText = v.findViewById(R.id.dateText);
-        myNormal = v.findViewById(R.id.myNormal);
-        waterDataArrayList = new ArrayList<WaterData>();
-        adapter = new WaterRecyclerView(getContext(), waterDataArrayList);
-        recyclerView = v.findViewById(R.id.recyclerView);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        recyclerView.setAdapter(adapter);
+        try{
+            user = FirebaseAuth.getInstance().getCurrentUser();
+            mDb = FirebaseDatabase.getInstance();
+            drunkCount = v.findViewById(R.id.drunkCount);
+            dateText = v.findViewById(R.id.dateText);
+            myNormal = v.findViewById(R.id.myNormal);
+            waterDataArrayList = new ArrayList<WaterData>();
+            adapter = new WaterRecyclerView(getContext(), waterDataArrayList);
+            recyclerView = v.findViewById(R.id.recyclerView);
+            recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+            recyclerView.setAdapter(adapter);
 
-        toolbar = v.findViewById(R.id.toolbar);
-        ((AppCompatActivity) requireActivity()).setSupportActionBar(toolbar);
+            toolbar = v.findViewById(R.id.toolbar);
+            ((AppCompatActivity) requireActivity()).setSupportActionBar(toolbar);
 
-        setHasOptionsMenu(true);
-        save = v.findViewById(R.id.back);
-        statsIcon = v.findViewById(R.id.statsIcon);
-        calendarView = v.findViewById(R.id.calendar);
-        MyCalendar();
+            setHasOptionsMenu(true);
+            save = v.findViewById(R.id.back);
+            statsIcon = v.findViewById(R.id.statsIcon);
+            calendarView = v.findViewById(R.id.calendar);
+            MyCalendar();
 
-        userValuesRef = mDb.getReference("users")
-                .child(pC.getSplittedPathChild(user.getEmail()))
-                .child("values")
-                .child("WaterValue");
+            userValuesRef = mDb.getReference("users")
+                    .child(pC.getSplittedPathChild(user.getEmail()))
+                    .child("values")
+                    .child("WaterValue");
 
-        userValuesRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if (snapshot.exists()) {
-                    int waterValue = snapshot.getValue(int.class);
-                    myNormal.setText(String.valueOf(waterValue));
-                } else {
-                    myNormal.setText("Не найдено");
+            userValuesRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    if (snapshot.exists()) {
+                        int waterValue = snapshot.getValue(int.class);
+                        myNormal.setText(String.valueOf(waterValue));
+                    } else {
+                        myNormal.setText("Не найдено");
+                    }
                 }
-            }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-            }
-        });
-
-        save.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                HomeActivity homeActivity = (HomeActivity) getActivity();
-                homeActivity.replaceFragment(new HomeFragment());
-            }
-        });
-
-        statsIcon.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                HomeActivity homeActivity = (HomeActivity) getActivity();
-                homeActivity.replaceFragment(new DrinkingStatisticFragment());
-            }
-        });
-
-
-        addWater = v.findViewById(R.id.addWater);
-        addWater.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                ref = mDb.getReference("users").child(pC.getSplittedPathChild(user.getEmail())).child("characteristic").child("water").push();
-
-                waterData = new WaterData(ref.getKey().toString(),250, selectedDate);
-
-                if ( ref != null){
-                    ref.setValue(waterData);
-                    updateWaterDataForSelectedDate(selectedDate);
-                    updateDateText(selectedDate);
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
                 }
-            }
-        });
+            });
+
+            save.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    HomeActivity homeActivity = (HomeActivity) getActivity();
+                    homeActivity.replaceFragment(new HomeFragment());
+                }
+            });
+
+            statsIcon.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    HomeActivity homeActivity = (HomeActivity) getActivity();
+                    homeActivity.replaceFragment(new DrinkingStatisticFragment());
+                }
+            });
+
+
+            addWater = v.findViewById(R.id.addWater);
+            addWater.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    ref = mDb.getReference("users").child(pC.getSplittedPathChild(user.getEmail())).child("characteristic").child("water").push();
+
+                    waterData = new WaterData(ref.getKey().toString(),250, selectedDate);
+
+                    if ( ref != null){
+                        ref.setValue(waterData);
+                        updateWaterDataForSelectedDate(selectedDate);
+                        updateDateText(selectedDate);
+                    }
+                }
+            });
+        }
+        catch (Exception exception) {
+            CustomDialog dialogFragment = new CustomDialog("Произошла ошибка: " + exception.getMessage(), false);
+            dialogFragment.show(getParentFragmentManager(), "custom_dialog");
+        }
     }
-
-
 
     public static boolean isSameDay(Date date1, Date date2) {
         SimpleDateFormat fmt = new SimpleDateFormat("yyyyMMdd");
@@ -182,39 +187,45 @@ public class DrinkingFragment extends Fragment {
     }
 
     private void updateWaterDataForSelectedDate(Date selectedDate) {
-        ValueEventListener valueEventListener = new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if (waterDataArrayList.size() > 0) {
-                    waterDataArrayList.clear();
-                }
-                int count = 0;
-                for (DataSnapshot ds : snapshot.getChildren()) {
-                    ds.getValue();
-                    WaterData ps = ds.getValue(WaterData.class);
-                    assert ps != null;
-                    if(isSameDay(ps.lastAdded, selectedDate)){
-                        waterDataArrayList.add(ps);
-                        count += ps.addedValue;
+        try {
+            ValueEventListener valueEventListener = new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    if (waterDataArrayList.size() > 0) {
+                        waterDataArrayList.clear();
                     }
+                    int count = 0;
+                    for (DataSnapshot ds : snapshot.getChildren()) {
+                        ds.getValue();
+                        WaterData ps = ds.getValue(WaterData.class);
+                        assert ps != null;
+                        if(isSameDay(ps.lastAdded, selectedDate)){
+                            waterDataArrayList.add(ps);
+                            count += ps.addedValue;
+                        }
+                    }
+                    drunkCount.setText(String.valueOf(count));
+                    if (count <= 0) {
+                        drunkCount.setText("–");
+                    }
+
+                    waterDataArrayList.sort(new SortByDate());
+                    adapter.notifyDataSetChanged();
                 }
-                drunkCount.setText(String.valueOf(count));
-                if (count <= 0) {
-                    drunkCount.setText("–");
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
                 }
+            };
+            ref = mDb.getReference("users").child(pC.getSplittedPathChild(user.getEmail())).child("characteristic").child("water");
 
-                waterDataArrayList.sort(new SortByDate());
-                adapter.notifyDataSetChanged();
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        };
-        ref = mDb.getReference("users").child(pC.getSplittedPathChild(user.getEmail())).child("characteristic").child("water");
-
-        ref.addValueEventListener(valueEventListener);
+            ref.addValueEventListener(valueEventListener);
+        }
+        catch (Exception exception) {
+            CustomDialog dialogFragment = new CustomDialog("Произошла ошибка: " + exception.getMessage(), false);
+            dialogFragment.show(getParentFragmentManager(), "custom_dialog");
+        }
     }
 
     private void updateDateText(Date date) {
@@ -223,51 +234,55 @@ public class DrinkingFragment extends Fragment {
         dateText.setText("Дата " + formattedDate);
     }
 
-    private void MyCalendar(){
+    private void MyCalendar() {
 
-        Date currentTime = selectedDate;
+        try {
+            Date currentTime = selectedDate;
 
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(currentTime);
-        calendar.add(Calendar.MONTH, -1);
-        Date minDate = calendar.getTime();
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(currentTime);
+            calendar.add(Calendar.MONTH, -1);
+            Date minDate = calendar.getTime();
 
-        Date maxDate = currentTime;
+            Date maxDate = currentTime;
 
-        ArrayList<String> datesToBeColored = new ArrayList<>();
-        datesToBeColored.add(Tools.getFormattedDateToday());
+            ArrayList<String> datesToBeColored = new ArrayList<>();
+            datesToBeColored.add(Tools.getFormattedDateToday());
 
 
-        calendarView.setUpCalendar(minDate.getTime(),
-                maxDate.getTime(),
-                datesToBeColored,
-                new HorizontalCalendarView.OnCalendarListener() {
-                    @Override
-                    public void onDateSelected(String date) {
-                        Calendar calendar = Calendar.getInstance();
+            calendarView.setUpCalendar(minDate.getTime(),
+                    maxDate.getTime(),
+                    datesToBeColored,
+                    new HorizontalCalendarView.OnCalendarListener() {
+                        @Override
+                        public void onDateSelected(String date) {
+                            Calendar calendar = Calendar.getInstance();
 
-                        int hour = calendar.get(Calendar.HOUR_OF_DAY);
-                        int minute = calendar.get(Calendar.MINUTE);
-                        int second = calendar.get(Calendar.SECOND);
+                            int hour = calendar.get(Calendar.HOUR_OF_DAY);
+                            int minute = calendar.get(Calendar.MINUTE);
+                            int second = calendar.get(Calendar.SECOND);
 
-                        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
-                        try {
-                            Date newselectedDate = dateFormat.parse(date);
-                            updateDateText(newselectedDate);
-                            calendar.setTime(newselectedDate);
+                            SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+                            try {
+                                Date newselectedDate = dateFormat.parse(date);
+                                updateDateText(newselectedDate);
+                                calendar.setTime(newselectedDate);
 
-                            calendar.set(Calendar.HOUR_OF_DAY, hour);
-                            calendar.set(Calendar.MINUTE, minute);
-                            calendar.set(Calendar.SECOND, second);
-                            selectedDate = calendar.getTime();
-                            updateWaterDataForSelectedDate(selectedDate);
-                        } catch (ParseException e) {
-                            e.printStackTrace();
+                                calendar.set(Calendar.HOUR_OF_DAY, hour);
+                                calendar.set(Calendar.MINUTE, minute);
+                                calendar.set(Calendar.SECOND, second);
+                                selectedDate = calendar.getTime();
+                                updateWaterDataForSelectedDate(selectedDate);
+                            } catch (ParseException e) {
+                                e.printStackTrace();
+                            }
                         }
-                    }
-                });
+                    });
+        } catch (Exception exception) {
+            CustomDialog dialogFragment = new CustomDialog("Произошла ошибка: " + exception.getMessage(), false);
+            dialogFragment.show(getParentFragmentManager(), "custom_dialog");
+        }
     }
-
 }
 
 class SortByDate implements Comparator<WaterData> {

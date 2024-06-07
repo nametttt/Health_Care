@@ -1,64 +1,115 @@
 package com.tanya.health_care;
 
 import android.os.Bundle;
-
+import androidx.appcompat.widget.AppCompatButton;
 import androidx.fragment.app.Fragment;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link AddMenstrulDateFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
-public class AddMenstrulDateFragment extends Fragment {
+import com.archit.calendardaterangepicker.customviews.CalendarListener;
+import com.archit.calendardaterangepicker.customviews.DateRangeCalendarView;
+import com.tanya.health_care.dialog.CustomDialog;
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+import java.util.Calendar;public class AddMenstrulDateFragment extends Fragment {
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    private DateRangeCalendarView calendar;
+    private AppCompatButton back, save;
+
+    Calendar startDate1, endDate1;
+
+    public AddMenstrulDateFragment(Calendar startDate, Calendar endDate) {
+        this.startDate1 = startDate;
+        this.endDate1 = endDate;
+    }
 
     public AddMenstrulDateFragment() {
-        // Required empty public constructor
-    }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment AddMenstrulDateFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static AddMenstrulDateFragment newInstance(String param1, String param2) {
-        AddMenstrulDateFragment fragment = new AddMenstrulDateFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View v = inflater.inflate(R.layout.fragment_add_menstrul_date, container, false);
+        init(v);
+        return v;
+    }
+
+    private void init(View view) {
+        try{
+            back = view.findViewById(R.id.back);
+            save = view.findViewById(R.id.continu);
+            calendar = view.findViewById(R.id.calendar);
+
+            Calendar startDateSelectable = Calendar.getInstance();
+            startDateSelectable.add(Calendar.YEAR, -1);
+            Calendar endDateSelectable = Calendar.getInstance();
+            calendar.setSelectableDateRange(startDateSelectable, endDateSelectable);
+
+            if (startDate1 != null && endDate1 != null) {
+                calendar.setSelectedDateRange(startDate1, endDate1);
+            }
+            else {
+                Calendar today = Calendar.getInstance();
+                calendar.setSelectedDateRange(today, today);
+            }
+
+            back.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    HomeActivity homeActivity = (HomeActivity) getActivity();
+                    homeActivity.replaceFragment(new HomeFragment());
+                }
+            });
+
+            save.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Calendar startDate = calendar.getStartDate();
+                    Calendar endDate = calendar.getEndDate();
+
+                    if (startDate != null && endDate != null) {
+                        long diff = endDate.getTimeInMillis() - startDate.getTimeInMillis();
+                        long days = diff / (24 * 60 * 60 * 1000);
+
+                        if (days >= 2) {
+                            HomeActivity homeActivity = (HomeActivity) getActivity();
+                            AddMenstrualDurationFragment fragment = new AddMenstrualDurationFragment(startDate, endDate);
+                            homeActivity.replaceFragment(fragment);
+                        } else {
+                            CustomDialog dialogFragment = new CustomDialog("Выберите даты!", false);
+                            dialogFragment.show(getParentFragmentManager(), "custom_dialog");
+                        }
+                    } else {
+                        CustomDialog dialogFragment = new CustomDialog("Выберите даты!", false);
+                        dialogFragment.show(getParentFragmentManager(), "custom_dialog");
+                    }
+                }
+            });
+
+            calendar.setCalendarListener(new CalendarListener() {
+                @Override
+                public void onFirstDateSelected(Calendar startDate) {
+                }
+
+                @Override
+                public void onDateRangeSelected(Calendar startDate, Calendar endDate) {
+                    long diff = endDate.getTimeInMillis() - startDate.getTimeInMillis();
+                    long days = diff / (24 * 60 * 60 * 1000);
+
+                    if (days > 15) {
+                        CustomDialog dialogFragment = new CustomDialog("Вы не можете выбирать промежуток более 15 дней!", false);
+                        dialogFragment.show(getParentFragmentManager(), "custom_dialog");
+                        calendar.resetAllSelectedViews();
+                    }
+                    if (days < 2) {
+                        calendar.resetAllSelectedViews();
+                    }
+                }
+            });
         }
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_add_menstrul_date, container, false);
+        catch(Exception exception) {
+            CustomDialog dialogFragment = new CustomDialog("Произошла ошибка: " + exception.getMessage(), false);
+            dialogFragment.show(getParentFragmentManager(), "custom_dialog");
+        }
     }
 }

@@ -207,21 +207,27 @@ public class AdminChangeUserFragment extends Fragment {
     }
 
     public void ChangePhoto() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-        builder.setTitle("Выберите способ");
-        String[] options = {"Галерея", "Камера"};
-        builder.setItems(options, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                if (which == 0) {
-                    Intent galleryIntent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                    startActivityForResult(galleryIntent, PICK_IMAGE_REQUEST);
-                } else if (which == 1) {
-                    dispatchTakePictureIntent();
+        try{
+            AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+            builder.setTitle("Выберите способ");
+            String[] options = {"Галерея", "Камера"};
+            builder.setItems(options, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    if (which == 0) {
+                        Intent galleryIntent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                        startActivityForResult(galleryIntent, PICK_IMAGE_REQUEST);
+                    } else if (which == 1) {
+                        dispatchTakePictureIntent();
+                    }
                 }
-            }
-        });
-        builder.show();
+            });
+            builder.show();
+        }
+        catch(Exception exception) {
+            CustomDialog dialogFragment = new CustomDialog("Произошла ошибка: " + exception.getMessage(), false);
+            dialogFragment.show(getParentFragmentManager(), "custom_dialog");
+        }
     }
 
     private void dispatchTakePictureIntent() {
@@ -236,58 +242,71 @@ public class AdminChangeUserFragment extends Fragment {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == RESULT_OK) {
-            if (requestCode == PICK_IMAGE_REQUEST && data != null) {
-                Uri selectedImage = data.getData();
-                CropImage.activity(selectedImage)
-                        .setAspectRatio(1, 1)
-                        .setRequestedSize(600, 600)
-                        .setCropShape(CropImageView.CropShape.OVAL)
-                        .start(getContext(), this);
-            } else if (requestCode == REQUEST_IMAGE_CAPTURE && selectedImageUri != null) {
-                CropImage.activity(selectedImageUri)
-                        .setAspectRatio(1, 1)
-                        .setRequestedSize(600, 600)
-                        .setCropShape(CropImageView.CropShape.OVAL)
-                        .start(getContext(), this);
-            } else if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
-                CropImage.ActivityResult result = CropImage.getActivityResult(data);
-                if (resultCode == RESULT_OK) {
-                    selectedImageUri = result.getUri();
-                    imageView.setImageURI(selectedImageUri);
+        try{
+            super.onActivityResult(requestCode, resultCode, data);
+            if (resultCode == RESULT_OK) {
+                if (requestCode == PICK_IMAGE_REQUEST && data != null) {
+                    Uri selectedImage = data.getData();
+                    CropImage.activity(selectedImage)
+                            .setAspectRatio(1, 1)
+                            .setRequestedSize(600, 600)
+                            .setCropShape(CropImageView.CropShape.OVAL)
+                            .start(getContext(), this);
+                } else if (requestCode == REQUEST_IMAGE_CAPTURE && selectedImageUri != null) {
+                    CropImage.activity(selectedImageUri)
+                            .setAspectRatio(1, 1)
+                            .setRequestedSize(600, 600)
+                            .setCropShape(CropImageView.CropShape.OVAL)
+                            .start(getContext(), this);
+                } else if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
+                    CropImage.ActivityResult result = CropImage.getActivityResult(data);
+                    if (resultCode == RESULT_OK) {
+                        selectedImageUri = result.getUri();
+                        imageView.setImageURI(selectedImageUri);
+                    }
                 }
             }
         }
+        catch(Exception exception) {
+            CustomDialog dialogFragment = new CustomDialog("Произошла ошибка: " + exception.getMessage(), false);
+            dialogFragment.show(getParentFragmentManager(), "custom_dialog");
+        }
+
     }
 
     private void saveDataAndImage() {
-        String newName = names.getText().toString().trim();
-        String newEmail = emails.getText().toString().trim();
-        String newRole = roles.getSelectedItem().toString().trim();
-        String newGender = genders.getSelectedItem().toString().trim();
-        String newBirthday = birthdays.getText().toString().trim();
+        try{
+            String newName = names.getText().toString().trim();
+            String newEmail = emails.getText().toString().trim();
+            String newRole = roles.getSelectedItem().toString().trim();
+            String newGender = genders.getSelectedItem().toString().trim();
+            String newBirthday = birthdays.getText().toString().trim();
 
-        if (selectedImageUri != null) {
-            long timeoutMs = 3000;
-            ProgressBarDialog progressDialogFragment = ProgressBarDialog.newInstance(timeoutMs);
-            progressDialogFragment.show(getParentFragmentManager(), "ProgressDialog");
+            if (selectedImageUri != null) {
+                long timeoutMs = 3000;
+                ProgressBarDialog progressDialogFragment = ProgressBarDialog.newInstance(timeoutMs);
+                progressDialogFragment.show(getParentFragmentManager(), "ProgressDialog");
 
-            String imageFileName = newEmail + ".jpg"; // or another unique name strategy
-            StorageReference imageRef = storageReference.child(imageFileName);
-            imageRef.putFile(selectedImageUri)
-                    .addOnSuccessListener(taskSnapshot -> {
-                        imageRef.getDownloadUrl().addOnSuccessListener(uri -> {
-                            String imageUrl = uri.toString();
-                            updateUserInDatabase(newEmail, newName, newRole, newGender, newBirthday, imageUrl);
+                String imageFileName = newEmail + ".jpg"; // or another unique name strategy
+                StorageReference imageRef = storageReference.child(imageFileName);
+                imageRef.putFile(selectedImageUri)
+                        .addOnSuccessListener(taskSnapshot -> {
+                            imageRef.getDownloadUrl().addOnSuccessListener(uri -> {
+                                String imageUrl = uri.toString();
+                                updateUserInDatabase(newEmail, newName, newRole, newGender, newBirthday, imageUrl);
+                            });
+                        })
+                        .addOnFailureListener(e -> {
+                            Toast.makeText(getActivity(), "Ошибка при загрузке изображения", Toast.LENGTH_SHORT).show();
                         });
-                    })
-                    .addOnFailureListener(e -> {
-                        Toast.makeText(getActivity(), "Ошибка при загрузке изображения", Toast.LENGTH_SHORT).show();
-                    });
-        } else {
-            // Save user data without changing the image
-            updateUserInDatabase(newEmail, newName, newRole, newGender, newBirthday, image);
+            } else {
+                // Save user data without changing the image
+                updateUserInDatabase(newEmail, newName, newRole, newGender, newBirthday, image);
+            }
+        }
+        catch(Exception exception) {
+            CustomDialog dialogFragment = new CustomDialog("Произошла ошибка: " + exception.getMessage(), false);
+            dialogFragment.show(getParentFragmentManager(), "custom_dialog");
         }
     }
 

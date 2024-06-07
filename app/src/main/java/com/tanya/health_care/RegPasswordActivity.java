@@ -51,51 +51,57 @@ public class RegPasswordActivity extends AppCompatActivity {
     }
 
     private void init() {
-        Intent intent = getIntent();
-        email = intent.getStringExtra("userEmail");
-        gender = intent.getStringExtra("userGender");
-        birthday = intent.getStringExtra("userBirthday");
+        try {
+            Intent intent = getIntent();
+            email = intent.getStringExtra("userEmail");
+            gender = intent.getStringExtra("userGender");
+            birthday = intent.getStringExtra("userBirthday");
 
-        imgBtn = findViewById(R.id.eye);
-        imageBut = findViewById(R.id.firsteye);
-        password = findViewById(R.id.password);
-        confirmPassword = findViewById(R.id.firstpassword);
-        mAuth = FirebaseAuth.getInstance();
-        continu = findViewById(R.id.continu);
-        btn = findViewById(R.id.back);
+            imgBtn = findViewById(R.id.eye);
+            imageBut = findViewById(R.id.firsteye);
+            password = findViewById(R.id.password);
+            confirmPassword = findViewById(R.id.firstpassword);
+            mAuth = FirebaseAuth.getInstance();
+            continu = findViewById(R.id.continu);
+            btn = findViewById(R.id.back);
 
-        password.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
-        confirmPassword.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+            password.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+            confirmPassword.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
 
-        btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(RegPasswordActivity.this, RegBirthdayActivity.class);
-                intent.putExtra("Birthday", birthday);
-                startActivity(intent);
-            }
-        });
+            btn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(RegPasswordActivity.this, RegBirthdayActivity.class);
+                    intent.putExtra("Birthday", birthday);
+                    startActivity(intent);
+                }
+            });
 
-        continu.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                registerUser();
-            }
-        });
+            continu.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    registerUser();
+                }
+            });
 
-        imgBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                togglePassVisibility();
-            }
-        });
+            imgBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    togglePassVisibility();
+                }
+            });
 
-        imageBut.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                togglePasswordVisibility();
-            }
-        });
+            imageBut.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    togglePasswordVisibility();
+                }
+            });
+        }
+        catch (Exception exception) {
+            CustomDialog dialogFragment = new CustomDialog("Произошла ошибка: " + exception.getMessage(), false);
+            dialogFragment.show(getSupportFragmentManager(), "custom_dialog");
+        }
     }
 
     private void togglePasswordVisibility() {

@@ -19,11 +19,6 @@ public class AdminHomeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_admin_home);
         replaceFragment(new AdminUsersFragment());
-
-        FirebaseMessaging msg = new FirebaseMessaging();
-
-
-
         BottomNavigationView navView = findViewById(R.id.nav_view);
         navView.setOnItemSelectedListener(item -> {
             switch (item.getItemId()) {

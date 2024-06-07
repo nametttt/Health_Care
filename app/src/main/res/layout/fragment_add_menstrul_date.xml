@@ -4,89 +4,104 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:custom="http://schemas.android.com/apk/res-auto"
     tools:context=".AddMenstrulDateFragment">
 
-    <LinearLayout
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_height="match_parent">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/back"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:layout_marginVertical="10dp"
-                android:textAlignment="textStart"
-                android:textSize="20dp"
-                android:textAllCaps="false"
-                android:drawableLeft="@drawable/left_arrow"
-                android:background="@color/transparent"
-                android:textColor="@color/gray"
-                android:text="Назад"/>
-
-            <androidx.appcompat.widget.Toolbar
-                android:id="@+id/toolbar"
-                android:layout_width="0dp"
-                android:title=""
-                app:titleTextColor="@color/white"
-                android:layout_marginVertical="5dp"
-                android:layout_marginRight="5dp"
-                android:layout_height="?attr/actionBarSize"
-                android:layout_weight="1"
-                android:titleTextColor="@color/white"/>
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginBottom="25dp"
-            android:layout_marginHorizontal="20dp"
             android:orientation="vertical">
 
-            <TextView
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="@color/black"
-                android:text="Ваш последний цикл"
-                android:textSize="32dp"
-                android:layout_marginVertical="10dp"
-                android:textAlignment="textStart"
-                android:textStyle="bold"/>
+                android:orientation="horizontal">
 
-            <TextView
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/back"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginVertical="10dp"
+                    android:textAlignment="textStart"
+                    android:textSize="20dp"
+                    android:textAllCaps="false"
+                    android:drawableLeft="@drawable/left_arrow"
+                    android:background="@color/transparent"
+                    android:textColor="@color/gray"
+                    android:text="Назад"/>
+
+                <androidx.appcompat.widget.Toolbar
+                    android:id="@+id/toolbar"
+                    android:layout_width="0dp"
+                    android:layout_height="?attr/actionBarSize"
+                    android:layout_weight="1"
+                    android:layout_marginVertical="5dp"
+                    android:layout_marginRight="5dp"
+                    android:title=""
+                    app:titleTextColor="@color/white"
+                    android:titleTextColor="@color/white"/>
+            </LinearLayout>
+
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="@color/black"
-                android:text="Когда была ваша последняя менструация? Коснитесь, чтобы отметить в календаре даты начала и конца"
-                android:textSize="20dp"
-                android:layout_marginVertical="10dp"
-                android:textAlignment="textStart"/>
+                android:layout_marginBottom="25dp"
+                android:layout_marginHorizontal="20dp"
+                android:orientation="vertical">
 
-            <com.squareup.timessquare.CalendarPickerView
-                android:id="@+id/calendar_view"
-                android:layout_width="match_parent"
-                android:scrollbars="none"
-                android:layout_marginVertical="10dp"
-                android:layout_height="match_parent"/>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/black"
+                    android:text="Ваш последний цикл"
+                    android:textSize="32dp"
+                    android:layout_marginVertical="10dp"
+                    android:textAlignment="textStart"
+                    android:textStyle="bold"/>
 
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/continu"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@drawable/button_asset"
-                android:padding="10dp"
-                android:layout_marginTop="20dp"
-                android:text="Продолжить"
-                android:textAllCaps="false"
-                android:textColor="@color/white"
-                android:textSize="20dp" />
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/black"
+                    android:text="Когда была ваша последняя менструация? Коснитесь, чтобы отметить в календаре даты начала и конца"
+                    android:textSize="20dp"
+                    android:layout_marginVertical="10dp"
+                    android:textAlignment="textStart"/>
 
+               <LinearLayout
+                   android:layout_width="match_parent"
+                   android:layout_height="wrap_content"
+                   android:layout_marginVertical="10dp"
+                   android:orientation="vertical"
+                   android:background="@drawable/calendar_asset">
+                   <com.archit.calendardaterangepicker.customviews.DateRangeCalendarView
+                       android:id="@+id/calendar"
+                       android:layout_margin="10dp"
+                       android:layout_width="wrap_content"
+                       android:layout_height="wrap_content"
+                       custom:selected_date_circle_color="@color/green"
+                   >
+                   </com.archit.calendardaterangepicker.customviews.DateRangeCalendarView>
+               </LinearLayout>
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/continu"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/button_asset"
+                    android:padding="10dp"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginBottom="30dp"
+                    android:text="Продолжить"
+                    android:textAllCaps="false"
+                    android:textColor="@color/white"
+                    android:textSize="20dp" />
+            </LinearLayout>
         </LinearLayout>
-    </LinearLayout>
+    </ScrollView>
+
 </FrameLayout>

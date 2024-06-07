@@ -44,40 +44,46 @@ public class AdminAddUserFragment extends Fragment {
     }
 
     void init(View v){
-        addUser = v.findViewById(R.id.addUser);
-        mAuth = FirebaseAuth.getInstance();
-        pickDate = v.findViewById(R.id.pickDate);
-        eye = v.findViewById(R.id.eye);
-        role = v.findViewById(R.id.userTypeSpinner);
-        gender = v.findViewById(R.id.userGenderSpinner);
-        email = v.findViewById(R.id.email);
-        password = v.findViewById(R.id.password);
+        try{
+            addUser = v.findViewById(R.id.addUser);
+            mAuth = FirebaseAuth.getInstance();
+            pickDate = v.findViewById(R.id.pickDate);
+            eye = v.findViewById(R.id.eye);
+            role = v.findViewById(R.id.userTypeSpinner);
+            gender = v.findViewById(R.id.userGenderSpinner);
+            email = v.findViewById(R.id.email);
+            password = v.findViewById(R.id.password);
 
-        password.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+            password.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
 
-        eye.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                EyeVisibility.toggleVisibility(password, eye);
-            }
-        });
+            eye.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    EyeVisibility.toggleVisibility(password, eye);
+                }
+            });
 
-        pickDate.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                DatePickerModal datePickerModal = new DatePickerModal();
-                datePickerModal.setTargetButton(pickDate);
-                datePickerModal.show(getParentFragmentManager(), "datepicker");
-            }
-        });
+            pickDate.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    DatePickerModal datePickerModal = new DatePickerModal();
+                    datePickerModal.setTargetButton(pickDate);
+                    datePickerModal.show(getParentFragmentManager(), "datepicker");
+                }
+            });
 
-        addUser.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                registerUser();
-            }
-        });
+            addUser.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    registerUser();
+                }
+            });
+        }
 
+        catch(Exception exception) {
+            CustomDialog dialogFragment = new CustomDialog("Произошла ошибка: " + exception.getMessage(), false);
+            dialogFragment.show(getParentFragmentManager(), "custom_dialog");
+        }
     }
     private void registerUser() {
         try {

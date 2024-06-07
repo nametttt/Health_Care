@@ -20,61 +20,67 @@ public class RegGenderActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_reg_gender);
 
-        btn = findViewById(R.id.back);
-        bb = findViewById(R.id.continu);
-        woman = findViewById(R.id.woman);
-        men = findViewById(R.id.men);
+        try {
+            btn = findViewById(R.id.back);
+            bb = findViewById(R.id.continu);
+            woman = findViewById(R.id.woman);
+            men = findViewById(R.id.men);
 
-        Intent intent = getIntent();
-        userEmail = intent.getStringExtra("userEmail");
-        code = intent.getStringExtra("UserCode");
-        ExistGender = intent.getStringExtra("Gender");
+            Intent intent = getIntent();
+            userEmail = intent.getStringExtra("userEmail");
+            code = intent.getStringExtra("UserCode");
+            ExistGender = intent.getStringExtra("Gender");
 
-        if(ExistGender != null)
-        {
-            if (ExistGender.equals("мужской")) {
-                men.setChecked(true);
-            } else {
-                woman.setChecked(true);
+            if(ExistGender != null)
+            {
+                if (ExistGender.equals("мужской")) {
+                    men.setChecked(true);
+                } else {
+                    woman.setChecked(true);
+                }
             }
-        }
-        btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(RegGenderActivity.this, RegPinActivity.class);
-                startActivity(intent);
-                intent.putExtra("UserCode", code);
-            }
-        });
+            btn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(RegGenderActivity.this, RegPinActivity.class);
+                    startActivity(intent);
+                    intent.putExtra("UserCode", code);
+                }
+            });
 
-        bb.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+            bb.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
 
-                try{
-                    if(!men.isChecked() && !woman.isChecked())
-                    {
-                        CustomDialog dialogFragment = new CustomDialog( "Выберите ваш пол!", false);
+                    try{
+                        if(!men.isChecked() && !woman.isChecked())
+                        {
+                            CustomDialog dialogFragment = new CustomDialog( "Выберите ваш пол!", false);
+                            dialogFragment.show(getSupportFragmentManager(), "custom_dialog");
+                        }
+                        else
+                        {
+                            if(men.isChecked())
+                            {
+                                gender = "мужской";
+                            }
+
+                            Intent intent = new Intent(RegGenderActivity.this, RegBirthdayActivity.class);
+                            intent.putExtra("userGender", gender);
+                            intent.putExtra("userEmail", userEmail);
+                            startActivity(intent);
+                        }
+                    }
+                    catch (Exception e) {
+                        CustomDialog dialogFragment = new CustomDialog( e.getMessage(), false);
                         dialogFragment.show(getSupportFragmentManager(), "custom_dialog");
                     }
-                    else
-                    {
-                        if(men.isChecked())
-                        {
-                            gender = "мужской";
-                        }
-
-                        Intent intent = new Intent(RegGenderActivity.this, RegBirthdayActivity.class);
-                        intent.putExtra("userGender", gender);
-                        intent.putExtra("userEmail", userEmail);
-                        startActivity(intent);
-                    }
                 }
-                catch (Exception e) {
-                    CustomDialog dialogFragment = new CustomDialog( e.getMessage(), false);
-                    dialogFragment.show(getSupportFragmentManager(), "custom_dialog");
-                }
-            }
-        });
+            });
+        }
+        catch (Exception exception) {
+            CustomDialog dialogFragment = new CustomDialog("Произошла ошибка: " + exception.getMessage(), false);
+            dialogFragment.show(getSupportFragmentManager(), "custom_dialog");
+        }
     }
 }

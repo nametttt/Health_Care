@@ -9,6 +9,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.fragment.app.Fragment;
 
+import com.tanya.health_care.dialog.CustomDialog;
+
 public class AboutArticleFragment extends Fragment {
 
     private final String title, description;
@@ -32,21 +34,28 @@ public class AboutArticleFragment extends Fragment {
     }
 
     private void initializeViews(View view) {
-        titleTextView = view.findViewById(R.id.title);
-        descTextView = view.findViewById(R.id.description);
-        imageView = view.findViewById(R.id.image);
+        try {
+            titleTextView = view.findViewById(R.id.title);
+            descTextView = view.findViewById(R.id.description);
+            imageView = view.findViewById(R.id.image);
 
-        titleTextView.setText(title);
-        descTextView.setText(description);
-        imageView.setImageResource(imageResource);
-        exit = view.findViewById(R.id.back);
+            titleTextView.setText(title);
+            descTextView.setText(description);
+            imageView.setImageResource(imageResource);
+            exit = view.findViewById(R.id.back);
 
-        exit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                HomeActivity homeActivity = (HomeActivity) getActivity();
-                homeActivity.replaceFragment(new ArticleFragment());
-            }
-        });
+            exit.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    HomeActivity homeActivity = (HomeActivity) getActivity();
+                    homeActivity.replaceFragment(new ArticleFragment());
+                }
+            });
+        }
+        catch(Exception exception) {
+            CustomDialog dialogFragment = new CustomDialog("Произошла ошибка: " + exception.getMessage(), false);
+            dialogFragment.show(getParentFragmentManager(), "custom_dialog");
+        }
+
     }
 }

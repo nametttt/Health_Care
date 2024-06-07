@@ -40,62 +40,67 @@ public class WaterValueFragment extends Fragment {
     }
 
     public void init(View v){
+        try {
+            back = v.findViewById(R.id.back);
+            save = v.findViewById(R.id.save);
+            mDb = FirebaseDatabase.getInstance();
+            numberPicker = v.findViewById(R.id.np);
+            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+            userValuesRef = mDb.getReference("users").child(pC.getSplittedPathChild(user.getEmail()))
+                    .child("values").child("WaterValue");
 
-        back = v.findViewById(R.id.back);
-        save = v.findViewById(R.id.save);
-        mDb = FirebaseDatabase.getInstance();
-        numberPicker = v.findViewById(R.id.np);
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        userValuesRef = mDb.getReference("users").child(pC.getSplittedPathChild(user.getEmail()))
-                .child("values").child("WaterValue");
+            numberPicker.setMinValue(1);
+            numberPicker.setMaxValue((5000 - 50) / 50 + 1);
+            String[] displayValues = new String[(5000 - 50) / 50 + 1];
+            for (int i = 0; i < displayValues.length; i++) {
+                displayValues[i] = String.valueOf((i * 50) + 50);
+            }
 
-        numberPicker.setMinValue(1);
-        numberPicker.setMaxValue((5000 - 50) / 50 + 1);
-        String[] displayValues = new String[(5000 - 50) / 50 + 1];
-        for (int i = 0; i < displayValues.length; i++) {
-            displayValues[i] = String.valueOf((i * 50) + 50);
-        }
+            numberPicker.setDisplayedValues(displayValues);
+            numberPicker.setWrapSelectorWheel(false);
+            numberPicker.setValue(waterValue / 50);
+            numberPicker.setOnValueChangedListener((picker, oldVal, newVal) -> {
+                // Handle value change
+            });
 
-        numberPicker.setDisplayedValues(displayValues);
-        numberPicker.setWrapSelectorWheel(false);
-        numberPicker.setValue(waterValue / 50);
-        numberPicker.setOnValueChangedListener((picker, oldVal, newVal) -> {
-            // Handle value change
-        });
-
-        userValuesRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if (dataSnapshot.exists()) {
-                    waterValue = dataSnapshot.getValue(Integer.class);
-                    numberPicker.setValue(waterValue / 50);
+            userValuesRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    if (dataSnapshot.exists()) {
+                        waterValue = dataSnapshot.getValue(Integer.class);
+                        numberPicker.setValue(waterValue / 50);
+                    }
                 }
-            }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-                // Обработка ошибок при чтении из базы данных
-            }
-        });
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+                    // Обработка ошибок при чтении из базы данных
+                }
+            });
 
-        back.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                HomeActivity homeActivity = (HomeActivity) getActivity();
-                homeActivity.replaceFragment(new DrinkingFragment());
-            }
-        });
+            back.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    HomeActivity homeActivity = (HomeActivity) getActivity();
+                    homeActivity.replaceFragment(new DrinkingFragment());
+                }
+            });
 
-        save.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                int selectedValue = numberPicker.getValue() * 50;
-                userValuesRef.setValue(selectedValue);
+            save.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    int selectedValue = numberPicker.getValue() * 50;
+                    userValuesRef.setValue(selectedValue);
 
-                CustomDialog dialogFragment = new CustomDialog( "Успешное установление нормы!", true);
-                dialogFragment.show(getParentFragmentManager(), "custom_dialog");
-            }
-        });
+                    CustomDialog dialogFragment = new CustomDialog( "Успешное установление нормы!", true);
+                    dialogFragment.show(getParentFragmentManager(), "custom_dialog");
+                }
+            });
+        }
+        catch (Exception exception) {
+            CustomDialog dialogFragment = new CustomDialog("Произошла ошибка: " + exception.getMessage(), false);
+            dialogFragment.show(getParentFragmentManager(), "custom_dialog");
+        }
 
 
     }

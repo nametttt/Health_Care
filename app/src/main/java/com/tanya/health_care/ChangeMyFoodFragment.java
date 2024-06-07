@@ -28,7 +28,7 @@ public class ChangeMyFoodFragment extends Fragment {
     private AppCompatButton back, add, delete;
     private FirebaseAuth mAuth;
     GetSplittedPathChild pC = new GetSplittedPathChild();
-    String Useruid, name, uid;
+    String name, uid;
     float weight;
     private int calories, protein, fat, carbohydrates;
     public ChangeMyFoodFragment() {
@@ -56,107 +56,112 @@ public class ChangeMyFoodFragment extends Fragment {
     }
 
     private void init(View v) {
-        mAuth = FirebaseAuth.getInstance();
-        back = v.findViewById(R.id.back);
-        add = v.findViewById(R.id.continu);
-        delete = v.findViewById(R.id.delete);
-        nameEditText = v.findViewById(R.id.name);
-        weightEditText = v.findViewById(R.id.weight);
-        caloriesEditText = v.findViewById(R.id.calories);
-        proteinEditText = v.findViewById(R.id.protein);
-        fatEditText = v.findViewById(R.id.fat);
-        carbohydratesEditText = v.findViewById(R.id.carbohydrates);
-        nameFragment = v.findViewById(R.id.nameFragment);
-        textFragment = v.findViewById(R.id.text);
+        try {
+            mAuth = FirebaseAuth.getInstance();
+            back = v.findViewById(R.id.back);
+            add = v.findViewById(R.id.continu);
+            delete = v.findViewById(R.id.delete);
+            nameEditText = v.findViewById(R.id.name);
+            weightEditText = v.findViewById(R.id.weight);
+            caloriesEditText = v.findViewById(R.id.calories);
+            proteinEditText = v.findViewById(R.id.protein);
+            fatEditText = v.findViewById(R.id.fat);
+            carbohydratesEditText = v.findViewById(R.id.carbohydrates);
+            nameFragment = v.findViewById(R.id.nameFragment);
+            textFragment = v.findViewById(R.id.text);
 
-        back.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                HomeActivity homeActivity = (HomeActivity) getActivity();
-                homeActivity.replaceFragment(new MyProductsFragment());
-            }
-        });
-
-        if (Add != null) {
-            add.setText("Добавить");
-            delete.setVisibility(View.GONE);
-            nameFragment.setText("Добавление продукта");
-            textFragment.setText("Введите данные для добавления нового продукта");
-        } else {
-            nameEditText.setText(name);
-            weightEditText.setText(String.valueOf(weight));
-            caloriesEditText.setText(String.valueOf(calories));
-            proteinEditText.setText(String.valueOf(protein));
-            fatEditText.setText(String.valueOf(fat));
-            carbohydratesEditText.setText(String.valueOf(carbohydrates));
-        }
-
-        add.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String nameText = nameEditText.getText().toString().trim();
-                String weightText = weightEditText.getText().toString().trim();
-                String caloriesText = caloriesEditText.getText().toString().trim();
-                String proteinText = proteinEditText.getText().toString().trim();
-                String fatText = fatEditText.getText().toString().trim();
-                String carbohydratesText = carbohydratesEditText.getText().toString().trim();
-
-                if (TextUtils.isEmpty(nameText) || TextUtils.isEmpty(weightText)
-                        || TextUtils.isEmpty(caloriesText) || TextUtils.isEmpty(proteinText)
-                        || TextUtils.isEmpty(fatText) || TextUtils.isEmpty(carbohydratesText)) {
-                    CustomDialog dialogFragment = new CustomDialog("Пожалуйста, заполните все поля!", false);
-                    dialogFragment.show(getParentFragmentManager(), "custom_dialog");
-                    return;
+            back.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    HomeActivity homeActivity = (HomeActivity) getActivity();
+                    homeActivity.replaceFragment(new MyProductsFragment());
                 }
+            });
 
-                try {
-                    float weightValue = Float.parseFloat(weightText);
-                    int caloriesValue = Integer.parseInt(caloriesText);
-                    int proteinValue = Integer.parseInt(proteinText);
-                    int fatValue = Integer.parseInt(fatText);
-                    int carbohydratesValue = Integer.parseInt(carbohydratesText);
+            if (Add != null) {
+                add.setText("Добавить");
+                delete.setVisibility(View.GONE);
+                nameFragment.setText("Добавление продукта");
+                textFragment.setText("Введите данные для добавления нового продукта");
+            } else {
+                nameEditText.setText(name);
+                weightEditText.setText(String.valueOf(weight));
+                caloriesEditText.setText(String.valueOf(calories));
+                proteinEditText.setText(String.valueOf(protein));
+                fatEditText.setText(String.valueOf(fat));
+                carbohydratesEditText.setText(String.valueOf(carbohydrates));
+            }
 
-                    FirebaseUser currentUser = mAuth.getCurrentUser();
-                    if (currentUser != null) {
-                        String userEmail = currentUser.getEmail();
-                        String Useruid = pC.getSplittedPathChild(userEmail);
-                        FirebaseDatabase mDb = FirebaseDatabase.getInstance();
-                        DatabaseReference ref;
+            add.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    String nameText = nameEditText.getText().toString().trim();
+                    String weightText = weightEditText.getText().toString().trim();
+                    String caloriesText = caloriesEditText.getText().toString().trim();
+                    String proteinText = proteinEditText.getText().toString().trim();
+                    String fatText = fatEditText.getText().toString().trim();
+                    String carbohydratesText = carbohydratesEditText.getText().toString().trim();
 
-                        if ("Добавить".equals(add.getText())) {
-                            ref = mDb.getReference("foods").push();
-                            String path = ref.getKey();
-                            FoodData newFoodData = new FoodData(path, nameText, caloriesValue, weightValue, proteinValue, carbohydratesValue, fatValue, Useruid);
-                            ref.setValue(newFoodData);
+                    if (TextUtils.isEmpty(nameText) || TextUtils.isEmpty(weightText)
+                            || TextUtils.isEmpty(caloriesText) || TextUtils.isEmpty(proteinText)
+                            || TextUtils.isEmpty(fatText) || TextUtils.isEmpty(carbohydratesText)) {
+                        CustomDialog dialogFragment = new CustomDialog("Пожалуйста, заполните все поля!", false);
+                        dialogFragment.show(getParentFragmentManager(), "custom_dialog");
+                        return;
+                    }
 
-                            CustomDialog dialogFragment = new CustomDialog("Продукт успешно добавлен!", true);
-                            dialogFragment.show(getParentFragmentManager(), "custom_dialog");
+                    try {
+                        float weightValue = Float.parseFloat(weightText);
+                        int caloriesValue = Integer.parseInt(caloriesText);
+                        int proteinValue = Integer.parseInt(proteinText);
+                        int fatValue = Integer.parseInt(fatText);
+                        int carbohydratesValue = Integer.parseInt(carbohydratesText);
+
+                        FirebaseUser currentUser = mAuth.getCurrentUser();
+                        if (currentUser != null) {
+                            String userEmail = currentUser.getEmail();
+                            String Useruid = pC.getSplittedPathChild(userEmail);
+                            FirebaseDatabase mDb = FirebaseDatabase.getInstance();
+                            DatabaseReference ref;
+
+                            if ("Добавить".equals(add.getText())) {
+                                ref = mDb.getReference("foods").push();
+                                String path = ref.getKey();
+                                FoodData newFoodData = new FoodData(path, nameText, caloriesValue, weightValue, proteinValue, carbohydratesValue, fatValue, Useruid);
+                                ref.setValue(newFoodData);
+
+                                CustomDialog dialogFragment = new CustomDialog("Продукт успешно добавлен!", true);
+                                dialogFragment.show(getParentFragmentManager(), "custom_dialog");
+                            } else {
+                                ref = mDb.getReference("foods").child(uid);
+
+                                ref.child("name").setValue(nameText);
+                                ref.child("calories").setValue(caloriesValue);
+                                ref.child("weight").setValue(weightValue);
+                                ref.child("protein").setValue(proteinValue);
+                                ref.child("carbohydrates").setValue(carbohydratesValue);
+                                ref.child("fat").setValue(fatValue);
+
+                                CustomDialog dialogFragment = new CustomDialog("Продукт успешно изменен!", true);
+                                dialogFragment.show(getParentFragmentManager(), "custom_dialog");
+                            }
+
+                            HomeActivity homeActivity = (HomeActivity) getActivity();
+                            homeActivity.replaceFragment(new MyProductsFragment());
                         } else {
-                            ref = mDb.getReference("foods").child(uid);
-
-                            ref.child("name").setValue(nameText);
-                            ref.child("calories").setValue(caloriesValue);
-                            ref.child("weight").setValue(weightValue);
-                            ref.child("protein").setValue(proteinValue);
-                            ref.child("carbohydrates").setValue(carbohydratesValue);
-                            ref.child("fat").setValue(fatValue);
-
-                            CustomDialog dialogFragment = new CustomDialog("Продукт успешно изменен!", true);
+                            CustomDialog dialogFragment = new CustomDialog("Ошибка: Пользователь не авторизован!", false);
                             dialogFragment.show(getParentFragmentManager(), "custom_dialog");
                         }
 
-                        HomeActivity homeActivity = (HomeActivity) getActivity();
-                        homeActivity.replaceFragment(new MyProductsFragment());
-                    } else {
-                        CustomDialog dialogFragment = new CustomDialog("Ошибка: Пользователь не авторизован!", false);
+                    } catch (NumberFormatException e) {
+                        CustomDialog dialogFragment = new CustomDialog("Ошибка при вводе числовых значений!", false);
                         dialogFragment.show(getParentFragmentManager(), "custom_dialog");
                     }
-
-                } catch (NumberFormatException e) {
-                    CustomDialog dialogFragment = new CustomDialog("Ошибка при вводе числовых значений!", false);
-                    dialogFragment.show(getParentFragmentManager(), "custom_dialog");
                 }
-            }
-        });
+            });
+        } catch (Exception exception) {
+            CustomDialog dialogFragment = new CustomDialog("Произошла ошибка: " + exception.getMessage(), false);
+            dialogFragment.show(getParentFragmentManager(), "custom_dialog");
+        }
     }
 }

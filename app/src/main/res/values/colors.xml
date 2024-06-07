@@ -21,5 +21,7 @@
     <color name="menuwhite">#F6F9F7</color>
     <color name="lightergreen">#B9C6B9</color>
     <color name="purple">#422995</color>
-
+    <color name="pink">#FFC0CB</color>
+    <color name="light_pink">#FFEBEE</color>
+    <color name="ovulation_color">#FFFF00</color>
 </resources>

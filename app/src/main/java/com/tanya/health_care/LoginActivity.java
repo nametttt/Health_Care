@@ -40,10 +40,9 @@ public class LoginActivity extends AppCompatActivity {
     private Button btn, auth;
     private TextView txt;
     private boolean isVisible = false;
-
     private FirebaseAuth mAuth;
     private boolean isDialogShowing = false;
-    private boolean isLoading = false; // Переменная для отслеживания состояния загрузки
+    private boolean isLoading = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -189,8 +188,8 @@ public class LoginActivity extends AppCompatActivity {
                         }
                     });
         } catch (Exception e) {
-            dismissDialogFragment(); // Скрытие прогресс-бара в случае исключения
-            isLoading = false; // Сброс состояния загрузки
+            dismissDialogFragment();
+            isLoading = false;
             showDialogFragment(new CustomDialog(e.getMessage(), false));
         }
     }

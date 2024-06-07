@@ -83,153 +83,180 @@ public class PhysicalParametersFragment extends Fragment {
 
 
     private void initViews(View v) {
-        user = FirebaseAuth.getInstance().getCurrentUser();
-        mDb = FirebaseDatabase.getInstance();
-        exit = v.findViewById(R.id.back);
-        add = v.findViewById(R.id.continu);
-        imt = v.findViewById(R.id.imt);
-        height = v.findViewById(R.id.height);
-        weight = v.findViewById(R.id.weight);
-        aboutImt = v.findViewById(R.id.aboutImt);
+        try {
+            user = FirebaseAuth.getInstance().getCurrentUser();
+            mDb = FirebaseDatabase.getInstance();
+            exit = v.findViewById(R.id.back);
+            add = v.findViewById(R.id.continu);
+            imt = v.findViewById(R.id.imt);
+            height = v.findViewById(R.id.height);
+            weight = v.findViewById(R.id.weight);
+            aboutImt = v.findViewById(R.id.aboutImt);
 
-        dateText = v.findViewById(R.id.dateText);
+            dateText = v.findViewById(R.id.dateText);
 
-        physicalDataArrayList = new ArrayList<>();
-        adapter = new PhysicalParametersRecyclerView(getContext(), physicalDataArrayList);
-        recyclerView = v.findViewById(R.id.recyclerView);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        recyclerView.setAdapter(adapter);
-        calendarView = v.findViewById(R.id.calendar);
+            physicalDataArrayList = new ArrayList<>();
+            adapter = new PhysicalParametersRecyclerView(getContext(), physicalDataArrayList);
+            recyclerView = v.findViewById(R.id.recyclerView);
+            recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+            recyclerView.setAdapter(adapter);
+            calendarView = v.findViewById(R.id.calendar);
 
-        MyCalendar();
+            MyCalendar();
 
-        if(newDate != null){
-            updatePhysicalDataForSelectedDate(newDate);
-            updateDateText(newDate);
-        }
-        else{
-            updatePhysicalDataForSelectedDate(selectedDate);
-            updateDateText(selectedDate);
-        }
-
-        exit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                HomeActivity homeActivity = (HomeActivity) getActivity();
-                homeActivity.replaceFragment(new HomeFragment());
+            if(newDate != null){
+                updatePhysicalDataForSelectedDate(newDate);
+                updateDateText(newDate);
             }
-        });
-
-        add.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Add = "add";
-                HomeActivity homeActivity = (HomeActivity) getActivity();
-                ChangePhysicalParametersFragment fragment = new ChangePhysicalParametersFragment(selectedDate, Add);
-                homeActivity.replaceFragment(fragment);
+            else{
+                updatePhysicalDataForSelectedDate(selectedDate);
+                updateDateText(selectedDate);
             }
-        });
+
+            exit.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    HomeActivity homeActivity = (HomeActivity) getActivity();
+                    homeActivity.replaceFragment(new HomeFragment());
+                }
+            });
+
+            add.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Add = "add";
+                    HomeActivity homeActivity = (HomeActivity) getActivity();
+                    ChangePhysicalParametersFragment fragment = new ChangePhysicalParametersFragment(selectedDate, Add);
+                    homeActivity.replaceFragment(fragment);
+                }
+            });
+        }
+        catch (Exception exception) {
+            CustomDialog dialogFragment = new CustomDialog("Произошла ошибка: " + exception.getMessage(), false);
+            dialogFragment.show(getParentFragmentManager(), "custom_dialog");
+        }
+
     }
 
     private void MyCalendar(){
 
-        Date currentTime = selectedDate;
+        try {
+            Date currentTime = selectedDate;
 
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(currentTime);
-        calendar.add(Calendar.MONTH, -1);
-        Date minDate = calendar.getTime();
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(currentTime);
+            calendar.add(Calendar.MONTH, -1);
+            Date minDate = calendar.getTime();
 
-        Date maxDate = currentTime;
+            Date maxDate = currentTime;
 
-        ArrayList<String> datesToBeColored = new ArrayList<>();
-        datesToBeColored.add(Tools.getFormattedDateToday());
+            ArrayList<String> datesToBeColored = new ArrayList<>();
+            datesToBeColored.add(Tools.getFormattedDateToday());
 
-        calendarView.setUpCalendar(minDate.getTime(),
-                maxDate.getTime(),
-                datesToBeColored,
-                new HorizontalCalendarView.OnCalendarListener() {
-                    @Override
-                    public void onDateSelected(String date) {
-                        Calendar calendar = Calendar.getInstance();
+            calendarView.setUpCalendar(minDate.getTime(),
+                    maxDate.getTime(),
+                    datesToBeColored,
+                    new HorizontalCalendarView.OnCalendarListener() {
+                        @Override
+                        public void onDateSelected(String date) {
+                            Calendar calendar = Calendar.getInstance();
 
-                        int hour = calendar.get(Calendar.HOUR_OF_DAY);
-                        int minute = calendar.get(Calendar.MINUTE);
-                        int second = calendar.get(Calendar.SECOND);
+                            int hour = calendar.get(Calendar.HOUR_OF_DAY);
+                            int minute = calendar.get(Calendar.MINUTE);
+                            int second = calendar.get(Calendar.SECOND);
 
-                        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
-                        try {
-                            Date newselectedDate = dateFormat.parse(date);
-                            updateDateText(newselectedDate);
-                            calendar.setTime(newselectedDate); // Устанавливаем выбранную дату
+                            SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+                            try {
+                                Date newselectedDate = dateFormat.parse(date);
+                                updateDateText(newselectedDate);
+                                calendar.setTime(newselectedDate); // Устанавливаем выбранную дату
 
-                            // Устанавливаем текущее время
-                            calendar.set(Calendar.HOUR_OF_DAY, hour);
-                            calendar.set(Calendar.MINUTE, minute);
-                            calendar.set(Calendar.SECOND, second);
-                            selectedDate = calendar.getTime();
-                            updatePhysicalDataForSelectedDate(selectedDate);
-                        } catch (ParseException e) {
-                            e.printStackTrace();
+                                // Устанавливаем текущее время
+                                calendar.set(Calendar.HOUR_OF_DAY, hour);
+                                calendar.set(Calendar.MINUTE, minute);
+                                calendar.set(Calendar.SECOND, second);
+                                selectedDate = calendar.getTime();
+                                updatePhysicalDataForSelectedDate(selectedDate);
+                            } catch (ParseException e) {
+                                e.printStackTrace();
+                            }
                         }
-                    }
-                });
+                    });
+        }
+        catch (Exception exception) {
+            CustomDialog dialogFragment = new CustomDialog("Произошла ошибка: " + exception.getMessage(), false);
+            dialogFragment.show(getParentFragmentManager(), "custom_dialog");
+        }
+
     }
     private void updatePhysicalDataForSelectedDate(Date selectedDate) {
-        ValueEventListener valueEventListener = new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if (physicalDataArrayList.size() > 0) {
-                    physicalDataArrayList.clear();
-                }
+        try {
 
-                for (DataSnapshot ds : snapshot.getChildren()) {
-                    PhysicalParametersData ps = ds.getValue(PhysicalParametersData.class);
-                    assert ps != null;
-                    if (isSameDay(ps.lastAdded, selectedDate)) {
-                        physicalDataArrayList.add(ps);
+            ValueEventListener valueEventListener = new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    if (physicalDataArrayList.size() > 0) {
+                        physicalDataArrayList.clear();
                     }
-                }
-                if (!physicalDataArrayList.isEmpty()) {
-                    calculateAndDisplayImt(physicalDataArrayList);
-                } else {
-                    resetImtViews();
+
+                    for (DataSnapshot ds : snapshot.getChildren()) {
+                        PhysicalParametersData ps = ds.getValue(PhysicalParametersData.class);
+                        assert ps != null;
+                        if (isSameDay(ps.lastAdded, selectedDate)) {
+                            physicalDataArrayList.add(ps);
+                        }
+                    }
+                    if (!physicalDataArrayList.isEmpty()) {
+                        calculateAndDisplayImt(physicalDataArrayList);
+                    } else {
+                        resetImtViews();
+                    }
+
+                    physicalDataArrayList.sort(new SortPhysical());
+                    adapter.notifyDataSetChanged();
                 }
 
-                physicalDataArrayList.sort(new SortPhysical());
-                adapter.notifyDataSetChanged();
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
 //                CustomDialog dialogFragment = new CustomDialog("Ошибка", error.getMessage());
 //                dialogFragment.show(getChildFragmentManager(), "custom_dialog");
 
-            }
-        };
-        ref = mDb.getReference("users").child(pC.getSplittedPathChild(user.getEmail())).child("characteristic").child("physicalParameters");
-        ref.addValueEventListener(valueEventListener);
+                }
+            };
+            ref = mDb.getReference("users").child(pC.getSplittedPathChild(user.getEmail())).child("characteristic").child("physicalParameters");
+            ref.addValueEventListener(valueEventListener);
+        }
+        catch (Exception exception) {
+            CustomDialog dialogFragment = new CustomDialog("Произошла ошибка: " + exception.getMessage(), false);
+            dialogFragment.show(getParentFragmentManager(), "custom_dialog");
+        }
     }
 
     private void calculateAndDisplayImt(ArrayList<PhysicalParametersData> dataList) {
-        float totalHeight = 0;
-        float totalWeight = 0;
-        int dataCount = 0;
+        try {
+            float totalHeight = 0;
+            float totalWeight = 0;
+            int dataCount = 0;
 
-        for (PhysicalParametersData data : dataList) {
-            totalHeight += data.height;
-            totalWeight += data.weight;
-            dataCount++;
+            for (PhysicalParametersData data : dataList) {
+                totalHeight += data.height;
+                totalWeight += data.weight;
+                dataCount++;
+            }
+
+            if (dataCount > 0) {
+                currentHeight = totalHeight / dataCount;
+                currentWeight = totalWeight / dataCount;
+                currentImt = calculateImt(currentWeight, currentHeight);
+
+                updateImtViews();
+            } else {
+                resetImtViews();
+            }
         }
-
-        if (dataCount > 0) {
-            currentHeight = totalHeight / dataCount;
-            currentWeight = totalWeight / dataCount;
-            currentImt = calculateImt(currentWeight, currentHeight);
-
-            updateImtViews();
-        } else {
-            resetImtViews();
+        catch (Exception exception) {
+            CustomDialog dialogFragment = new CustomDialog("Произошла ошибка: " + exception.getMessage(), false);
+            dialogFragment.show(getParentFragmentManager(), "custom_dialog");
         }
     }
 
@@ -266,6 +293,7 @@ public class PhysicalParametersFragment extends Fragment {
     private String getImtInfo(float imt, float height) {
         String category;
         String recommendation;
+
 
         if (imt < 18.5) {
             category = "недостаточный вес";

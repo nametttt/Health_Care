@@ -37,6 +37,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.tanya.health_care.code.GetSplittedPathChild;
 import com.tanya.health_care.code.StraightBarChartRenderer;
 import com.tanya.health_care.code.WaterData;
+import com.tanya.health_care.dialog.CustomDialog;
 
 import java.time.LocalDate;
 import java.time.ZoneId;
@@ -91,128 +92,134 @@ public class DrinkingStatisticFragment extends Fragment {
     }
 
     private void init(View v) {
-        barChart = v.findViewById(R.id.barChart);
-        back = v.findViewById(R.id.back);
-        week = v.findViewById(R.id.week);
-        month = v.findViewById(R.id.month);
-        year = v.findViewById(R.id.year);
-        daysTextView = v.findViewById(R.id.days);
+        try{
+            barChart = v.findViewById(R.id.barChart);
+            back = v.findViewById(R.id.back);
+            week = v.findViewById(R.id.week);
+            month = v.findViewById(R.id.month);
+            year = v.findViewById(R.id.year);
+            daysTextView = v.findViewById(R.id.days);
 
-        user = FirebaseAuth.getInstance().getCurrentUser();
-        if (user != null) {
-            waterRef = FirebaseDatabase.getInstance().getReference("users")
-                    .child(new GetSplittedPathChild().getSplittedPathChild(user.getEmail()))
-                    .child("characteristic")
-                    .child("water");
-        }
-
-        week.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                updateButtonAppearance(week, month, year);
-                select7Days();
+            user = FirebaseAuth.getInstance().getCurrentUser();
+            if (user != null) {
+                waterRef = FirebaseDatabase.getInstance().getReference("users")
+                        .child(new GetSplittedPathChild().getSplittedPathChild(user.getEmail()))
+                        .child("characteristic")
+                        .child("water");
             }
-        });
 
-        month.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                updateButtonAppearance(month, week, year);
-                select30Days();
-            }
-        });
+            week.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    updateButtonAppearance(week, month, year);
+                    select7Days();
+                }
+            });
 
-        year.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                updateButtonAppearance(year, week, month);
-                select12Months();
-            }
-        });
+            month.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    updateButtonAppearance(month, week, year);
+                    select30Days();
+                }
+            });
 
-        back.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                HomeActivity homeActivity = (HomeActivity) getActivity();
-                homeActivity.replaceFragment(new DrinkingFragment());
-            }
-        });
+            year.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    updateButtonAppearance(year, week, month);
+                    select12Months();
+                }
+            });
 
-        Description description = new Description();
-        description.setEnabled(false);
-        barChart.setDescription(description);
+            back.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    HomeActivity homeActivity = (HomeActivity) getActivity();
+                    homeActivity.replaceFragment(new DrinkingFragment());
+                }
+            });
 
-        barChart.getAxisLeft().setDrawGridLines(false);
-        barChart.getAxisRight().setDrawGridLines(false);
-        barChart.getXAxis().setDrawGridLines(false);
+            Description description = new Description();
+            description.setEnabled(false);
+            barChart.setDescription(description);
 
-        barChart.getLegend().setEnabled(false);
+            barChart.getAxisLeft().setDrawGridLines(false);
+            barChart.getAxisRight().setDrawGridLines(false);
+            barChart.getXAxis().setDrawGridLines(false);
 
-        XAxis xAxis = barChart.getXAxis();
-        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM); // X-axis on the bottom
-        xAxis.setGranularity(1f); // Step between labels on the X-axis
-        xAxis.setDrawAxisLine(false); // Disable X-axis line
+            barChart.getLegend().setEnabled(false);
 
-        YAxis rightAxis = barChart.getAxisRight();
-        rightAxis.setEnabled(true); // Enable right Y-axis
-        rightAxis.setDrawAxisLine(true); // Enable Y-axis line
-        rightAxis.setDrawLabels(true); // Enable labels on Y-axis
+            XAxis xAxis = barChart.getXAxis();
+            xAxis.setPosition(XAxis.XAxisPosition.BOTTOM); // X-axis on the bottom
+            xAxis.setGranularity(1f); // Step between labels on the X-axis
+            xAxis.setDrawAxisLine(false); // Disable X-axis line
 
-        YAxis leftAxis = barChart.getAxisLeft();
-        leftAxis.setEnabled(false); // Disable left Y-axis
+            YAxis rightAxis = barChart.getAxisRight();
+            rightAxis.setEnabled(true); // Enable right Y-axis
+            rightAxis.setDrawAxisLine(true); // Enable Y-axis line
+            rightAxis.setDrawLabels(true); // Enable labels on Y-axis
 
-        // Add horizontal line at 2500
-        LimitLine limitLine = new LimitLine(2500f);
-        limitLine.setLineColor(getResources().getColor(R.color.black)); // Line color
-        limitLine.setLineWidth(1f); // Line width
-        rightAxis.addLimitLine(limitLine);
+            YAxis leftAxis = barChart.getAxisLeft();
+            leftAxis.setEnabled(false); // Disable left Y-axis
 
-        // Enable horizontal scrolling
-        barChart.setDragEnabled(true);
+            // Add horizontal line at 2500
+            LimitLine limitLine = new LimitLine(2500f);
+            limitLine.setLineColor(getResources().getColor(R.color.black)); // Line color
+            limitLine.setLineWidth(1f); // Line width
+            rightAxis.addLimitLine(limitLine);
 
-        // Set up listener for horizontal scrolling to change period
-        barChart.setOnChartGestureListener(new OnChartGestureListener() {
-            @Override
-            public void onChartGestureStart(MotionEvent me, ChartTouchListener.ChartGesture lastPerformedGesture) {}
+            // Enable horizontal scrolling
+            barChart.setDragEnabled(true);
 
-            @Override
-            public void onChartGestureEnd(MotionEvent me, ChartTouchListener.ChartGesture lastPerformedGesture) {
-                if (lastPerformedGesture == ChartTouchListener.ChartGesture.DRAG) {
-                    // Change period based on current selectedPeriod
-                    if (selectedPeriod == 7) {
-                        select30Days();
-                        updateButtonAppearance(month, week, year);
-                    } else if (selectedPeriod == 30) {
-                        select12Months();
-                        updateButtonAppearance(year, week, month);
-                    } else if (selectedPeriod == 365) {
-                        select7Days();
-                        updateButtonAppearance(week, month, year);
+            // Set up listener for horizontal scrolling to change period
+            barChart.setOnChartGestureListener(new OnChartGestureListener() {
+                @Override
+                public void onChartGestureStart(MotionEvent me, ChartTouchListener.ChartGesture lastPerformedGesture) {}
+
+                @Override
+                public void onChartGestureEnd(MotionEvent me, ChartTouchListener.ChartGesture lastPerformedGesture) {
+                    if (lastPerformedGesture == ChartTouchListener.ChartGesture.DRAG) {
+                        // Change period based on current selectedPeriod
+                        if (selectedPeriod == 7) {
+                            select30Days();
+                            updateButtonAppearance(month, week, year);
+                        } else if (selectedPeriod == 30) {
+                            select12Months();
+                            updateButtonAppearance(year, week, month);
+                        } else if (selectedPeriod == 365) {
+                            select7Days();
+                            updateButtonAppearance(week, month, year);
+                        }
                     }
                 }
-            }
 
-            @Override
-            public void onChartLongPressed(MotionEvent me) {}
+                @Override
+                public void onChartLongPressed(MotionEvent me) {}
 
-            @Override
-            public void onChartDoubleTapped(MotionEvent me) {}
+                @Override
+                public void onChartDoubleTapped(MotionEvent me) {}
 
-            @Override
-            public void onChartSingleTapped(MotionEvent me) {}
+                @Override
+                public void onChartSingleTapped(MotionEvent me) {}
 
-            @Override
-            public void onChartFling(MotionEvent me1, MotionEvent me2, float velocityX, float velocityY) {}
+                @Override
+                public void onChartFling(MotionEvent me1, MotionEvent me2, float velocityX, float velocityY) {}
 
-            @Override
-            public void onChartScale(MotionEvent me, float scaleX, float scaleY) {}
+                @Override
+                public void onChartScale(MotionEvent me, float scaleX, float scaleY) {}
 
-            @Override
-            public void onChartTranslate(MotionEvent me, float dX, float dY) {}
-        });
+                @Override
+                public void onChartTranslate(MotionEvent me, float dX, float dY) {}
+            });
 
-        // Render the chart
-        barChart.invalidate();
+            // Render the chart
+            barChart.invalidate();
+        }
+        catch (Exception exception) {
+            CustomDialog dialogFragment = new CustomDialog("Произошла ошибка: " + exception.getMessage(), false);
+            dialogFragment.show(getParentFragmentManager(), "custom_dialog");
+        }
     }
 
     private void select7Days() {
@@ -234,86 +241,98 @@ public class DrinkingStatisticFragment extends Fragment {
     }
 
     private void fetchAndDisplayData() {
-        LocalDate endDate = LocalDate.now();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d MMMM", new Locale("ru"));
-        String startDateFormatted = startDate.format(formatter);
-        String endDateFormatted = endDate.format(formatter);
-        String dateRange = startDateFormatted + " - " + endDateFormatted;
-        daysTextView.setText(dateRange);
+        try {
+            LocalDate endDate = LocalDate.now();
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d MMMM", new Locale("ru"));
+            String startDateFormatted = startDate.format(formatter);
+            String endDateFormatted = endDate.format(formatter);
+            String dateRange = startDateFormatted + " - " + endDateFormatted;
+            daysTextView.setText(dateRange);
 
-        if (waterRef != null) {
-            waterRef.addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    Map<LocalDate, Integer> waterDataMap = new HashMap<>();
-                    for (DataSnapshot ds : snapshot.getChildren()) {
-                        WaterData waterData = ds.getValue(WaterData.class);
-                        if (waterData != null) {
-                            LocalDate date = waterData.lastAdded.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-                            if (date.isAfter(startDate.minusDays(1)) && date.isBefore(endDate.plusDays(1))) {
-                                waterDataMap.put(date, waterDataMap.getOrDefault(date, 0) + waterData.addedValue);
+            if (waterRef != null) {
+                waterRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        Map<LocalDate, Integer> waterDataMap = new HashMap<>();
+                        for (DataSnapshot ds : snapshot.getChildren()) {
+                            WaterData waterData = ds.getValue(WaterData.class);
+                            if (waterData != null) {
+                                LocalDate date = waterData.lastAdded.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+                                if (date.isAfter(startDate.minusDays(1)) && date.isBefore(endDate.plusDays(1))) {
+                                    waterDataMap.put(date, waterDataMap.getOrDefault(date, 0) + waterData.addedValue);
+                                }
                             }
                         }
+
+                        // Calculate average daily intake for the selected period
+                        float totalWaterIntake = 0;
+                        for (Map.Entry<LocalDate, Integer> entry : waterDataMap.entrySet()) {
+                            totalWaterIntake += entry.getValue();
+                        }
+                        float averageWaterIntake = totalWaterIntake / selectedPeriod;
+
+                        // Round the average intake
+                        averageWaterIntake = Math.round(averageWaterIntake);
+
+                        // Update the chart with new data
+                        updateChart(waterDataMap, averageWaterIntake);
                     }
 
-                    // Calculate average daily intake for the selected period
-                    float totalWaterIntake = 0;
-                    for (Map.Entry<LocalDate, Integer> entry : waterDataMap.entrySet()) {
-                        totalWaterIntake += entry.getValue();
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+                        // Handle database error
                     }
-                    float averageWaterIntake = totalWaterIntake / selectedPeriod;
-
-                    // Round the average intake
-                    averageWaterIntake = Math.round(averageWaterIntake);
-
-                    // Update the chart with new data
-                    updateChart(waterDataMap, averageWaterIntake);
-                }
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError error) {
-                    // Handle database error
-                }
-            });
+                });
+            }
+        }
+        catch (Exception exception) {
+            CustomDialog dialogFragment = new CustomDialog("Произошла ошибка: " + exception.getMessage(), false);
+            dialogFragment.show(getParentFragmentManager(), "custom_dialog");
         }
     }
 
     private void updateChart(Map<LocalDate, Integer> waterDataMap, float averageWaterIntake) {
-        ArrayList<BarEntry> entries = new ArrayList<>();
-        List<String> dates = new ArrayList<>();
-        LocalDate currentDate = startDate;
-        for (int i = 0; i < selectedPeriod; i++) {
-            int dailyIntake = waterDataMap.getOrDefault(currentDate, 0);
-            entries.add(new BarEntry(i, dailyIntake));
-            dates.add(currentDate.format(DateTimeFormatter.ofPattern("dd.MM")));
-            currentDate = currentDate.plusDays(1);
+        try {
+            ArrayList<BarEntry> entries = new ArrayList<>();
+            List<String> dates = new ArrayList<>();
+            LocalDate currentDate = startDate;
+            for (int i = 0; i < selectedPeriod; i++) {
+                int dailyIntake = waterDataMap.getOrDefault(currentDate, 0);
+                entries.add(new BarEntry(i, dailyIntake));
+                dates.add(currentDate.format(DateTimeFormatter.ofPattern("dd.MM")));
+                currentDate = currentDate.plusDays(1);
+            }
+
+            BarDataSet dataSet = new BarDataSet(entries, "Water Intake");
+            dataSet.setColor(getResources().getColor(R.color.green)); // Change color to green
+            dataSet.setDrawValues(false); // Hide values
+
+            BarData barData = new BarData(dataSet);
+
+            StraightBarChartRenderer customRenderer = new StraightBarChartRenderer(barChart, barChart.getAnimator(), barChart.getViewPortHandler());
+            customRenderer.setRadius(30); // Set your desired radius
+            barChart.setRenderer(customRenderer);
+
+            barChart.setData(barData);
+
+            XAxis xAxis = barChart.getXAxis();
+            xAxis.setValueFormatter(new IndexAxisValueFormatter(dates));
+            xAxis.setLabelCount(dates.size());
+
+            // Update the right axis to display average water intake
+            YAxis rightAxis = barChart.getAxisRight();
+            rightAxis.removeAllLimitLines();
+            LimitLine limitLine = new LimitLine(averageWaterIntake);
+            limitLine.setLineColor(getResources().getColor(R.color.black)); // Line color
+            limitLine.setLineWidth(1f); // Line width
+            rightAxis.addLimitLine(limitLine);
+
+            barChart.invalidate(); // Refresh the chart
         }
-
-        BarDataSet dataSet = new BarDataSet(entries, "Water Intake");
-        dataSet.setColor(getResources().getColor(R.color.green)); // Change color to green
-        dataSet.setDrawValues(false); // Hide values
-
-        BarData barData = new BarData(dataSet);
-
-        StraightBarChartRenderer customRenderer = new StraightBarChartRenderer(barChart, barChart.getAnimator(), barChart.getViewPortHandler());
-        customRenderer.setRadius(30); // Set your desired radius
-        barChart.setRenderer(customRenderer);
-
-        barChart.setData(barData);
-
-        XAxis xAxis = barChart.getXAxis();
-        xAxis.setValueFormatter(new IndexAxisValueFormatter(dates));
-        xAxis.setLabelCount(dates.size());
-
-        // Update the right axis to display average water intake
-        YAxis rightAxis = barChart.getAxisRight();
-        rightAxis.removeAllLimitLines();
-        LimitLine limitLine = new LimitLine(averageWaterIntake);
-        limitLine.setLineColor(getResources().getColor(R.color.black)); // Line color
-        limitLine.setLineWidth(1f); // Line width
-        rightAxis.addLimitLine(limitLine);
-
-        barChart.invalidate(); // Refresh the chart
+        catch (Exception exception) {
+            CustomDialog dialogFragment = new CustomDialog("Произошла ошибка: " + exception.getMessage(), false);
+            dialogFragment.show(getParentFragmentManager(), "custom_dialog");
+        }
     }
 
     private void updateButtonAppearance(AppCompatButton selectedButton, AppCompatButton... otherButtons) {

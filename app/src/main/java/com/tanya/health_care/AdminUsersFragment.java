@@ -28,6 +28,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.tanya.health_care.code.AdminUsersRecyclerView;
 import com.tanya.health_care.code.UserData;
+import com.tanya.health_care.dialog.CustomDialog;
 
 import java.util.ArrayList;
 
@@ -53,110 +54,130 @@ public class AdminUsersFragment extends Fragment {
     }
 
     void init(View v){
-        addUser = v.findViewById(R.id.addUser);
+        try {
+            addUser = v.findViewById(R.id.addUser);
 
-        user = FirebaseAuth.getInstance().getCurrentUser();
-        mDb = FirebaseDatabase.getInstance();
-        progressBar = v.findViewById(R.id.progressBar);
-        users = new ArrayList<UserData>();
-        adapter = new AdminUsersRecyclerView(getContext(), users);
-        recyclerView = v.findViewById(R.id.recyclerView);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        recyclerView.setAdapter(adapter);
-        addDataOnRecyclerView();
+            user = FirebaseAuth.getInstance().getCurrentUser();
+            mDb = FirebaseDatabase.getInstance();
+            progressBar = v.findViewById(R.id.progressBar);
+            users = new ArrayList<UserData>();
+            adapter = new AdminUsersRecyclerView(getContext(), users);
+            recyclerView = v.findViewById(R.id.recyclerView);
+            recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+            recyclerView.setAdapter(adapter);
+            addDataOnRecyclerView();
 
-        searchButton = v.findViewById(R.id.search);
-        searchEditText = v.findViewById(R.id.searchEditText);
+            searchButton = v.findViewById(R.id.search);
+            searchEditText = v.findViewById(R.id.searchEditText);
 
-        searchEditText.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            searchEditText.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
 
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                String searchText = searchEditText.getText().toString().trim();
-                if (searchText.isEmpty()) {
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+                    String searchText = searchEditText.getText().toString().trim();
+                    if (searchText.isEmpty()) {
+                        searchButton.setClickable(false);
+                        searchButton.setImageResource(R.drawable.search);
+                        addDataOnRecyclerView();
+                    } else {
+                        searchButton.setClickable(true);
+                        searchButton.setImageResource(R.drawable.close);
+                        filterUsers(searchText);
+                    }
+                }
+
+                @Override
+                public void afterTextChanged(Editable s) {}
+            });
+
+            addUser.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    AdminHomeActivity homeActivity = (AdminHomeActivity) getActivity();
+                    AdminAddUserFragment fragment = new AdminAddUserFragment();
+                    homeActivity.replaceFragment(fragment);
+                }
+            });
+
+            searchButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    searchEditText.setText(null);
                     searchButton.setClickable(false);
                     searchButton.setImageResource(R.drawable.search);
-                    addDataOnRecyclerView();
-                } else {
-                    searchButton.setClickable(true);
-                    searchButton.setImageResource(R.drawable.close);
-                    filterUsers(searchText);
                 }
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {}
-        });
-
-        addUser.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                AdminHomeActivity homeActivity = (AdminHomeActivity) getActivity();
-                AdminAddUserFragment fragment = new AdminAddUserFragment();
-                homeActivity.replaceFragment(fragment);
-            }
-        });
-
-        searchButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                searchEditText.setText(null);
-                searchButton.setClickable(false);
-                searchButton.setImageResource(R.drawable.search);
-            }
-        });
+            });
+        }
+        catch(Exception exception) {
+            CustomDialog dialogFragment = new CustomDialog("Произошла ошибка: " + exception.getMessage(), false);
+            dialogFragment.show(getParentFragmentManager(), "custom_dialog");
+        }
 
     }
     private void addDataOnRecyclerView() {
-        progressBar.setVisibility(View.VISIBLE);
+        try {
 
-        ref = mDb.getReference().child("users");
-        ref.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                users.clear();
-                for (DataSnapshot ds : snapshot.getChildren()) {
-                    UserData userData = ds.getValue(UserData.class);
-                    if (userData != null && !userData.getEmail().equals(user.getEmail())) {
-                        users.add(userData);
-                    }
-                }
-                progressBar.setVisibility(View.GONE);
-                adapter.notifyDataSetChanged();
-            }
+            progressBar.setVisibility(View.VISIBLE);
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                progressBar.setVisibility(View.GONE);
-            }
-        });
-    }
-
-    private void filterUsers(String searchText) {
-        ref = mDb.getReference().child("users");
-        ref.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                users.clear();
-                for (DataSnapshot ds : snapshot.getChildren()) {
-                    UserData userData = ds.getValue(UserData.class);
-                    if (userData != null && !userData.getEmail().equals(user.getEmail())) {
-                        if (userData.getName().toLowerCase().contains(searchText.toLowerCase()) ||
-                                userData.getEmail().toLowerCase().contains(searchText.toLowerCase())) {
+            ref = mDb.getReference().child("users");
+            ref.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    users.clear();
+                    for (DataSnapshot ds : snapshot.getChildren()) {
+                        UserData userData = ds.getValue(UserData.class);
+                        if (userData != null && !userData.getEmail().equals(user.getEmail())) {
                             users.add(userData);
                         }
                     }
+                    progressBar.setVisibility(View.GONE);
+                    adapter.notifyDataSetChanged();
                 }
-                adapter.notifyDataSetChanged();
-            }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+                    progressBar.setVisibility(View.GONE);
+                }
+            });
+        }
+        catch(Exception exception) {
+            CustomDialog dialogFragment = new CustomDialog("Произошла ошибка: " + exception.getMessage(), false);
+            dialogFragment.show(getParentFragmentManager(), "custom_dialog");
+        }
+    }
 
-            }
-        });
+    private void filterUsers(String searchText) {
+        try{
+            ref = mDb.getReference().child("users");
+            ref.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    users.clear();
+                    for (DataSnapshot ds : snapshot.getChildren()) {
+                        UserData userData = ds.getValue(UserData.class);
+                        if (userData != null && !userData.getEmail().equals(user.getEmail())) {
+                            if (userData.getName().toLowerCase().contains(searchText.toLowerCase()) ||
+                                    userData.getEmail().toLowerCase().contains(searchText.toLowerCase())) {
+                                users.add(userData);
+                            }
+                        }
+                    }
+                    adapter.notifyDataSetChanged();
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
+                }
+            });
+        }
+        catch(Exception exception) {
+            CustomDialog dialogFragment = new CustomDialog("Произошла ошибка: " + exception.getMessage(), false);
+            dialogFragment.show(getParentFragmentManager(), "custom_dialog");
+        }
+
     }
 
 

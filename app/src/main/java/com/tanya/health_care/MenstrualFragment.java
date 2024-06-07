@@ -18,6 +18,7 @@ import android.widget.CalendarView;
 import android.widget.ListView;
 
 import com.roomorama.caldroid.CaldroidFragment;
+import com.tanya.health_care.dialog.CustomDialog;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -43,43 +44,46 @@ public class MenstrualFragment extends Fragment {
         return view;
     }
     private void init(View view){
+        try {
+            back = view.findViewById(R.id.back);
+            add = view.findViewById(R.id.add);
 
-        back = view.findViewById(R.id.back);
-        add = view.findViewById(R.id.add);
+            caldroidFragment = new CaldroidFragment();
+            Bundle args = new Bundle();
+            args.putInt(CaldroidFragment.MONTH, 5);
+            args.putInt(CaldroidFragment.YEAR, 2024);
+            caldroidFragment.setArguments(args);
 
-        caldroidFragment = new CaldroidFragment();
-        Bundle args = new Bundle();
-        args.putInt(CaldroidFragment.MONTH, 5);
-        args.putInt(CaldroidFragment.YEAR, 2024);
-        caldroidFragment.setArguments(args);
+            getChildFragmentManager().beginTransaction()
+                    .replace(R.id.calendarView, caldroidFragment)
+                    .commit();
 
-        getChildFragmentManager().beginTransaction()
-                .replace(R.id.calendarView, caldroidFragment)
-                .commit();
-
-        highlightDates();
+            highlightDates();
 
 
-        back.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                HomeActivity homeActivity = (HomeActivity) getActivity();
-                homeActivity.replaceFragment(new HomeFragment());
-            }
-        });
+            back.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    HomeActivity homeActivity = (HomeActivity) getActivity();
+                    homeActivity.replaceFragment(new HomeFragment());
+                }
+            });
 
-        add.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                HomeActivity homeActivity = (HomeActivity) getActivity();
-                homeActivity.replaceFragment(new ChangeMenstrualFragment());
-            }
-        });
+            add.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    HomeActivity homeActivity = (HomeActivity) getActivity();
+                    homeActivity.replaceFragment(new ChangeMenstrualFragment());
+                }
+            });
+        }
+        catch (Exception exception) {
+            CustomDialog dialogFragment = new CustomDialog("Произошла ошибка: " + exception.getMessage(), false);
+            dialogFragment.show(getParentFragmentManager(), "custom_dialog");
+        }
     }
     private void highlightDates() {
         HashMap<Date, Integer> dateColorMap = new HashMap<>();
-
-        // Пример закрашенных дат
         dateColorMap.put(new Date(2024 - 1900, 4, 10), Color.RED);
         dateColorMap.put(new Date(2024 - 1900, 4, 11), Color.RED);
         dateColorMap.put(new Date(2024 - 1900, 4, 12), Color.RED);

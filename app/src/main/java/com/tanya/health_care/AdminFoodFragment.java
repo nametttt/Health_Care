@@ -28,6 +28,7 @@ import com.tanya.health_care.code.AdminFoodRecyclerView;
 import com.tanya.health_care.code.FoodData;
 import com.tanya.health_care.code.GetSplittedPathChild;
 import com.tanya.health_care.code.UserData;
+import com.tanya.health_care.dialog.CustomDialog;
 
 import java.util.ArrayList;
 
@@ -52,126 +53,144 @@ public class AdminFoodFragment extends Fragment {
     }
 
     void init(View v){
-        addProduct = v.findViewById(R.id.addProduct);
-        mDb = FirebaseDatabase.getInstance();
-        searchButton = v.findViewById(R.id.search);
-        searchEditText = v.findViewById(R.id.searchEditText);
+        try{
+            addProduct = v.findViewById(R.id.addProduct);
+            mDb = FirebaseDatabase.getInstance();
+            searchButton = v.findViewById(R.id.search);
+            searchEditText = v.findViewById(R.id.searchEditText);
 
-        progressBar = v.findViewById(R.id.progressBar);
-        foods = new ArrayList<FoodData>();
-        adapter = new AdminFoodRecyclerView(getContext(), foods);
-        recyclerView = v.findViewById(R.id.recyclerView);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        recyclerView.setAdapter(adapter);
-        addDataOnRecyclerView();
+            progressBar = v.findViewById(R.id.progressBar);
+            foods = new ArrayList<FoodData>();
+            adapter = new AdminFoodRecyclerView(getContext(), foods);
+            recyclerView = v.findViewById(R.id.recyclerView);
+            recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+            recyclerView.setAdapter(adapter);
+            addDataOnRecyclerView();
 
 
-        searchEditText.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            searchEditText.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
 
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                String searchText = searchEditText.getText().toString().trim();
-                if (searchText.isEmpty()) {
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+                    String searchText = searchEditText.getText().toString().trim();
+                    if (searchText.isEmpty()) {
+                        searchButton.setClickable(false);
+                        searchButton.setImageResource(R.drawable.search);
+                        addDataOnRecyclerView();
+                    } else {
+                        searchButton.setClickable(true);
+                        searchButton.setImageResource(R.drawable.close);
+                        filterFood(searchText);
+                    }
+                }
+
+                @Override
+                public void afterTextChanged(Editable s) {}
+            });
+
+            searchButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    searchEditText.setText(null);
                     searchButton.setClickable(false);
                     searchButton.setImageResource(R.drawable.search);
-                    addDataOnRecyclerView();
-                } else {
-                    searchButton.setClickable(true);
-                    searchButton.setImageResource(R.drawable.close);
-                    filterFood(searchText);
                 }
-            }
+            });
 
-            @Override
-            public void afterTextChanged(Editable s) {}
-        });
+            addProduct.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    AdminHomeActivity homeActivity = (AdminHomeActivity) getActivity();
+                    AdminChangeFoodFragment fragment = new AdminChangeFoodFragment();
+                    Bundle args = new Bundle();
+                    args.putString("Add", "Добавить");
+                    fragment.setArguments(args);
+                    homeActivity.replaceFragment(fragment);
+                }
+            });
 
-        searchButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                searchEditText.setText(null);
-                searchButton.setClickable(false);
-                searchButton.setImageResource(R.drawable.search);
-            }
-        });
+            searchButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    searchEditText.setText(null);
+                    searchButton.setClickable(false);
+                    searchButton.setImageResource(R.drawable.search);
+                }
+            });
+        }
+        catch(Exception exception) {
+            CustomDialog dialogFragment = new CustomDialog("Произошла ошибка: " + exception.getMessage(), false);
+            dialogFragment.show(getParentFragmentManager(), "custom_dialog");
+        }
 
-        addProduct.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                AdminHomeActivity homeActivity = (AdminHomeActivity) getActivity();
-                AdminChangeFoodFragment fragment = new AdminChangeFoodFragment();
-                Bundle args = new Bundle();
-                args.putString("Add", "Добавить");
-                fragment.setArguments(args);
-                homeActivity.replaceFragment(fragment);
-            }
-        });
-
-        searchButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                searchEditText.setText(null);
-                searchButton.setClickable(false);
-                searchButton.setImageResource(R.drawable.search);
-            }
-        });
     }
     private void addDataOnRecyclerView() {
-        progressBar.setVisibility(View.VISIBLE);
+        try{
+            progressBar.setVisibility(View.VISIBLE);
 
-        ValueEventListener valueEventListener = new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if (foods.size() > 0) {
-                    foods.clear();
+            ValueEventListener valueEventListener = new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    if (foods.size() > 0) {
+                        foods.clear();
+                    }
+                    for (DataSnapshot ds : snapshot.getChildren()) {
+                        ds.getValue();
+                        FoodData ps = ds.getValue(FoodData.class);
+                        assert ps != null;
+                        foods.add(ps);
+
+                    }
+                    progressBar.setVisibility(View.GONE);
+
+                    adapter.notifyDataSetChanged();
                 }
-                for (DataSnapshot ds : snapshot.getChildren()) {
-                    ds.getValue();
-                    FoodData ps = ds.getValue(FoodData.class);
-                    assert ps != null;
-                    foods.add(ps);
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
 
                 }
-                progressBar.setVisibility(View.GONE);
+            };
+            ref = mDb.getReference().child("foods");
 
-                adapter.notifyDataSetChanged();
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        };
-        ref = mDb.getReference().child("foods");
-
-        ref.addValueEventListener(valueEventListener);
+            ref.addValueEventListener(valueEventListener);
+        }
+        catch(Exception exception) {
+            CustomDialog dialogFragment = new CustomDialog("Произошла ошибка: " + exception.getMessage(), false);
+            dialogFragment.show(getParentFragmentManager(), "custom_dialog");
+        }
     }
 
     private void filterFood(String searchText) {
-        ref = mDb.getReference().child("foods");
-        ref.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                foods.clear();
-                for (DataSnapshot ds : snapshot.getChildren()) {
-                    FoodData foodData = ds.getValue(FoodData.class);
-                    if (foodData != null) {
-                        if (foodData.getName().toLowerCase().contains(searchText.toLowerCase())) {
-                            foods.add(foodData);
+        try{
+            ref = mDb.getReference().child("foods");
+            ref.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    foods.clear();
+                    for (DataSnapshot ds : snapshot.getChildren()) {
+                        FoodData foodData = ds.getValue(FoodData.class);
+                        if (foodData != null) {
+                            if (foodData.getName().toLowerCase().contains(searchText.toLowerCase())) {
+                                foods.add(foodData);
+                            }
                         }
                     }
+                    adapter.notifyDataSetChanged();
                 }
-                adapter.notifyDataSetChanged();
-            }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
 
-            }
-        });
+                }
+            });
+        }
+        catch(Exception exception) {
+            CustomDialog dialogFragment = new CustomDialog("Произошла ошибка: " + exception.getMessage(), false);
+            dialogFragment.show(getParentFragmentManager(), "custom_dialog");
+        }
+
     }
-
-
 }

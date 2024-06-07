@@ -3,6 +3,7 @@ package com.tanya.health_care;
 import static androidx.constraintlayout.helper.widget.MotionEffect.TAG;
 
 import android.content.pm.PackageManager;
+import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -39,6 +40,9 @@ public class HomeActivity extends AppCompatActivity {
         askNotificationPermission();
         Locale locale = new Locale("ru");
         Locale.setDefault(locale);
+        Configuration config = new Configuration();
+        config.locale = locale;
+        getResources().updateConfiguration(config, getResources().getDisplayMetrics());
 
 
         FirebaseMessaging.getInstance().getToken().addOnCompleteListener(new OnCompleteListener<String>() {

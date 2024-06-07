@@ -17,5 +17,13 @@
         <item name="android:textSize">28sp</item>
     </style>
 
+    <style name="CalendarWeekDayText" parent="TextAppearance.AppCompat.Medium">
+        <item name="android:textColor">@color/darkgreen</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="CalendarDateText" parent="TextAppearance.AppCompat.Medium">
+        <item name="android:textColor">@color/black</item>
+    </style>
 
 </resources>

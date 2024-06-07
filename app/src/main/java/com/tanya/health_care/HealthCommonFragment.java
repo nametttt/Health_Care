@@ -28,6 +28,7 @@ import com.tanya.health_care.code.CommonHealthData;
 import com.tanya.health_care.code.CommonHealthRecyclerView;
 import com.tanya.health_care.code.GetSplittedPathChild;
 import com.tanya.health_care.code.WaterData;
+import com.tanya.health_care.dialog.CustomDialog;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -75,93 +76,105 @@ public class HealthCommonFragment extends Fragment {
     }
 
     void init(View v){
-        user = FirebaseAuth.getInstance().getCurrentUser();
-        mDb = FirebaseDatabase.getInstance();
-        exit = v.findViewById(R.id.back);
-        add = v.findViewById(R.id.continu);
-        pressure = v.findViewById(R.id.pressure);
-        pulse = v.findViewById(R.id.pulse);
-        temperature = v.findViewById(R.id.temperature);
-        dateText = v.findViewById(R.id.dateText);
-        commonDataArrayList = new ArrayList<CommonHealthData>();
-        adapter = new CommonHealthRecyclerView(getContext(), commonDataArrayList);
-        recyclerView = v.findViewById(R.id.recyclerViews);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        recyclerView.setAdapter(adapter);
-        calendarView = v.findViewById(R.id.calendar);
-        MyCalendar();
+        try {
+            user = FirebaseAuth.getInstance().getCurrentUser();
+            mDb = FirebaseDatabase.getInstance();
+            exit = v.findViewById(R.id.back);
+            add = v.findViewById(R.id.continu);
+            pressure = v.findViewById(R.id.pressure);
+            pulse = v.findViewById(R.id.pulse);
+            temperature = v.findViewById(R.id.temperature);
+            dateText = v.findViewById(R.id.dateText);
+            commonDataArrayList = new ArrayList<CommonHealthData>();
+            adapter = new CommonHealthRecyclerView(getContext(), commonDataArrayList);
+            recyclerView = v.findViewById(R.id.recyclerViews);
+            recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+            recyclerView.setAdapter(adapter);
+            calendarView = v.findViewById(R.id.calendar);
+            MyCalendar();
 
-        if(newDate != null){
-            updateCommonDataForSelectedDate(newDate);
-            updateDateText(newDate);
-        }
-        else{
-            updateCommonDataForSelectedDate(selectedDate);
-            updateDateText(selectedDate);
-        }
-
-        exit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                HomeActivity homeActivity = (HomeActivity) getActivity();
-                homeActivity.replaceFragment(new HomeFragment());
+            if(newDate != null){
+                updateCommonDataForSelectedDate(newDate);
+                updateDateText(newDate);
             }
-        });
-
-        add.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Add = "add";
-                HomeActivity homeActivity = (HomeActivity) getActivity();
-                ChangeCommonHealthFragment fragment = new ChangeCommonHealthFragment(selectedDate, Add);
-                homeActivity.replaceFragment(fragment);
+            else{
+                updateCommonDataForSelectedDate(selectedDate);
+                updateDateText(selectedDate);
             }
-        });
+
+            exit.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    HomeActivity homeActivity = (HomeActivity) getActivity();
+                    homeActivity.replaceFragment(new HomeFragment());
+                }
+            });
+
+            add.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Add = "add";
+                    HomeActivity homeActivity = (HomeActivity) getActivity();
+                    ChangeCommonHealthFragment fragment = new ChangeCommonHealthFragment(selectedDate, Add);
+                    homeActivity.replaceFragment(fragment);
+                }
+            });
+        }
+        catch (Exception exception) {
+            CustomDialog dialogFragment = new CustomDialog("Произошла ошибка: " + exception.getMessage(), false);
+            dialogFragment.show(getParentFragmentManager(), "custom_dialog");
+        }
 
     }
 
     private void MyCalendar(){
+        try{
+            Date currentTime = selectedDate;
 
-        Date currentTime = selectedDate;
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(currentTime);
+            calendar.add(Calendar.MONTH, -1);
+            Date minDate = calendar.getTime();
 
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(currentTime);
-        calendar.add(Calendar.MONTH, -1);
-        Date minDate = calendar.getTime();
+            Date maxDate = currentTime;
 
-        Date maxDate = currentTime;
+            ArrayList<String> datesToBeColored = new ArrayList<>();
+            datesToBeColored.add(Tools.getFormattedDateToday());
 
-        ArrayList<String> datesToBeColored = new ArrayList<>();
-        datesToBeColored.add(Tools.getFormattedDateToday());
+            calendarView.setUpCalendar(minDate.getTime(),
+                    maxDate.getTime(),
+                    datesToBeColored,
+                    new HorizontalCalendarView.OnCalendarListener() {
+                        @Override
+                        public void onDateSelected(String date) {
+                            Calendar calendar = Calendar.getInstance();
 
-        calendarView.setUpCalendar(minDate.getTime(),
-                maxDate.getTime(),
-                datesToBeColored,
-                new HorizontalCalendarView.OnCalendarListener() {
-                    @Override
-                    public void onDateSelected(String date) {
-                        Calendar calendar = Calendar.getInstance();
+                            int hour = calendar.get(Calendar.HOUR_OF_DAY);
+                            int minute = calendar.get(Calendar.MINUTE);
+                            int second = calendar.get(Calendar.SECOND);
 
-                        int hour = calendar.get(Calendar.HOUR_OF_DAY);
-                        int minute = calendar.get(Calendar.MINUTE);
-                        int second = calendar.get(Calendar.SECOND);
+                            SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+                            try {
+                                Date newselectedDate = dateFormat.parse(date);
+                                updateDateText(newselectedDate);
+                                calendar.setTime(newselectedDate); // Устанавливаем выбранную дату
 
-                        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
-                        try {
-                            Date newselectedDate = dateFormat.parse(date);
-                            updateDateText(newselectedDate);
-                            calendar.setTime(newselectedDate); // Устанавливаем выбранную дату
-
-                            calendar.set(Calendar.HOUR_OF_DAY, hour);
-                            calendar.set(Calendar.MINUTE, minute);
-                            calendar.set(Calendar.SECOND, second);
-                            selectedDate = calendar.getTime();
-                            updateCommonDataForSelectedDate(selectedDate);
-                        } catch (ParseException e) {
-                            e.printStackTrace();
+                                calendar.set(Calendar.HOUR_OF_DAY, hour);
+                                calendar.set(Calendar.MINUTE, minute);
+                                calendar.set(Calendar.SECOND, second);
+                                selectedDate = calendar.getTime();
+                                updateCommonDataForSelectedDate(selectedDate);
+                            } catch (ParseException e) {
+                                e.printStackTrace();
+                            }
                         }
-                    }
-                });
+                    });
+
+        }
+        catch (Exception exception) {
+            CustomDialog dialogFragment = new CustomDialog("Произошла ошибка: " + exception.getMessage(), false);
+            dialogFragment.show(getParentFragmentManager(), "custom_dialog");
+        }
 
     }
     public static boolean isSameDay(Date date1, Date date2) {
@@ -170,50 +183,56 @@ public class HealthCommonFragment extends Fragment {
     }
 
     private void updateCommonDataForSelectedDate(Date selectedDate) {
-        ValueEventListener valueEventListener = new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if (commonDataArrayList.size() > 0) {
-                    commonDataArrayList.clear();
-                }
-                int count = 0;
-                int Pulse = 0;
-                String Pressure = "";
-                float Temperature = 0;
-                for (DataSnapshot ds : snapshot.getChildren()) {
-                    ds.getValue();
-                    CommonHealthData common = ds.getValue(CommonHealthData.class);
-                    assert common != null;
-                    if (isSameDay(common.lastAdded, selectedDate)) {
-                        commonDataArrayList.add(common);
-
-                        Pulse = common.pulse;
-                        Pressure = common.pressure;
-                        Temperature = common.temperature;
-                        count++;
+        try{
+            ValueEventListener valueEventListener = new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    if (commonDataArrayList.size() > 0) {
+                        commonDataArrayList.clear();
                     }
+                    int count = 0;
+                    int Pulse = 0;
+                    String Pressure = "";
+                    float Temperature = 0;
+                    for (DataSnapshot ds : snapshot.getChildren()) {
+                        ds.getValue();
+                        CommonHealthData common = ds.getValue(CommonHealthData.class);
+                        assert common != null;
+                        if (isSameDay(common.lastAdded, selectedDate)) {
+                            commonDataArrayList.add(common);
+
+                            Pulse = common.pulse;
+                            Pressure = common.pressure;
+                            Temperature = common.temperature;
+                            count++;
+                        }
+                    }
+                    temperature.setText(String.valueOf(Temperature));
+                    pulse.setText(String.valueOf(Pulse));
+                    pressure.setText(String.valueOf(Pressure));
+                    if (count <= 0) {
+                        temperature.setText("–");
+                        pulse.setText("–");
+                        pressure.setText("–");
+                    }
+
+                    commonDataArrayList.sort(new SortCommon());
+                    adapter.notifyDataSetChanged();
                 }
-                temperature.setText(String.valueOf(Temperature));
-                pulse.setText(String.valueOf(Pulse));
-                pressure.setText(String.valueOf(Pressure));
-                if (count <= 0) {
-                    temperature.setText("–");
-                    pulse.setText("–");
-                    pressure.setText("–");
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
                 }
+            };
+            ref = mDb.getReference("users").child(pC.getSplittedPathChild(user.getEmail())).child("characteristic").child("commonHealth");
 
-                commonDataArrayList.sort(new SortCommon());
-                adapter.notifyDataSetChanged();
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        };
-        ref = mDb.getReference("users").child(pC.getSplittedPathChild(user.getEmail())).child("characteristic").child("commonHealth");
-
-        ref.addValueEventListener(valueEventListener);
+            ref.addValueEventListener(valueEventListener);
+        }
+        catch (Exception exception) {
+            CustomDialog dialogFragment = new CustomDialog("Произошла ошибка: " + exception.getMessage(), false);
+            dialogFragment.show(getParentFragmentManager(), "custom_dialog");
+        }
     }
 
     private void updateDateText(Date date) {

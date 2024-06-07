@@ -82,8 +82,8 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:id="@+id/np"
-                        android:layout_weight="1"
-                        android:layout_marginHorizontal="10dp"
+                        android:layout_weight="1.5"
+                        android:layout_marginRight="10dp"
                         android:theme="@style/DefaultNumberPickerTheme"
                         />
                     <TextView
@@ -95,7 +95,6 @@
                         android:text="дней"
                         android:layout_marginRight="20dp"
                         android:textSize="24dp"
-                        android:textAlignment="center"
                         android:layout_gravity="center"/>
                 </LinearLayout>
                 <TextView

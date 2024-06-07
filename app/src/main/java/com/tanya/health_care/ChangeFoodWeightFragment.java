@@ -13,6 +13,7 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.tanya.health_care.code.FoodData;
+import com.tanya.health_care.dialog.CustomDialog;
 
 public class ChangeFoodWeightFragment extends Fragment {
 
@@ -36,37 +37,43 @@ public class ChangeFoodWeightFragment extends Fragment {
 
     public void init(View v)
     {
-        back = v.findViewById(R.id.back);
-        save = v.findViewById(R.id.continu);
-        countText = v.findViewById(R.id.countText);
+        try{
+            back = v.findViewById(R.id.back);
+            save = v.findViewById(R.id.continu);
+            countText = v.findViewById(R.id.countText);
 
-        String s = String.valueOf(selectedFood.weight);
-        HomeActivity homeActivity = (HomeActivity) v.getContext();
-        FragmentManager fragmentManager = homeActivity.getSupportFragmentManager();
+            String s = String.valueOf(selectedFood.weight);
+            HomeActivity homeActivity = (HomeActivity) v.getContext();
+            FragmentManager fragmentManager = homeActivity.getSupportFragmentManager();
 
-        countText.setText(s);
-        save.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                float newWeight = Float.parseFloat(countText.getText().toString());
+            countText.setText(s);
+            save.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    float newWeight = Float.parseFloat(countText.getText().toString());
 
-                float oldWeight = selectedFood.getWeight();
-                float oldCalories = selectedFood.getCalories();
-                float newCalories = (newWeight / oldWeight) * oldCalories;
+                    float oldWeight = selectedFood.getWeight();
+                    float oldCalories = selectedFood.getCalories();
+                    float newCalories = (newWeight / oldWeight) * oldCalories;
 
-                selectedFood.setWeight(newWeight);
-                selectedFood.setCalories((int) newCalories);
+                    selectedFood.setWeight(newWeight);
+                    selectedFood.setCalories((int) newCalories);
 
-                fragmentManager.popBackStack();
-            }
-        });
+                    fragmentManager.popBackStack();
+                }
+            });
 
 
-        back.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                fragmentManager.popBackStack();
-            }
-        });
+            back.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    fragmentManager.popBackStack();
+                }
+            });
+        }
+        catch (Exception exception) {
+            CustomDialog dialogFragment = new CustomDialog("Произошла ошибка: " + exception.getMessage(), false);
+            dialogFragment.show(getParentFragmentManager(), "custom_dialog");
+        }
     }
 }

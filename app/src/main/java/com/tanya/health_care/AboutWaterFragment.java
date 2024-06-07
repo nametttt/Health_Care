@@ -19,6 +19,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.tanya.health_care.code.GetSplittedPathChild;
+import com.tanya.health_care.dialog.CustomDialog;
 
 public class AboutWaterFragment extends Fragment {
 
@@ -37,36 +38,41 @@ public class AboutWaterFragment extends Fragment {
         return v;
     }
     public void init(View v) {
-
-        back = v.findViewById(R.id.back);
-        WaterNormal = v.findViewById(R.id.textValue);
-        mDb = FirebaseDatabase.getInstance();
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        userValuesRef = mDb.getReference("users").child(pC.getSplittedPathChild(user.getEmail()))
-                .child("values").child("WaterValue");
-        userValuesRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if (dataSnapshot.exists()) {
-                    int waterValue = dataSnapshot.getValue(Integer.class);
-                    String waterNormText = "Для поддержания здоровья вам необходимо потреблять " + waterValue + " мл в день.";
-                    WaterNormal.setText(waterNormText);
+        try{
+            back = v.findViewById(R.id.back);
+            WaterNormal = v.findViewById(R.id.textValue);
+            mDb = FirebaseDatabase.getInstance();
+            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+            userValuesRef = mDb.getReference("users").child(pC.getSplittedPathChild(user.getEmail()))
+                    .child("values").child("WaterValue");
+            userValuesRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    if (dataSnapshot.exists()) {
+                        int waterValue = dataSnapshot.getValue(Integer.class);
+                        String waterNormText = "Для поддержания здоровья вам необходимо потреблять " + waterValue + " мл в день.";
+                        WaterNormal.setText(waterNormText);
+                    }
                 }
-            }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-                // Обработка ошибок при чтении из базы данных
-            }
-        });
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+                    // Обработка ошибок при чтении из базы данных
+                }
+            });
 
-        back.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                HomeActivity homeActivity = (HomeActivity) getActivity();
-                homeActivity.replaceFragment(new DrinkingFragment());
-            }
-        });
+            back.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    HomeActivity homeActivity = (HomeActivity) getActivity();
+                    homeActivity.replaceFragment(new DrinkingFragment());
+                }
+            });
+        }
+        catch(Exception exception) {
+            CustomDialog dialogFragment = new CustomDialog("Произошла ошибка: " + exception.getMessage(), false);
+            dialogFragment.show(getParentFragmentManager(), "custom_dialog");
+        }
     }
 
 }

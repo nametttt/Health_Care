@@ -60,65 +60,70 @@ public class AdminArticleFragment extends Fragment {
     }
 
     void init(View v){
-        addArticle = v.findViewById(R.id.addArticle);
-        user = FirebaseAuth.getInstance().getCurrentUser();
-        mDb = FirebaseDatabase.getInstance();
+        try{
+            addArticle = v.findViewById(R.id.addArticle);
+            user = FirebaseAuth.getInstance().getCurrentUser();
+            mDb = FirebaseDatabase.getInstance();
 
-        searchButton = v.findViewById(R.id.search);
-        searchEditText = v.findViewById(R.id.searchEditText);
+            searchButton = v.findViewById(R.id.search);
+            searchEditText = v.findViewById(R.id.searchEditText);
 
-        articles = new ArrayList<ArticleData>();
-        adapter = new AdminArticleRecyclerView(getContext(), articles);
-        recyclerView = v.findViewById(R.id.recyclerView);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        recyclerView.setAdapter(adapter);
-        progressBar = v.findViewById(R.id.progressBar);
+            articles = new ArrayList<ArticleData>();
+            adapter = new AdminArticleRecyclerView(getContext(), articles);
+            recyclerView = v.findViewById(R.id.recyclerView);
+            recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+            recyclerView.setAdapter(adapter);
+            progressBar = v.findViewById(R.id.progressBar);
 
-        addDataOnRecyclerView();
+            addDataOnRecyclerView();
 
-        addArticle.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                AdminHomeActivity homeActivity = (AdminHomeActivity) getActivity();
-                AdminChangeArticleFragment fragment = new AdminChangeArticleFragment();
-                Bundle args = new Bundle();
-                args.putString("Add", "Добавить");
-                fragment.setArguments(args);
-                homeActivity.replaceFragment(fragment);
-            }
-        });
+            addArticle.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    AdminHomeActivity homeActivity = (AdminHomeActivity) getActivity();
+                    AdminChangeArticleFragment fragment = new AdminChangeArticleFragment();
+                    Bundle args = new Bundle();
+                    args.putString("Add", "Добавить");
+                    fragment.setArguments(args);
+                    homeActivity.replaceFragment(fragment);
+                }
+            });
 
-        searchEditText.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            searchEditText.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
 
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                String searchText = searchEditText.getText().toString().trim();
-                if (searchText.isEmpty()) {
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+                    String searchText = searchEditText.getText().toString().trim();
+                    if (searchText.isEmpty()) {
+                        searchButton.setClickable(false);
+                        searchButton.setImageResource(R.drawable.search);
+                        addDataOnRecyclerView();
+                    } else {
+                        searchButton.setClickable(true);
+                        searchButton.setImageResource(R.drawable.close);
+                        filterArticles(searchText);
+                    }
+                }
+
+                @Override
+                public void afterTextChanged(Editable s) {}
+            });
+
+            searchButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    searchEditText.setText(null);
                     searchButton.setClickable(false);
                     searchButton.setImageResource(R.drawable.search);
-                    addDataOnRecyclerView();
-                } else {
-                    searchButton.setClickable(true);
-                    searchButton.setImageResource(R.drawable.close);
-                    filterArticles(searchText);
                 }
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {}
-        });
-
-        searchButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                searchEditText.setText(null);
-                searchButton.setClickable(false);
-                searchButton.setImageResource(R.drawable.search);
-            }
-        });
-
+            });
+        }
+        catch(Exception exception) {
+            CustomDialog dialogFragment = new CustomDialog("Произошла ошибка: " + exception.getMessage(), false);
+            dialogFragment.show(getParentFragmentManager(), "custom_dialog");
+        }
     }
     private void addDataOnRecyclerView() {
         try {
@@ -156,27 +161,33 @@ public class AdminArticleFragment extends Fragment {
         }
     }
     private void filterArticles(String searchText) {
-        ref = mDb.getReference().child("articles");
-        ref.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                articles.clear();
-                for (DataSnapshot ds : snapshot.getChildren()) {
-                    ArticleData articleData = ds.getValue(ArticleData.class);
-                    if (articleData != null ) {
-                        if (articleData.getTitle().toLowerCase().contains(searchText.toLowerCase())) {
-                            articles.add(articleData);
+        try{
+            ref = mDb.getReference().child("articles");
+            ref.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    articles.clear();
+                    for (DataSnapshot ds : snapshot.getChildren()) {
+                        ArticleData articleData = ds.getValue(ArticleData.class);
+                        if (articleData != null ) {
+                            if (articleData.getTitle().toLowerCase().contains(searchText.toLowerCase())) {
+                                articles.add(articleData);
+                            }
                         }
                     }
+                    adapter.notifyDataSetChanged();
                 }
-                adapter.notifyDataSetChanged();
-            }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
 
-            }
-        });
+                }
+            });
+        }
+        catch(Exception exception) {
+            CustomDialog dialogFragment = new CustomDialog("Произошла ошибка: " + exception.getMessage(), false);
+            dialogFragment.show(getParentFragmentManager(), "custom_dialog");
+        }
     }
 
 }

@@ -365,21 +365,27 @@ public class AdminChangeArticleFragment extends Fragment {
     }
 
     public void ChangePhoto() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-        builder.setTitle("Выберите способ");
-        String[] options = {"Галерея", "Камера"};
-        builder.setItems(options, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                if (which == 0) {
-                    Intent galleryIntent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                    startActivityForResult(galleryIntent, PICK_IMAGE_REQUEST);
-                } else if (which == 1) {
-                    dispatchTakePictureIntent();
+        try{
+            AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+            builder.setTitle("Выберите способ");
+            String[] options = {"Галерея", "Камера"};
+            builder.setItems(options, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    if (which == 0) {
+                        Intent galleryIntent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                        startActivityForResult(galleryIntent, PICK_IMAGE_REQUEST);
+                    } else if (which == 1) {
+                        dispatchTakePictureIntent();
+                    }
                 }
-            }
-        });
-        builder.show();
+            });
+            builder.show();
+        }
+        catch(Exception exception) {
+            CustomDialog dialogFragment = new CustomDialog("Произошла ошибка: " + exception.getMessage(), false);
+            dialogFragment.show(getParentFragmentManager(), "custom_dialog");
+        }
     }
 
     private void dispatchTakePictureIntent() {
@@ -394,31 +400,37 @@ public class AdminChangeArticleFragment extends Fragment {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == RESULT_OK) {
-            if (requestCode == PICK_IMAGE_REQUEST && data != null) {
-                Uri selectedImage = data.getData();
-                CropImage.activity(selectedImage)
-                        .setAspectRatio(1, 1)
-                        .setRequestedSize(600, 600)
-                        .setCropShape(CropImageView.CropShape.RECTANGLE)
-                        .start(getContext(), this);
-            } else if (requestCode == REQUEST_IMAGE_CAPTURE && selectedImageUri != null) {
-                CropImage.activity(selectedImageUri)
-                        .setAspectRatio(1, 1)
-                        .setRequestedSize(600, 600)
-                        .setCropShape(CropImageView.CropShape.RECTANGLE)
-                        .start(getContext(), this);
-            } else if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE && data != null) {
-                CropImage.ActivityResult result = CropImage.getActivityResult(data);
-                if (resultCode == RESULT_OK) {
-                    selectedImageUri = result.getUri();
-                    image.setImageURI(selectedImageUri);
-                } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
-                    Exception error = result.getError();
-                    Toast.makeText(getContext(), "Ошибка при обрезке изображения: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+        try{
+            super.onActivityResult(requestCode, resultCode, data);
+            if (resultCode == RESULT_OK) {
+                if (requestCode == PICK_IMAGE_REQUEST && data != null) {
+                    Uri selectedImage = data.getData();
+                    CropImage.activity(selectedImage)
+                            .setAspectRatio(1, 1)
+                            .setRequestedSize(600, 600)
+                            .setCropShape(CropImageView.CropShape.RECTANGLE)
+                            .start(getContext(), this);
+                } else if (requestCode == REQUEST_IMAGE_CAPTURE && selectedImageUri != null) {
+                    CropImage.activity(selectedImageUri)
+                            .setAspectRatio(1, 1)
+                            .setRequestedSize(600, 600)
+                            .setCropShape(CropImageView.CropShape.RECTANGLE)
+                            .start(getContext(), this);
+                } else if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE && data != null) {
+                    CropImage.ActivityResult result = CropImage.getActivityResult(data);
+                    if (resultCode == RESULT_OK) {
+                        selectedImageUri = result.getUri();
+                        image.setImageURI(selectedImageUri);
+                    } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
+                        Exception error = result.getError();
+                        Toast.makeText(getContext(), "Ошибка при обрезке изображения: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
                 }
             }
+        }
+        catch(Exception exception) {
+            CustomDialog dialogFragment = new CustomDialog("Произошла ошибка: " + exception.getMessage(), false);
+            dialogFragment.show(getParentFragmentManager(), "custom_dialog");
         }
     }
 }

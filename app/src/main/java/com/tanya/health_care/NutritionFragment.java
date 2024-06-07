@@ -37,6 +37,7 @@ import com.tanya.health_care.code.NutritionData;
 import com.tanya.health_care.code.NutritionRecyclerView;
 import com.tanya.health_care.code.WaterData;
 import com.tanya.health_care.code.WaterRecyclerView;
+import com.tanya.health_care.dialog.CustomDialog;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -50,7 +51,6 @@ import in.akshit.horizontalcalendar.Tools;
 
 
 public class NutritionFragment extends Fragment {
-
     Button exit, addNutrition;
     TextView dateText, userCalories, myNormal;
     private Date selectedDate = new Date();
@@ -58,7 +58,6 @@ public class NutritionFragment extends Fragment {
     ArrayList<NutritionData> nutritionDataArrayList;
     NutritionRecyclerView adapter;
     FirebaseUser user;
-    NutritionData nutritionData;
     DatabaseReference ref;
     GetSplittedPathChild pC = new GetSplittedPathChild();
     ArrayList<FoodData> foods = new ArrayList<>();
@@ -110,74 +109,80 @@ public class NutritionFragment extends Fragment {
 
 
     void init(View v){
-        exit = v.findViewById(R.id.back);
-        addNutrition = v.findViewById(R.id.addNutrition);
-        dateText = v.findViewById(R.id.dateText);
-        userCalories = v.findViewById(R.id.userCalories);
-        myNormal = v.findViewById(R.id.myNormal);
-        user = FirebaseAuth.getInstance().getCurrentUser();
-        mDb = FirebaseDatabase.getInstance();
-        dateText = v.findViewById(R.id.dateText);
-        nutritionDataArrayList = new ArrayList<NutritionData>();
-        adapter = new NutritionRecyclerView(getContext(), nutritionDataArrayList, foods);
-        recyclerView = v.findViewById(R.id.recyclerView);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        recyclerView.setAdapter(adapter);
-        toolbar = v.findViewById(R.id.toolbar);
-        ((AppCompatActivity) requireActivity()).setSupportActionBar(toolbar);
+        try {
+            exit = v.findViewById(R.id.back);
+            addNutrition = v.findViewById(R.id.addNutrition);
+            dateText = v.findViewById(R.id.dateText);
+            userCalories = v.findViewById(R.id.userCalories);
+            myNormal = v.findViewById(R.id.myNormal);
+            user = FirebaseAuth.getInstance().getCurrentUser();
+            mDb = FirebaseDatabase.getInstance();
+            dateText = v.findViewById(R.id.dateText);
+            nutritionDataArrayList = new ArrayList<NutritionData>();
+            adapter = new NutritionRecyclerView(getContext(), nutritionDataArrayList, foods);
+            recyclerView = v.findViewById(R.id.recyclerView);
+            recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+            recyclerView.setAdapter(adapter);
+            toolbar = v.findViewById(R.id.toolbar);
+            ((AppCompatActivity) requireActivity()).setSupportActionBar(toolbar);
 
-        setHasOptionsMenu(true);
-        calendarView = v.findViewById(R.id.calendar);
-        MyCalendar();
-        GetData();
-        userValuesRef = mDb.getReference("users")
-                .child(pC.getSplittedPathChild(user.getEmail()))
-                .child("values")
-                .child("NutritionValue");
+            setHasOptionsMenu(true);
+            calendarView = v.findViewById(R.id.calendar);
+            MyCalendar();
+            GetData();
+            userValuesRef = mDb.getReference("users")
+                    .child(pC.getSplittedPathChild(user.getEmail()))
+                    .child("values")
+                    .child("NutritionValue");
 
-        userValuesRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if (snapshot.exists()) {
-                    int nutritionValue = snapshot.getValue(int.class);
-                    myNormal.setText(String.valueOf(nutritionValue));
-                } else {
-                    myNormal.setText("Не найдено");
+            userValuesRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    if (snapshot.exists()) {
+                        int nutritionValue = snapshot.getValue(int.class);
+                        myNormal.setText(String.valueOf(nutritionValue));
+                    } else {
+                        myNormal.setText("Не найдено");
+                    }
                 }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+                }
+            });
+
+            if(newDate != null){
+                updateNutritionDataForSelectedDate(newDate);
+                updateDateText(newDate);
+            }
+            else{
+                updateNutritionDataForSelectedDate(selectedDate);
+                updateDateText(selectedDate);
             }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-            }
-        });
+            exit.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    HomeActivity homeActivity = (HomeActivity) getActivity();
+                    homeActivity.replaceFragment(new HomeFragment());
+                }
+            });
 
-        if(newDate != null){
-            updateNutritionDataForSelectedDate(newDate);
-            updateDateText(newDate);
+            addNutrition.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    ArrayList<FoodData> selectedFoods = new ArrayList<>();
+                    HomeActivity homeActivity = (HomeActivity) getActivity();
+                    ChangeNutritionFragment fragment = new ChangeNutritionFragment(null, selectedDate, null, selectedFoods, "add");
+                    homeActivity.replaceFragment(fragment);
+                }
+            });
+
         }
-        else{
-            updateNutritionDataForSelectedDate(selectedDate);
-            updateDateText(selectedDate);
+        catch (Exception exception) {
+            CustomDialog dialogFragment = new CustomDialog("Произошла ошибка: " + exception.getMessage(), false);
+            dialogFragment.show(getParentFragmentManager(), "custom_dialog");
         }
-
-        exit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                HomeActivity homeActivity = (HomeActivity) getActivity();
-                homeActivity.replaceFragment(new HomeFragment());
-            }
-        });
-
-        addNutrition.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ArrayList<FoodData> selectedFoods = new ArrayList<>();
-                HomeActivity homeActivity = (HomeActivity) getActivity();
-                ChangeNutritionFragment fragment = new ChangeNutritionFragment(null, selectedDate, null, selectedFoods, "add");
-                homeActivity.replaceFragment(fragment);
-            }
-        });
-
     }
     private void updateDateText(Date date) {
         SimpleDateFormat dateFormate = new SimpleDateFormat("dd.MM.yyyy");
@@ -186,116 +191,134 @@ public class NutritionFragment extends Fragment {
     }
 
     private void updateNutritionDataForSelectedDate(Date selectedDate) {
-        ValueEventListener valueEventListener = new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if (nutritionDataArrayList.size() > 0) {
-                    nutritionDataArrayList.clear();
-                }
+        try {
+            ValueEventListener valueEventListener = new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    if (nutritionDataArrayList.size() > 0) {
+                        nutritionDataArrayList.clear();
+                    }
 
-                int count = 0;
-                for (DataSnapshot ds : snapshot.getChildren()) {
-                    ds.getValue();
-                    NutritionData ps = ds.getValue(NutritionData.class);
-                    assert ps != null;
-                    if(isSameDay(ps.nutritionTime, selectedDate)){
-                        nutritionDataArrayList.add(ps);
-                        for (Food food : ps.foods) {
-                            String uid = food.Uid;
-                            for (FoodData foodData : foods) {
-                                if (foodData.getUid().equals(uid)) {
-                                    float oldWeight = foodData.getWeight();
-                                    float newWeight = food.coef;
-                                    if (oldWeight != newWeight) {
-                                        float calorieDifference = (newWeight / oldWeight) * foodData.getCalories();
-                                        count += Math.round(calorieDifference);
-                                    } else {
-                                        count += foodData.getCalories();
+                    int count = 0;
+                    for (DataSnapshot ds : snapshot.getChildren()) {
+                        ds.getValue();
+                        NutritionData ps = ds.getValue(NutritionData.class);
+                        assert ps != null;
+                        if(isSameDay(ps.nutritionTime, selectedDate)){
+                            nutritionDataArrayList.add(ps);
+                            for (Food food : ps.foods) {
+                                String uid = food.Uid;
+                                for (FoodData foodData : foods) {
+                                    if (foodData.getUid().equals(uid)) {
+                                        float oldWeight = foodData.getWeight();
+                                        float newWeight = food.coef;
+                                        if (oldWeight != newWeight) {
+                                            float calorieDifference = (newWeight / oldWeight) * foodData.getCalories();
+                                            count += Math.round(calorieDifference);
+                                        } else {
+                                            count += foodData.getCalories();
+                                        }
                                     }
                                 }
                             }
                         }
                     }
+                    userCalories.setText(String.valueOf(count));
+                    if (count <= 0) {
+                        userCalories.setText("–");
+                    }
+
+                    nutritionDataArrayList.sort(new SortByDateNutrition());
+                    adapter.notifyDataSetChanged();
                 }
-                userCalories.setText(String.valueOf(count));
-                if (count <= 0) {
-                    userCalories.setText("–");
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
                 }
+            };
+            ref = mDb.getReference("users").child(pC.getSplittedPathChild(user.getEmail())).child("characteristic").child("nutrition");
 
-                nutritionDataArrayList.sort(new SortByDateNutrition());
-                adapter.notifyDataSetChanged();
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        };
-        ref = mDb.getReference("users").child(pC.getSplittedPathChild(user.getEmail())).child("characteristic").child("nutrition");
-
-        ref.addValueEventListener(valueEventListener);
+            ref.addValueEventListener(valueEventListener);
+        }
+        catch (Exception exception) {
+            CustomDialog dialogFragment = new CustomDialog("Произошла ошибка: " + exception.getMessage(), false);
+            dialogFragment.show(getParentFragmentManager(), "custom_dialog");
+        }
     }
 
     private void GetData(){
-        ValueEventListener valueEventListener = new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                for (DataSnapshot ds : dataSnapshot.getChildren()) {
-                    FoodData foodData = ds.getValue(FoodData.class);
-                    foods.add(foodData);
+        try {
+            ValueEventListener valueEventListener = new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                        FoodData foodData = ds.getValue(FoodData.class);
+                        foods.add(foodData);
+                    }
                 }
-            }
 
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-            }
-        };
-        DatabaseReference Newref = mDb.getReference().child("foods");
-        Newref.addValueEventListener(valueEventListener);
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                }
+            };
+            DatabaseReference Newref = mDb.getReference().child("foods");
+            Newref.addValueEventListener(valueEventListener);
+        }
+        catch (Exception exception) {
+            CustomDialog dialogFragment = new CustomDialog("Произошла ошибка: " + exception.getMessage(), false);
+            dialogFragment.show(getParentFragmentManager(), "custom_dialog");
+        }
     }
 
     private void MyCalendar(){
-        Date currentTime = selectedDate;
+        try {
+            Date currentTime = selectedDate;
 
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(currentTime);
-        calendar.add(Calendar.MONTH, -1);
-        Date minDate = calendar.getTime();
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(currentTime);
+            calendar.add(Calendar.MONTH, -1);
+            Date minDate = calendar.getTime();
 
-        Date maxDate = currentTime;
+            Date maxDate = currentTime;
 
-        ArrayList<String> datesToBeColored = new ArrayList<>();
-        datesToBeColored.add(Tools.getFormattedDateToday());
+            ArrayList<String> datesToBeColored = new ArrayList<>();
+            datesToBeColored.add(Tools.getFormattedDateToday());
 
-        calendarView.setUpCalendar(minDate.getTime(),
-                maxDate.getTime(),
-                datesToBeColored,
-                new HorizontalCalendarView.OnCalendarListener() {
-                    @Override
-                    public void onDateSelected(String date) {
-                        Calendar calendar = Calendar.getInstance();
+            calendarView.setUpCalendar(minDate.getTime(),
+                    maxDate.getTime(),
+                    datesToBeColored,
+                    new HorizontalCalendarView.OnCalendarListener() {
+                        @Override
+                        public void onDateSelected(String date) {
+                            Calendar calendar = Calendar.getInstance();
 
-                        int hour = calendar.get(Calendar.HOUR_OF_DAY);
-                        int minute = calendar.get(Calendar.MINUTE);
-                        int second = calendar.get(Calendar.SECOND);
+                            int hour = calendar.get(Calendar.HOUR_OF_DAY);
+                            int minute = calendar.get(Calendar.MINUTE);
+                            int second = calendar.get(Calendar.SECOND);
 
-                        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
-                        try {
-                            Date newselectedDate = dateFormat.parse(date);
-                            updateDateText(newselectedDate);
-                            calendar.setTime(newselectedDate); // Устанавливаем выбранную дату
+                            SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+                            try {
+                                Date newselectedDate = dateFormat.parse(date);
+                                updateDateText(newselectedDate);
+                                calendar.setTime(newselectedDate); // Устанавливаем выбранную дату
 
-                            // Устанавливаем текущее время
-                            calendar.set(Calendar.HOUR_OF_DAY, hour);
-                            calendar.set(Calendar.MINUTE, minute);
-                            calendar.set(Calendar.SECOND, second);
-                            selectedDate = calendar.getTime();
-                            updateNutritionDataForSelectedDate(selectedDate);
-                        } catch (ParseException e) {
-                            e.printStackTrace();
+                                // Устанавливаем текущее время
+                                calendar.set(Calendar.HOUR_OF_DAY, hour);
+                                calendar.set(Calendar.MINUTE, minute);
+                                calendar.set(Calendar.SECOND, second);
+                                selectedDate = calendar.getTime();
+                                updateNutritionDataForSelectedDate(selectedDate);
+                            } catch (ParseException e) {
+                                e.printStackTrace();
+                            }
                         }
-                    }
-                });
+                    });
+        }
+        catch (Exception exception) {
+            CustomDialog dialogFragment = new CustomDialog("Произошла ошибка: " + exception.getMessage(), false);
+            dialogFragment.show(getParentFragmentManager(), "custom_dialog");
+        }
     }
 }
 class SortByDateNutrition implements Comparator<NutritionData> {

@@ -26,48 +26,54 @@ public class RegPinActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_reg_pin);
-        btn = findViewById(R.id.continu);
-        bb = findViewById(R.id.back);
-        firstPinView = findViewById(R.id.firstPinView);
-        newPin = findViewById(R.id.newpin);
+        try {
+            super.onCreate(savedInstanceState);
+            setContentView(R.layout.activity_reg_pin);
+            btn = findViewById(R.id.continu);
+            bb = findViewById(R.id.back);
+            firstPinView = findViewById(R.id.firstPinView);
+            newPin = findViewById(R.id.newpin);
 
-        code = getIntent().getStringExtra("UserCode");
-        if(code != null)
-        {
-            firstPinView.setText(code);
+            code = getIntent().getStringExtra("UserCode");
+            if(code != null)
+            {
+                firstPinView.setText(code);
+            }
+
+            expectedPinCode = getIntent().getStringExtra("pinCode");
+            emailTextView = findViewById(R.id.aboutemail);
+
+            Intent intent = getIntent();
+            userEmail = intent.getStringExtra("userEmail");
+            emailTextView.setText("Код подтверждения отправлен на почту " + userEmail);
+
+            btn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    handlePinVerification();
+                }
+            });
+
+            bb.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(RegPinActivity.this, RegActivityEmail.class);
+                    intent.putExtra("userEmail", userEmail);
+                    startActivity(intent);
+                }
+            });
+
+            newPin.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    handleNewPinRequest();
+                }
+            });
         }
-
-        expectedPinCode = getIntent().getStringExtra("pinCode");
-        emailTextView = findViewById(R.id.aboutemail);
-
-        Intent intent = getIntent();
-        userEmail = intent.getStringExtra("userEmail");
-        emailTextView.setText("Код подтверждения отправлен на почту " + userEmail);
-
-        btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                handlePinVerification();
-            }
-        });
-
-        bb.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(RegPinActivity.this, RegActivityEmail.class);
-                intent.putExtra("userEmail", userEmail);
-                startActivity(intent);
-            }
-        });
-
-        newPin.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                handleNewPinRequest();
-            }
-        });
+        catch (Exception exception) {
+            CustomDialog dialogFragment = new CustomDialog("Произошла ошибка: " + exception.getMessage(), false);
+            dialogFragment.show(getSupportFragmentManager(), "custom_dialog");
+        }
     }
 
     private void handlePinVerification() {

@@ -34,6 +34,7 @@ import com.tanya.health_care.code.SelectFoodRecyclerView;
 import com.tanya.health_care.code.SelectedFoodViewModel;
 import com.tanya.health_care.code.WaterData;
 import com.tanya.health_care.code.WaterRecyclerView;
+import com.tanya.health_care.dialog.CustomDialog;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -80,120 +81,130 @@ public class FoodFragment extends Fragment {
     }
 
     void init (View v) {
-        viewModel = new ViewModelProvider(requireActivity()).get(SelectedFoodViewModel.class);
-        allFoods = v.findViewById(R.id.allFoods);
-        myFoods = v.findViewById(R.id.myFoods);
-        foodDataArrayList = new ArrayList<FoodData>();
-        adapter = new SelectFoodRecyclerView(getContext(), foodDataArrayList);
-        recyclerView = v.findViewById(R.id.recyclerViews);
-        mDb = FirebaseDatabase.getInstance();
-        back = v.findViewById(R.id.back);
-        save = v.findViewById(R.id.save);
-        searchEditText = v.findViewById(R.id.searchEditText);
-        searchImage = v.findViewById(R.id.searchImage);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        recyclerView.setAdapter(adapter);
+        try{
+            viewModel = new ViewModelProvider(requireActivity()).get(SelectedFoodViewModel.class);
+            allFoods = v.findViewById(R.id.allFoods);
+            myFoods = v.findViewById(R.id.myFoods);
+            foodDataArrayList = new ArrayList<FoodData>();
+            adapter = new SelectFoodRecyclerView(getContext(), foodDataArrayList);
+            recyclerView = v.findViewById(R.id.recyclerViews);
+            mDb = FirebaseDatabase.getInstance();
+            back = v.findViewById(R.id.back);
+            save = v.findViewById(R.id.save);
+            searchEditText = v.findViewById(R.id.searchEditText);
+            searchImage = v.findViewById(R.id.searchImage);
+            recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+            recyclerView.setAdapter(adapter);
 
-        addDataOnRecyclerView();
+            addDataOnRecyclerView();
 
-        allFoods.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                updateButtonAppearance(allFoods, myFoods);
-            }
-        });
+            allFoods.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    updateButtonAppearance(allFoods, myFoods);
+                }
+            });
 
-        myFoods.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                updateButtonAppearance(myFoods, allFoods);
-            }
-        });
-        back.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ChangeNutritionFragment fragment = new ChangeNutritionFragment(nutritionId, nutritionDate, nutritionType, selectedFoods, Add);
-                HomeActivity homeActivity = (HomeActivity) getActivity();
-                homeActivity.replaceFragment(fragment);
-            }
-        });
+            myFoods.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    updateButtonAppearance(myFoods, allFoods);
+                }
+            });
+            back.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    ChangeNutritionFragment fragment = new ChangeNutritionFragment(nutritionId, nutritionDate, nutritionType, selectedFoods, Add);
+                    HomeActivity homeActivity = (HomeActivity) getActivity();
+                    homeActivity.replaceFragment(fragment);
+                }
+            });
 
-        save.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                for (FoodData food : foodDataArrayList) {
-                    if (food.isSelected()) {
-                        selectedFoods.add(food);
+            save.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    for (FoodData food : foodDataArrayList) {
+                        if (food.isSelected()) {
+                            selectedFoods.add(food);
+                        }
+                    }
+                    ChangeNutritionFragment fragment = new ChangeNutritionFragment(nutritionId, nutritionDate, nutritionType, selectedFoods, Add);
+                    HomeActivity homeActivity = (HomeActivity) getActivity();
+                    homeActivity.replaceFragment(fragment);
+                }
+            });
+            searchEditText.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+                    searchText = searchEditText.getText().toString().trim();
+                    if (searchText.isEmpty()) {
+                        searchImage.setClickable(false);
+                        searchImage.setImageResource(R.drawable.search);
+                        addDataOnRecyclerView();
+                    } else {
+                        searchImage.setClickable(true);
+                        searchImage.setImageResource(R.drawable.close);
+                        filterFoods(searchText);
                     }
                 }
-                ChangeNutritionFragment fragment = new ChangeNutritionFragment(nutritionId, nutritionDate, nutritionType, selectedFoods, Add);
-                HomeActivity homeActivity = (HomeActivity) getActivity();
-                homeActivity.replaceFragment(fragment);
-            }
-        });
-        searchEditText.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
 
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                searchText = searchEditText.getText().toString().trim();
-                if (searchText.isEmpty()) {
+                @Override
+                public void afterTextChanged(Editable s) {}
+            });
+            searchImage.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    searchEditText.setText(null);
                     searchImage.setClickable(false);
                     searchImage.setImageResource(R.drawable.search);
-                    addDataOnRecyclerView();
-                } else {
-                    searchImage.setClickable(true);
-                    searchImage.setImageResource(R.drawable.close);
-                    filterFoods(searchText);
                 }
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {}
-        });
-        searchImage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                searchEditText.setText(null);
-                searchImage.setClickable(false);
-                searchImage.setImageResource(R.drawable.search);
-            }
-        });
-
-
+            });
+        }
+        catch (Exception exception) {
+            CustomDialog dialogFragment = new CustomDialog("Произошла ошибка: " + exception.getMessage(), false);
+            dialogFragment.show(getParentFragmentManager(), "custom_dialog");
+        }
     }
 
     private void addDataOnRecyclerView() {
-        ValueEventListener valueEventListener = new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if (foodDataArrayList.size() > 0) {
-                    foodDataArrayList.clear();
+        try {
+            ValueEventListener valueEventListener = new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    if (foodDataArrayList.size() > 0) {
+                        foodDataArrayList.clear();
+                    }
+                    for (DataSnapshot ds : snapshot.getChildren()) {
+                        ds.getValue();
+                        FoodData ps = ds.getValue(FoodData.class);
+                        assert ps != null;
+
+                        foodDataArrayList.add(ps);
+
+                    }
+
+                    findAndRemoveDuplicates(selectedFoods, foodDataArrayList);
+
+                    foodDataArrayList.sort(new SortByName());
+                    adapter.notifyDataSetChanged();
                 }
-                for (DataSnapshot ds : snapshot.getChildren()) {
-                    ds.getValue();
-                    FoodData ps = ds.getValue(FoodData.class);
-                    assert ps != null;
 
-                    foodDataArrayList.add(ps);
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
 
                 }
+            };
+            ref =  mDb.getReference().child("foods");
 
-                findAndRemoveDuplicates(selectedFoods, foodDataArrayList);
-
-                foodDataArrayList.sort(new SortByName());
-                adapter.notifyDataSetChanged();
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        };
-        ref =  mDb.getReference().child("foods");
-
-        ref.addValueEventListener(valueEventListener);
+            ref.addValueEventListener(valueEventListener);
+        }
+        catch (Exception exception) {
+            CustomDialog dialogFragment = new CustomDialog("Произошла ошибка: " + exception.getMessage(), false);
+            dialogFragment.show(getParentFragmentManager(), "custom_dialog");
+        }
     }
 
     public void findAndRemoveDuplicates(ArrayList<FoodData> list1, ArrayList<FoodData> list2) {
@@ -212,27 +223,33 @@ public class FoodFragment extends Fragment {
         System.out.println("Найденные совпадающие элементы удалены из обоих списков.");
     }
     private void filterFoods(String searchText) {
-        ref = mDb.getReference().child("foods");
-        ref.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                foodDataArrayList.clear();
-                for (DataSnapshot ds : snapshot.getChildren()) {
-                    FoodData foodData = ds.getValue(FoodData.class);
-                    if (foodData != null ) {
-                        if (foodData.getName().toLowerCase().contains(searchText.toLowerCase())) {
-                            foodDataArrayList.add(foodData);
+        try {
+            ref = mDb.getReference().child("foods");
+            ref.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    foodDataArrayList.clear();
+                    for (DataSnapshot ds : snapshot.getChildren()) {
+                        FoodData foodData = ds.getValue(FoodData.class);
+                        if (foodData != null ) {
+                            if (foodData.getName().toLowerCase().contains(searchText.toLowerCase())) {
+                                foodDataArrayList.add(foodData);
+                            }
                         }
                     }
+                    adapter.notifyDataSetChanged();
                 }
-                adapter.notifyDataSetChanged();
-            }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
 
-            }
-        });
+                }
+            });
+        }
+        catch (Exception exception) {
+            CustomDialog dialogFragment = new CustomDialog("Произошла ошибка: " + exception.getMessage(), false);
+            dialogFragment.show(getParentFragmentManager(), "custom_dialog");
+        }
     }
     private void updateButtonAppearance(AppCompatButton selectedButton, AppCompatButton... otherButtons) {
         for (AppCompatButton button : otherButtons) {
