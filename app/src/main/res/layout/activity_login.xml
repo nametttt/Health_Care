@@ -129,7 +129,7 @@
             android:id="@+id/auth"
             android:layout_marginVertical="15dp"
             android:background="@drawable/button_asset"
-            android:padding="10dp"
+            android:padding="12dp"
             android:textAlignment="center"
             android:text="Войти в профиль"
             android:textAllCaps="false"

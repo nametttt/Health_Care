@@ -7,6 +7,9 @@ import com.google.auth.oauth2.GoogleCredentials;
 import com.google.gson.Gson;
 
 import org.apache.commons.logging.Log;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -78,7 +81,7 @@ public class YaGPTAPI {
                     ArrayList<Map<String, Object>> da = new ArrayList<>();
                     da.add(form);
 
-                    headers.put("Authorization", "Bearer " + "t1.9euelZqMk5OXmMmJkI7Kj5eQkZbImO3rnpWay4yXm52Rk5rNjo3Pz5TIlovl8_cvJHlM-e8YfGR9_t3z929Sdkz57xh8ZH3-zef1656VmszHyY7NnsqJkYqenoyRzsjP7_zF656VmszHyY7NnsqJkYqenoyRzsjP.n45MJ8uizvvKVZ8M3oMLzgnMvHzd8Ah4H0esQJX54rJq8PbexbiZHepHVlHJAi7t1gGhQSRN2Zdyo3fNgQYsCA");
+                    headers.put("Authorization", "Bearer " + "t1.9euelZqUi5LIjpWOks3Nys-Pl8jLze3rnpWay4yXm52Rk5rNjo3Pz5TIlovl8_daHG5M-e9IPz9-_t3z9xpLa0z570g_P37-zef1656Vms_IlMrHl5mVlZGYlMqLjZ6K7_zF656Vms_IlMrHl5mVlZGYlMqLjZ6K.Qg9aRJYsBPrqWD80eCfFiydMLxd9LPG5czG1IzC-Nla6q0xuy-07xU9C5TDHwIkQiUWelf7LyclRSjRbRbVRDQ");
                     body.put("modelUri", "gpt://b1gpel67poamsv8n7e04/yandexgpt/latest");
                     body.put("completionOptions", mapa);
 
@@ -93,6 +96,11 @@ public class YaGPTAPI {
 
                     if (sendMessageResponse.isSuccessful()) {
                         String responses = sendMessageResponse.body().string();
+
+                        String[] vals = responses.split("\\{\"result\"");
+
+
+                        responses = "{\"result\""+vals[vals.length-1];
                         callback.onResponseReceived(responses);
                     } else {
                         callback.onResponseReceived("Error sending message: " + sendMessageResponse.body().string());

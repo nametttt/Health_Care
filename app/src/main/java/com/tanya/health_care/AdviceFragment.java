@@ -2,6 +2,8 @@ package com.tanya.health_care;
 
 import android.os.Bundle;
 import androidx.fragment.app.Fragment;
+
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.util.Log;
@@ -45,7 +47,7 @@ public class AdviceFragment extends Fragment {
     }
 
     private void init(View view) {
-        try{
+        try {
             back = view.findViewById(R.id.back);
             search = view.findViewById(R.id.search);
             searchEditText = view.findViewById(R.id.searchEditText);
@@ -65,12 +67,19 @@ public class AdviceFragment extends Fragment {
                 @Override
                 public void onClick(View v) {
                     adviceLayout.setVisibility(View.GONE);
-                    String searchText = searchEditText.getText().toString().trim() + " Если это не связано со здоровьем, напиши, что отвечать не будешь. Отвечай только по здоровью! Никогда не пиши, кто ты и отвечай покроче и попроще!";
-                    try {
-                        sendRequest(searchText, searchEditText.getText().toString().trim());
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
+                    if (TextUtils.isEmpty(searchEditText.getText().toString())) {
+                        String searchText = searchEditText.getText().toString().trim() + " Если это не связано со здоровьем, напиши, что отвечать не будешь. Отвечай только по здоровью! Никогда не пиши, кто ты и отвечай покроче и попроще!";
+                        try {
+                            sendRequest(searchText, searchEditText.getText().toString().trim());
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
                     }
+                    else{
+                        CustomDialog dialogFragment = new CustomDialog("Введите ваш запрос!", false);
+                        dialogFragment.show(getParentFragmentManager(), "custom_dialog");
+                    }
+
                 }
             });
 
@@ -79,7 +88,6 @@ public class AdviceFragment extends Fragment {
                 @Override
                 public void onClick(View v) {
                     adviceLayout.setVisibility(View.GONE);
-
                     String text = "Как мое питание" + "Сформулируй короче";
                     try {
                         sendRequest(text, nutritionButton.getText().toString());
@@ -132,15 +140,14 @@ public class AdviceFragment extends Fragment {
                     }
                 }
             });
-        }
-        catch(Exception exception) {
+        } catch (Exception exception) {
             CustomDialog dialogFragment = new CustomDialog("Произошла ошибка: " + exception.getMessage(), false);
             dialogFragment.show(getParentFragmentManager(), "custom_dialog");
         }
     }
 
     private void sendRequest(String searchText, String bodys) throws IOException {
-        try{
+        try {
             progressBar.post(new Runnable() {
                 @Override
                 public void run() {
@@ -167,17 +174,17 @@ public class AdviceFragment extends Fragment {
                                     JSONArray alternatives = jsonObject.getJSONObject("result").getJSONArray("alternatives");
                                     if (alternatives.length() > 0) {
                                         JSONObject lastAlternative = alternatives.getJSONObject(alternatives.length() - 1); // Получаем последний фрагмент
-                                        final String text = lastAlternative.getJSONObject("message").getString("text");
+
+                                        final String text = lastAlternative.getJSONObject("message").getString("text").replace("*", "");
                                         header.setText(bodys);
                                         body.setText(text);
                                         progressBar.setVisibility(View.GONE);
                                         adviceLayout.setVisibility(View.VISIBLE);
                                     }
                                 }
-                            }
-                            catch (JSONException e) {
+                            } catch (JSONException e) {
                                 e.printStackTrace();
-                                header.setText(searchText);
+                                header.setText(bodys);
                                 body.setText("Что-то не так");
                                 progressBar.setVisibility(View.GONE);
                                 adviceLayout.setVisibility(View.VISIBLE);
@@ -186,8 +193,7 @@ public class AdviceFragment extends Fragment {
                     });
                 }
             });
-        }
-        catch(Exception exception) {
+        } catch (Exception exception) {
             CustomDialog dialogFragment = new CustomDialog("Произошла ошибка: " + exception.getMessage(), false);
             dialogFragment.show(getParentFragmentManager(), "custom_dialog");
         }

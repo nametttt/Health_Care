@@ -282,6 +282,12 @@ public class AdminChangeUserFragment extends Fragment {
             String newGender = genders.getSelectedItem().toString().trim();
             String newBirthday = birthdays.getText().toString().trim();
 
+            if (newName.isEmpty() || newEmail.isEmpty() || newRole.isEmpty() || newGender.isEmpty() || newBirthday.isEmpty()) {
+                CustomDialog dialogFragment = new CustomDialog("Пожалуйста, заполните все поля!", false);
+                dialogFragment.show(getParentFragmentManager(), "custom_dialog");
+                return;
+            }
+
             if (selectedImageUri != null) {
                 long timeoutMs = 3000;
                 ProgressBarDialog progressDialogFragment = ProgressBarDialog.newInstance(timeoutMs);

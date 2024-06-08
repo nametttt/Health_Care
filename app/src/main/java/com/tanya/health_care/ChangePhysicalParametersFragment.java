@@ -18,6 +18,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.NumberPicker;
 import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -36,6 +38,12 @@ import java.util.Date;
 import java.util.Locale;
 
 public class ChangePhysicalParametersFragment extends Fragment {
+
+    private LinearLayout heightPickerLayout, weightPickerLayout;
+    private TextView heightLabel, weightLabel;
+    private TextView heightValue, weightValue;
+    private LinearLayout currentActiveLayout;
+    private NumberPicker numberPickerHeightWhole, numberPickerHeightFraction, numberPickerWeightWhole, numberPickerWeightFraction;
 
     public Date date, selectedDate;
     public String path, Add;
@@ -74,8 +82,23 @@ public class ChangePhysicalParametersFragment extends Fragment {
             SimpleDateFormat fmt = new SimpleDateFormat("dd.MM HH:mm", new Locale("ru"));
             exit = v.findViewById(R.id.back);
             add = v.findViewById(R.id.continu);
-            txtheight = v.findViewById(R.id.height);
-            txtweight = v.findViewById(R.id.weight);
+            heightPickerLayout = v.findViewById(R.id.height_picker_layout);
+            weightPickerLayout = v.findViewById(R.id.weight_picker_layout);
+            heightLabel = v.findViewById(R.id.height_label);
+            weightLabel = v.findViewById(R.id.weight_label);
+            heightValue = v.findViewById(R.id.height_value);
+            weightValue = v.findViewById(R.id.weight_value);
+
+            numberPickerHeightWhole = v.findViewById(R.id.number_picker_height_whole);
+            numberPickerHeightFraction = v.findViewById(R.id.number_picker_height_fraction);
+            numberPickerWeightWhole = v.findViewById(R.id.number_picker_weight_whole);
+            numberPickerWeightFraction = v.findViewById(R.id.number_picker_weight_fraction);
+
+            setupNumberPicker(numberPickerHeightWhole, 50, 200, 170);
+            setupNumberPicker(numberPickerHeightFraction, 0, 9, 1);
+            setupNumberPicker(numberPickerWeightWhole, 30, 150, 60);
+            setupNumberPicker(numberPickerWeightFraction, 0, 9, 1);
+
             TextView dateText = v.findViewById(R.id.dateText);
             Button dateButton = v.findViewById(R.id.dateButton);
 
@@ -92,9 +115,18 @@ public class ChangePhysicalParametersFragment extends Fragment {
             {
                 dateButton.setVisibility(View.VISIBLE);
                 dateText.setVisibility(View.VISIBLE);
-                txtheight.setText(String.valueOf(height));
-                txtweight.setText(String.valueOf(weight));
                 dateButton.setText(fmt.format(date));
+                int wholeHeight = (int) height;
+                int fractionHeight = (int) ((height - wholeHeight) * 10); // Вычисление дробной части роста
+                int wholeWeight = (int) weight;
+                int fractionWeight = (int) ((weight - wholeWeight) * 10); // Вычисление дробной части веса
+
+                heightValue.setText(String.format(Locale.getDefault(), "%d.%d", wholeHeight, fractionHeight));
+                weightValue.setText(String.format(Locale.getDefault(), "%d.%d", wholeWeight, fractionWeight));
+                numberPickerHeightWhole.setValue(wholeHeight);
+                numberPickerHeightFraction.setValue(fractionHeight);
+                numberPickerWeightWhole.setValue(wholeWeight);
+                numberPickerWeightFraction.setValue(fractionWeight);
 
                 dateButton.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -114,31 +146,78 @@ public class ChangePhysicalParametersFragment extends Fragment {
                 }
             });
 
+
+            heightLabel.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    toggleLinearLayout(heightPickerLayout, heightValue);
+                }
+            });
+
+            heightValue.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    toggleLinearLayout(heightPickerLayout, heightValue);
+                }
+            });
+
+            weightLabel.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    toggleLinearLayout(weightPickerLayout, weightValue);
+                }
+            });
+
+            weightValue.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    toggleLinearLayout(weightPickerLayout, weightValue);
+                }
+            });
+
+            numberPickerHeightWhole.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
+                @Override
+                public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
+                    updateHeightValue();
+                }
+            });
+
+            numberPickerHeightFraction.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
+                @Override
+                public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
+                    updateHeightValue();
+                }
+            });
+
+            numberPickerWeightWhole.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
+                @Override
+                public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
+                    updateWeightValue();
+                }
+            });
+
+            numberPickerWeightFraction.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
+                @Override
+                public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
+                    updateWeightValue();
+                }
+            });
+
             add.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     HomeActivity homeActivity = (HomeActivity) getActivity();
 
-                    String heightValue = txtheight.getText().toString().trim();
-                    String weightValue = txtweight.getText().toString().trim();
+                    float heightValue = numberPickerHeightWhole.getValue() + (numberPickerHeightFraction.getValue() / 10.0f);
+                    float weightValue = numberPickerWeightWhole.getValue() + (numberPickerWeightFraction.getValue() / 10.0f);
 
-                    if (TextUtils.isEmpty(heightValue) || TextUtils.isEmpty(weightValue)) {
-                        CustomDialog dialogFragment = new CustomDialog( "Пожалуйста, заполните все поля!", false);
-                        dialogFragment.show(getParentFragmentManager(), "custom_dialog");
-
-                        return;
-                    }
-
-                    float heightFloat = Float.parseFloat(heightValue);
-                    float weightFloat = Float.parseFloat(weightValue);
-
-                    if (heightFloat < 0 || heightFloat > 250) {
+                    if (heightValue < 0 || heightValue > 250) {
                         CustomDialog dialogFragment = new CustomDialog("Недопустимые значения для роста!", false);
                         dialogFragment.show(getParentFragmentManager(), "custom_dialog");
                         return;
                     }
 
-                    if(weightFloat < 0 || weightFloat > 500)
+                    if(weightValue < 0 || weightValue > 500)
                     {
                         CustomDialog dialogFragment = new CustomDialog("Недопустимые значения для веса!", false);
                         dialogFragment.show(getParentFragmentManager(), "custom_dialog");
@@ -150,7 +229,7 @@ public class ChangePhysicalParametersFragment extends Fragment {
 
                         ref = mDb.getReference("users").child(pC.getSplittedPathChild(user.getEmail())).child("characteristic").child("physicalParameters").push();
 
-                        physicalParametersData = new PhysicalParametersData(ref.getKey().toString(), heightFloat, weightFloat, selectedDate);
+                        physicalParametersData = new PhysicalParametersData(ref.getKey().toString(), heightValue, weightValue, selectedDate);
 
                         if ( ref != null){
                             ref.setValue(physicalParametersData);
@@ -187,7 +266,7 @@ public class ChangePhysicalParametersFragment extends Fragment {
 
                             Date date = cal.getTime();
 
-                            PhysicalParametersData physicalParametersData = new PhysicalParametersData(path, heightFloat, weightFloat, date);
+                            PhysicalParametersData physicalParametersData = new PhysicalParametersData(path, heightValue, weightValue, date);
                             ref.setValue(physicalParametersData);
 
                             CustomDialog dialogFragment = new CustomDialog("Изменение прошло успешно!", true);
@@ -241,6 +320,37 @@ public class ChangePhysicalParametersFragment extends Fragment {
             CustomDialog dialogFragment = new CustomDialog(e.getMessage(), false);
             dialogFragment.show(getParentFragmentManager(), "custom_dialog");
         }
+    }
+    private void toggleLinearLayout(LinearLayout layout, TextView valueTextView) {
+        if (currentActiveLayout != null && currentActiveLayout != layout) {
+            currentActiveLayout.setVisibility(View.GONE);
+        }
+
+        if (layout.getVisibility() == View.VISIBLE) {
+            layout.setVisibility(View.GONE);
+        } else {
+            layout.setVisibility(View.VISIBLE);
+            currentActiveLayout = layout;
+        }
+    }
+
+    private void setupNumberPicker(NumberPicker numberPicker, int minValue, int maxValue, int currentValue) {
+        numberPicker.setMinValue(minValue);
+        numberPicker.setMaxValue(maxValue);
+        numberPicker.setValue(currentValue);
+        numberPicker.setWrapSelectorWheel(false);
+    }
+
+    private void updateHeightValue() {
+        int whole = numberPickerHeightWhole.getValue();
+        int fraction = numberPickerHeightFraction.getValue();
+        heightValue.setText(whole + "." + fraction);
+    }
+
+    private void updateWeightValue() {
+        int whole = numberPickerWeightWhole.getValue();
+        int fraction = numberPickerWeightFraction.getValue();
+        weightValue.setText(whole + "." + fraction);
     }
 
 }

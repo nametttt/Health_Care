@@ -151,8 +151,8 @@ public class AdminChangeArticleFragment extends Fragment {
                             if(selectedImageUri != null) {
                                 uploadArticleWithImage(titleText, descriptionText, categoryText, accessText);
                             } else {
-                                Toast.makeText(getContext(), "Выберите изображение", Toast.LENGTH_SHORT).show();
-                            }
+                                CustomDialog dialogFragment = new CustomDialog("Пожалуйста, выберите изображение!", false);
+                                dialogFragment.show(getParentFragmentManager(), "custom_dialog");                            }
                         } else {
                             CustomDialog dialogFragment = new CustomDialog("Пожалуйста, заполните все поля!", false);
                             dialogFragment.show(getParentFragmentManager(), "custom_dialog");
@@ -166,13 +166,9 @@ public class AdminChangeArticleFragment extends Fragment {
 
                         if (!TextUtils.isEmpty(titleText) && !TextUtils.isEmpty(descriptionText)
                                 && !TextUtils.isEmpty(categoryText) && !TextUtils.isEmpty(accessText)) {
-                            if(selectedImageUri != null) {
-                                updateArticle(titleText, descriptionText, categoryText, accessText, selectedImageUri);
+                            updateArticle(titleText, descriptionText, categoryText, accessText);
 
-                            } else {
-                                Toast.makeText(getContext(), "Выберите изображение", Toast.LENGTH_SHORT).show();
-                            }
-                            } else {
+                        } else {
                             CustomDialog dialogFragment = new CustomDialog( "Пожалуйста, заполните все поля!", false);
                             dialogFragment.show(getParentFragmentManager(), "custom_dialog");
                         }
@@ -269,169 +265,147 @@ public class AdminChangeArticleFragment extends Fragment {
 
                                 }
                             });
-                            AdminHomeActivity homeActivity = (AdminHomeActivity) getActivity();
-                            homeActivity.replaceFragment(new AdminArticleFragment());
                         }).addOnFailureListener(e -> {
-                            Toast.makeText(getContext(), "Ошибка при получении ссылки на загруженное изображение", Toast.LENGTH_SHORT).show();
+                            CustomDialog dialogFragment = new CustomDialog("Ошибка при добавлении статьи!", false);
+                            dialogFragment.show(getParentFragmentManager(), "custom_dialog");
                         });
                     })
                     .addOnFailureListener(e -> {
-                        Toast.makeText(getContext(), "Ошибка при загрузке изображения в Storage", Toast.LENGTH_SHORT).show();
+                        CustomDialog dialogFragment = new CustomDialog("Ошибка при добавлении изображения!", false);
+                        dialogFragment.show(getParentFragmentManager(), "custom_dialog");
                     });
         } catch (Exception e) {
-            CustomDialog dialogFragment = new CustomDialog( e.getMessage(), false);
+            CustomDialog dialogFragment = new CustomDialog(e.getMessage(), false);
             dialogFragment.show(getParentFragmentManager(), "custom_dialog");
         }
     }
 
-
-    private void updateArticle(String titleText, String descriptionText, String categoryText, String accessText, Uri selectedImageUri) {
+    private void updateArticle(String titleText, String descriptionText, String categoryText, String accessText) {
         try {
-            DatabaseReference ref = FirebaseDatabase.getInstance().getReference("articles").child(uid);
+            ProgressBarDialog progressDialogFragment = ProgressBarDialog.newInstance(2000);
+            progressDialogFragment.show(getParentFragmentManager(), "ProgressDialog");
 
-            Task<Void> updateDataTask = ref.child("title").setValue(titleText)
-                    .continueWithTask(task -> ref.child("description").setValue(descriptionText))
-                    .continueWithTask(task -> ref.child("category").setValue(categoryText))
-                    .continueWithTask(task -> ref.child("access").setValue(accessText));
+            FirebaseDatabase mDb = FirebaseDatabase.getInstance();
+            DatabaseReference ref = mDb.getReference("articles").child(uid);
 
-            if (selectedImageUri != null && !selectedImageUri.toString().equals(finalResId)) {
+            // Update image if selected
+            if (selectedImageUri != null) {
+                String imagePath = "articleImages/" + uid + ".jpg";
+                StorageReference imageRef = FirebaseStorage.getInstance().getReference().child(imagePath);
 
-                long timeoutMs = 5000;
-                ProgressBarDialog progressDialogFragment = ProgressBarDialog.newInstance(timeoutMs);
-                progressDialogFragment.show(getParentFragmentManager(), "ProgressDialog");
-
-                StorageReference imageRef = FirebaseStorage.getInstance().getReference()
-                        .child("articleImages/" + uid + ".jpg");
-
-                Task<Uri> uploadImageTask = imageRef.putFile(selectedImageUri)
-                        .continueWithTask(task -> {
-                            if (task.isSuccessful()) {
-                                return imageRef.getDownloadUrl();
-                            } else {
-                                throw task.getException();
-                            }
+                imageRef.putFile(selectedImageUri)
+                        .addOnSuccessListener(taskSnapshot -> {
+                            imageRef.getDownloadUrl().addOnSuccessListener(uri -> {
+                                ref.child("title").setValue(titleText);
+                                ref.child("description").setValue(descriptionText);
+                                ref.child("image").setValue(uri.toString());
+                                ref.child("category").setValue(categoryText);
+                                ref.child("access").setValue(accessText);
+                                CustomDialog dialogFragment = new CustomDialog("Статья успешно обновлена!", true);
+                                dialogFragment.show(getParentFragmentManager(), "custom_dialog");
+                            });
+                        })
+                        .addOnFailureListener(e -> {
+                            CustomDialog dialogFragment = new CustomDialog("Ошибка при обновлении изображения!", false);
+                            dialogFragment.show(getParentFragmentManager(), "custom_dialog");
                         });
-
-                Tasks.whenAllComplete(updateDataTask, uploadImageTask).addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        Uri downloadUri = uploadImageTask.getResult();
-                        ref.child("image").setValue(downloadUri.toString()).addOnCompleteListener(imageUpdateTask -> {
-                            if (imageUpdateTask.isSuccessful()) {
-                                AdminHomeActivity homeActivity = (AdminHomeActivity) getActivity();
-                                AdminArticleFragment fragment = new AdminArticleFragment();
-                                homeActivity.replaceFragment(fragment);
-                            } else {
-                            }
-                        });
-                    } else {
-                    }
-                });
             } else {
-                updateDataTask.addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        AdminHomeActivity homeActivity = (AdminHomeActivity) getActivity();
-                        AdminArticleFragment fragment = new AdminArticleFragment();
-                        homeActivity.replaceFragment(fragment);
-                    }
-                    else {
-
-                    }
-                });
+                // Update article without changing the image
+                ref.child("title").setValue(titleText);
+                ref.child("description").setValue(descriptionText);
+                ref.child("category").setValue(categoryText);
+                ref.child("access").setValue(accessText);
+                CustomDialog dialogFragment = new CustomDialog("Статья успешно обновлена!", true);
+                dialogFragment.show(getParentFragmentManager(), "custom_dialog");
             }
         } catch (Exception e) {
+            CustomDialog dialogFragment = new CustomDialog(e.getMessage(), false);
+            dialogFragment.show(getParentFragmentManager(), "custom_dialog");
         }
     }
 
     private void deleteArticle() {
         try {
-            DatabaseReference articleRef = FirebaseDatabase.getInstance().getReference().child("articles");
-
-            articleRef.child(uid).removeValue()
-                    .addOnCompleteListener(task -> {
-                        if (task.isSuccessful()) {
-                            CustomDialog dialogFragment = new CustomDialog("Cтатья успешно удалена!", true);
-                            dialogFragment.show(getParentFragmentManager(), "custom_dialog");
-                            AdminHomeActivity homeActivity = (AdminHomeActivity) getActivity();
-                            homeActivity.replaceFragment(new AdminArticleFragment());
-                        } else {
-                            CustomDialog dialogFragment = new CustomDialog("Ошибка при удалении статьи!", false);
-                            dialogFragment.show(getParentFragmentManager(), "custom_dialog");
-                        }
-                    });
-        } catch (Exception e) {
-            CustomDialog dialogFragment = new CustomDialog( e.getMessage(), false);
-            dialogFragment.show(getParentFragmentManager(), "custom_dialog");
-        }
-    }
-
-    public void ChangePhoto() {
-        try{
-            AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-            builder.setTitle("Выберите способ");
-            String[] options = {"Галерея", "Камера"};
-            builder.setItems(options, new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    if (which == 0) {
-                        Intent galleryIntent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                        startActivityForResult(galleryIntent, PICK_IMAGE_REQUEST);
-                    } else if (which == 1) {
-                        dispatchTakePictureIntent();
-                    }
+            FirebaseDatabase mDb = FirebaseDatabase.getInstance();
+            DatabaseReference ref = mDb.getReference("articles").child(uid);
+            ref.removeValue().addOnCompleteListener(task -> {
+                if (task.isSuccessful()) {
+                    CustomDialog dialogFragment = new CustomDialog("Статья успешно удалена!", true);
+                    dialogFragment.show(getParentFragmentManager(), "custom_dialog");
+                    AdminHomeActivity homeActivity = (AdminHomeActivity) getActivity();
+                    AdminArticleFragment fragment = new AdminArticleFragment();
+                    homeActivity.replaceFragment(fragment);
+                } else {
+                    CustomDialog dialogFragment = new CustomDialog("Ошибка при удалении статьи!", false);
+                    dialogFragment.show(getParentFragmentManager(), "custom_dialog");
                 }
             });
-            builder.show();
-        }
-        catch(Exception exception) {
-            CustomDialog dialogFragment = new CustomDialog("Произошла ошибка: " + exception.getMessage(), false);
+        } catch (Exception e) {
+            CustomDialog dialogFragment = new CustomDialog(e.getMessage(), false);
             dialogFragment.show(getParentFragmentManager(), "custom_dialog");
         }
     }
 
-    private void dispatchTakePictureIntent() {
+    private void ChangePhoto() {
+        final String[] options = {"Выбрать из галереи", "Сделать снимок"};
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setTitle("Выберите изображение");
+        builder.setItems(options, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                switch (which) {
+                    case 0:
+                        openGallery();
+                        break;
+                    case 1:
+                        openCamera();
+                        break;
+                }
+            }
+        });
+        builder.show();
+    }
+
+    private void openGallery() {
+        Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        startActivityForResult(intent, PICK_IMAGE_REQUEST);
+    }
+
+    private void openCamera() {
         ContentValues values = new ContentValues();
         values.put(MediaStore.Images.Media.TITLE, "New Picture");
         values.put(MediaStore.Images.Media.DESCRIPTION, "From your Camera");
-        selectedImageUri = getContext().getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
-        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, selectedImageUri);
-        startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+        selectedImageUri = getActivity().getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, selectedImageUri);
+        startActivityForResult(intent, REQUEST_IMAGE_CAPTURE);
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        try{
-            super.onActivityResult(requestCode, resultCode, data);
-            if (resultCode == RESULT_OK) {
-                if (requestCode == PICK_IMAGE_REQUEST && data != null) {
-                    Uri selectedImage = data.getData();
-                    CropImage.activity(selectedImage)
-                            .setAspectRatio(1, 1)
-                            .setRequestedSize(600, 600)
-                            .setCropShape(CropImageView.CropShape.RECTANGLE)
-                            .start(getContext(), this);
-                } else if (requestCode == REQUEST_IMAGE_CAPTURE && selectedImageUri != null) {
-                    CropImage.activity(selectedImageUri)
-                            .setAspectRatio(1, 1)
-                            .setRequestedSize(600, 600)
-                            .setCropShape(CropImageView.CropShape.RECTANGLE)
-                            .start(getContext(), this);
-                } else if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE && data != null) {
-                    CropImage.ActivityResult result = CropImage.getActivityResult(data);
-                    if (resultCode == RESULT_OK) {
-                        selectedImageUri = result.getUri();
-                        image.setImageURI(selectedImageUri);
-                    } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
-                        Exception error = result.getError();
-                        Toast.makeText(getContext(), "Ошибка при обрезке изображения: " + error.getMessage(), Toast.LENGTH_SHORT).show();
-                    }
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK) {
+            if (requestCode == PICK_IMAGE_REQUEST && data != null && data.getData() != null) {
+                selectedImageUri = data.getData();
+                CropImage.activity(selectedImageUri)
+                        .setGuidelines(CropImageView.Guidelines.ON)
+                        .setAspectRatio(16, 9)
+                        .start(getContext(), this);
+            } else if (requestCode == REQUEST_IMAGE_CAPTURE) {
+                CropImage.activity(selectedImageUri)
+                        .setGuidelines(CropImageView.Guidelines.ON)
+                        .setAspectRatio(16, 9)
+                        .start(getContext(), this);
+            } else if (requestCode == CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
+                CropImage.ActivityResult result = CropImage.getActivityResult(data);
+                if (resultCode == Activity.RESULT_OK) {
+                    selectedImageUri = result.getUri();
+                    image.setImageURI(selectedImageUri);
+                } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
+                    CustomDialog dialogFragment = new CustomDialog(result.getError().getMessage(), false);
+                    dialogFragment.show(getParentFragmentManager(), "custom_dialog");
                 }
             }
         }
-        catch(Exception exception) {
-            CustomDialog dialogFragment = new CustomDialog("Произошла ошибка: " + exception.getMessage(), false);
-            dialogFragment.show(getParentFragmentManager(), "custom_dialog");
-        }
     }
 }
-

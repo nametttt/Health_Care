@@ -4,12 +4,17 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -43,6 +48,7 @@ import in.akshit.horizontalcalendar.Tools;
 
 
 public class HealthCommonFragment extends Fragment {
+    Toolbar toolbar;
 
     Button exit, add;
     TextView pressure, temperature, pulse, dateText;
@@ -75,6 +81,26 @@ public class HealthCommonFragment extends Fragment {
         return v;
     }
 
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.water_menu, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        HomeActivity homeActivity = (HomeActivity) getActivity();
+        switch (item.getItemId()) {
+            case R.id.normal:
+                homeActivity.replaceFragment(new WaterValueFragment());
+                return true;
+            case R.id.aboutCharacteristic:
+                homeActivity.replaceFragment(new AboutWaterFragment());
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
     void init(View v){
         try {
             user = FirebaseAuth.getInstance().getCurrentUser();
@@ -91,6 +117,11 @@ public class HealthCommonFragment extends Fragment {
             recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
             recyclerView.setAdapter(adapter);
             calendarView = v.findViewById(R.id.calendar);
+            toolbar = v.findViewById(R.id.toolbar);
+            ((AppCompatActivity) requireActivity()).setSupportActionBar(toolbar);
+
+            setHasOptionsMenu(true);
+
             MyCalendar();
 
             if(newDate != null){

@@ -5,6 +5,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -19,7 +20,6 @@ import android.widget.Button;
 import android.widget.CalendarView;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.Toolbar;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -49,9 +49,10 @@ import in.akshit.horizontalcalendar.HorizontalCalendarView;
 import in.akshit.horizontalcalendar.Tools;
 
 public class PhysicalParametersFragment extends Fragment {
+    Toolbar toolbar;
 
     Button exit, add;
-    TextView imt, height, weight, aboutImt, dateText;
+    TextView imt, height, weight, aboutImt, dateText, imtText;
     DatabaseReference ref;
     GetSplittedPathChild pC = new GetSplittedPathChild();
     FirebaseDatabase mDb;
@@ -81,7 +82,26 @@ public class PhysicalParametersFragment extends Fragment {
         return v;
     }
 
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.water_menu, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
 
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        HomeActivity homeActivity = (HomeActivity) getActivity();
+        switch (item.getItemId()) {
+            case R.id.normal:
+                homeActivity.replaceFragment(new WaterValueFragment());
+                return true;
+            case R.id.aboutCharacteristic:
+                homeActivity.replaceFragment(new AboutWaterFragment());
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
     private void initViews(View v) {
         try {
             user = FirebaseAuth.getInstance().getCurrentUser();
@@ -91,8 +111,11 @@ public class PhysicalParametersFragment extends Fragment {
             imt = v.findViewById(R.id.imt);
             height = v.findViewById(R.id.height);
             weight = v.findViewById(R.id.weight);
-            aboutImt = v.findViewById(R.id.aboutImt);
+            aboutImt = v.findViewById(R.id.imtText);
+            toolbar = v.findViewById(R.id.toolbar);
+            ((AppCompatActivity) requireActivity()).setSupportActionBar(toolbar);
 
+            setHasOptionsMenu(true);
             dateText = v.findViewById(R.id.dateText);
 
             physicalDataArrayList = new ArrayList<>();
@@ -248,7 +271,6 @@ public class PhysicalParametersFragment extends Fragment {
                 currentHeight = totalHeight / dataCount;
                 currentWeight = totalWeight / dataCount;
                 currentImt = calculateImt(currentWeight, currentHeight);
-
                 updateImtViews();
             } else {
                 resetImtViews();
@@ -264,13 +286,6 @@ public class PhysicalParametersFragment extends Fragment {
         return Math.round((weight / (height * height / 10000)) * 10.0f) / 10.0f;
     }
 
-    private void updateImtViews() {
-        imt.setText(String.valueOf(currentImt));
-        weight.setText(String.valueOf(currentWeight));
-        height.setText(String.valueOf(currentHeight));
-        aboutImt.setVisibility(View.VISIBLE);
-        aboutImt.setText(getImtInfo(currentImt, currentHeight));
-    }
 
     private void updateDateText(Date date) {
         SimpleDateFormat dateFormate = new SimpleDateFormat("dd.MM.yyyy");
@@ -290,31 +305,20 @@ public class PhysicalParametersFragment extends Fragment {
         return fmt.format(date1).equals(fmt.format(date2));
     }
 
-    private String getImtInfo(float imt, float height) {
-        String category;
-        String recommendation;
-
-
-        if (imt < 18.5) {
-            category = "недостаточный вес";
-            float normalWeight = 20.5f * (height / 100) * (height / 100);
-            recommendation = String.format("Советуем вам увеличить вес до уровня %.1f кг для вашего роста. Проконсультируйтесь с врачом для разработки плана.", normalWeight);
-        } else if (imt >= 18.5 && imt < 24.9) {
-            category = "нормальный вес";
-            float normalWeight = 20.0f * (height / 100) * (height / 100);
-            recommendation = String.format("Рекомендуем вам поддерживать текущий вес для обеспечения здоровья. Нормальный вес при вашем росте примерно %.1f кг.", normalWeight);
-        } else if (imt >= 25 && imt < 29.9) {
-            category = "избыточный вес";
-            float minNormalWeight = 18.5f * (height / 100) * (height / 100);
-            float maxNormalWeight = 24.9f * (height / 100) * (height / 100);
-            recommendation = String.format("Рекомендуется снизить вес до уровня %.1f - %.1f кг для вашего роста.", minNormalWeight, maxNormalWeight);
+    private void updateImtViews() {
+        imt.setText(String.valueOf(currentImt));
+        weight.setText(String.valueOf(currentWeight));
+        height.setText(String.valueOf(currentHeight));
+        if(currentImt < 18.5) {
+            // Если ИМТ меньше 18.5, то текст "Недостаточный вес"
+            aboutImt.setText("Недостаточный вес");
+        } else if(currentImt >= 18.5 && currentImt < 24.9) {
+            // Если ИМТ от 18.5 до 24.9, то текст "В норме"
+            aboutImt.setText("В норме");
         } else {
-            category = "ожирение";
-            float normalWeight = 22.0f * (height / 100) * (height / 100);
-            recommendation = String.format("Рекомендуется проконсультироваться с врачом и разработать план для снижения веса. Нормальный вес при вашем росте примерно %.1f кг.", normalWeight);
+            // В противном случае, текст "Превышен"
+            aboutImt.setText("Превышен");
         }
-
-        return "У вас " + category + ". " + recommendation;
     }
 
 }

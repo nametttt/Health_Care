@@ -79,49 +79,175 @@
                     android:hint="Время записи"/>
 
 
-                <TextView
+                <LinearLayout
+                    android:layout_marginVertical="10dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp"
-                    android:layout_marginBottom="5dp"
-                    android:text="Рост"
-                    android:textAlignment="textStart"
-                    android:textColor="@color/darkgray"
-                    android:textSize="20dp" />
+                    android:orientation="vertical"
+                    android:background="@drawable/calendar_asset">
 
-                <EditText
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginVertical="5dp"
-                    android:padding="12dp"
-                    android:textSize="18dp"
-                    android:maxLines="1"
-                    android:id="@+id/height"
-                    android:inputType="numberDecimal"
-                    android:background="@drawable/edit_text_asset"
-                    android:hint="Рост"/>
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginVertical="10dp"
+                        android:orientation="horizontal"
+                        android:padding="10dp">
 
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp"
-                    android:layout_marginBottom="5dp"
-                    android:text="Вес"
-                    android:textAlignment="textStart"
-                    android:textColor="@color/darkgray"
-                    android:textSize="20dp" />
+                        <TextView
+                            android:layout_marginLeft="5dp"
+                            android:id="@+id/height_label"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:layout_marginRight="10dp"
+                            android:text="Ваш рост"
+                            android:textAlignment="textStart"
+                            android:textColor="@color/black"
+                            android:textSize="20dp"
+                            android:textStyle="bold" />
 
-                <EditText
+                        <TextView
+                            android:id="@+id/height_value"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="170.1"
+                            android:textAlignment="textEnd"
+                            android:textColor="@color/black"
+                            android:textSize="20dp"
+                            android:paddingEnd="10dp" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="см"
+                            android:textAlignment="textEnd"
+                            android:textColor="@color/black"
+                            android:textSize="20dp"
+                            android:paddingEnd="10dp" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/height_picker_layout"
+                        android:layout_width="match_parent"
+                        android:visibility="gone"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <NumberPicker
+                            android:id="@+id/number_picker_height_whole"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:theme="@style/DefaultNumberPickerTheme"
+                            android:layout_weight="1"/>
+
+                        <TextView
+                            android:id="@+id/height_dot"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="."
+                            android:textColor="@color/black"
+                            android:textStyle="bold"
+                            android:textSize="30sp"
+                            android:paddingTop="4dp"
+                            android:layout_gravity="center"
+                            android:paddingBottom="4dp"/>
+
+                        <NumberPicker
+                            android:id="@+id/number_picker_height_fraction"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:theme="@style/DefaultNumberPickerTheme"
+                            android:layout_weight="1"/>
+                    </LinearLayout>
+
+
+                </LinearLayout>
+
+
+                <LinearLayout
+                    android:layout_marginVertical="10dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginVertical="5dp"
-                    android:padding="12dp"
-                    android:textSize="18dp"
-                    android:maxLines="1"
-                    android:id="@+id/weight"
-                    android:inputType="numberDecimal"
-                    android:background="@drawable/edit_text_asset"
-                    android:hint="Вес"/>
+                    android:orientation="vertical"
+                    android:background="@drawable/calendar_asset">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginVertical="10dp"
+                        android:orientation="horizontal"
+                        android:padding="10dp">
+
+                        <TextView
+                            android:layout_marginLeft="5dp"
+                            android:id="@+id/weight_label"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:layout_marginRight="10dp"
+                            android:text="Ваш вес"
+                            android:textAlignment="textStart"
+                            android:textColor="@color/black"
+                            android:textSize="20dp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/weight_value"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="60.1"
+                            android:textAlignment="textEnd"
+                            android:textColor="@color/black"
+                            android:textSize="20dp"
+                            android:paddingEnd="10dp" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="кг"
+                            android:textAlignment="textEnd"
+                            android:textColor="@color/black"
+                            android:textSize="20dp"
+                            android:paddingEnd="10dp" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/weight_picker_layout"
+                        android:layout_width="match_parent"
+                        android:visibility="gone"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <NumberPicker
+                            android:id="@+id/number_picker_weight_whole"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:theme="@style/DefaultNumberPickerTheme"
+                            android:layout_weight="1"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="."
+                            android:textColor="@color/black"
+                            android:textStyle="bold"
+                            android:textSize="30sp"
+                            android:paddingTop="4dp"
+                            android:layout_gravity="center"
+                            android:paddingBottom="4dp"/>
+
+                        <NumberPicker
+                            android:id="@+id/number_picker_weight_fraction"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:theme="@style/DefaultNumberPickerTheme"
+                            android:layout_weight="1"/>
+                    </LinearLayout>
+
+
+                </LinearLayout>
 
                 <androidx.appcompat.widget.AppCompatButton
                     android:id="@+id/continu"

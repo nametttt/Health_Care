@@ -184,7 +184,7 @@ public class ChangeNutritionFragment extends Fragment {
                     String selectedType = typeFood.getSelectedItem().toString().trim();
 
                     if (TextUtils.isEmpty(selectedType) || selectedFoods.isEmpty()) {
-                        CustomDialog dialogFragment = new CustomDialog( "Пожалуйста, заполните все поля!", false);
+                        CustomDialog dialogFragment = new CustomDialog( "Пожалуйста, выберите продукты!", false);
                         dialogFragment.show(getParentFragmentManager(), "custom_dialog");
                         return;
                     }

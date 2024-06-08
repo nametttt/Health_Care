@@ -126,14 +126,30 @@ public class ChangePasswordFragment extends Fragment {
                 @Override
                 public void onClick(View v) {
                     try {
-                        if (newPassword.getText().length() < 6 || repeatPassword.getText().length() < 6) {
+                        String currentPass = nowPassword.getText().toString();
+                        String newPass = newPassword.getText().toString();
+                        String repeatPass = repeatPassword.getText().toString();
+
+                        if (currentPass.isEmpty() || newPass.isEmpty() || repeatPass.isEmpty()) {
+                            CustomDialog dialog = new CustomDialog("Все поля должны быть заполнены!", false);
+                            dialog.show(getParentFragmentManager(), "customDialog");
+                            return;
+                        }
+
+                        if (newPass.length() < 6 || repeatPass.length() < 6) {
                             CustomDialog dialog = new CustomDialog("Длина пароля должна быть более 6 символов!", false);
                             dialog.show(getParentFragmentManager(), "customDialog");
                             return;
                         }
 
-                        if (!newPassword.getText().toString().equals(repeatPassword.getText().toString())) {
-                            CustomDialog dialog = new CustomDialog( "Пароли не совпадают!", false);
+                        if (!newPass.equals(repeatPass)) {
+                            CustomDialog dialog = new CustomDialog("Пароли не совпадают!", false);
+                            dialog.show(getParentFragmentManager(), "customDialog");
+                            return;
+                        }
+
+                        if (newPass.equals(currentPass)) {
+                            CustomDialog dialog = new CustomDialog("Новый пароль не должен совпадать со старым паролем!", false);
                             dialog.show(getParentFragmentManager(), "customDialog");
                             return;
                         }
@@ -141,28 +157,28 @@ public class ChangePasswordFragment extends Fragment {
                         FirebaseAuth auth = FirebaseAuth.getInstance();
                         FirebaseUser user = auth.getCurrentUser();
 
-                        String newPass = newPassword.getText().toString();
-
                         if (user != null) {
-                            AuthCredential credential = EmailAuthProvider.getCredential(user.getEmail(), nowPassword.getText().toString());
+                            AuthCredential credential = EmailAuthProvider.getCredential(user.getEmail(), currentPass);
                             user.reauthenticate(credential)
                                     .addOnCompleteListener(reauthTask -> {
                                         if (reauthTask.isSuccessful()) {
                                             user.updatePassword(newPass)
                                                     .addOnCompleteListener(updateTask -> {
                                                         if (updateTask.isSuccessful()) {
-                                                            CustomDialog dialog = new CustomDialog( "Пароль успешно изменен!", true);
+                                                            CustomDialog dialog = new CustomDialog("Пароль успешно изменен!", true);
                                                             dialog.show(getParentFragmentManager(), "customDialog");
                                                             nowPassword.getText().clear();
                                                             newPassword.getText().clear();
                                                             repeatPassword.getText().clear();
                                                         } else {
                                                             CustomDialog dialog = new CustomDialog("Произошла непредвиденная ошибка при обновлении пароля!", false);
-                                                            dialog.show(getParentFragmentManager(), "customDialog");                                                  }
+                                                            dialog.show(getParentFragmentManager(), "customDialog");
+                                                        }
                                                     });
                                         } else {
                                             CustomDialog dialog = new CustomDialog("Ошибка при повторной аутентификации пользователя: " + reauthTask.getException(), false);
-                                            dialog.show(getParentFragmentManager(), "customDialog");                                   }
+                                            dialog.show(getParentFragmentManager(), "customDialog");
+                                        }
                                     });
                         }
                     } catch (Exception e) {
@@ -171,6 +187,7 @@ public class ChangePasswordFragment extends Fragment {
                     }
                 }
             });
+
         }
         catch (Exception exception) {
             CustomDialog dialogFragment = new CustomDialog("Произошла ошибка: " + exception.getMessage(), false);

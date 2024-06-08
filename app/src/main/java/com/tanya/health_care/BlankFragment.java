@@ -12,132 +12,108 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.tanya.health_care.R;
+
 public class BlankFragment extends Fragment {
 
-    private TextView systolicLabel, systolicValue, diastolicLabel, diastolicValue, pulseLabel, pulseValue, temperatureLabel, temperatureValue;
-    private NumberPicker numberPickerSystolic, numberPickerDiastolic, numberPickerPulse, numberPickerTemperatureWhole, numberPickerTemperatureFraction;
-    private NumberPicker currentActivePicker;
-    private LinearLayout temperatureLayout;
+    private LinearLayout heightPickerLayout, weightPickerLayout;
+    private TextView heightLabel, weightLabel;
+    private TextView heightValue, weightValue;
+    private LinearLayout currentActiveLayout;
+    private NumberPicker numberPickerHeightWhole, numberPickerHeightFraction, numberPickerWeightWhole, numberPickerWeightFraction;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_blank, container, false);
-        systolicLabel = view.findViewById(R.id.systolic_label);
-        systolicValue = view.findViewById(R.id.systolic_value);
-        diastolicLabel = view.findViewById(R.id.diastolic_label);
-        diastolicValue = view.findViewById(R.id.diastolic_value);
-        pulseLabel = view.findViewById(R.id.pulse_label);
-        pulseValue = view.findViewById(R.id.pulse_value);
-        temperatureLabel = view.findViewById(R.id.temperature_label);
-        temperatureValue = view.findViewById(R.id.temperature_value);
-        temperatureLayout = view.findViewById(R.id.temperatureLayout);
 
-        numberPickerSystolic = view.findViewById(R.id.number_picker_systolic);
-        numberPickerDiastolic = view.findViewById(R.id.number_picker_diastolic);
-        numberPickerPulse = view.findViewById(R.id.number_picker_pulse);
-        numberPickerTemperatureWhole = view.findViewById(R.id.number_picker_temperature_whole);
-        numberPickerTemperatureFraction = view.findViewById(R.id.number_picker_temperature_fraction);
+        heightPickerLayout = view.findViewById(R.id.height_picker_layout);
+        weightPickerLayout = view.findViewById(R.id.weight_picker_layout);
+        heightLabel = view.findViewById(R.id.height_label);
+        weightLabel = view.findViewById(R.id.weight_label);
+        heightValue = view.findViewById(R.id.height_value);
+        weightValue = view.findViewById(R.id.weight_value);
 
-        // Set up NumberPickers
-        setupNumberPicker(numberPickerSystolic, 50, 200, Integer.parseInt(systolicValue.getText().toString()));
-        setupNumberPicker(numberPickerDiastolic, 30, 120, Integer.parseInt(diastolicValue.getText().toString()));
-        setupNumberPicker(numberPickerPulse, 40, 200, Integer.parseInt(pulseValue.getText().toString()));
-        setupNumberPicker(numberPickerTemperatureWhole, 34, 42, (int) Float.parseFloat(temperatureValue.getText().toString()));
-        setupNumberPicker(numberPickerTemperatureFraction, 0, 9, (int) ((Float.parseFloat(temperatureValue.getText().toString()) % 1) * 10));
+        numberPickerHeightWhole = view.findViewById(R.id.number_picker_height_whole);
+        numberPickerHeightFraction = view.findViewById(R.id.number_picker_height_fraction);
+        numberPickerWeightWhole = view.findViewById(R.id.number_picker_weight_whole);
+        numberPickerWeightFraction = view.findViewById(R.id.number_picker_weight_fraction);
 
-        systolicLabel.setOnClickListener(new View.OnClickListener() {
+        setupNumberPicker(numberPickerHeightWhole, 50, 200, 170);
+        setupNumberPicker(numberPickerHeightFraction, 0, 9, 1);
+        setupNumberPicker(numberPickerWeightWhole, 30, 150, 60);
+        setupNumberPicker(numberPickerWeightFraction, 0, 9, 1);
+
+        heightLabel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                toggleNumberPicker(numberPickerSystolic, systolicValue);
+                toggleLinearLayout(heightPickerLayout, heightValue);
             }
         });
 
-        systolicValue.setOnClickListener(new View.OnClickListener() {
+        heightValue.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                toggleNumberPicker(numberPickerSystolic, systolicValue);
+                toggleLinearLayout(heightPickerLayout, heightValue);
             }
         });
 
-        diastolicLabel.setOnClickListener(new View.OnClickListener() {
+        weightLabel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                toggleNumberPicker(numberPickerDiastolic, diastolicValue);
+                toggleLinearLayout(weightPickerLayout, weightValue);
             }
         });
 
-        diastolicValue.setOnClickListener(new View.OnClickListener() {
+        weightValue.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                toggleNumberPicker(numberPickerDiastolic, diastolicValue);
+                toggleLinearLayout(weightPickerLayout, weightValue);
             }
         });
 
-        pulseLabel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                toggleNumberPicker(numberPickerPulse, pulseValue);
-            }
-        });
-
-        pulseValue.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                toggleNumberPicker(numberPickerPulse, pulseValue);
-            }
-        });
-
-        temperatureLabel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                toggleTemperaturePicker();
-            }
-        });
-
-        temperatureValue.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                toggleTemperaturePicker();
-            }
-        });
-
-        numberPickerSystolic.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
+        numberPickerHeightWhole.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
             @Override
             public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
-                systolicValue.setText(String.valueOf(newVal));
+                updateHeightValue();
             }
         });
 
-        numberPickerDiastolic.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
+        numberPickerHeightFraction.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
             @Override
             public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
-                diastolicValue.setText(String.valueOf(newVal));
+                updateHeightValue();
             }
         });
 
-        numberPickerPulse.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
+        numberPickerWeightWhole.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
             @Override
             public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
-                pulseValue.setText(String.valueOf(newVal));
+                updateWeightValue();
             }
         });
 
-        numberPickerTemperatureWhole.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
+        numberPickerWeightFraction.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
             @Override
             public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
-                updateTemperatureValue();
-            }
-        });
-
-        numberPickerTemperatureFraction.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
-            @Override
-            public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
-                updateTemperatureValue();
+                updateWeightValue();
             }
         });
 
         return view;
+    }
+
+    private void toggleLinearLayout(LinearLayout layout, TextView valueTextView) {
+        if (currentActiveLayout != null && currentActiveLayout != layout) {
+            currentActiveLayout.setVisibility(View.GONE);
+        }
+
+        if (layout.getVisibility() == View.VISIBLE) {
+            layout.setVisibility(View.GONE);
+        } else {
+            layout.setVisibility(View.VISIBLE);
+            currentActiveLayout = layout;
+        }
     }
 
     private void setupNumberPicker(NumberPicker numberPicker, int minValue, int maxValue, int currentValue) {
@@ -147,36 +123,15 @@ public class BlankFragment extends Fragment {
         numberPicker.setWrapSelectorWheel(false);
     }
 
-    private void toggleNumberPicker(NumberPicker numberPicker, TextView valueTextView) {
-        if (currentActivePicker != null && currentActivePicker != numberPicker) {
-            currentActivePicker.setVisibility(View.GONE);
-        }
-
-        if (numberPicker.getVisibility() == View.VISIBLE) {
-            numberPicker.setVisibility(View.GONE);
-        } else {
-            numberPicker.setVisibility(View.VISIBLE);
-            numberPicker.setValue(Integer.parseInt(valueTextView.getText().toString()));
-            currentActivePicker = numberPicker;
-        }
+    private void updateHeightValue() {
+        int whole = numberPickerHeightWhole.getValue();
+        int fraction = numberPickerHeightFraction.getValue();
+        heightValue.setText(whole + "." + fraction);
     }
 
-    private void toggleTemperaturePicker() {
-        if (currentActivePicker != null && currentActivePicker != null) {
-            currentActivePicker.setVisibility(View.GONE);
-        }
-
-        if (temperatureLayout.getVisibility() == View.VISIBLE) {
-            temperatureLayout.setVisibility(View.GONE);
-        } else {
-            temperatureLayout.setVisibility(View.VISIBLE);
-            currentActivePicker = null;
-        }
-    }
-
-    private void updateTemperatureValue() {
-        int whole = numberPickerTemperatureWhole.getValue();
-        int fraction = numberPickerTemperatureFraction.getValue();
-        temperatureValue.setText(String.format("%d.%d", whole, fraction));
+    private void updateWeightValue() {
+        int whole = numberPickerWeightWhole.getValue();
+        int fraction = numberPickerWeightFraction.getValue();
+        weightValue.setText(whole + "." + fraction);
     }
 }

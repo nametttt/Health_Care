@@ -13,6 +13,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -86,9 +88,22 @@ public class ProfileFragment extends Fragment {
                 getActivity().startActivity(mainIntent);
             });
 
+            lnDeleteProfile.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    deleteDialog myDialogFragment = new deleteDialog();
+                    FragmentManager manager = getActivity().getSupportFragmentManager();
+                    //myDialogFragment.show(manager, "dialog");
+
+                    FragmentTransaction transaction = manager.beginTransaction();
+                    myDialogFragment.show(transaction, "dialog");
+                }
+            });
+
+
             lnEmail.setOnClickListener(v15 -> {
                 Intent emailIntent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts(
-                        "mailto", "ochy.tickets@gmail.com", null));
+                        "mailto", "healthcaree.mycare@gmail.com", null));
                 emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Возник вопрос");
                 startActivity(Intent.createChooser(emailIntent, "Напишите нам"));
             });
