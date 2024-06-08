@@ -14,6 +14,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.NumberPicker;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -43,7 +45,12 @@ public class ChangeCommonHealthFragment extends Fragment {
     public String path, pressure, Add;
     private int pulses;
     private float temperatures;
-    EditText pressureEditText, pulse, temperature;
+    private TextView systolicLabel, systolicValue, diastolicLabel, diastolicValue, pulseLabel, pulseValue, temperatureLabel, temperatureValue;
+    private NumberPicker numberPickerSystolic, numberPickerDiastolic, numberPickerPulse, numberPickerTemperatureWhole, numberPickerTemperatureFraction;
+    private NumberPicker currentActivePicker;
+    private LinearLayout temperatureLayout;
+    TextView dateText;
+    Button dateButton;
 
     public ChangeCommonHealthFragment(Date selectedDate, String add) {
         this.selectedDate = selectedDate;
@@ -73,15 +80,33 @@ public class ChangeCommonHealthFragment extends Fragment {
             SimpleDateFormat fmt = new SimpleDateFormat("dd.MM HH:mm", new Locale("ru"));
             exit = v.findViewById(R.id.back);
             add = v.findViewById(R.id.continu);
-            pressureEditText = v.findViewById(R.id.pressure);
-            pulse = v.findViewById(R.id.pulse);
-            temperature = v.findViewById(R.id.temperature);
-            TextView dateText = v.findViewById(R.id.dateText);
-            Button dateButton = v.findViewById(R.id.dateButton);
-
+            dateText = v.findViewById(R.id.dateText);
+            dateButton = v.findViewById(R.id.dateButton);
             delete = v.findViewById(R.id.delete);
-            user = FirebaseAuth.getInstance().getCurrentUser();
             mDb = FirebaseDatabase.getInstance();
+            user = FirebaseAuth.getInstance().getCurrentUser();
+
+            systolicLabel = v.findViewById(R.id.systolic_label);
+            systolicValue = v.findViewById(R.id.systolic_value);
+            diastolicLabel = v.findViewById(R.id.diastolic_label);
+            diastolicValue = v.findViewById(R.id.diastolic_value);
+            pulseLabel = v.findViewById(R.id.pulse_label);
+            pulseValue = v.findViewById(R.id.pulse_value);
+            temperatureLabel = v.findViewById(R.id.temperature_label);
+            temperatureValue = v.findViewById(R.id.temperature_value);
+            temperatureLayout = v.findViewById(R.id.temperatureLayout);
+
+            numberPickerSystolic = v.findViewById(R.id.number_picker_systolic);
+            numberPickerDiastolic = v.findViewById(R.id.number_picker_diastolic);
+            numberPickerPulse = v.findViewById(R.id.number_picker_pulse);
+            numberPickerTemperatureWhole = v.findViewById(R.id.number_picker_temperature_whole);
+            numberPickerTemperatureFraction = v.findViewById(R.id.number_picker_temperature_fraction);
+
+            setupNumberPicker(numberPickerSystolic, 50, 200, Integer.parseInt(systolicValue.getText().toString()));
+            setupNumberPicker(numberPickerDiastolic, 30, 120, Integer.parseInt(diastolicValue.getText().toString()));
+            setupNumberPicker(numberPickerPulse, 40, 200, Integer.parseInt(pulseValue.getText().toString()));
+            setupNumberPicker(numberPickerTemperatureWhole, 34, 42, (int) Float.parseFloat(temperatureValue.getText().toString()));
+            setupNumberPicker(numberPickerTemperatureFraction, 0, 9, (int) ((Float.parseFloat(temperatureValue.getText().toString()) % 1) * 10));
 
             if (Add != null)
             {
@@ -92,9 +117,21 @@ public class ChangeCommonHealthFragment extends Fragment {
             {
                 dateButton.setVisibility(View.VISIBLE);
                 dateText.setVisibility(View.VISIBLE);
-                pressureEditText.setText(pressure);
-                pulse.setText(String.valueOf(pulses));
-                temperature.setText(String.valueOf(temperatures));
+                String[] pressureParts = pressure.split("/");
+                numberPickerSystolic.setValue(Integer.parseInt(pressureParts[0]));
+                numberPickerDiastolic.setValue(Integer.parseInt(pressureParts[1]));
+                numberPickerPulse.setValue(pulses);
+
+                int wholeTemp = (int) temperatures;
+                int fracTemp = (int) ((temperatures - wholeTemp) * 10);
+                numberPickerTemperatureWhole.setValue(wholeTemp);
+                numberPickerTemperatureFraction.setValue(fracTemp);
+
+                systolicValue.setText(String.valueOf(pressureParts[0]));
+                diastolicValue.setText(String.valueOf(pressureParts[1]));
+                pulseValue.setText(String.valueOf(pulses));
+                temperatureValue.setText(String.format(Locale.getDefault(), "%d.%d", wholeTemp, fracTemp));
+
                 dateButton.setText(fmt.format(date));
 
                 dateButton.setOnClickListener(new View.OnClickListener() {
@@ -116,83 +153,127 @@ public class ChangeCommonHealthFragment extends Fragment {
             });
 
 
-            InputFilter pressureFilter = new InputFilter() {
+            systolicLabel.setOnClickListener(new View.OnClickListener() {
                 @Override
-                public CharSequence filter(CharSequence source, int start, int end,
-                                           Spanned dest, int dstart, int dend) {
-                    StringBuilder filteredStringBuilder = new StringBuilder(dest);
-
-                    filteredStringBuilder.replace(dstart, dend, source.subSequence(start, end).toString());
-
-                    if (!filteredStringBuilder.toString().matches("[0-9/]*")) {
-                        return "";
-                    }
-
-                    return null;
+                public void onClick(View v) {
+                    toggleNumberPicker(numberPickerSystolic, systolicValue);
                 }
-            };
+            });
 
-            pressureEditText.setFilters(new InputFilter[]{pressureFilter});
+            systolicValue.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    toggleNumberPicker(numberPickerSystolic, systolicValue);
+                }
+            });
 
+            diastolicLabel.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    toggleNumberPicker(numberPickerDiastolic, diastolicValue);
+                }
+            });
+
+            diastolicValue.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    toggleNumberPicker(numberPickerDiastolic, diastolicValue);
+                }
+            });
+
+            pulseLabel.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    toggleNumberPicker(numberPickerPulse, pulseValue);
+                }
+            });
+
+            pulseValue.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    toggleNumberPicker(numberPickerPulse, pulseValue);
+                }
+            });
+
+            temperatureLabel.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    toggleTemperaturePicker();
+                }
+            });
+
+            temperatureValue.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    toggleTemperaturePicker();
+                }
+            });
+
+            numberPickerSystolic.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
+                @Override
+                public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
+                    systolicValue.setText(String.valueOf(newVal));
+                }
+            });
+
+            numberPickerDiastolic.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
+                @Override
+                public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
+                    diastolicValue.setText(String.valueOf(newVal));
+                }
+            });
+
+            numberPickerPulse.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
+                @Override
+                public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
+                    pulseValue.setText(String.valueOf(newVal));
+                }
+            });
+
+            numberPickerTemperatureWhole.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
+                @Override
+                public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
+                    updateTemperatureValue();
+                }
+            });
+
+            numberPickerTemperatureFraction.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
+                @Override
+                public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
+                    updateTemperatureValue();
+                }
+            });
 
             add.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     HomeActivity homeActivity = (HomeActivity) getActivity();
 
-                    String pressureValue = pressureEditText.getText().toString().trim();
-                    String pulseValue = pulse.getText().toString().trim();
-                    String temperatureValue = temperature.getText().toString().trim();
+                    int systolicValue = numberPickerSystolic.getValue();
+                    int diastolicValue = numberPickerDiastolic.getValue();
+                    int pulseValue = numberPickerPulse.getValue();
+                    float temperatureValue = numberPickerTemperatureWhole.getValue() + (numberPickerTemperatureFraction.getValue() / 10.0f);
 
-                    if (TextUtils.isEmpty(pressureValue) || TextUtils.isEmpty(pulseValue) || TextUtils.isEmpty(temperatureValue)) {
-                        CustomDialog dialogFragment = new CustomDialog("Пожалуйста, заполните все поля!", false);
-                        dialogFragment.show(getParentFragmentManager(), "custom_dialog");
+                    String pressureValue = systolicValue + "/" + diastolicValue;
 
-                        return;
-                    }
-
-                    String[] pressureParts = pressureValue.split("/");
-                    if (pressureParts.length != 2 || !TextUtils.isDigitsOnly(pressureParts[0]) || !TextUtils.isDigitsOnly(pressureParts[1])) {
-                        CustomDialog dialogFragment = new CustomDialog("Неправильный формат давления. Используйте, например, 120/80!", false);
+                    if (pulseValue < 0 || pulseValue > 200 || temperatureValue < 35 || temperatureValue > 40) {
+                        CustomDialog dialogFragment = new CustomDialog("Недопустимые значения для пульса или температуры!", false);
                         dialogFragment.show(getParentFragmentManager(), "custom_dialog");
                         return;
                     }
 
-                    int pulseInt = Integer.parseInt(pulseValue);
-                    float temperatureFloat = Float.parseFloat(temperatureValue);
-
-                    if (pulseInt < 0 || pulseInt > 200) {
-                        CustomDialog dialogFragment = new CustomDialog("Недопустимые значения для пульса!", false);
-                        dialogFragment.show(getParentFragmentManager(), "custom_dialog");
-                        return;
-                    }
-
-                    if(temperatureFloat < 35 || temperatureFloat > 40)
-                    {
-                        CustomDialog dialogFragment = new CustomDialog( "Недопустимые значения для температуры!", false);
-                        dialogFragment.show(getParentFragmentManager(), "custom_dialog");
-                        return;
-                    }
-
-                    if(add.getText() == "Добавить")
-                    {
-
+                    if (add.getText().equals("Добавить")) {
                         ref = mDb.getReference("users").child(pC.getSplittedPathChild(user.getEmail())).child("characteristic").child("commonHealth").push();
+                        commonHealthData = new CommonHealthData(ref.getKey().toString(), pressureValue, pulseValue, temperatureValue, selectedDate);
 
-                        commonHealthData = new CommonHealthData(ref.getKey().toString(), pressureValue, pulseInt, temperatureFloat, selectedDate);
-
-                        if ( ref != null){
+                        if (ref != null) {
                             ref.setValue(commonHealthData);
                         }
-                        CustomDialog dialogFragment = new CustomDialog( "Добавление прошло успешно!", true);
+                        CustomDialog dialogFragment = new CustomDialog("Добавление прошло успешно!", true);
                         dialogFragment.show(getParentFragmentManager(), "custom_dialog");
-                    }
-
-                    else
-                    {
+                    } else {
                         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                        ref = mDb.getReference("users").child(pC.getSplittedPathChild(user.getEmail()))
-                                .child("characteristic").child("commonHealth").child(path);
+                        ref = mDb.getReference("users").child(pC.getSplittedPathChild(user.getEmail())).child("characteristic").child("commonHealth").child(path);
 
                         String dateTimeString = dateButton.getText().toString();
 
@@ -216,13 +297,11 @@ public class ChangeCommonHealthFragment extends Fragment {
 
                             Date date = cal.getTime();
 
-                            CommonHealthData newCommon = new CommonHealthData(path, pressureValue, pulseInt, temperatureFloat, date);
+                            CommonHealthData newCommon = new CommonHealthData(path, pressureValue, pulseValue, temperatureValue, date);
                             ref.setValue(newCommon);
 
                             CustomDialog dialogFragment = new CustomDialog("Изменение прошло успешно!", true);
                             dialogFragment.show(getParentFragmentManager(), "custom_dialog");
-
-
                         } catch (Exception e) {
                             e.printStackTrace();
                             CustomDialog dialogFragment = new CustomDialog("Ошибка при разборе даты!", false);
@@ -231,7 +310,6 @@ public class ChangeCommonHealthFragment extends Fragment {
                     }
 
                     homeActivity.replaceFragment(new HealthCommonFragment(selectedDate));
-
                 }
             });
 
@@ -272,4 +350,46 @@ public class ChangeCommonHealthFragment extends Fragment {
         }
 
     }
+
+    private void setupNumberPicker(NumberPicker numberPicker, int minValue, int maxValue, int currentValue) {
+        numberPicker.setMinValue(minValue);
+        numberPicker.setMaxValue(maxValue);
+        numberPicker.setValue(currentValue);
+        numberPicker.setWrapSelectorWheel(false);
+    }
+
+    private void toggleNumberPicker(NumberPicker numberPicker, TextView valueTextView) {
+        if (currentActivePicker != null && currentActivePicker != numberPicker) {
+            currentActivePicker.setVisibility(View.GONE);
+        }
+
+        if (numberPicker.getVisibility() == View.VISIBLE) {
+            numberPicker.setVisibility(View.GONE);
+        } else {
+            numberPicker.setVisibility(View.VISIBLE);
+            numberPicker.setValue(Integer.parseInt(valueTextView.getText().toString()));
+            currentActivePicker = numberPicker;
+        }
+    }
+
+    private void toggleTemperaturePicker() {
+        if (currentActivePicker != null && currentActivePicker != null) {
+            currentActivePicker.setVisibility(View.GONE);
+        }
+
+        if (temperatureLayout.getVisibility() == View.VISIBLE) {
+            temperatureLayout.setVisibility(View.GONE);
+        } else {
+            temperatureLayout.setVisibility(View.VISIBLE);
+            currentActivePicker = null;
+        }
+    }
+
+    private void updateTemperatureValue() {
+        int whole = numberPickerTemperatureWhole.getValue();
+        int fraction = numberPickerTemperatureFraction.getValue();
+        temperatureValue.setText(String.format("%d.%d", whole, fraction));
+    }
+
+
 }

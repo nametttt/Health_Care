@@ -132,7 +132,7 @@
                             android:adjustViewBounds="true"
                             android:layout_gravity="end"
                             android:scaleType="centerInside"
-                            android:src="@drawable/pulse" />
+                            android:src="@drawable/bodybmi" />
                     </LinearLayout>
                 </LinearLayout>
 

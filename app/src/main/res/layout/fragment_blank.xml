@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ChangeCommonHealthFragment">
+    tools:context=".BlankFragment">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -12,234 +12,277 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <androidx.appcompat.widget.AppCompatButton
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/back"
-                android:textAlignment="textStart"
-                android:layout_marginVertical="10dp"
-                android:textSize="20dp"
-                android:textAllCaps="false"
-                android:drawableLeft="@drawable/left_arrow"
-                android:background="@color/transparent"
-                android:textColor="@color/gray"
-                android:text="Назад"/>
+            <!-- Other components -->
 
+            <!-- Systolic Pressure Section -->
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginBottom="25dp"
-                android:layout_marginHorizontal="20dp"
-                android:orientation="vertical">
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/black"
-                    android:text="Общее состояние"
-                    android:textSize="32dp"
-                    android:layout_marginVertical="10dp"
-                    android:textAlignment="textStart"
-                    android:textStyle="bold"/>
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="@drawable/calendar_asset">
 
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/black"
-                    android:text="Введите данные об общем состоянии вашего здоровья, такие как давление, пульс и температура."
-                    android:textSize="20dp"
-                    android:layout_marginVertical="10dp"
-                    android:textAlignment="textStart"/>
-
-                <!-- Время записи -->
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp"
-                    android:layout_marginBottom="5dp"
-                    android:text="Время записи"
-                    android:id="@+id/dateText"
-                    android:textAlignment="textStart"
-                    android:visibility="gone"
-                    android:textColor="@color/darkgray"
-                    android:textSize="20dp" />
-
-                <androidx.appcompat.widget.AppCompatButton
-                    android:id="@+id/dateButton"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginVertical="5dp"
-                    android:padding="12dp"
-                    android:visibility="gone"
-                    android:textSize="18dp"
-                    android:gravity="left"
-                    android:maxLines="1"
-                    android:background="@drawable/edit_text_asset"
-                    android:hint="Время записи"/>
-
-                <!-- Систолическое давление -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:background="@drawable/calendar_asset">
+                    android:layout_marginVertical="10dp"
+                    android:orientation="horizontal"
+                    android:padding="10dp">
 
-                    <LinearLayout
-                        android:layout_width="match_parent"
+                    <TextView
+                        android:id="@+id/systolic_label"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginVertical="10dp"
-                        android:orientation="horizontal"
-                        android:padding="10dp">
+                        android:layout_weight="1"
+                        android:layout_marginRight="15dp"
+                        android:text="Систолическое давление (верхнее)"
+                        android:textAlignment="textStart"
+                        android:textColor="@color/black"
+                        android:textSize="20dp"
+                        android:textStyle="bold" />
 
-                        <TextView
-                            android:id="@+id/systolic_label"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:text="Систолическое давление (верхнее)"
-                            android:textAlignment="textStart"
-                            android:textColor="@color/black"
-                            android:textSize="20dp"
-                            android:textStyle="bold" />
-
-                        <TextView
-                            android:id="@+id/systolic_value"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="120"
-                            android:textAlignment="textEnd"
-                            android:textColor="@color/black"
-                            android:textSize="20dp"
-                            android:paddingEnd="10dp"
-                            android:textStyle="bold" />
-                    </LinearLayout>
-                    <NumberPicker
-                        android:id="@+id/number_picker_systolic"
-                        android:layout_width="match_parent"
+                    <TextView
+                        android:id="@+id/systolic_value"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:visibility="gone"
-                        android:theme="@style/DefaultNumberPickerTheme"
-                        android:value="120" />
+                        android:text="120"
+                        android:textAlignment="textEnd"
+                        android:textColor="@color/black"
+                        android:textSize="20dp"
+                        android:paddingEnd="10dp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="мм рт.ст."
+                        android:textAlignment="textEnd"
+                        android:textColor="@color/black"
+                        android:textSize="20dp"
+                        android:paddingEnd="10dp" />
+
                 </LinearLayout>
-
-                <!-- Диастолическое давление -->
-                <LinearLayout
+                <NumberPicker
+                    android:id="@+id/number_picker_systolic"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:background="@drawable/calendar_asset">
+                    android:visibility="gone"
+                    android:theme="@style/DefaultNumberPickerTheme"
+                    android:value="120" />
 
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginVertical="10dp"
-                        android:orientation="horizontal"
-                        android:padding="10dp">
-
-                        <TextView
-                            android:id="@+id/diastolic_label"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:text="Диастолическое давление (нижнее)"
-                            android:textAlignment="textStart"
-                            android:textColor="@color/black"
-                            android:textSize="20dp"
-                            android:textStyle="bold" />
-
-                        <TextView
-                            android:id="@+id/diastolic_value"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="80"
-                            android:textAlignment="textEnd"
-                            android:textColor="@color/black"
-                            android:textSize="20dp"
-                            android:paddingEnd="10dp"
-                            android:textStyle="bold" />
-                    </LinearLayout>
-                    <NumberPicker
-                        android:id="@+id/number_picker_diastolic"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:visibility="gone"
-                        android:theme="@style/DefaultNumberPickerTheme"
-                        android:value="80" />
-                </LinearLayout>
-
-                <!-- Пульс -->
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp"
-                    android:layout_marginBottom="5dp"
-                    android:text="Пульс"
-                    android:textAlignment="textStart"
-                    android:textColor="@color/darkgray"
-                    android:textSize="20dp" />
-
-                <EditText
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginVertical="5dp"
-                    android:padding="12dp"
-                    android:textSize="18dp"
-                    android:maxLines="1"
-                    android:inputType="number"
-                    android:id="@+id/pulse"
-                    android:background="@drawable/edit_text_asset"
-                    android:hint="Пульс (в минуту)"/>
-
-                <!-- Температура -->
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp"
-                    android:layout_marginBottom="5dp"
-                    android:text="Температура"
-                    android:textAlignment="textStart"
-                    android:textColor="@color/darkgray"
-                    android:textSize="20dp" />
-
-                <EditText
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginVertical="5dp"
-                    android:padding="12dp"
-                    android:textSize="18dp"
-                    android:maxLines="1"
-                    android:inputType="numberDecimal"
-                    android:id="@+id/temperature"
-                    android:background="@drawable/edit_text_asset"
-                    android:hint="Температура"/>
-
-                <!-- Кнопки -->
-                <androidx.appcompat.widget.AppCompatButton
-                    android:id="@+id/continu"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/button_asset"
-                    android:padding="10dp"
-                    android:layout_marginTop="20dp"
-                    android:text="Сохранить"
-                    android:textAllCaps="false"
-                    android:textColor="@color/white"
-                    android:textSize="20dp" />
-
-                <androidx.appcompat.widget.AppCompatButton
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/cancel_asset"
-                    android:padding="10dp"
-                    android:id="@+id/delete"
-                    android:layout_marginTop="15dp"
-                    android:text="Удалить"
-                    android:textAllCaps="false"
-                    android:textColor="@color/black"
-                    android:textSize="20dp" />
             </LinearLayout>
+
+            <!-- Diastolic Pressure Section -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="@drawable/calendar_asset">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginVertical="10dp"
+                    android:orientation="horizontal"
+                    android:padding="10dp">
+                    <TextView
+                        android:id="@+id/diastolic_label"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginRight="10dp"
+                        android:text="Диастолическое давление (нижнее)"
+                        android:textAlignment="textStart"
+                        android:textColor="@color/black"
+                        android:textSize="20dp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/diastolic_value"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="80"
+                        android:textAlignment="textEnd"
+                        android:textColor="@color/black"
+                        android:textSize="20dp"
+                        android:paddingEnd="10dp"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="мм рт.ст."
+                        android:textAlignment="textEnd"
+                        android:textColor="@color/black"
+                        android:textSize="20dp"
+                        android:paddingEnd="10dp"/>
+
+                </LinearLayout>
+                <NumberPicker
+                    android:id="@+id/number_picker_diastolic"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"
+                    android:theme="@style/DefaultNumberPickerTheme"
+                    android:value="80" />
+            </LinearLayout>
+
+            <!-- Pulse Section -->
+            <LinearLayout
+                android:layout_marginVertical="10dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="@drawable/calendar_asset">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginVertical="10dp"
+                    android:orientation="horizontal"
+                    android:padding="10dp">
+
+                    <TextView
+                        android:id="@+id/pulse_label"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Пульс"
+                        android:layout_marginRight="10dp"
+                        android:textAlignment="textStart"
+                        android:textColor="@color/black"
+                        android:textSize="20dp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/pulse_value"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="70"
+                        android:textAlignment="textEnd"
+                        android:textColor="@color/black"
+                        android:textSize="20dp"
+                        android:paddingEnd="10dp"/>
+
+                    <TextView
+                        android:id="@+id/pulse_unit"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="уд/мин"
+                        android:textAlignment="textEnd"
+                        android:textColor="@color/black"
+                        android:textSize="20dp"
+                        android:paddingEnd="10dp"/>
+
+                </LinearLayout>
+
+                <NumberPicker
+                    android:id="@+id/number_picker_pulse"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"
+                    android:theme="@style/DefaultNumberPickerTheme"
+                    android:value="70" />
+            </LinearLayout>
+
+            <!-- Температура -->
+            <LinearLayout
+                android:layout_marginVertical="10dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="@drawable/calendar_asset">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginVertical="10dp"
+                    android:orientation="horizontal"
+                    android:padding="10dp">
+
+                    <TextView
+                        android:id="@+id/temperature_label"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginRight="10dp"
+                        android:text="Температура"
+                        android:textAlignment="textStart"
+                        android:textColor="@color/black"
+                        android:textSize="20dp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/temperature_value"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="36.6"
+                        android:textAlignment="textEnd"
+                        android:textColor="@color/black"
+                        android:textSize="20dp"
+                        android:paddingEnd="10dp" />
+
+                    <TextView
+                        android:id="@+id/temperature_unit"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="℃"
+                        android:textAlignment="textEnd"
+                        android:textColor="@color/black"
+                        android:textSize="20dp"
+                        android:paddingEnd="10dp" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/temperatureLayout"
+                    android:layout_width="match_parent"
+                    android:visibility="gone"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <NumberPicker
+                        android:id="@+id/number_picker_temperature_whole"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:theme="@style/DefaultNumberPickerTheme"
+                        android:layout_weight="1"/>
+
+                    <TextView
+                        android:id="@+id/temperature_dot"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="."
+                        android:textColor="@color/black"
+                        android:textStyle="bold"
+                        android:textSize="30sp"
+                        android:paddingTop="4dp"
+                        android:layout_gravity="center"
+                        android:paddingBottom="4dp"/>
+
+                    <NumberPicker
+                        android:id="@+id/number_picker_temperature_fraction"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:theme="@style/DefaultNumberPickerTheme"
+                        android:layout_weight="1"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0.5"
+                        android:text="℃"
+                        android:textColor="@color/black"
+                        android:textSize="30sp"
+                        android:paddingTop="4dp"
+                        android:layout_gravity="center"
+                        android:paddingBottom="4dp"/>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+
         </LinearLayout>
     </ScrollView>
 </FrameLayout>
