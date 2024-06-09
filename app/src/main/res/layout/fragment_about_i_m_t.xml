@@ -9,8 +9,7 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginBottom="15dp"
-        >
+        android:layout_marginBottom="15dp">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -83,13 +82,160 @@
                     android:textAlignment="textStart"
                     android:textStyle="bold"/>
 
-                <TextView
+
+                <TableLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/black"
-                    android:text="• Менее 18.5 — Недостаточный вес\n• 18.5 – 24.9 — Нормальный вес\n• 25 – 29.9 — Избыточный вес\n• 30 и более — Ожирение"
-                    android:textSize="20dp"
-                    android:layout_marginVertical="5dp"/>
+                    android:layout_marginVertical="5dp"
+                    android:layout_height="wrap_content">
+
+                    <TableRow
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="0.5"
+                            android:text="ИМТ"
+                            android:textSize="18sp"
+                            android:textStyle="bold"
+                            android:textAlignment="center"
+                            android:gravity="center"
+                            android:padding="10dp"
+                            android:background="@drawable/table_cell_bg_left" />
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="0.5"
+                            android:text="Интерпретация"
+                            android:textSize="18sp"
+                            android:textAlignment="center"
+                            android:gravity="center"
+                            android:textStyle="bold"
+                            android:padding="10dp"
+                            android:background="@drawable/table_cell_bg_right" />
+                    </TableRow>
+
+                    <!-- Строки с данными -->
+                    <TableRow
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="0.5"
+                            android:text="Менее 18.5"
+                            android:textSize="18sp"
+                            android:textColor="@color/darkgray"
+                            android:textAlignment="center"
+                            android:gravity="center"
+                            android:padding="10dp"
+                            android:background="@drawable/table_rows" />
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="0.5"
+                            android:text="Недостаточный вес"
+                            android:textSize="18sp"
+                            android:textColor="@color/darkgray"
+                            android:textAlignment="center"
+                            android:gravity="center"
+                            android:padding="10dp"
+                            android:background="@drawable/table_rows" />
+                    </TableRow>
+
+                    <TableRow
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="0.5"
+                            android:text="18.5 - 24.9"
+                            android:textSize="18sp"
+                            android:textColor="@color/darkgray"
+                            android:textAlignment="center"
+                            android:gravity="center"
+                            android:padding="10dp"
+                            android:background="@drawable/table_rows" />
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="0.5"
+                            android:text="Нормальный вес"
+                            android:textSize="18sp"
+                            android:textColor="@color/darkgray"
+                            android:textAlignment="center"
+                            android:gravity="center"
+                            android:padding="10dp"
+                            android:background="@drawable/table_rows" />
+                    </TableRow>
+
+                    <TableRow
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="0.5"
+                            android:text="25 - 29.9"
+                            android:textSize="18sp"
+                            android:textColor="@color/darkgray"
+                            android:textAlignment="center"
+                            android:gravity="center"
+                            android:padding="10dp"
+                            android:background="@drawable/table_rows" />
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="0.5"
+                            android:text="Избыточный вес"
+                            android:textSize="18sp"
+                            android:textColor="@color/darkgray"
+                            android:textAlignment="center"
+                            android:gravity="center"
+                            android:padding="10dp"
+                            android:background="@drawable/table_rows" />
+                    </TableRow>
+
+                    <TableRow
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="0.5"
+                            android:text="30 и более"
+                            android:textSize="18sp"
+                            android:textColor="@color/darkgray"
+                            android:textAlignment="center"
+                            android:gravity="center"
+                            android:padding="10dp"
+                            android:background="@drawable/table_rows" />
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="0.5"
+                            android:text="Ожирение"
+                            android:textSize="18sp"
+                            android:textColor="@color/darkgray"
+                            android:textAlignment="center"
+                            android:gravity="center"
+                            android:padding="10dp"
+                            android:background="@drawable/table_rows" />
+                    </TableRow>
+
+                </TableLayout>
+
             </LinearLayout>
         </LinearLayout>
     </ScrollView>

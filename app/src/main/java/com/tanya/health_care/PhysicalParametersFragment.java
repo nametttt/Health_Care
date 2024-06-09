@@ -84,19 +84,27 @@ public class PhysicalParametersFragment extends Fragment {
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.water_menu, menu);
+        inflater.inflate(R.menu.common_menu, menu);
+
+        MenuItem normalItem = menu.findItem(R.id.normal);
+        MenuItem aboutCharacteristicItem = menu.findItem(R.id.aboutCharacteristic);
+
+        normalItem.setTitle("Установить норму веса");
+        aboutCharacteristicItem.setTitle("Об ИМТ");
+
         super.onCreateOptionsMenu(menu, inflater);
     }
+
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         HomeActivity homeActivity = (HomeActivity) getActivity();
         switch (item.getItemId()) {
             case R.id.normal:
-                homeActivity.replaceFragment(new WaterValueFragment());
+                homeActivity.replaceFragment(new WeightNormalFragment());
                 return true;
             case R.id.aboutCharacteristic:
-                homeActivity.replaceFragment(new AboutWaterFragment());
+                homeActivity.replaceFragment(new AboutIMTFragment());
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

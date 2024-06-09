@@ -32,7 +32,6 @@
     </string-array>
 
     <string-array name="categories">
-        <item>Все</item>
         <item>Питание</item>
         <item>Водный режим</item>
         <item>Психическое здоровье</item>
@@ -41,6 +40,15 @@
         <item>Фитнес</item>
     </string-array>
 
+    <string-array name="categories1">
+        <item>Все</item>
+        <item>Питание</item>
+        <item>Водный режим</item>
+        <item>Психическое здоровье</item>
+        <item>Полезные советы</item>
+        <item>Диеты</item>
+        <item>Фитнес</item>
+    </string-array>
     <string-array name="access">
         <item>Публичный</item>
         <item>Приватный</item>

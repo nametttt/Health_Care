@@ -5,11 +5,16 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -26,6 +31,7 @@ import java.util.Date;
 import java.util.HashMap;
 
 public class MenstrualFragment extends Fragment {
+    Toolbar toolbar;
 
     private CaldroidFragment caldroidFragment;
     private CalendarView calendarView;
@@ -43,11 +49,44 @@ public class MenstrualFragment extends Fragment {
         init(view);
         return view;
     }
+
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.common_menu, menu);
+
+        MenuItem normalItem = menu.findItem(R.id.normal);
+        MenuItem aboutCharacteristicItem = menu.findItem(R.id.aboutCharacteristic);
+
+        normalItem.setTitle("Установить норму");
+        aboutCharacteristicItem.setTitle("О цикле");
+
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        HomeActivity homeActivity = (HomeActivity) getActivity();
+        switch (item.getItemId()) {
+            case R.id.normal:
+                homeActivity.replaceFragment(new NutritionValueFragment());
+                return true;
+            case R.id.aboutCharacteristic:
+                homeActivity.replaceFragment(new AboutMenstrualFragment());
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
     private void init(View view){
         try {
             back = view.findViewById(R.id.back);
             add = view.findViewById(R.id.add);
+            toolbar = view.findViewById(R.id.toolbar);
+            ((AppCompatActivity) requireActivity()).setSupportActionBar(toolbar);
 
+            setHasOptionsMenu(true);
             caldroidFragment = new CaldroidFragment();
             Bundle args = new Bundle();
             args.putInt(CaldroidFragment.MONTH, 5);

@@ -74,8 +74,6 @@ public class HealthCommonFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        Locale locale = new Locale("ru");
-        Locale.setDefault(locale);
         View v = inflater.inflate(R.layout.fragment_health_common, container, false);
         init(v);
         return v;
@@ -83,7 +81,7 @@ public class HealthCommonFragment extends Fragment {
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.water_menu, menu);
+        inflater.inflate(R.menu.common_menu, menu);
         super.onCreateOptionsMenu(menu, inflater);
     }
 
@@ -92,10 +90,10 @@ public class HealthCommonFragment extends Fragment {
         HomeActivity homeActivity = (HomeActivity) getActivity();
         switch (item.getItemId()) {
             case R.id.normal:
-                homeActivity.replaceFragment(new WaterValueFragment());
+                homeActivity.replaceFragment(new PressureValueFragment());
                 return true;
             case R.id.aboutCharacteristic:
-                homeActivity.replaceFragment(new AboutWaterFragment());
+                homeActivity.replaceFragment(new AboutCommonHealthFragment());
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

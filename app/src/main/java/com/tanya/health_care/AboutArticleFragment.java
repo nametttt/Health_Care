@@ -9,6 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.fragment.app.Fragment;
 
+import com.squareup.picasso.Picasso;
 import com.tanya.health_care.dialog.CustomDialog;
 
 public class AboutArticleFragment extends Fragment {
@@ -17,9 +18,9 @@ public class AboutArticleFragment extends Fragment {
     private TextView titleTextView, descTextView;
     ImageView imageView;
     Button exit;
-    private final int imageResource;
+    private String imageResource;
 
-    public AboutArticleFragment(String title, String description, int imageResource) {
+    public AboutArticleFragment(String title, String description, String imageResource) {
         this.title = title;
         this.description = description;
         this.imageResource = imageResource;
@@ -41,7 +42,12 @@ public class AboutArticleFragment extends Fragment {
 
             titleTextView.setText(title);
             descTextView.setText(description);
-            imageView.setImageResource(imageResource);
+
+            if (imageResource == null || imageResource.isEmpty()) {
+                imageView.setImageResource(R.drawable.notphoto);
+            } else {
+                Picasso.get().load(imageResource).placeholder(R.drawable.notphoto).into(imageView);
+            }
             exit = view.findViewById(R.id.back);
 
             exit.setOnClickListener(new View.OnClickListener() {

@@ -21,57 +21,61 @@ import com.google.firebase.database.ValueEventListener;
 import com.tanya.health_care.code.GetSplittedPathChild;
 import com.tanya.health_care.dialog.CustomDialog;
 
-public class MyBottleValueFragment extends Fragment {
+public class WeightNormalFragment extends Fragment {
 
-    private Button back, save;
-    private DatabaseReference userValuesRef;
-    private GetSplittedPathChild pC = new GetSplittedPathChild();
-    private FirebaseDatabase mDb;
-    private int waterValue = 1000;
-    private NumberPicker numberPicker;
-
-    public MyBottleValueFragment() {
-    }
+    Button back, save;
+    DatabaseReference userValuesRef;
+    GetSplittedPathChild pC = new GetSplittedPathChild();
+    FirebaseDatabase mDb;
+    int weight = 50;
+    NumberPicker numberPicker;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.fragment_my_bottle_value, container, false);
+        View v = inflater.inflate(R.layout.fragment_water_value, container, false);
         init(v);
         return v;
     }
 
-    private void init(View v) {
+    public void init(View v){
         try {
-
             back = v.findViewById(R.id.back);
             save = v.findViewById(R.id.save);
             mDb = FirebaseDatabase.getInstance();
             numberPicker = v.findViewById(R.id.np);
             FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
             userValuesRef = mDb.getReference("users").child(pC.getSplittedPathChild(user.getEmail()))
-                    .child("values").child("BottleValue");
+                    .child("values").child("WeightValue");
 
-            numberPicker.setMinValue(1);
-            numberPicker.setMaxValue(20); // Максимальное значение 1000 мл, учитывая шаг в 50 мл
-            String[] displayValues = new String[20];
-            for (int i = 0; i < displayValues.length; i++) {
-                displayValues[i] = String.valueOf((i * 50) + 50);
-            }
+            numberPicker.setMinValue(25);
+            numberPicker.setMaxValue(150);
 
-            numberPicker.setDisplayedValues(displayValues);
             numberPicker.setWrapSelectorWheel(false);
-            numberPicker.setValue(waterValue / 50);
+            numberPicker.setValue(weight);
             numberPicker.setOnValueChangedListener((picker, oldVal, newVal) -> {
-                // Handle value change
+            });
+            userValuesRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    if (dataSnapshot.exists()) {
+                        weight = dataSnapshot.getValue(Integer.class);
+                        numberPicker.setValue(weight);
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+                    // Обработка ошибок при чтении из базы данных
+                }
             });
 
             userValuesRef.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     if (dataSnapshot.exists()) {
-                        waterValue = dataSnapshot.getValue(Integer.class);
-                        numberPicker.setValue(waterValue / 50);
+                        weight = dataSnapshot.getValue(Integer.class);
+                        numberPicker.setValue(weight);
                     }
                 }
 
@@ -85,23 +89,28 @@ public class MyBottleValueFragment extends Fragment {
                 @Override
                 public void onClick(View v) {
                     HomeActivity homeActivity = (HomeActivity) getActivity();
-                    homeActivity.replaceFragment(new DrinkingFragment());
+                    homeActivity.replaceFragment(new PhysicalParametersFragment());
                 }
             });
 
             save.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    int selectedValue = numberPicker.getValue() * 50;
+                    int selectedValue = numberPicker.getValue();
                     userValuesRef.setValue(selectedValue);
 
-                    CustomDialog dialogFragment = new CustomDialog("Успешное установление объема стакана!", true);
+                    CustomDialog dialogFragment = new CustomDialog( "Успешное установление нормы!", true);
                     dialogFragment.show(getParentFragmentManager(), "custom_dialog");
                 }
             });
-        } catch (Exception exception) {
+        }
+        catch (Exception exception) {
             CustomDialog dialogFragment = new CustomDialog("Произошла ошибка: " + exception.getMessage(), false);
             dialogFragment.show(getParentFragmentManager(), "custom_dialog");
         }
+
+
     }
+
+
 }

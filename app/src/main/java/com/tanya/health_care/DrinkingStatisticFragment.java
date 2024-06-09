@@ -340,7 +340,7 @@ public class DrinkingStatisticFragment extends Fragment {
                     }
                     float averageIntake = totalIntake / count;
                     entries.add(new BarEntry(i, averageIntake));
-                    dates.add(monthStart.format(DateTimeFormatter.ofPattern("MMM", Locale.getDefault()))); // Использование названий месяцев вместо номеров
+                    dates.add(String.valueOf(monthStart.getMonthValue())); // Use month numbers instead of names
                 }
             }
 

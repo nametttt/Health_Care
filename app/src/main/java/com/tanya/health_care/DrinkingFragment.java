@@ -53,7 +53,7 @@ import in.akshit.horizontalcalendar.Tools;
 public class DrinkingFragment extends Fragment {
     private TextView drunkCount, dateText, myNormal;
     private Date selectedDate = new Date();
-    private Button addWater, save;
+    private Button addWater, save, back;
     RecyclerView recyclerView;
     int bottleValue = 250;
 
@@ -105,6 +105,8 @@ public class DrinkingFragment extends Fragment {
 
     void init (View v){
         try{
+            back = v.findViewById(R.id.back);
+
             user = FirebaseAuth.getInstance().getCurrentUser();
             mDb = FirebaseDatabase.getInstance();
             drunkCount = v.findViewById(R.id.drunkCount);
@@ -130,6 +132,13 @@ public class DrinkingFragment extends Fragment {
                     .child("values")
                     .child("BottleValue");
 
+            back.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    HomeActivity homeActivity = (HomeActivity) getActivity();
+                    homeActivity.replaceFragment(new HomeFragment());
+                }
+            });
             bottleValuesRef.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {

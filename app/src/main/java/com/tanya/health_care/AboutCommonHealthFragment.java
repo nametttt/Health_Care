@@ -11,17 +11,17 @@ import android.widget.Button;
 
 import com.tanya.health_care.dialog.CustomDialog;
 
-public class AboutNutritionFragment extends Fragment {
+public class AboutCommonHealthFragment extends Fragment {
 
     private Button back;
 
-    public AboutNutritionFragment() {
+    public AboutCommonHealthFragment() {
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.fragment_about_nutrition, container, false);
+        View v = inflater.inflate(R.layout.fragment_about_common_health, container, false);
         init(v);
         return v;
     }
@@ -32,7 +32,7 @@ public class AboutNutritionFragment extends Fragment {
                 @Override
                 public void onClick(View v) {
                     HomeActivity homeActivity = (HomeActivity) getActivity();
-                    homeActivity.replaceFragment(new NutritionFragment());
+                    homeActivity.replaceFragment(new HealthCommonFragment());
                 }
             });
 
@@ -40,5 +40,5 @@ public class AboutNutritionFragment extends Fragment {
             CustomDialog dialogFragment = new CustomDialog("Произошла ошибка: " + exception.getMessage(), false);
             dialogFragment.show(getParentFragmentManager(), "custom_dialog");
         }
-    }
+        }
 }

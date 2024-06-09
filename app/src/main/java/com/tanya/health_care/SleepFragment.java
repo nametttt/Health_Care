@@ -20,6 +20,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AlphaAnimation;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -52,7 +53,7 @@ import in.akshit.horizontalcalendar.Tools;
 
 public class SleepFragment extends Fragment {
     Toolbar toolbar;
-
+    ImageView statsIcon;
     Button exit, addSleep;
     RecyclerView recyclerView;
     ArrayList<SleepData> sleepData;
@@ -84,7 +85,14 @@ public class SleepFragment extends Fragment {
     }
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.water_menu, menu);
+        inflater.inflate(R.menu.common_menu, menu);
+
+        MenuItem normalItem = menu.findItem(R.id.normal);
+        MenuItem aboutCharacteristicItem = menu.findItem(R.id.aboutCharacteristic);
+
+        normalItem.setTitle("Установить норму сна");
+        aboutCharacteristicItem.setTitle("О сне");
+
         super.onCreateOptionsMenu(menu, inflater);
     }
 
@@ -93,10 +101,10 @@ public class SleepFragment extends Fragment {
         HomeActivity homeActivity = (HomeActivity) getActivity();
         switch (item.getItemId()) {
             case R.id.normal:
-                homeActivity.replaceFragment(new WaterValueFragment());
+                homeActivity.replaceFragment(new SleepValueFragment());
                 return true;
             case R.id.aboutCharacteristic:
-                homeActivity.replaceFragment(new AboutWaterFragment());
+                homeActivity.replaceFragment(new AboutSleepFragment());
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -105,6 +113,7 @@ public class SleepFragment extends Fragment {
 
     void init(View v){
         try {
+            statsIcon = v.findViewById(R.id.statsIcon);
             exit = v.findViewById(R.id.back);
             addSleep = v.findViewById(R.id.continu);
             duration = v.findViewById(R.id.sleepDuration);
@@ -140,6 +149,13 @@ public class SleepFragment extends Fragment {
                 }
             });
 
+            statsIcon.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    HomeActivity homeActivity = (HomeActivity) getActivity();
+                    homeActivity.replaceFragment(new SleepStatisticFragment());
+                }
+            });
             addSleep.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
