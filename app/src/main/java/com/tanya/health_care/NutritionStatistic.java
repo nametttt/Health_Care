@@ -10,6 +10,7 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -36,7 +37,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.tanya.health_care.code.GetSplittedPathChild;
 import com.tanya.health_care.code.StraightBarChartRenderer;
-import com.tanya.health_care.code.WaterData;
+import com.tanya.health_care.code.NutritionData;
 import com.tanya.health_care.dialog.CustomDialog;
 
 import java.time.LocalDate;
@@ -48,7 +49,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-public class DrinkingStatisticFragment extends Fragment {
+public class NutritionStatistic extends Fragment {
 
     private BarChart barChart;
     private TextView daysTextView, textValue;
@@ -56,23 +57,23 @@ public class DrinkingStatisticFragment extends Fragment {
     private int selectedPeriod = 7;
     private LocalDate startDate = LocalDate.now().minusDays(selectedPeriod - 1);
     private FirebaseUser user;
-    private DatabaseReference waterRef, userValuesRef;
-    private float userWaterNorm = 0;
+    private DatabaseReference nutritionRef, userValuesRef;
+    private float userNutritionNorm = 0;
 
-    public DrinkingStatisticFragment() {
+    public NutritionStatistic() {
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.fragment_drinking_statistic, container, false);
+        View v = inflater.inflate(R.layout.fragment_nutrition_statistic, container, false);
         init(v);
-        fetchUserWaterNorm();
+        fetchUserNutritionNorm();
         return v;
     }
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.water_menu, menu);
+        inflater.inflate(R.menu.nutrition_menu, menu);
         super.onCreateOptionsMenu(menu, inflater);
     }
 
@@ -81,10 +82,10 @@ public class DrinkingStatisticFragment extends Fragment {
         HomeActivity homeActivity = (HomeActivity) getActivity();
         switch (item.getItemId()) {
             case R.id.normal:
-                homeActivity.replaceFragment(new WaterValueFragment());
+                homeActivity.replaceFragment(new NutritionValueFragment());
                 return true;
             case R.id.aboutCharacteristic:
-                homeActivity.replaceFragment(new AboutWaterFragment());
+                homeActivity.replaceFragment(new AboutNutritionFragment());
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -103,14 +104,14 @@ public class DrinkingStatisticFragment extends Fragment {
             textValue = v.findViewById(R.id.textValue);
             user = FirebaseAuth.getInstance().getCurrentUser();
             if (user != null) {
-                waterRef = FirebaseDatabase.getInstance().getReference("users")
+                nutritionRef = FirebaseDatabase.getInstance().getReference("users")
                         .child(new GetSplittedPathChild().getSplittedPathChild(user.getEmail()))
                         .child("characteristic")
-                        .child("water");
+                        .child("nutrition");
                 userValuesRef = FirebaseDatabase.getInstance().getReference("users")
                         .child(new GetSplittedPathChild().getSplittedPathChild(user.getEmail()))
                         .child("values")
-                        .child("WaterValue");
+                        .child("NutritionValue");
             }
 
             week.setOnClickListener(new View.OnClickListener() {
@@ -141,9 +142,10 @@ public class DrinkingStatisticFragment extends Fragment {
                 @Override
                 public void onClick(View v) {
                     HomeActivity homeActivity = (HomeActivity) getActivity();
-                    homeActivity.replaceFragment(new DrinkingFragment());
+                    homeActivity.replaceFragment(new HomeFragment());
                 }
             });
+
 
             Description description = new Description();
             description.setEnabled(false);
@@ -219,15 +221,15 @@ public class DrinkingStatisticFragment extends Fragment {
         }
     }
 
-    private void fetchUserWaterNorm() {
+    private void fetchUserNutritionNorm() {
         if (userValuesRef != null) {
             userValuesRef.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     if (snapshot.exists()) {
-                        Integer waterNorm = snapshot.getValue(Integer.class);
-                        if (waterNorm != null) {
-                            userWaterNorm = waterNorm;
+                        Integer nutritionNorm = snapshot.getValue(Integer.class);
+                        if (nutritionNorm != null) {
+                            userNutritionNorm = nutritionNorm;
                             select7Days(); // Initialize with 7 days data once the norm is fetched
                         }
                     }
@@ -268,27 +270,28 @@ public class DrinkingStatisticFragment extends Fragment {
             String dateRange = startDateFormatted + " - " + endDateFormatted;
             daysTextView.setText(dateRange);
 
-            if (waterRef != null) {
-                waterRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            if (nutritionRef != null) {
+                nutritionRef.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        Map<LocalDate, Integer> waterDataMap = new HashMap<>();
+                        Map<LocalDate, Integer> nutritionDataMap = new HashMap<>();
                         for (DataSnapshot ds : snapshot.getChildren()) {
-                            WaterData waterData = ds.getValue(WaterData.class);
-                            if (waterData != null) {
-                                LocalDate date = waterData.lastAdded.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+                            NutritionData nutritionData = ds.getValue(NutritionData.class);
+                            if (nutritionData != null) {
+                                LocalDate date = nutritionData.nutritionTime.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
                                 if (date.isAfter(startDate.minusDays(1)) && date.isBefore(endDate.plusDays(1))) {
-                                    waterDataMap.put(date, waterDataMap.getOrDefault(date, 0) + waterData.addedValue);
+                                    nutritionDataMap.put(date, nutritionDataMap.getOrDefault(date, 0) + 100);
                                 }
                             }
                         }
 
                         // Update the chart with new data
-                        updateChart(waterDataMap);
+                        updateChart(nutritionDataMap);
 
                         // Update the textValue with user norm
-                        textValue.setText(String.format(Locale.getDefault(), "%d мл в день", (int) userWaterNorm));
+                        textValue.setText(String.format(Locale.getDefault(), "%d ккал в день", (int) userNutritionNorm));
                     }
+
 
                     @Override
                     public void onCancelled(@NonNull DatabaseError error) {
@@ -302,7 +305,7 @@ public class DrinkingStatisticFragment extends Fragment {
         }
     }
 
-    private void updateChart(Map<LocalDate, Integer> waterDataMap) {
+    private void updateChart(Map<LocalDate, Integer> nutritionDataMap) {
         try {
             ArrayList<BarEntry> entries = new ArrayList<>();
             List<String> dates = new ArrayList<>();
@@ -310,7 +313,7 @@ public class DrinkingStatisticFragment extends Fragment {
             if (selectedPeriod == 7) {
                 LocalDate currentDate = startDate;
                 for (int i = 0; i < selectedPeriod; i++) {
-                    int dailyIntake = waterDataMap.getOrDefault(currentDate, 0);
+                    int dailyIntake = nutritionDataMap.getOrDefault(currentDate, 0);
                     entries.add(new BarEntry(i, dailyIntake));
                     dates.add(String.valueOf(i + 1)); // Use numbers instead of dates
                     currentDate = currentDate.plusDays(1);
@@ -321,7 +324,7 @@ public class DrinkingStatisticFragment extends Fragment {
                     float totalIntake = 0;
                     int count = 0;
                     for (int j = 0; j < 5 && (i + j) < selectedPeriod; j++) {
-                        totalIntake += waterDataMap.getOrDefault(currentDate.plusDays(i + j), 0);
+                        totalIntake += nutritionDataMap.getOrDefault(currentDate.plusDays(i + j), 0);
                         count++;
                     }
                     float averageIntake = totalIntake / count;
@@ -335,7 +338,7 @@ public class DrinkingStatisticFragment extends Fragment {
                     float totalIntake = 0;
                     int count = 0;
                     for (LocalDate date = monthStart; !date.isAfter(monthEnd); date = date.plusDays(1)) {
-                        totalIntake += waterDataMap.getOrDefault(date, 0);
+                        totalIntake += nutritionDataMap.getOrDefault(date, 0);
                         count++;
                     }
                     float averageIntake = totalIntake / count;
@@ -344,7 +347,7 @@ public class DrinkingStatisticFragment extends Fragment {
                 }
             }
 
-            BarDataSet dataSet = new BarDataSet(entries, "Water Intake");
+            BarDataSet dataSet = new BarDataSet(entries, "Nutrition Intake");
             dataSet.setColor(getResources().getColor(R.color.green)); // Change color to green
             dataSet.setDrawValues(false); // Hide values
 
@@ -366,8 +369,8 @@ public class DrinkingStatisticFragment extends Fragment {
             // Ensure limit line is displayed on the right axis
             YAxis rightAxis = barChart.getAxisRight();
             rightAxis.removeAllLimitLines();
-            rightAxis.setAxisMaximum(Math.max(userWaterNorm * 1.2f, rightAxis.getAxisMaximum()));
-            LimitLine limitLineRight = new LimitLine(userWaterNorm);
+            rightAxis.setAxisMaximum(Math.max(userNutritionNorm * 1.2f, rightAxis.getAxisMaximum()));
+            LimitLine limitLineRight = new LimitLine(userNutritionNorm);
             limitLineRight.setLineColor(getResources().getColor(R.color.black)); // Line color
             limitLineRight.setLineWidth(1f); // Line width
             rightAxis.addLimitLine(limitLineRight);
@@ -376,8 +379,8 @@ public class DrinkingStatisticFragment extends Fragment {
             // Ensure limit line is displayed on the left axis
             YAxis leftAxis = barChart.getAxisLeft();
             leftAxis.removeAllLimitLines();
-            leftAxis.setAxisMaximum(Math.max(userWaterNorm * 1.2f, leftAxis.getAxisMaximum()));
-            LimitLine limitLineLeft = new LimitLine(userWaterNorm);
+            leftAxis.setAxisMaximum(Math.max(userNutritionNorm * 1.2f, leftAxis.getAxisMaximum()));
+            LimitLine limitLineLeft = new LimitLine(userNutritionNorm);
             limitLineLeft.setLineColor(getResources().getColor(R.color.black)); // Line color
             limitLineLeft.setLineWidth(1f); // Line width
             leftAxis.addLimitLine(limitLineLeft);

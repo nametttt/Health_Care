@@ -21,23 +21,27 @@ import com.google.firebase.database.ValueEventListener;
 import com.tanya.health_care.code.GetSplittedPathChild;
 import com.tanya.health_care.dialog.CustomDialog;
 
-public class NutritionValueFragment extends Fragment {
-    Button back, save;
-    DatabaseReference userValuesRef;
-    GetSplittedPathChild pC = new GetSplittedPathChild();
-    FirebaseDatabase mDb;
-    int nutritionValue = 1000;
-    NumberPicker numberPicker;
+public class MyBottleValueFragment extends Fragment {
+
+    private Button back, save;
+    private DatabaseReference userValuesRef;
+    private GetSplittedPathChild pC = new GetSplittedPathChild();
+    private FirebaseDatabase mDb;
+    private int waterValue = 1000;
+    private NumberPicker numberPicker;
+
+    public MyBottleValueFragment() {
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.fragment_nutrition_value, container, false);
+        View v = inflater.inflate(R.layout.fragment_my_bottle_value, container, false);
         init(v);
         return v;
     }
 
-    public void init(View v){
+    private void init(View v) {
         try {
             back = v.findViewById(R.id.back);
             save = v.findViewById(R.id.save);
@@ -45,18 +49,18 @@ public class NutritionValueFragment extends Fragment {
             numberPicker = v.findViewById(R.id.np);
             FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
             userValuesRef = mDb.getReference("users").child(pC.getSplittedPathChild(user.getEmail()))
-                    .child("values").child("NutritionValue");
+                    .child("values").child("BottleValue");
 
             numberPicker.setMinValue(1);
-            numberPicker.setMaxValue((5000 - 50) / 50 + 1);
-            String[] displayValues = new String[(5000 - 50) / 50 + 1];
+            numberPicker.setMaxValue(20); // Максимальное значение 1000 мл, учитывая шаг в 50 мл
+            String[] displayValues = new String[20];
             for (int i = 0; i < displayValues.length; i++) {
                 displayValues[i] = String.valueOf((i * 50) + 50);
             }
 
             numberPicker.setDisplayedValues(displayValues);
             numberPicker.setWrapSelectorWheel(false);
-            numberPicker.setValue(nutritionValue / 50);
+            numberPicker.setValue(waterValue / 50);
             numberPicker.setOnValueChangedListener((picker, oldVal, newVal) -> {
                 // Handle value change
             });
@@ -65,13 +69,14 @@ public class NutritionValueFragment extends Fragment {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     if (dataSnapshot.exists()) {
-                        nutritionValue = dataSnapshot.getValue(Integer.class);
-                        numberPicker.setValue(nutritionValue / 50);
+                        waterValue = dataSnapshot.getValue(Integer.class);
+                        numberPicker.setValue(waterValue / 50);
                     }
                 }
 
                 @Override
                 public void onCancelled(@NonNull DatabaseError databaseError) {
+                    // Обработка ошибок при чтении из базы данных
                 }
             });
 
@@ -79,7 +84,7 @@ public class NutritionValueFragment extends Fragment {
                 @Override
                 public void onClick(View v) {
                     HomeActivity homeActivity = (HomeActivity) getActivity();
-                    homeActivity.replaceFragment(new NutritionFragment());
+                    homeActivity.replaceFragment(new DrinkingFragment());
                 }
             });
 
@@ -89,16 +94,13 @@ public class NutritionValueFragment extends Fragment {
                     int selectedValue = numberPicker.getValue() * 50;
                     userValuesRef.setValue(selectedValue);
 
-                  CustomDialog dialogFragment = new CustomDialog("Успешное установление нормы!", true);
-                  dialogFragment.show(getParentFragmentManager(), "custom_dialog");
+                    CustomDialog dialogFragment = new CustomDialog("Успешное установление объема стакана!", true);
+                    dialogFragment.show(getParentFragmentManager(), "custom_dialog");
                 }
             });
-        }
-        catch (Exception exception) {
+        } catch (Exception exception) {
             CustomDialog dialogFragment = new CustomDialog("Произошла ошибка: " + exception.getMessage(), false);
             dialogFragment.show(getParentFragmentManager(), "custom_dialog");
         }
-
     }
-
 }

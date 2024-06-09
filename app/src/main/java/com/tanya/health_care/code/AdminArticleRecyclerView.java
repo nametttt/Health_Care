@@ -46,6 +46,7 @@ public class AdminArticleRecyclerView extends RecyclerView.Adapter<AdminArticleR
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         ArticleData currentCommon = commonHealthData.get(position);
         holder.title.setText(currentCommon.title);
+        holder.category.setText(currentCommon.category);
         String imageUrl = currentCommon.image;
         if (imageUrl == null || imageUrl.isEmpty()) {
             holder.image.setImageResource(R.drawable.notphoto);
@@ -72,7 +73,7 @@ public class AdminArticleRecyclerView extends RecyclerView.Adapter<AdminArticleR
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         ImageView image;
-        TextView title;
+        TextView title, category;
         RelativeLayout relativeLayout;
         Button change;
 
@@ -80,6 +81,7 @@ public class AdminArticleRecyclerView extends RecyclerView.Adapter<AdminArticleR
             super(itemView);
             image = itemView.findViewById(R.id.image);
             title = itemView.findViewById(R.id.title);
+            category = itemView.findViewById(R.id.category);
             relativeLayout = itemView.findViewById(R.id.rl);
             change = itemView.findViewById(R.id.change);
 

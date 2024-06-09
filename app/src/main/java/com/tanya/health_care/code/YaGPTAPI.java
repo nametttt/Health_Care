@@ -81,7 +81,7 @@ public class YaGPTAPI {
                     ArrayList<Map<String, Object>> da = new ArrayList<>();
                     da.add(form);
 
-                    headers.put("Authorization", "Bearer " + "t1.9euelZqUi5LIjpWOks3Nys-Pl8jLze3rnpWay4yXm52Rk5rNjo3Pz5TIlovl8_daHG5M-e9IPz9-_t3z9xpLa0z570g_P37-zef1656Vms_IlMrHl5mVlZGYlMqLjZ6K7_zF656Vms_IlMrHl5mVlZGYlMqLjZ6K.Qg9aRJYsBPrqWD80eCfFiydMLxd9LPG5czG1IzC-Nla6q0xuy-07xU9C5TDHwIkQiUWelf7LyclRSjRbRbVRDQ");
+                    headers.put("Authorization", "Bearer " + "t1.9euelZrLkJ6LipnLyJiQlp2SmsqSzO3rnpWay4yXm52Rk5rNjo3Pz5TIlovl8_dVDGhM-e8lbSFK_t3z9xU7ZUz57yVtIUr-zef1656VmoubnM2NisqTmYyZj46dzM6X7_zF656VmoubnM2NisqTmYyZj46dzM6X.i7zLb14FW-XO_YtAJpkagP2u0dRhD91D3vUJ_kELDDf1Al67nwTdWxSoCa3qxwprPJ4_Ux1e3hxc5UYKW2hnCg");
                     body.put("modelUri", "gpt://b1gpel67poamsv8n7e04/yandexgpt/latest");
                     body.put("completionOptions", mapa);
 

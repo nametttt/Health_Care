@@ -1,24 +1,23 @@
 package com.tanya.health_care;
 
 import android.os.Bundle;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
-import android.widget.TextView;
-
+import android.widget.Spinner;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -29,7 +28,6 @@ import com.google.firebase.database.ValueEventListener;
 import com.tanya.health_care.code.AdminUsersRecyclerView;
 import com.tanya.health_care.code.UserData;
 import com.tanya.health_care.dialog.CustomDialog;
-
 import java.util.ArrayList;
 
 public class AdminUsersFragment extends Fragment {
@@ -44,6 +42,8 @@ public class AdminUsersFragment extends Fragment {
     ImageButton searchButton;
     EditText searchEditText;
     ProgressBar progressBar;
+    Spinner userTypeSpinner;
+    ArrayAdapter<CharSequence> spinnerAdapter;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
@@ -109,16 +109,38 @@ public class AdminUsersFragment extends Fragment {
                     searchButton.setImageResource(R.drawable.search);
                 }
             });
-        }
-        catch(Exception exception) {
+
+            userTypeSpinner = v.findViewById(R.id.userTypeSpinner);
+            spinnerAdapter = ArrayAdapter.createFromResource(getContext(), R.array.user_types1, android.R.layout.simple_spinner_item);
+            spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            userTypeSpinner.setAdapter(spinnerAdapter);
+            userTypeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                    String selectedRole = parent.getItemAtPosition(position).toString();
+                    if (selectedRole.equals("Все")) {
+                        filterUsersByRole("All");
+                    } else if (selectedRole.equals("Пользователи")) {
+                        filterUsersByRole("Пользователь");
+                    }else if (selectedRole.equals("Администраторы")) {
+                        filterUsersByRole("Администратор");
+                    }
+                }
+
+                @Override
+                public void onNothingSelected(AdapterView<?> parent) {
+                    addDataOnRecyclerView();
+                }
+            });
+
+        } catch (Exception exception) {
             CustomDialog dialogFragment = new CustomDialog("Произошла ошибка: " + exception.getMessage(), false);
             dialogFragment.show(getParentFragmentManager(), "custom_dialog");
         }
-
     }
+
     private void addDataOnRecyclerView() {
         try {
-
             progressBar.setVisibility(View.VISIBLE);
 
             ref = mDb.getReference().child("users");
@@ -141,15 +163,14 @@ public class AdminUsersFragment extends Fragment {
                     progressBar.setVisibility(View.GONE);
                 }
             });
-        }
-        catch(Exception exception) {
+        } catch (Exception exception) {
             CustomDialog dialogFragment = new CustomDialog("Произошла ошибка: " + exception.getMessage(), false);
             dialogFragment.show(getParentFragmentManager(), "custom_dialog");
         }
     }
 
     private void filterUsers(String searchText) {
-        try{
+        try {
             ref = mDb.getReference().child("users");
             ref.addValueEventListener(new ValueEventListener() {
                 @Override
@@ -172,13 +193,40 @@ public class AdminUsersFragment extends Fragment {
 
                 }
             });
-        }
-        catch(Exception exception) {
+        } catch (Exception exception) {
             CustomDialog dialogFragment = new CustomDialog("Произошла ошибка: " + exception.getMessage(), false);
             dialogFragment.show(getParentFragmentManager(), "custom_dialog");
         }
-
     }
 
+    private void filterUsersByRole(String role) {
+        try {
+            progressBar.setVisibility(View.VISIBLE);
+            ref = mDb.getReference().child("users");
+            ref.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    users.clear();
+                    for (DataSnapshot ds : snapshot.getChildren()) {
+                        UserData userData = ds.getValue(UserData.class);
+                        if (userData != null && !userData.getEmail().equals(user.getEmail())) {
+                            if (role.equals("All") || role.isEmpty() || userData.getRole().equalsIgnoreCase(role)) {
+                                users.add(userData);
+                            }
+                        }
+                    }
+                    progressBar.setVisibility(View.GONE);
+                    adapter.notifyDataSetChanged();
+                }
 
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+                    progressBar.setVisibility(View.GONE);
+                }
+            });
+        } catch (Exception exception) {
+            CustomDialog dialogFragment = new CustomDialog("Произошла ошибка: " + exception.getMessage(), false);
+            dialogFragment.show(getParentFragmentManager(), "custom_dialog");
+        }
+    }
 }

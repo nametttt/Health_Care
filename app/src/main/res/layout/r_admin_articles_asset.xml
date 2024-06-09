@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
         android:background="@drawable/health_asset"
         android:padding="15dp">
 
@@ -15,13 +17,23 @@
             android:layout_height="wrap_content"
             android:layout_weight="0.7"
             android:orientation="horizontal">
-            <ImageView
-                android:layout_width="70dp"
-                android:layout_height="70dp"
-                android:id="@+id/image"
-                android:adjustViewBounds="true"
-                android:scaleType="centerCrop"
-                android:src="@drawable/cat" />
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="90dp"
+                android:layout_height="90dp"
+                android:layout_gravity="center"
+                app:cardCornerRadius="20dp"
+                >
+
+                <ImageView
+                    android:id="@+id/image"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:adjustViewBounds="true"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/cat" />
+
+            </androidx.cardview.widget.CardView>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -30,22 +42,32 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="7dp"
-                    android:text="Статья о здоровье"
+                    android:layout_marginHorizontal="10dp"
                     android:id="@+id/title"
+                    android:text="tanusaakovleva07@gmail.com"
                     android:layout_gravity="center"
                     android:textColor="@color/black"
-                    android:textSize="18dp"
+                    android:textSize="16dp"
                     android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="10dp"
+                    android:text="Пользователь"
+                    android:id="@+id/category"
+                    android:layout_gravity="center"
+                    android:textColor="@color/black"
+                    android:textSize="18dp"/>
 
                 <androidx.appcompat.widget.AppCompatButton
                     android:layout_width="match_parent"
+                    android:id="@+id/change"
                     android:layout_height="35dp"
                     android:layout_marginTop="10dp"
                     android:layout_marginLeft="10dp"
                     android:background="@drawable/button_asset"
                     android:text="Изменить"
-                    android:id="@+id/change"
                     android:textAlignment="center"
                     android:textAllCaps="false"
                     android:textColor="@color/white"

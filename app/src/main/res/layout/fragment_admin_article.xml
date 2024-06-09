@@ -43,7 +43,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/edit_text_asset"
-        android:layout_marginVertical="20dp"
+        android:layout_marginTop="20dp"
         >
 
         <EditText
@@ -73,6 +73,29 @@
             />
     </LinearLayout>
 
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="5dp"
+            android:text="Сортировать по категориям"
+            android:textAlignment="textStart"
+            android:textColor="@color/darkgray"
+            android:textSize="20dp" />
+
+        <Spinner
+            android:id="@+id/categorySpinner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:background="@drawable/edit_text_asset"
+            android:textSize="20dp"
+            android:layout_marginBottom="15dp"
+            android:paddingVertical="12dp"
+            android:paddingHorizontal="5dp"
+            android:textAlignment="textStart"
+            android:entries="@array/categories"
+            />
         <ProgressBar
             android:id="@+id/progressBar"
             android:layout_width="wrap_content"

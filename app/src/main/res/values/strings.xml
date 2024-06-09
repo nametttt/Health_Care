@@ -12,6 +12,11 @@
         <item>Пользователь</item>
         <item>Администратор</item>
     </string-array>
+    <string-array name="user_types1">
+        <item>Все</item>
+        <item>Пользователи</item>
+        <item>Администраторы</item>
+    </string-array>
 
     <string-array name="type_food">
         <item>Завтрак</item>
@@ -27,11 +32,13 @@
     </string-array>
 
     <string-array name="categories">
-        <item>Физическое здоровье</item>
+        <item>Все</item>
+        <item>Питание</item>
+        <item>Водный режим</item>
         <item>Психическое здоровье</item>
-        <item>Здоровое питание</item>
-        <item>Фитнес и тренировки</item>
-        <item>Медицинские советы</item>
+        <item>Полезные советы</item>
+        <item>Диеты</item>
+        <item>Фитнес</item>
     </string-array>
 
     <string-array name="access">

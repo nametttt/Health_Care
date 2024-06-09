@@ -20,6 +20,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -66,7 +67,7 @@ public class NutritionFragment extends Fragment {
     DatabaseReference userValuesRef;
     private Date newDate;
     Toolbar toolbar;
-
+    ImageView statsIcon;
 
     public NutritionFragment(Date newDate) {
         this.newDate = newDate;
@@ -110,6 +111,8 @@ public class NutritionFragment extends Fragment {
 
     void init(View v){
         try {
+            statsIcon = v.findViewById(R.id.statsIcon);
+
             exit = v.findViewById(R.id.back);
             addNutrition = v.findViewById(R.id.addNutrition);
             dateText = v.findViewById(R.id.dateText);
@@ -175,6 +178,13 @@ public class NutritionFragment extends Fragment {
                     HomeActivity homeActivity = (HomeActivity) getActivity();
                     ChangeNutritionFragment fragment = new ChangeNutritionFragment(null, selectedDate, null, selectedFoods, "add");
                     homeActivity.replaceFragment(fragment);
+                }
+            });
+            statsIcon.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    HomeActivity homeActivity = (HomeActivity) getActivity();
+                    homeActivity.replaceFragment(new NutritionStatistic());
                 }
             });
 

@@ -13,10 +13,13 @@ import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
+import android.widget.Spinner;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -28,7 +31,6 @@ import com.google.firebase.database.ValueEventListener;
 import com.tanya.health_care.code.AdminArticleRecyclerView;
 import com.tanya.health_care.code.ArticleData;
 import com.tanya.health_care.code.GetSplittedPathChild;
-import com.tanya.health_care.code.UserData;
 import com.tanya.health_care.dialog.CustomDialog;
 
 import java.util.ArrayList;
@@ -45,6 +47,8 @@ public class AdminArticleFragment extends Fragment {
     FirebaseDatabase mDb;
     ImageButton searchButton;
     EditText searchEditText;
+    Spinner categorySpinner;
+    ArrayAdapter<CharSequence> spinnerAdapter;
 
     public static AdminArticleFragment newInstance() {
         return new AdminArticleFragment();
@@ -59,8 +63,8 @@ public class AdminArticleFragment extends Fragment {
         return v;
     }
 
-    void init(View v){
-        try{
+    void init(View v) {
+        try {
             addArticle = v.findViewById(R.id.addArticle);
             user = FirebaseAuth.getInstance().getCurrentUser();
             mDb = FirebaseDatabase.getInstance();
@@ -119,12 +123,36 @@ public class AdminArticleFragment extends Fragment {
                     searchButton.setImageResource(R.drawable.search);
                 }
             });
-        }
-        catch(Exception exception) {
+
+            categorySpinner = v.findViewById(R.id.categorySpinner);
+            spinnerAdapter = ArrayAdapter.createFromResource(getContext(), R.array.categories, android.R.layout.simple_spinner_item);
+            spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            categorySpinner.setAdapter(spinnerAdapter);
+            categorySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                    String selectedCategory = parent.getItemAtPosition(position).toString();
+
+                    if (selectedCategory.equals("Все")) {
+                        filterArticlesByCategory("All");}
+                    else{
+                        filterArticlesByCategory(selectedCategory);
+
+                    }
+                }
+
+                @Override
+                public void onNothingSelected(AdapterView<?> parent) {
+                    addDataOnRecyclerView();
+                }
+            });
+
+        } catch (Exception exception) {
             CustomDialog dialogFragment = new CustomDialog("Произошла ошибка: " + exception.getMessage(), false);
             dialogFragment.show(getParentFragmentManager(), "custom_dialog");
         }
     }
+
     private void addDataOnRecyclerView() {
         try {
             progressBar.setVisibility(View.VISIBLE);
@@ -149,19 +177,18 @@ public class AdminArticleFragment extends Fragment {
                 @Override
                 public void onCancelled(@NonNull DatabaseError error) {
                     progressBar.setVisibility(View.GONE);
-
                 }
             };
             ref = mDb.getReference().child("articles");
-
             ref.addValueEventListener(valueEventListener);
         } catch (Exception e) {
-            CustomDialog dialogFragment = new CustomDialog( e.getMessage(), false);
+            CustomDialog dialogFragment = new CustomDialog(e.getMessage(), false);
             dialogFragment.show(getParentFragmentManager(), "custom_dialog");
         }
     }
+
     private void filterArticles(String searchText) {
-        try{
+        try {
             ref = mDb.getReference().child("articles");
             ref.addValueEventListener(new ValueEventListener() {
                 @Override
@@ -169,7 +196,7 @@ public class AdminArticleFragment extends Fragment {
                     articles.clear();
                     for (DataSnapshot ds : snapshot.getChildren()) {
                         ArticleData articleData = ds.getValue(ArticleData.class);
-                        if (articleData != null ) {
+                        if (articleData != null) {
                             if (articleData.getTitle().toLowerCase().contains(searchText.toLowerCase())) {
                                 articles.add(articleData);
                             }
@@ -183,11 +210,40 @@ public class AdminArticleFragment extends Fragment {
 
                 }
             });
-        }
-        catch(Exception exception) {
+        } catch (Exception exception) {
             CustomDialog dialogFragment = new CustomDialog("Произошла ошибка: " + exception.getMessage(), false);
             dialogFragment.show(getParentFragmentManager(), "custom_dialog");
         }
     }
 
+    private void filterArticlesByCategory(String category) {
+        try {
+            progressBar.setVisibility(View.VISIBLE);
+            ref = mDb.getReference().child("articles");
+            ref.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    articles.clear();
+                    for (DataSnapshot ds : snapshot.getChildren()) {
+                        ArticleData articleData = ds.getValue(ArticleData.class);
+                        if (articleData != null) {
+                            if (category.equalsIgnoreCase("All") || articleData.getCategory().equalsIgnoreCase(category)) {
+                                articles.add(articleData);
+                            }
+                        }
+                    }
+                    progressBar.setVisibility(View.GONE);
+                    adapter.notifyDataSetChanged();
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+                    progressBar.setVisibility(View.GONE);
+                }
+            });
+        } catch (Exception exception) {
+            CustomDialog dialogFragment = new CustomDialog("Произошла ошибка: " + exception.getMessage(), false);
+            dialogFragment.show(getParentFragmentManager(), "custom_dialog");
+        }
+    }
 }

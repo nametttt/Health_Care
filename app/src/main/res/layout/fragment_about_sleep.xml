@@ -1,0 +1,242 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    tools:context=".AboutIMTFragment">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="15dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/back"
+                android:textAlignment="textStart"
+                android:layout_marginVertical="10dp"
+                android:textSize="20dp"
+                android:textAllCaps="false"
+                android:drawableLeft="@drawable/left_arrow"
+                android:background="@color/transparent"
+                android:textColor="@color/gray"
+                android:text="Назад"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginBottom="25dp"
+                android:layout_marginHorizontal="20dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/black"
+                    android:text="Индекс массы тела (ИМТ)"
+                    android:textSize="32dp"
+                    android:layout_marginVertical="10dp"
+                    android:textAlignment="textStart"
+                    android:textStyle="bold"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/black"
+                    android:text="Индекс массы тела (ИМТ) — это простой показатель отношения веса к росту. Он широко используется для оценки того, является ли вес человека недостаточным, нормальным, избыточным или ожирением."
+                    android:textSize="20dp"
+                    android:layout_marginVertical="5dp"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/black"
+                    android:text="Формула для вычисления ИМТ:"
+                    android:textSize="24dp"
+                    android:layout_marginVertical="10dp"
+                    android:textAlignment="textStart"
+                    android:textStyle="bold"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/black"
+                    android:text="ИМТ = Вес (в килограммах) / (Рост (в метрах) * Рост (в метрах))"
+                    android:textSize="20dp"
+                    android:layout_marginVertical="5dp"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/black"
+                    android:text="Интерпретация ИМТ:"
+                    android:textSize="24dp"
+                    android:layout_marginVertical="10dp"
+                    android:textAlignment="textStart"
+                    android:textStyle="bold"/>
+
+
+                <TableLayout
+                    android:layout_width="match_parent"
+                    android:layout_marginVertical="5dp"
+                    android:layout_height="wrap_content">
+
+                    <TableRow
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="0.5"
+                            android:text="ИМТ"
+                            android:textSize="18sp"
+                            android:textStyle="bold"
+                            android:textAlignment="center"
+                            android:gravity="center"
+                            android:padding="10dp"
+                            android:background="@drawable/table_cell_bg_left" />
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="0.5"
+                            android:text="Интерпретация"
+                            android:textSize="18sp"
+                            android:textAlignment="center"
+                            android:gravity="center"
+                            android:textStyle="bold"
+                            android:padding="10dp"
+                            android:background="@drawable/table_cell_bg_right" />
+                    </TableRow>
+
+                    <!-- Строки с данными -->
+                    <TableRow
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="0.5"
+                            android:text="Менее 18.5"
+                            android:textSize="18sp"
+                            android:textColor="@color/darkgray"
+                            android:textAlignment="center"
+                            android:gravity="center"
+                            android:padding="10dp"
+                            android:background="@drawable/table_rows" />
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="0.5"
+                            android:text="Недостаточный вес"
+                            android:textSize="18sp"
+                            android:textColor="@color/darkgray"
+                            android:textAlignment="center"
+                            android:gravity="center"
+                            android:padding="10dp"
+                            android:background="@drawable/table_rows" />
+                    </TableRow>
+
+                    <TableRow
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="0.5"
+                            android:text="18.5 - 24.9"
+                            android:textSize="18sp"
+                            android:textColor="@color/darkgray"
+                            android:textAlignment="center"
+                            android:gravity="center"
+                            android:padding="10dp"
+                            android:background="@drawable/table_rows" />
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="0.5"
+                            android:text="Нормальный вес"
+                            android:textSize="18sp"
+                            android:textColor="@color/darkgray"
+                            android:textAlignment="center"
+                            android:gravity="center"
+                            android:padding="10dp"
+                            android:background="@drawable/table_rows" />
+                    </TableRow>
+
+                    <TableRow
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="0.5"
+                            android:text="25 - 29.9"
+                            android:textSize="18sp"
+                            android:textColor="@color/darkgray"
+                            android:textAlignment="center"
+                            android:gravity="center"
+                            android:padding="10dp"
+                            android:background="@drawable/table_rows" />
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="0.5"
+                            android:text="Избыточный вес"
+                            android:textSize="18sp"
+                            android:textColor="@color/darkgray"
+                            android:textAlignment="center"
+                            android:gravity="center"
+                            android:padding="10dp"
+                            android:background="@drawable/table_rows" />
+                    </TableRow>
+
+                    <TableRow
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="0.5"
+                            android:text="30 и более"
+                            android:textSize="18sp"
+                            android:textColor="@color/darkgray"
+                            android:textAlignment="center"
+                            android:gravity="center"
+                            android:padding="10dp"
+                            android:background="@drawable/table_rows" />
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="0.5"
+                            android:text="Ожирение"
+                            android:textSize="18sp"
+                            android:textColor="@color/darkgray"
+                            android:textAlignment="center"
+                            android:gravity="center"
+                            android:padding="10dp"
+                            android:background="@drawable/table_rows" />
+                    </TableRow>
+
+                </TableLayout>
+
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+</FrameLayout>

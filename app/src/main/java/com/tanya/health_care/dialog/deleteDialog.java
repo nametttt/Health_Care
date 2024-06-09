@@ -43,7 +43,6 @@ public class deleteDialog extends DialogFragment {
         layout.setPadding(40, 40, 40, 40);
         layout.setBackgroundColor(Color.WHITE);
 
-        // Создаем кнопку "Удалить"
         Button deleteButton = new Button(requireActivity());
         deleteButton.setLayoutParams(new LinearLayout.LayoutParams(
                 0,
@@ -63,7 +62,7 @@ public class deleteDialog extends DialogFragment {
                         public void onComplete(@NonNull Task<Void> task) {
                             if (task.isSuccessful()) {
                                 GetSplittedPathChild g = new GetSplittedPathChild();
-                                final DatabaseReference userRef = FirebaseDatabase.getInstance().getReference().child("users").child(g.getSplittedPathChild(useremail)).child(user.getUid());
+                                final DatabaseReference userRef = FirebaseDatabase.getInstance().getReference().child("users").child(g.getSplittedPathChild(useremail));
                                 userRef.removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
                                     @Override
                                     public void onComplete(@NonNull Task<Void> task) {
@@ -86,7 +85,6 @@ public class deleteDialog extends DialogFragment {
             }
         });
 
-        // Создаем кнопку "Отмена"
         Button cancelButton = new Button(requireActivity());
         cancelButton.setLayoutParams(new LinearLayout.LayoutParams(
                 0,

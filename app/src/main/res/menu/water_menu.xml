@@ -7,6 +7,9 @@
         app:showAsAction="never"/>
 
     <item
+        android:id="@+id/addValue"
+        android:title="Установить объем стакана" />
+    <item
         android:id="@+id/aboutCharacteristic"
         android:title="О водном режиме" />
 </menu>

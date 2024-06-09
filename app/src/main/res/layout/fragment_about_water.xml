@@ -52,8 +52,7 @@
                     android:id="@+id/textValue"
                     android:text="Для поддержания здоровья вам необходимо потреблять 1200 мл в день."
                     android:textSize="20dp"
-                    android:layout_marginVertical="5dp"
-                    android:justificationMode="inter_word"/>
+                    android:layout_marginVertical="5dp"/>
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -75,7 +74,6 @@
                                 android:layout_height="match_parent"
                                 android:layout_weight="0.3"
                                 android:text="Возраст"
-                                android:textColor="@color/black"
                                 android:textSize="18sp"
                                 android:textStyle="bold"
                                 android:textAlignment="center"
@@ -87,11 +85,10 @@
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="0.4"
-                                android:text="Норма потребления воды (мл)"
+                                android:text="Норма потребления воды"
                                 android:textSize="18sp"
                                 android:textAlignment="center"
                                 android:gravity="center"
-                                android:textColor="@color/black"
                                 android:textStyle="bold"
                                 android:padding="10dp"
                                 android:background="@drawable/table_cell_bg_right" />
@@ -106,7 +103,7 @@
                                 android:layout_height="match_parent"
                                 android:layout_weight="0.3"
                                 android:text="1 - 3 года"
-                                android:textColor="@color/black"
+                                android:textColor="@color/darkgray"
                                 android:textSize="18sp"
                                 android:textAlignment="center"
                                 android:gravity="center"
@@ -121,7 +118,7 @@
                                 android:textSize="18sp"
                                 android:textAlignment="center"
                                 android:gravity="center"
-                                android:textColor="@color/black"
+                                android:textColor="@color/darkgray"
                                 android:padding="10dp"
                                 android:background="@drawable/table_rows" />
                         </TableRow>
@@ -135,7 +132,7 @@
                                 android:layout_height="match_parent"
                                 android:layout_weight="0.3"
                                 android:text="4 - 8 лет"
-                                android:textColor="@color/black"
+                                android:textColor="@color/darkgray"
                                 android:textSize="18sp"
                                 android:textAlignment="center"
                                 android:gravity="center"
@@ -150,7 +147,7 @@
                                 android:textSize="18sp"
                                 android:textAlignment="center"
                                 android:gravity="center"
-                                android:textColor="@color/black"
+                                android:textColor="@color/darkgray"
                                 android:padding="10dp"
                                 android:background="@drawable/table_rows" />
                         </TableRow>
@@ -164,7 +161,7 @@
                                 android:layout_height="match_parent"
                                 android:layout_weight="0.3"
                                 android:text="9 - 13 лет"
-                                android:textColor="@color/black"
+                                android:textColor="@color/darkgray"
                                 android:textSize="18sp"
                                 android:textAlignment="center"
                                 android:gravity="center"
@@ -179,7 +176,7 @@
                                 android:textSize="18sp"
                                 android:textAlignment="center"
                                 android:gravity="center"
-                                android:textColor="@color/black"
+                                android:textColor="@color/darkgray"
                                 android:padding="10dp"
                                 android:background="@drawable/table_rows" />
                         </TableRow>
@@ -193,7 +190,7 @@
                                 android:layout_height="match_parent"
                                 android:layout_weight="0.3"
                                 android:text="14 - 18 лет"
-                                android:textColor="@color/black"
+                                android:textColor="@color/darkgray"
                                 android:textSize="18sp"
                                 android:textAlignment="center"
                                 android:gravity="center"
@@ -208,7 +205,7 @@
                                 android:textSize="18sp"
                                 android:textAlignment="center"
                                 android:gravity="center"
-                                android:textColor="@color/black"
+                                android:textColor="@color/darkgray"
                                 android:padding="10dp"
                                 android:background="@drawable/table_rows" />
                         </TableRow>
@@ -222,12 +219,12 @@
                                 android:layout_height="match_parent"
                                 android:layout_weight="0.3"
                                 android:text="> 18 лет"
-                                android:textColor="@color/black"
+                                android:textColor="@color/darkgray"
                                 android:textSize="18sp"
                                 android:textAlignment="center"
                                 android:gravity="center"
                                 android:padding="10dp"
-                                android:background="@drawable/table_rows" />
+                                android:background="@drawable/table_cell_bg_bottom_left" />
 
                             <TextView
                                 android:layout_width="0dp"
@@ -237,9 +234,9 @@
                                 android:textSize="18sp"
                                 android:textAlignment="center"
                                 android:gravity="center"
-                                android:textColor="@color/black"
+                                android:textColor="@color/darkgray"
                                 android:padding="10dp"
-                                android:background="@drawable/table_rows" />
+                                android:background="@drawable/table_cell_bg_bottom_right" />
                         </TableRow>
 
                     </TableLayout>
@@ -252,9 +249,7 @@
                     android:textColor="@color/black"
                     android:text="Поддерживайте оптимальный водный баланс для здоровья и бодрости! Установите свою дневную норму потребления воды и отслеживайте ее, чтобы быть всегда в форме."
                     android:textSize="20dp"
-                    android:layout_marginVertical="5dp"
-                    android:justificationMode="inter_word"/>
-
+                    android:layout_marginVertical="5dp"/>
             </LinearLayout>
         </LinearLayout>
     </ScrollView>

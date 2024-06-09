@@ -3,14 +3,15 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".WaterValueFragment">
+    android:background="@color/white"
+    tools:context=".AboutIMTFragment">
 
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginBottom="15dp"
         >
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -40,7 +41,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textColor="@color/black"
-                    android:text="Установить норму"
+                    android:text="Индекс массы тела (ИМТ)"
                     android:textSize="32dp"
                     android:layout_marginVertical="10dp"
                     android:textAlignment="textStart"
@@ -50,50 +51,45 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textColor="@color/black"
-                    android:text="Хорошее здоровье начинается с употребления воды! Установите дневную норму потребления воды, чтобы отслеживать ее."
+                    android:text="Индекс массы тела (ИМТ) — это простой показатель отношения веса к росту. Он широко используется для оценки того, является ли вес человека недостаточным, нормальным, избыточным или ожирением."
                     android:textSize="20dp"
                     android:layout_marginVertical="5dp"/>
 
-                <LinearLayout
+                <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:textColor="@color/black"
+                    android:text="Формула для вычисления ИМТ:"
+                    android:textSize="24dp"
                     android:layout_marginVertical="10dp"
-                    android:orientation="vertical"
-                    android:background="@drawable/calendar_asset">
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="10dp"
-                        android:text="Ежедневное потребление воды (мл)"
-                        android:textAlignment="textStart"
-                        android:textColor="@color/black"
-                        android:textSize="20dp"
-                        android:layout_margin="10dp"
-                        android:justificationMode="inter_word"
-                        android:textStyle="bold" />
+                    android:textAlignment="textStart"
+                    android:textStyle="bold"/>
 
-                    <NumberPicker
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/np"
-                        android:layout_marginHorizontal="10dp"
-                        android:layout_marginBottom="10dp"
-                        android:theme="@style/DefaultNumberPickerTheme"
-                        />
-                </LinearLayout>
-
-                <androidx.appcompat.widget.AppCompatButton
-                    android:id="@+id/save"
+                <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/button_asset"
-                    android:padding="10dp"
-                    android:layout_marginTop="20dp"
-                    android:text="Сохранить"
-                    android:textAllCaps="false"
-                    android:textColor="@color/white"
-                    android:textSize="20dp" />
+                    android:textColor="@color/black"
+                    android:text="ИМТ = Вес (в килограммах) / (Рост (в метрах) * Рост (в метрах))"
+                    android:textSize="20dp"
+                    android:layout_marginVertical="5dp"/>
 
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/black"
+                    android:text="Интерпретация ИМТ:"
+                    android:textSize="24dp"
+                    android:layout_marginVertical="10dp"
+                    android:textAlignment="textStart"
+                    android:textStyle="bold"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/black"
+                    android:text="• Менее 18.5 — Недостаточный вес\n• 18.5 – 24.9 — Нормальный вес\n• 25 – 29.9 — Избыточный вес\n• 30 и более — Ожирение"
+                    android:textSize="20dp"
+                    android:layout_marginVertical="5dp"/>
             </LinearLayout>
         </LinearLayout>
     </ScrollView>

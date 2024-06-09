@@ -50,7 +50,7 @@ public class CommonHealthRecyclerView extends RecyclerView.Adapter<CommonHealthR
             @Override
             public void onClick(View v) {
                 HomeActivity homeActivity = (HomeActivity) v.getContext();
-                ChangeCommonHealthFragment fragment = new ChangeCommonHealthFragment(currentCommon.uid, currentCommon.pressure, currentCommon.temperature, currentCommon.pulse, currentCommon.lastAdded);
+                ChangeCommonHealthFragment fragment = new ChangeCommonHealthFragment(currentCommon.uid, currentCommon.pressure, currentCommon.temperature, currentCommon.pulse, currentCommon.lastAdded, currentCommon.records);
                 Bundle args = new Bundle();
                 args.putString("Add", null);
                 fragment.setArguments(args);

@@ -39,10 +39,11 @@ public class ChangeCommonHealthFragment extends Fragment {
     FirebaseUser user;
     CommonHealthData commonHealthData;
     DatabaseReference ref;
+    EditText zametki;
     GetSplittedPathChild pC = new GetSplittedPathChild();
     FirebaseDatabase mDb;
     public Date date, selectedDate;
-    public String path, pressure, Add;
+    public String path, pressure, Add, records;
     private int pulses;
     private float temperatures;
     private TextView systolicLabel, systolicValue, diastolicLabel, diastolicValue, pulseLabel, pulseValue, temperatureLabel, temperatureValue;
@@ -59,12 +60,13 @@ public class ChangeCommonHealthFragment extends Fragment {
 
     public ChangeCommonHealthFragment(){}
 
-    public ChangeCommonHealthFragment(String uid, String pressure, float temperatures, int pulses, Date date) {
+    public ChangeCommonHealthFragment(String uid, String pressure, float temperatures, int pulses, Date date, String records) {
         path = uid;
         this.pressure = pressure;
         this.pulses = pulses;
         this.temperatures = temperatures;
         this.date = date;
+        this.records = records;
     }
 
     @Override
@@ -85,6 +87,7 @@ public class ChangeCommonHealthFragment extends Fragment {
             delete = v.findViewById(R.id.delete);
             mDb = FirebaseDatabase.getInstance();
             user = FirebaseAuth.getInstance().getCurrentUser();
+            zametki = v.findViewById(R.id.zametki);
 
             systolicLabel = v.findViewById(R.id.systolic_label);
             systolicValue = v.findViewById(R.id.systolic_value);
@@ -133,7 +136,7 @@ public class ChangeCommonHealthFragment extends Fragment {
                 temperatureValue.setText(String.format(Locale.getDefault(), "%d.%d", wholeTemp, fracTemp));
 
                 dateButton.setText(fmt.format(date));
-
+                zametki.setText(records);
                 dateButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -264,7 +267,7 @@ public class ChangeCommonHealthFragment extends Fragment {
 
                     if (add.getText().equals("Добавить")) {
                         ref = mDb.getReference("users").child(pC.getSplittedPathChild(user.getEmail())).child("characteristic").child("commonHealth").push();
-                        commonHealthData = new CommonHealthData(ref.getKey().toString(), pressureValue, pulseValue, temperatureValue, selectedDate);
+                        commonHealthData = new CommonHealthData(ref.getKey().toString(), pressureValue, pulseValue, temperatureValue, selectedDate, zametki.getText().toString());
 
                         if (ref != null) {
                             ref.setValue(commonHealthData);
@@ -297,7 +300,7 @@ public class ChangeCommonHealthFragment extends Fragment {
 
                             Date date = cal.getTime();
 
-                            CommonHealthData newCommon = new CommonHealthData(path, pressureValue, pulseValue, temperatureValue, date);
+                            CommonHealthData newCommon = new CommonHealthData(path, pressureValue, pulseValue, temperatureValue, date, zametki.getText().toString());
                             ref.setValue(newCommon);
 
                             CustomDialog dialogFragment = new CustomDialog("Изменение прошло успешно!", true);

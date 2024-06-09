@@ -3,27 +3,26 @@ package com.tanya.health_care;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.EditText;
-import android.widget.Toast;
-
+import android.widget.LinearLayout;
+import android.widget.NumberPicker;
+import android.widget.TextView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.tanya.health_care.code.CommonHealthData;
 import com.tanya.health_care.code.WaterData;
 import com.tanya.health_care.code.GetSplittedPathChild;
 import com.tanya.health_care.dialog.CustomDialog;
+import com.tanya.health_care.dialog.DateTimePickerDialog;
 import com.tanya.health_care.dialog.TimePicker;
-
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -34,13 +33,15 @@ public class ChangeDrinkingFragment extends Fragment {
     public Date date;
     public int count;
     public String path;
-
-    Button dateTimebtn, save, delete, exit;
-    EditText text;
+    private LinearLayout waterPickerLayout;
+    private TextView waterLabel;
+    private TextView waterValue;
+    private LinearLayout currentActiveLayout;
+    private NumberPicker numberPickerWater;
+    Button dateButton, save, delete, exit;
     DatabaseReference ref;
     FirebaseDatabase mDb;
     HomeActivity homeActivity;
-
 
     public ChangeDrinkingFragment(String uid, Date date, int count) {
         path = uid;
@@ -56,37 +57,60 @@ public class ChangeDrinkingFragment extends Fragment {
         return v;
     }
 
-
     void init(View v){
         try{
-            SimpleDateFormat fmt = new SimpleDateFormat("HH:mm", new Locale("ru"));
+            SimpleDateFormat fmt = new SimpleDateFormat("dd.MM HH:mm", new Locale("ru"));
             homeActivity = (HomeActivity) getActivity();
-            dateTimebtn = v.findViewById(R.id.dateButton);
-            text = v.findViewById(R.id.countText);
+            dateButton = v.findViewById(R.id.dateButton);
             save = v.findViewById(R.id.continu);
             exit = v.findViewById(R.id.back);
             delete = v.findViewById(R.id.delete);
             mDb = FirebaseDatabase.getInstance();
             GetSplittedPathChild pC = new GetSplittedPathChild();
 
-            dateTimebtn.setText(fmt.format(date));
-            text.setText(String.valueOf(count));
+            dateButton.setText(fmt.format(date));
+            waterPickerLayout = v.findViewById(R.id.water_picker_layout);
+            waterLabel = v.findViewById(R.id.water_label);
+            waterValue = v.findViewById(R.id.water_value);
+            numberPickerWater = v.findViewById(R.id.number_picker_water);
 
+            setupNumberPicker(numberPickerWater, 1, (5000 - 50) / 50 + 1, count);
+            waterValue.setText(String.valueOf(count));
+
+            waterLabel.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    toggleNumberPicker(numberPickerWater);
+                }
+            });
+
+            waterValue.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    toggleNumberPicker(numberPickerWater);
+                }
+            });
+
+            numberPickerWater.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
+                @Override
+                public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
+                    updateWaterValue();
+                }
+            });
 
             exit.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    HomeActivity homeActivity = (HomeActivity) getActivity();
                     homeActivity.replaceFragment(new DrinkingFragment());
                 }
             });
 
-            dateTimebtn.setOnClickListener(new View.OnClickListener() {
+            dateButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    TimePicker datePickerModal = new TimePicker();
-                    datePickerModal.setTargetButton(dateTimebtn);
-                    datePickerModal.show(getParentFragmentManager(), "timepicker");
+                    DateTimePickerDialog dateTimePickerDialog = new DateTimePickerDialog();
+                    dateTimePickerDialog.setTargetButton(dateButton);
+                    dateTimePickerDialog.show(getParentFragmentManager(), "dateTimePicker");
                 }
             });
 
@@ -95,22 +119,40 @@ public class ChangeDrinkingFragment extends Fragment {
                 public void onClick(View v) {
                     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                     ref = mDb.getReference("users").child(pC.getSplittedPathChild(user.getEmail())).child("characteristic").child("water").child(path);
+                    String dateTimeString = dateButton.getText().toString();
 
-                    Date d = date;
-                    String[] times = dateTimebtn.getText().toString().split(":");
+                    try {
+                        String[] dateTimeParts = dateTimeString.split(" ");
+                        String dateString = dateTimeParts[0];
+                        String timeString = dateTimeParts[1];
 
-                    Calendar cal = Calendar.getInstance();
-                    cal.setTime(date);
+                        String[] dateParts = dateString.split("\\.");
+                        String[] timeParts = timeString.split(":");
 
-                    cal.set(Calendar.HOUR_OF_DAY, Integer.parseInt(times[0]));
-                    cal.set(Calendar.MINUTE, Integer.parseInt(times[1]));
-                    date = cal.getTime();
-                    WaterData newWater = new WaterData(path, Integer.parseInt(text.getText().toString()) ,date  );
-                    ref.setValue(newWater);
-                    CustomDialog dialogFragment = new CustomDialog( "Изменение прошло успешно!", true);
-                    dialogFragment.show(getParentFragmentManager(), "custom_dialog");
+                        int day = Integer.parseInt(dateParts[0]);
+                        int month = Integer.parseInt(dateParts[1]) - 1; // месяцы в Calendar начинаются с 0
+                        int year = Calendar.getInstance().get(Calendar.YEAR); // год не известен, поэтому используем текущий
 
-                    homeActivity.replaceFragment(new DrinkingFragment());
+                        int hour = Integer.parseInt(timeParts[0]);
+                        int minute = Integer.parseInt(timeParts[1]);
+
+                        Calendar cal = Calendar.getInstance();
+                        cal.set(year, month, day, hour, minute);
+
+                        Date date = cal.getTime();
+
+                        int selectedValue = (numberPickerWater.getValue() * 50) + 50;  // Adjusting to the displayed values
+                        WaterData newWater = new WaterData(path, selectedValue, date);
+                        ref.setValue(newWater);
+
+                        CustomDialog dialogFragment = new CustomDialog("Изменение прошло успешно!", true);
+                        dialogFragment.show(getParentFragmentManager(), "custom_dialog");
+                        homeActivity.replaceFragment(new DrinkingFragment());
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        CustomDialog dialogFragment = new CustomDialog("Ошибка при разборе даты!", false);
+                        dialogFragment.show(getParentFragmentManager(), "custom_dialog");
+                    }
 
                 }
             });
@@ -145,13 +187,37 @@ public class ChangeDrinkingFragment extends Fragment {
                     builder.show();
                 }
             });
-        }
-        catch (Exception e) {
-            CustomDialog dialogFragment = new CustomDialog( e.getMessage(), false);
+        } catch (Exception e) {
+            CustomDialog dialogFragment = new CustomDialog(e.getMessage(), false);
             dialogFragment.show(getParentFragmentManager(), "custom_dialog");
         }
-
-
     }
 
+    private void toggleNumberPicker(NumberPicker numberPicker) {
+        if (numberPicker.getVisibility() == View.VISIBLE) {
+            numberPicker.setVisibility(View.GONE);
+        } else {
+            numberPicker.setVisibility(View.VISIBLE);
+        }
+    }
+
+
+    private void setupNumberPicker(NumberPicker numberPicker, int minValue, int maxValue, int currentValue) {
+        numberPicker.setMinValue(minValue);
+        numberPicker.setMaxValue(maxValue);
+
+        String[] displayValues = new String[(maxValue - minValue) + 1];
+        for (int i = 0; i < displayValues.length; i++) {
+            displayValues[i] = String.valueOf((i * 50) + 50);
+        }
+
+        numberPicker.setDisplayedValues(displayValues);
+        numberPicker.setWrapSelectorWheel(false);
+        numberPicker.setValue(currentValue / 50);
+    }
+
+    private void updateWaterValue() {
+        int value = (numberPickerWater.getValue() * 50) + 50;
+        waterValue.setText(String.valueOf(value));
+    }
 }

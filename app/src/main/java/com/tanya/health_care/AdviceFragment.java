@@ -1,6 +1,8 @@
 package com.tanya.health_care;
 
 import android.os.Bundle;
+
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import android.text.TextUtils;
@@ -15,6 +17,14 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.tanya.health_care.code.GetSplittedPathChild;
+import com.tanya.health_care.code.WaterData;
 import com.tanya.health_care.code.YaGPTAPI;
 import com.tanya.health_care.dialog.CustomDialog;
 
@@ -102,13 +112,37 @@ public class AdviceFragment extends Fragment {
                 @Override
                 public void onClick(View v) {
                     adviceLayout.setVisibility(View.GONE);
+                    waterButton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            adviceLayout.setVisibility(View.GONE);
+                            FirebaseDatabase db = FirebaseDatabase.getInstance();
+                            DatabaseReference ref = db.getReference("users");
+                            GetSplittedPathChild pC = new GetSplittedPathChild();
+                            ref.child(pC.getSplittedPathChild(FirebaseAuth.getInstance().getCurrentUser().getEmail())).child("characteristic").child("water").addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                    if (snapshot.exists()) {
+                                        WaterData waterData = snapshot.getValue(WaterData.class);
+                                        String text = "Напиши про питьевой режим учитывая мои параметры потребления воды (" +waterData.addedValue + ") Сформулируй короче";
+                                        try {
+                                            sendRequest(text, waterButton.getText().toString());
+                                        } catch (IOException e) {
+                                            throw new RuntimeException(e);
+                                        }
+                                    }
+                                }
 
-                    String text = "Напиши про питьевой режим " + "Сформулируй короче";
-                    try {
-                        sendRequest(text, waterButton.getText().toString());
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
-                    }
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError error) {
+                                    // Handle errors
+                                }
+                            });
+
+
+                        }
+                    });
+
                 }
             });
 

@@ -55,12 +55,14 @@ public class DrinkingFragment extends Fragment {
     private Date selectedDate = new Date();
     private Button addWater, save;
     RecyclerView recyclerView;
+    int bottleValue = 250;
+
     Toolbar toolbar;
     ArrayList<WaterData> waterDataArrayList;
     WaterRecyclerView adapter;
     FirebaseUser user;
     WaterData waterData;
-    DatabaseReference ref, userValuesRef;
+    DatabaseReference ref, userValuesRef, bottleValuesRef;
     GetSplittedPathChild pC = new GetSplittedPathChild();
     HorizontalCalendarView calendarView;
     FirebaseDatabase mDb;
@@ -92,6 +94,9 @@ public class DrinkingFragment extends Fragment {
             case R.id.aboutCharacteristic:
                 homeActivity.replaceFragment(new AboutWaterFragment());
                 return true;
+            case R.id.addValue:
+                homeActivity.replaceFragment(new MyBottleValueFragment());
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -120,6 +125,26 @@ public class DrinkingFragment extends Fragment {
             calendarView = v.findViewById(R.id.calendar);
             MyCalendar();
 
+            bottleValuesRef = mDb.getReference("users")
+                    .child(pC.getSplittedPathChild(user.getEmail()))
+                    .child("values")
+                    .child("BottleValue");
+
+            bottleValuesRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    if (snapshot.exists()) {
+                        bottleValue = snapshot.getValue(int.class);
+                        addWater.setText(String.valueOf( "+ " + bottleValue +" мл"));
+                    } else {
+                        addWater.setText("+ 250 мл");
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+                }
+            });
             userValuesRef = mDb.getReference("users")
                     .child(pC.getSplittedPathChild(user.getEmail()))
                     .child("values")
@@ -165,7 +190,7 @@ public class DrinkingFragment extends Fragment {
 
                     ref = mDb.getReference("users").child(pC.getSplittedPathChild(user.getEmail())).child("characteristic").child("water").push();
 
-                    waterData = new WaterData(ref.getKey().toString(),250, selectedDate);
+                    waterData = new WaterData(ref.getKey().toString(),bottleValue, selectedDate);
 
                     if ( ref != null){
                         ref.setValue(waterData);

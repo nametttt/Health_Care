@@ -23,7 +23,6 @@ import com.tanya.health_care.dialog.CustomDialog;
 
 public class WaterValueFragment extends Fragment {
 
-
     Button back, save;
     DatabaseReference userValuesRef;
     GetSplittedPathChild pC = new GetSplittedPathChild();
@@ -61,6 +60,20 @@ public class WaterValueFragment extends Fragment {
             numberPicker.setValue(waterValue / 50);
             numberPicker.setOnValueChangedListener((picker, oldVal, newVal) -> {
                 // Handle value change
+            });
+            userValuesRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    if (dataSnapshot.exists()) {
+                        waterValue = dataSnapshot.getValue(Integer.class);
+                        numberPicker.setValue(waterValue / 50);
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+                    // Обработка ошибок при чтении из базы данных
+                }
             });
 
             userValuesRef.addListenerForSingleValueEvent(new ValueEventListener() {

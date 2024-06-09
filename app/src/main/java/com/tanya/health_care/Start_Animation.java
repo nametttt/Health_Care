@@ -14,6 +14,13 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.tanya.health_care.code.GetSplittedPathChild;
+import com.tanya.health_care.code.UserData;
 
 import java.util.Objects;
 
@@ -32,7 +39,6 @@ public class Start_Animation extends AppCompatActivity {
         Animation tablego = AnimationUtils.loadAnimation(this, R.anim.exiting);
         ll.startAnimation(tablego);
 
-
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -46,20 +52,45 @@ public class Start_Animation extends AppCompatActivity {
                                     if (Objects.equals(firebaseUser.getEmail(), "ya@gmail.com")) {
                                         Intent mainIntent = new Intent(Start_Animation.this, AdminHomeActivity.class);
                                         startActivity(mainIntent);
-                                        finish();
-                                        overridePendingTransition(R.anim.exiting, R.anim.entering);
-                                        return;
                                     } else {
-                                        Intent mainIntent = new Intent(Start_Animation.this, HomeActivity.class);
-                                        startActivity(mainIntent);
+                                        FirebaseDatabase db = FirebaseDatabase.getInstance();
+                                        DatabaseReference ref = db.getReference("users");
+                                        GetSplittedPathChild pC = new GetSplittedPathChild();
+                                        ref.child(pC.getSplittedPathChild(firebaseUser.getEmail())).addListenerForSingleValueEvent(new ValueEventListener() {
+                                            @Override
+                                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                                if (snapshot.exists()) {
+                                                    UserData user1 = snapshot.getValue(UserData.class);
+                                                    Intent mainIntent;
+                                                    if (user1 != null) {
+                                                        mainIntent = new Intent(Start_Animation.this, HomeActivity.class);
+                                                    } else {
+                                                        mainIntent = new Intent(Start_Animation.this, MainActivity.class);
+                                                    }
+                                                    startActivity(mainIntent);
+                                                } else {
+                                                    FirebaseAuth.getInstance().getCurrentUser().delete();
+                                                    Intent mainIntent = new Intent(Start_Animation.this, MainActivity.class);
+                                                    startActivity(mainIntent);
+                                                }
+                                                finish();
+                                                overridePendingTransition(R.anim.exiting, R.anim.entering);
+                                            }
+
+                                            @Override
+                                            public void onCancelled(@NonNull DatabaseError error) {
+                                                // Handle errors
+                                            }
+                                        });
                                     }
                                 } else {
                                     Intent mainIntent = new Intent(Start_Animation.this, MainActivity.class);
                                     startActivity(mainIntent);
+                                    finish();
+                                    overridePendingTransition(R.anim.exiting, R.anim.entering);
                                 }
-                                finish();
-                                overridePendingTransition(R.anim.exiting, R.anim.entering);
                             } else {
+                                // Handle task failure
                             }
                         }
                     });

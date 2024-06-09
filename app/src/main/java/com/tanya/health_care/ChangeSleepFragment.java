@@ -250,6 +250,16 @@ public class ChangeSleepFragment extends Fragment {
                     calendarFinish.set(Calendar.MINUTE, selectedEndMinute);
                     Date finishSleepTime = calendarFinish.getTime();
 
+                    long durationInMillis = finishSleepTime.getTime() - startSleepTime.getTime();
+                    long durationInHours = durationInMillis / (60 * 60 * 1000);
+
+                    if (durationInHours > 20) {
+
+                        CustomDialog dialogFragment = new CustomDialog("Продолжительность сна не может превышать 20 часов!", false);
+                        dialogFragment.show(getParentFragmentManager(), "custom_dialog");
+                        return;
+                    }
+
                     if ("Добавить".equals(save.getText())) {
 
                         checkTimeOverlap(selectedDate, startSleepTime, finishSleepTime, new OnOverlapCheckListener() {
@@ -407,6 +417,24 @@ public class ChangeSleepFragment extends Fragment {
 
     private void updateDuration() {
         durationTextView.setText("Продолжительность сна " + picker.getDuration().toString());
+    }
+    private long calculateSleepDurationMillis(TimeRangePicker.Time startTime, TimeRangePicker.Time endTime) {
+        int startHour = startTime.getHour();
+        int startMinute = startTime.getMinute();
+        int endHour = endTime.getHour();
+        int endMinute = endTime.getMinute();
+
+        Calendar startCalendar = Calendar.getInstance();
+        startCalendar.set(Calendar.HOUR_OF_DAY, startHour);
+        startCalendar.set(Calendar.MINUTE, startMinute);
+        long startTimeMillis = startCalendar.getTimeInMillis();
+
+        Calendar endCalendar = Calendar.getInstance();
+        endCalendar.set(Calendar.HOUR_OF_DAY, endHour);
+        endCalendar.set(Calendar.MINUTE, endMinute);
+        long endTimeMillis = endCalendar.getTimeInMillis();
+
+        return endTimeMillis - startTimeMillis;
     }
 
 }
