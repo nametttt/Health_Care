@@ -8,25 +8,19 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginBottom="15dp"
-        >
+        android:layout_marginBottom="15dp">
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical">
 
             <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/back"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/back"
-                android:textAlignment="textStart"
-                android:layout_marginVertical="10dp"
-                android:textSize="20dp"
-                android:textAllCaps="false"
-                android:drawableLeft="@drawable/left_arrow"
-                android:background="@color/transparent"
-                android:textColor="@color/gray"
-                android:text="Назад"/>
+                android:text="Назад"
+                style="@style/BackButton"/>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -34,32 +28,26 @@
                 android:layout_marginBottom="25dp"
                 android:layout_marginHorizontal="20dp"
                 android:orientation="vertical">
+
                 <TextView
+                    android:id="@+id/title"
+                    style="@style/HeaderText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/black"
-                    android:text="Название"
-                    android:id="@+id/title"
-                    android:textSize="32dp"
-                    android:layout_marginVertical="10dp"
-                    android:textAlignment="textStart"
-                    android:textStyle="bold"/>
+                    android:text="Название статьи" />
 
                 <ImageView
+                    android:id="@+id/image"
                     android:layout_width="match_parent"
-                    android:layout_height="250dp"
-                    android:id="@+id/image"/>
+                    android:layout_height="250dp" />
 
                 <TextView
+                    android:id="@+id/description"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/black"
-                    android:text="Введите ваши физические параметры, это необходимо для расчета Индекса Массы Тела"
-                    android:textSize="20dp"
-                    android:id="@+id/description"
-                    android:layout_marginVertical="10dp"
                     android:layout_marginBottom="30dp"
-                    android:textAlignment="textStart"/>
+                    style="@style/SubHeaderText"
+                    android:text="Введите ваши физические параметры, это необходимо для расчета Индекса Массы Тела" />
 
             </LinearLayout>
         </LinearLayout>

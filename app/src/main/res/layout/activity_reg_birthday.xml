@@ -12,80 +12,51 @@
         android:orientation="vertical">
 
         <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/back"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textAlignment="textStart"
-            android:id="@+id/back"
-            android:layout_marginVertical="10dp"
-            android:textSize="20dp"
-            android:textAllCaps="false"
-            android:drawableLeft="@drawable/left_arrow"
-            android:background="@color/transparent"
-            android:textColor="@color/gray"
-            android:text="Назад"/>
+            style="@style/BackButton" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginHorizontal="20dp"
             android:orientation="vertical">
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textColor="@color/black"
-                android:text="Введите дату рождения"
-                android:textSize="32dp"
-                android:layout_marginVertical="10dp"
-                android:textAlignment="textStart"
-                android:textStyle="bold"/>
 
             <TextView
+                style="@style/HeaderText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="@color/black"
-                android:text="Это поможет точнее анализировать ваше состояние и подбирать рекомендации"
-                android:textSize="20dp"
-                android:layout_marginVertical="10dp"
-                android:textAlignment="textStart"/>
+                android:text="Введите дату рождения" />
 
             <TextView
+                style="@style/SubHeaderText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:layout_marginBottom="5dp"
-                android:text="Дата рождения"
-                android:textAlignment="textStart"
-                android:textColor="@color/darkgray"
-                android:textSize="20dp" />
+                android:text="Это поможет точнее анализировать ваше состояние и подбирать рекомендации" />
+
+            <TextView
+                style="@style/LabelText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Дата рождения" />
 
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/pickDate"
+                android:hint="ДД.ММ.ГГГГ"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginVertical="5dp"
-                android:maxLines="1"
-                android:padding="12dp"
-                android:textSize="18dp"
-                android:textStyle="normal"
-                android:textAlignment="textStart"
-                android:background="@drawable/edit_text_asset"
-                android:hint="ДД.ММ.ГГГГ"/>
-
+                style="@style/DateButton" />
         </LinearLayout>
     </LinearLayout>
 
     <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/continu"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/button_asset"
-        android:padding="12dp"
+        style="@style/PrimaryButton"
         android:layout_marginHorizontal="20dp"
-        android:textAlignment="center"
-        android:text="Продолжить"
-        android:id="@+id/continu"
-        android:textAllCaps="false"
-        android:layout_alignParentBottom="true"
         android:layout_marginBottom="55dp"
-        android:textColor="@color/white"
-        android:textSize="20dp" />
+        android:text="Продолжить"
+        android:layout_alignParentBottom="true" />
 </RelativeLayout>

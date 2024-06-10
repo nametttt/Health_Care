@@ -12,81 +12,58 @@
         android:orientation="vertical">
 
         <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/back"
+            style="@style/BackButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/back"
-            android:textAlignment="textStart"
-            android:layout_marginVertical="10dp"
-            android:textSize="20dp"
-            android:textAllCaps="false"
-            android:drawableLeft="@drawable/left_arrow"
-            android:background="@color/transparent"
-            android:textColor="@color/gray"
-            android:text="Назад"/>
+            android:text="Назад" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginHorizontal="20dp"
             android:orientation="vertical">
+
             <TextView
+                style="@style/HeaderText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="@color/black"
-                android:text="Введите адрес электронной почты"
-                android:textSize="32dp"
-                android:layout_marginVertical="10dp"
-                android:textAlignment="textStart"
-                android:textStyle="bold"/>
+                android:text="Введите адрес электронной почты"/>
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="@color/black"
                 android:text="Для восстановления профиля введите вашу электронную почту. На нее придет инструкция для сброса пароля"
-                android:textSize="20dp"
-                android:layout_marginVertical="10dp"
-                android:textAlignment="textStart"/>
+                style="@style/SubHeaderText"
+                android:layout_marginVertical="10dp"/>
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:layout_marginBottom="5dp"
                 android:text="Адрес электронной почты"
-                android:textAlignment="textStart"
-                android:textColor="@color/darkgray"
-                android:textSize="20dp" />
+                style="@style/LabelText"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="5dp"/>
 
             <EditText
+                android:id="@+id/email"
+                style="@style/EditTextStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginVertical="5dp"
-                android:padding="12dp"
-                android:id="@+id/email"
-                android:textSize="18dp"
-                android:maxLines="1"
-                android:background="@drawable/edit_text_asset"
                 android:hint="example@gmail.com"/>
-
 
         </LinearLayout>
     </LinearLayout>
 
-
-
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/continu"
+        style="@style/PrimaryButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/button_asset"
-        android:padding="12dp"
-        android:layout_marginHorizontal="20dp"
-        android:textAlignment="center"
-        android:text="Продолжить"
-        android:textAllCaps="false"
         android:layout_alignParentBottom="true"
         android:layout_marginBottom="55dp"
-        android:textColor="@color/white"
-        android:textSize="20dp" />
+        android:layout_marginHorizontal="20dp"
+        android:text="Продолжить" />
+
 </RelativeLayout>

@@ -17,17 +17,10 @@
             android:orientation="vertical">
 
             <androidx.appcompat.widget.AppCompatButton
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
                 android:id="@+id/back"
-                android:textAlignment="textStart"
-                android:layout_marginVertical="10dp"
-                android:textSize="20dp"
-                android:textAllCaps="false"
-                android:drawableLeft="@drawable/left_arrow"
-                android:background="@color/transparent"
-                android:textColor="@color/gray"
-                android:text="Назад"/>
+                style="@style/BackButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -37,215 +30,143 @@
                 android:orientation="vertical">
 
                 <TextView
+                    style="@style/HeaderText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/black"
-                    android:text="Пользовательское Соглашение"
-                    android:textSize="32dp"
-                    android:layout_marginVertical="10dp"
-                    android:textAlignment="textStart"
-                    android:textStyle="bold"/>
-
-                <!-- Begin User Agreement Text -->
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/black"
-                    android:text="1. Общие положения"
-                    android:textSize="20dp"
-                    android:layout_marginVertical="5dp"
-                    android:textAlignment="textStart"/>
+                    android:text="Пользовательское Соглашение"/>
 
                 <TextView
+                    style="@style/SubHeaderText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/black"
-                    android:text="1.1. Настоящее Пользовательское Соглашение (далее – 'Соглашение') регулирует отношения между пользователем (далее – 'Пользователь') и владельцем приложения (далее – 'Компания') по поводу использования приложения по заботе о здоровье (далее – 'Приложение')."
-                    android:textSize="16dp"
-                    android:layout_marginVertical="5dp"
-                    android:textAlignment="textStart"/>
+                    android:text="1. Общие положения"/>
 
                 <TextView
+                    style="@style/BodyText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/black"
-                    android:text="1.2. Пользователь обязан ознакомиться с Соглашением до начала использования Приложения. Использование Приложения означает полное согласие Пользователя с условиями данного Соглашения."
-                    android:textSize="16dp"
-                    android:layout_marginVertical="5dp"
-                    android:textAlignment="textStart"/>
+                    android:text="1.1. Настоящее Пользовательское Соглашение (далее – 'Соглашение') регулирует отношения между пользователем (далее – 'Пользователь') и владельцем приложения (далее – 'Компания') по поводу использования приложения по заботе о здоровье (далее – 'Приложение')."/>
 
                 <TextView
+                    style="@style/BodyText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/black"
-                    android:text="2. Услуги Приложения"
-                    android:textSize="20dp"
-                    android:layout_marginVertical="5dp"
-                    android:textAlignment="textStart"/>
+                    android:text="1.2. Пользователь обязан ознакомиться с Соглашением до начала использования Приложения. Использование Приложения означает полное согласие Пользователя с условиями данного Соглашения."/>
 
                 <TextView
+                    style="@style/SubHeaderText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/black"
-                    android:text="2.1. Приложение предоставляет Пользователю следующие услуги:"
-                    android:textSize="16dp"
-                    android:layout_marginVertical="5dp"
-                    android:textAlignment="textStart"/>
+                    android:text="2. Услуги Приложения"/>
 
                 <TextView
+                    style="@style/BodyText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/black"
-                    android:text=" - Отслеживание состояния здоровья;"
-                    android:textSize="16dp"
-                    android:layout_marginVertical="5dp"
-                    android:textAlignment="textStart"/>
+                    android:text="2.1. Приложение предоставляет Пользователю следующие услуги:"/>
 
                 <TextView
+                    style="@style/BulletItem"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/black"
-                    android:text=" - Напоминания о приеме лекарств;"
-                    android:textSize="16dp"
-                    android:layout_marginVertical="5dp"
-                    android:textAlignment="textStart"/>
+                    android:text=" - Отслеживание состояния здоровья;"/>
 
                 <TextView
+                    style="@style/BulletItem"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/black"
-                    android:text=" - Ведение дневника здоровья;"
-                    android:textSize="16dp"
-                    android:layout_marginVertical="5dp"
-                    android:textAlignment="textStart"/>
+                    android:text=" - Напоминания о приеме лекарств;"/>
 
                 <TextView
+                    style="@style/BulletItem"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/black"
-                    android:text=" - Доступ к информации о здоровье и здоровом образе жизни."
-                    android:textSize="16dp"
-                    android:layout_marginVertical="5dp"
-                    android:textAlignment="textStart"/>
+                    android:text=" - Ведение дневника здоровья;"/>
 
                 <TextView
+                    style="@style/BulletItem"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/black"
-                    android:text="2.2. Компания имеет право изменять содержание Приложения без предварительного уведомления Пользователя."
-                    android:textSize="16dp"
-                    android:layout_marginVertical="5dp"
-                    android:textAlignment="textStart"/>
+                    android:text=" - Доступ к информации о здоровье и здоровом образе жизни."/>
 
                 <TextView
+                    style="@style/BodyText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/black"
-                    android:text="3. Регистрация и учетная запись"
-                    android:textSize="20dp"
-                    android:layout_marginVertical="5dp"
-                    android:textAlignment="textStart"/>
+                    android:text="2.2. Компания имеет право изменять содержание Приложения без предварительного уведомления Пользователя."/>
 
                 <TextView
+                    style="@style/SubHeaderText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/black"
-                    android:text="3.1. Для использования Приложения Пользователь должен пройти процедуру регистрации и создать учетную запись."
-                    android:textSize="16dp"
-                    android:layout_marginVertical="5dp"
-                    android:textAlignment="textStart"/>
+                    android:text="3. Регистрация и учетная запись"/>
 
                 <TextView
+                    style="@style/BodyText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/black"
-                    android:text="3.2. Пользователь обязуется предоставить достоверную и актуальную информацию при регистрации и поддерживать эту информацию в актуальном состоянии."
-                    android:textSize="16dp"
-                    android:layout_marginVertical="5dp"
-                    android:textAlignment="textStart"/>
+                    android:text="3.1. Для использования Приложения Пользователь должен пройти процедуру регистрации и создать учетную запись."/>
 
                 <TextView
+                    style="@style/BodyText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/black"
-                    android:text="4. Конфиденциальность и защита данных"
-                    android:textSize="20dp"
-                    android:layout_marginVertical="5dp"
-                    android:textAlignment="textStart"/>
+                    android:text="3.2. Пользователь обязуется предоставить достоверную и актуальную информацию при регистрации и поддерживать эту информацию в актуальном состоянии."/>
 
                 <TextView
+                    style="@style/SubHeaderText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/black"
-                    android:text="4.1. Компания обязуется обеспечивать конфиденциальность и безопасность персональных данных Пользователя в соответствии с действующим законодательством."
-                    android:textSize="16dp"
-                    android:layout_marginVertical="5dp"
-                    android:textAlignment="textStart"/>
+                    android:text="4. Конфиденциальность и защита данных"/>
 
                 <TextView
+                    style="@style/BodyText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/black"
-                    android:text="4.2. Пользователь соглашается на обработку своих персональных данных в целях использования Приложения."
-                    android:textSize="16dp"
-                    android:layout_marginVertical="5dp"
-                    android:textAlignment="textStart"/>
+                    android:text="4.1. Компания обязуется обеспечивать конфиденциальность и безопасность персональных данных Пользователя в соответствии с действующим законодательством."/>
 
                 <TextView
+                    style="@style/BodyText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/black"
-                    android:text="5. Обязанности Пользователя"
-                    android:textSize="20dp"
-                    android:layout_marginVertical="5dp"
-                    android:textAlignment="textStart"/>
+                    android:text="4.2. Пользователь соглашается на обработку своих персональных данных в целях использования Приложения."/>
 
                 <TextView
+                    style="@style/SubHeaderText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/black"
+                    android:text="5. Обязанности Пользователя"/>
+
+                <TextView
+                    style="@style/BodyText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
                     android:text="5.1. Пользователь обязуется использовать Приложение только в законных целях и в соответствии с условиями данного Соглашения."
-                    android:textSize="16dp"
-                    android:layout_marginVertical="5dp"
-                    android:textAlignment="textStart"/>
+                    />
+            <TextView
+                style="@style/BodyText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="5.2. Пользователь не имеет права:"/>
 
                 <TextView
+                    style="@style/BulletItem"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/black"
-                    android:text="5.2. Пользователь не имеет права:"
-                    android:textSize="16dp"
-                    android:layout_marginVertical="5dp"
-                    android:textAlignment="textStart"/>
+                    android:text=" - Использовать Приложение для распространения вредоносного программного обеспечения;"/>
 
                 <TextView
+                    style="@style/BulletItem"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/black"
-                    android:text=" - Использовать Приложение для распространения вредоносного программного обеспечения;"
-                    android:textSize="16dp"
-                    android:layout_marginVertical="5dp"
-                    android:textAlignment="textStart"/>
+                    android:text=" - Осуществлять действия, направленные на нарушение работы Приложения;"/>
 
                 <TextView
+                    style="@style/BulletItem"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/black"
-                    android:text=" - Осуществлять действия, направленные на нарушение работы Приложения;"
-                    android:textSize="16dp"
-                    android:layout_marginVertical="5dp"
-                    android:textAlignment="textStart"/>
+                    android:text=" - Использовать учетную запись другого пользователя без разрешения."/>
 
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/black"
-                    android:text=" - Использовать учетную запись другого пользователя без разрешения."
-                    android:textSize="16dp"
-                    android:layout_marginVertical="5dp"
-                    android:textAlignment="textStart"/>
-
-                <!-- Add more sections as needed -->
 
             </LinearLayout>
         </LinearLayout>

@@ -287,8 +287,12 @@ public class DrinkingStatisticFragment extends Fragment {
                         updateChart(waterDataMap);
 
                         // Update the textValue with user norm
-                        textValue.setText(String.format(Locale.getDefault(), "%d мл в день", (int) userWaterNorm));
-                    }
+                        float totalIntake = 0;
+                        for (int intake : waterDataMap.values()) {
+                            totalIntake += intake;
+                        }
+                        float averageIntake = totalIntake / selectedPeriod;
+                        textValue.setText(String.format(Locale.getDefault(), "%.0f мл в день", averageIntake));                 }
 
                     @Override
                     public void onCancelled(@NonNull DatabaseError error) {

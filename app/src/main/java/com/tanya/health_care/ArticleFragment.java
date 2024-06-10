@@ -5,7 +5,6 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -23,21 +22,21 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.tanya.health_care.code.ArticleData;
 import com.tanya.health_care.code.ArticleRecyclerView;
-import com.tanya.health_care.code.GetSplittedPathChild;
 import com.tanya.health_care.dialog.CustomDialog;
 
 import java.util.ArrayList;
 
 public class ArticleFragment extends Fragment {
 
-    RecyclerView recyclerView, recyclerView1, recyclerView2;
-    ArrayList<ArticleData> articleDataArrayList;
+    RecyclerView recyclerView1, recyclerView2, recyclerView3, recyclerView4, recyclerView5, recyclerView6;
+    ArrayList<ArticleData> articleDataList;
     ArticleRecyclerView adapter;
     FirebaseUser user;
     DatabaseReference ref;
-    ProgressBar progressBar, progressBar1, progressBar2;
+    ProgressBar progressBar1, progressBar2, progressBar3, progressBar4, progressBar5, progressBar6;
 
     FirebaseDatabase mDb;
+
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
@@ -46,73 +45,80 @@ public class ArticleFragment extends Fragment {
         return v;
     }
 
-    void init(View v){
-        try{
+    void init(View v) {
+        try {
             user = FirebaseAuth.getInstance().getCurrentUser();
             mDb = FirebaseDatabase.getInstance();
-            progressBar = v.findViewById(R.id.progressBar);
+
             progressBar1 = v.findViewById(R.id.progressBar1);
             progressBar2 = v.findViewById(R.id.progressBar2);
+            progressBar3 = v.findViewById(R.id.progressBar3);
+            progressBar4 = v.findViewById(R.id.progressBar4);
+            progressBar5 = v.findViewById(R.id.progressBar5);
+            progressBar6 = v.findViewById(R.id.progressBar6);
 
-            articleDataArrayList = new ArrayList<ArticleData>();
-            adapter = new ArticleRecyclerView(getContext(), articleDataArrayList);
-            recyclerView = v.findViewById(R.id.recyclerView);
-            recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-            recyclerView.setAdapter(adapter);
-            LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
-            layoutManager.setOrientation(RecyclerView.HORIZONTAL);
-            recyclerView.setLayoutManager(layoutManager);
+            articleDataList = new ArrayList<>();
+            adapter = new ArticleRecyclerView(getContext(), articleDataList);
 
             recyclerView1 = v.findViewById(R.id.recyclerView1);
-            recyclerView1.setLayoutManager(new LinearLayoutManager(getActivity()));
+            recyclerView1.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
             recyclerView1.setAdapter(adapter);
-            LinearLayoutManager layoutManager1 = new LinearLayoutManager(getContext());
-            layoutManager1.setOrientation(RecyclerView.HORIZONTAL);
-            recyclerView1.setLayoutManager(layoutManager1);
-
 
             recyclerView2 = v.findViewById(R.id.recyclerView2);
-            recyclerView2.setLayoutManager(new LinearLayoutManager(getActivity()));
+            recyclerView2.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
             recyclerView2.setAdapter(adapter);
-            LinearLayoutManager layoutManager2 = new LinearLayoutManager(getContext());
-            layoutManager2.setOrientation(RecyclerView.HORIZONTAL);
-            recyclerView2.setLayoutManager(layoutManager2);
-            addDataOnRecyclerView();
-        }
-        catch(Exception exception) {
+
+            recyclerView3 = v.findViewById(R.id.recyclerView3);
+            recyclerView3.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
+            recyclerView3.setAdapter(adapter);
+
+            recyclerView4 = v.findViewById(R.id.recyclerView4);
+            recyclerView4.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
+            recyclerView4.setAdapter(adapter);
+
+            recyclerView5 = v.findViewById(R.id.recyclerView5);
+            recyclerView5.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
+            recyclerView5.setAdapter(adapter);
+
+            recyclerView6 = v.findViewById(R.id.recyclerView6);
+            recyclerView6.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
+            recyclerView6.setAdapter(adapter);
+
+            loadDataForCategory("Питание", recyclerView1, progressBar1);
+            loadDataForCategory("Водный режим", recyclerView2, progressBar2);
+            loadDataForCategory("Психическое здоровье", recyclerView3, progressBar3);
+            loadDataForCategory("Полезные советы", recyclerView4, progressBar4);
+            loadDataForCategory("Диеты", recyclerView5, progressBar5);
+            loadDataForCategory("Фитнес", recyclerView6, progressBar6);
+
+        } catch (Exception exception) {
             CustomDialog dialogFragment = new CustomDialog("Произошла ошибка: " + exception.getMessage(), false);
             dialogFragment.show(getParentFragmentManager(), "custom_dialog");
         }
     }
 
-    private void addDataOnRecyclerView() {
+    private void loadDataForCategory(String category, RecyclerView recyclerView, ProgressBar progressBar) {
         try {
             progressBar.setVisibility(View.VISIBLE);
-            progressBar1.setVisibility(View.VISIBLE);
-            progressBar2.setVisibility(View.VISIBLE);
 
             ValueEventListener valueEventListener = new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    if (articleDataArrayList.size() > 0) {
-                        articleDataArrayList.clear();
-                    }
+                    ArrayList<ArticleData> categoryDataList = new ArrayList<>();
                     for (DataSnapshot ds : snapshot.getChildren()) {
-                        ArticleData ps = ds.getValue(ArticleData.class);
-                        if (ps != null && "Здоровое питание".equals(ps.getCategory())) {
-                            articleDataArrayList.add(ps);
+                        ArticleData articleData = ds.getValue(ArticleData.class);
+                        if (articleData != null && articleData.getCategory().equals(category)) {
+                            categoryDataList.add(articleData);
                         }
                     }
                     progressBar.setVisibility(View.GONE);
-                    progressBar1.setVisibility(View.GONE);
-                    progressBar2.setVisibility(View.GONE);
-
-                    adapter.notifyDataSetChanged();
+                    ArticleRecyclerView categoryAdapter = new ArticleRecyclerView(getContext(), categoryDataList);
+                    recyclerView.setAdapter(categoryAdapter);
                 }
 
                 @Override
                 public void onCancelled(@NonNull DatabaseError error) {
-
+                    progressBar.setVisibility(View.GONE);
                 }
             };
             ref = mDb.getReference().child("articles");

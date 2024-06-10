@@ -12,107 +12,70 @@
         android:orientation="vertical">
 
         <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/back"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/back"
-            android:textAlignment="textStart"
-            android:layout_marginVertical="10dp"
-            android:textSize="20dp"
-            android:textAllCaps="false"
-            android:drawableLeft="@drawable/left_arrow"
-            android:background="@color/transparent"
-            android:textColor="@color/gray"
-            android:text="Назад"/>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginHorizontal="20dp"
-        android:orientation="vertical">
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textColor="@color/black"
-            android:text="Введите электронную почту и пароль"
-            android:textSize="32dp"
-            android:layout_marginVertical="10dp"
-            android:textAlignment="textStart"
-            android:textStyle="bold"/>
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textColor="@color/black"
-            android:text="Для входа в аккаунт"
-            android:textSize="20dp"
-            android:layout_marginVertical="10dp"
-            android:textAlignment="textStart"/>
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:layout_marginBottom="5dp"
-            android:text="Адрес электронной почты"
-            android:textAlignment="textStart"
-            android:textColor="@color/darkgray"
-            android:textSize="20dp" />
-
-        <EditText
-            android:id="@+id/loginEdit"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginVertical="5dp"
-            android:padding="12dp"
-            android:textSize="18dp"
-            android:maxLines="1"
-            android:background="@drawable/edit_text_asset"
-            android:hint="example@gmail.com"/>
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textColor="@color/darkgray"
-            android:text="Пароль"
-            android:layout_marginTop="20dp"
-            android:layout_marginBottom="5dp"
-            android:textSize="20dp"
-            android:textAlignment="textStart"/>
+            style="@style/BackButton" />
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/edit_text_asset"
-            android:layout_marginVertical="5dp"
-            >
+            android:layout_height="match_parent"
+            android:layout_marginHorizontal="20dp"
+            android:orientation="vertical">
+
+            <TextView
+                style="@style/HeaderText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Введите электронную почту и пароль" />
+
+            <TextView
+                style="@style/SubHeaderText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Для входа в аккаунт" />
+
+            <TextView
+                style="@style/LabelText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Адрес электронной почты" />
 
             <EditText
-                android:id="@+id/password"
-                android:layout_width="0dp"
+                android:id="@+id/loginEdit"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="0.9"
-                android:hint="Пароль"
-                android:textSize="18dp"
-                android:maxLines="1"
-                android:padding="12dp"
-                android:backgroundTint="@color/likegray"
-                />
+                style="@style/EditTextStyle"
+                android:hint="example@gmail.com" />
 
-            <ImageButton
-                android:id="@+id/eye"
-                android:layout_width="0dp"
+            <TextView
+                style="@style/LabelText"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="0.1"
-                android:src="@drawable/eye"
-                android:background="@color/transparent"
-                android:layout_gravity="center"
-                android:layout_marginRight="5dp"
-                android:contentDescription="Скрытие пароля"
-                />
+                android:text="Пароль" />
 
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/edit_text_asset"
+                android:layout_marginVertical="5dp">
 
+                <EditText
+                    android:id="@+id/password"
+                    android:layout_width="0dp"
+                    android:layout_weight="0.9"
+                    android:layout_height="wrap_content"
+                    style="@style/PasswordEditText" />
+
+                <ImageButton
+                    android:id="@+id/eye"
+                    android:layout_weight="0.1"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    style="@style/EyeButton" />
+
+            </LinearLayout>
         </LinearLayout>
-    </LinearLayout>
     </LinearLayout>
 
     <LinearLayout
@@ -124,26 +87,19 @@
         android:orientation="vertical">
 
         <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/auth"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/auth"
+            style="@style/PrimaryButton"
             android:layout_marginVertical="15dp"
-            android:background="@drawable/button_asset"
-            android:padding="12dp"
-            android:textAlignment="center"
-            android:text="Войти в профиль"
-            android:textAllCaps="false"
-            android:textColor="@color/white"
-            android:textSize="20dp" />
+            android:text="Войти в профиль" />
 
         <TextView
+            android:id="@+id/forget"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/forget"
+            style="@style/LinkText"
             android:layout_marginBottom="5dp"
-            android:text="Забыли пароль?"
-            android:textAlignment="center"
-            android:textColor="@color/darkgreen"
-            android:textSize="20dp" />
+            android:text="Забыли пароль?" />
     </LinearLayout>
 </RelativeLayout>

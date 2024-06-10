@@ -12,46 +12,35 @@
         android:orientation="vertical">
 
         <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/back"
+            style="@style/BackButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/back"
-            android:textAlignment="textStart"
-            android:layout_marginVertical="10dp"
-            android:textSize="20dp"
-            android:textAllCaps="false"
-            android:drawableLeft="@drawable/left_arrow"
-            android:background="@color/transparent"
-            android:textColor="@color/gray"
-            android:text="Назад"/>
+            android:text="Назад" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginHorizontal="20dp"
             android:orientation="vertical">
+
             <TextView
+                style="@style/HeaderText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="@color/black"
-                android:text="Введите пин-код"
-                android:textSize="32dp"
-                android:layout_marginVertical="10dp"
-                android:textAlignment="textStart"
-                android:textStyle="bold"/>
+                android:text="Введите пин-код"/>
 
             <TextView
                 android:id="@+id/aboutemail"
+                style="@style/SubHeaderText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="@color/black"
                 android:text="Код подтверждения отправлен на почту"
-                android:textSize="20dp"
                 android:layout_marginTop="10dp"
-                android:layout_marginBottom="25dp"
-                android:textAlignment="textStart"/>
-
+                android:layout_marginBottom="25dp"/>
 
             <com.chaos.view.PinView
+                android:layout_marginTop="15dp"
                 android:id="@+id/firstPinView"
                 style="@style/PinWidget.PinView"
                 android:layout_width="wrap_content"
@@ -75,36 +64,29 @@
                 app:viewType="rectangle"/>
 
             <TextView
+                android:id="@+id/newpin"
+                style="@style/LinkText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Получить новый код"
+                android:layout_marginTop="20dp"
                 android:textColor="#5047B5"
                 android:textSize="22dp"
-                android:id="@+id/newpin"
-                android:layout_marginTop="20dp"
                 android:textAllCaps="false"
                 android:layout_gravity="center"
                 android:background="@color/transparent"/>
 
         </LinearLayout>
-
-
     </LinearLayout>
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/continu"
+        style="@style/PrimaryButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/button_asset"
-        android:padding="12dp"
-        android:layout_marginHorizontal="20dp"
-        android:text="Продолжить"
-        android:textAllCaps="false"
-        android:layout_gravity="bottom"
-        android:layout_marginBottom="55dp"
-        android:textColor="@color/white"
         android:layout_alignParentBottom="true"
-        android:textSize="20dp" />
-
+        android:layout_marginBottom="55dp"
+        android:layout_marginHorizontal="20dp"
+        android:text="Продолжить" />
 
 </RelativeLayout>

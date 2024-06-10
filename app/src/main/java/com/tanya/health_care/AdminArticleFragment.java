@@ -125,7 +125,7 @@ public class AdminArticleFragment extends Fragment {
             });
 
             categorySpinner = v.findViewById(R.id.categorySpinner);
-            spinnerAdapter = ArrayAdapter.createFromResource(getContext(), R.array.categories, android.R.layout.simple_spinner_item);
+            spinnerAdapter = ArrayAdapter.createFromResource(getContext(), R.array.categories1, android.R.layout.simple_spinner_item);
             spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             categorySpinner.setAdapter(spinnerAdapter);
             categorySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {

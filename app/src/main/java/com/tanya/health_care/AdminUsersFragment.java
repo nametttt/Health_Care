@@ -122,7 +122,7 @@ public class AdminUsersFragment extends Fragment {
                         filterUsersByRole("All");
                     } else if (selectedRole.equals("Пользователи")) {
                         filterUsersByRole("Пользователь");
-                    }else if (selectedRole.equals("Администраторы")) {
+                    } else if (selectedRole.equals("Администраторы")) {
                         filterUsersByRole("Администратор");
                     }
                 }
@@ -150,7 +150,7 @@ public class AdminUsersFragment extends Fragment {
                     users.clear();
                     for (DataSnapshot ds : snapshot.getChildren()) {
                         UserData userData = ds.getValue(UserData.class);
-                        if (userData != null && !userData.getEmail().equals(user.getEmail())) {
+                        if (userData != null && userData.getEmail() != null && !userData.getEmail().equals(user.getEmail())) {
                             users.add(userData);
                         }
                     }
@@ -178,7 +178,7 @@ public class AdminUsersFragment extends Fragment {
                     users.clear();
                     for (DataSnapshot ds : snapshot.getChildren()) {
                         UserData userData = ds.getValue(UserData.class);
-                        if (userData != null && !userData.getEmail().equals(user.getEmail())) {
+                        if (userData != null && userData.getEmail() != null && !userData.getEmail().equals(user.getEmail())) {
                             if (userData.getName().toLowerCase().contains(searchText.toLowerCase()) ||
                                     userData.getEmail().toLowerCase().contains(searchText.toLowerCase())) {
                                 users.add(userData);
@@ -209,7 +209,7 @@ public class AdminUsersFragment extends Fragment {
                     users.clear();
                     for (DataSnapshot ds : snapshot.getChildren()) {
                         UserData userData = ds.getValue(UserData.class);
-                        if (userData != null && !userData.getEmail().equals(user.getEmail())) {
+                        if (userData != null && userData.getEmail() != null && !userData.getEmail().equals(user.getEmail())) {
                             if (role.equals("All") || role.isEmpty() || userData.getRole().equalsIgnoreCase(role)) {
                                 users.add(userData);
                             }

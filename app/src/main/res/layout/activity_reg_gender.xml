@@ -13,16 +13,10 @@
         android:orientation="vertical">
 
         <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/back"
+            style="@style/BackButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textAlignment="textStart"
-            android:id="@+id/back"
-            android:layout_marginVertical="10dp"
-            android:textSize="20dp"
-            android:textAllCaps="false"
-            android:drawableLeft="@drawable/left_arrow"
-            android:background="@color/transparent"
-            android:textColor="@color/gray"
             android:text="Назад"/>
 
         <LinearLayout
@@ -30,86 +24,58 @@
             android:layout_height="match_parent"
             android:layout_marginHorizontal="20dp"
             android:orientation="vertical">
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textColor="@color/black"
-                android:text="Выберите пол"
-                android:textSize="32dp"
-                android:layout_marginVertical="10dp"
-                android:textAlignment="textStart"
-                android:textStyle="bold"/>
 
             <TextView
+                style="@style/HeaderText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="@color/black"
-                android:text="Это поможет настроить необходимые рекомендации"
-                android:textSize="20dp"
-                android:layout_marginVertical="10dp"
-                android:textAlignment="textStart"/>
+                android:text="Выберите пол"/>
+
+            <TextView
+                style="@style/SubHeaderText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Это поможет настроить необходимые рекомендации"/>
 
             <RadioGroup
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginVertical="30dp"
-                android:orientation="horizontal"
-                >
+                android:orientation="horizontal">
+
                 <RadioButton
+                    android:id="@+id/woman"
+                    style="@style/GenderRadioButton"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/gender_asset"
-                    android:text="Женский"
-                    android:textAlignment="center"
                     android:layout_weight="0.4"
-                    android:drawablePadding="7dp"
-                    android:textSize="20dp"
-                    android:padding="10dp"
-                    android:button="@null"
-                    android:id="@+id/woman"
-                    android:drawableTop="@drawable/woman"
-                    />
+                    android:text="Женский"
+                    android:drawableTop="@drawable/woman" />
 
                 <View
                     android:layout_width="0dp"
                     android:layout_height="0dp"
-                    android:layout_weight="0.05"
-                    />
+                    android:layout_weight="0.05" />
 
                 <RadioButton
+                    android:id="@+id/men"
+                    style="@style/GenderRadioButton"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:checked="false"
-                    android:text="Мужской"
-                    android:id="@+id/men"
-                    android:textAlignment="center"
-                    android:padding="10dp"
                     android:layout_weight="0.4"
-                    android:drawablePadding="7dp"
-                    android:button="@null"
-                    android:textSize="20dp"
-                    android:background="@drawable/gender_asset"
-                    android:drawableTop="@drawable/man"
-                    />
-
+                    android:text="Мужской"
+                    android:drawableTop="@drawable/man" />
             </RadioGroup>
-
-
         </LinearLayout>
     </LinearLayout>
 
     <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/continu"
+        style="@style/PrimaryButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/button_asset"
-        android:padding="12dp"
-        android:layout_marginHorizontal="20dp"
-        android:textAlignment="center"
-        android:text="Продолжить"
-        android:id="@+id/continu"
-        android:textAllCaps="false"
         android:layout_alignParentBottom="true"
         android:layout_marginBottom="55dp"
-        android:textColor="@color/white"
-        android:textSize="20dp" />
+        android:layout_marginHorizontal="20dp"
+        android:text="Продолжить" />
 </RelativeLayout>
