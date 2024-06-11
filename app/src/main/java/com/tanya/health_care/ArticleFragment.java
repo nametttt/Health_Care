@@ -179,6 +179,18 @@ public class ArticleFragment extends Fragment {
     }
 
     private void reloadAllData() {
+        linearCategory1.setVisibility(View.VISIBLE);
+        recyclerView1.setVisibility(View.VISIBLE);
+        linearCategory2.setVisibility(View.VISIBLE);
+        recyclerView2.setVisibility(View.VISIBLE);
+        linearCategory3.setVisibility(View.VISIBLE);
+        recyclerView3.setVisibility(View.VISIBLE);
+        linearCategory4.setVisibility(View.VISIBLE);
+        recyclerView4.setVisibility(View.VISIBLE);
+        linearCategory5.setVisibility(View.VISIBLE);
+        recyclerView5.setVisibility(View.VISIBLE);
+        linearCategory6.setVisibility(View.VISIBLE);
+        recyclerView6.setVisibility(View.VISIBLE);
         loadDataForCategory("Питание", recyclerView1, progressBar1, articleDataList1, adapter1);
         loadDataForCategory("Водный режим", recyclerView2, progressBar2, articleDataList2, adapter2);
         loadDataForCategory("Психическое здоровье", recyclerView3, progressBar3, articleDataList3, adapter3);

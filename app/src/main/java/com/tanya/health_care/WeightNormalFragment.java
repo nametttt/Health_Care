@@ -33,7 +33,7 @@ public class WeightNormalFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.fragment_water_value, container, false);
+        View v = inflater.inflate(R.layout.fragment_weight_normal, container, false);
         init(v);
         return v;
     }

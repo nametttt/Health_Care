@@ -97,7 +97,7 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:layout_marginRight="10dp"
-                            android:text="Количество выпитой воды (мл)"
+                            android:text="Количество выпитой воды"
                             android:textAlignment="textStart"
                             android:textColor="@color/black"
                             android:textSize="20dp"
@@ -108,6 +108,14 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="300"
+                            android:textAlignment="textEnd"
+                            android:textColor="@color/black"
+                            android:textSize="20dp"
+                            android:paddingEnd="10dp"/>
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="мл"
                             android:textAlignment="textEnd"
                             android:textColor="@color/black"
                             android:textSize="20dp"
