@@ -1,19 +1,17 @@
 package com.tanya.health_care;
 
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
+
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.SignInMethodQueryResult;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -24,6 +22,8 @@ import com.tanya.health_care.code.GetEmail;
 import com.tanya.health_care.code.UserData;
 import com.tanya.health_care.dialog.CustomDialog;
 import java.util.Properties;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.PasswordAuthentication;
@@ -35,7 +35,8 @@ import javax.mail.internet.MimeMessage;
 public class RegActivityEmail extends AppCompatActivity {
 
     private Button btn, bb;
-    private TextView email, userAgreement;
+    private EditText email;
+    private TextView userAgreement;
     private CheckBox userAgree;
     private FirebaseAuth mAuth;
     private String myEmail;
@@ -48,10 +49,9 @@ public class RegActivityEmail extends AppCompatActivity {
         init();
     }
 
-    private void init(){
+    private void init() {
         try {
             mAuth = FirebaseAuth.getInstance();
-
             btn = findViewById(R.id.back);
             bb = findViewById(R.id.continu);
             email = findViewById(R.id.email);
@@ -86,7 +86,7 @@ public class RegActivityEmail extends AppCompatActivity {
                         if (email.getText().toString().isEmpty()) {
                             CustomDialog dialogFragment = new CustomDialog("Пожалуйста, введите почту!", false);
                             dialogFragment.show(getSupportFragmentManager(), "custom_dialog");
-                        } else if (!GetEmail.isValidEmail(email.getText())) {
+                        } else if (!GetEmail.isValidEmail(email.getText().toString())) {
                             CustomDialog dialogFragment = new CustomDialog("Пожалуйста, введите корректную почту!", false);
                             dialogFragment.show(getSupportFragmentManager(), "custom_dialog");
                         } else if (!userAgree.isChecked()) {
@@ -94,35 +94,40 @@ public class RegActivityEmail extends AppCompatActivity {
                             dialogFragment.show(getSupportFragmentManager(), "custom_dialog");
                         } else {
                             final String userEmail = email.getText().toString().trim();
-                            DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference("users");
-                            usersRef.addListenerForSingleValueEvent(new ValueEventListener() {
-                                @Override
-                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                    boolean userExists = false;
-                                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                                        UserData user = snapshot.getValue(UserData.class);
-                                        if (user != null && user.getEmail().equals(userEmail)) {
-                                            userExists = true;
-                                            break;
+                            if (userEmail != null && !userEmail.isEmpty()) {
+                                DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference("users");
+                                usersRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                        boolean userExists = false;
+                                        for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                                            UserData user = snapshot.getValue(UserData.class);
+                                            if (user != null && user.getEmail() != null && user.getEmail().equals(userEmail)) {
+                                                userExists = true;
+                                                break;
+                                            }
+                                        }
+                                        if (userExists) {
+                                            Toast.makeText(RegActivityEmail.this, "Пользователь уже существует", Toast.LENGTH_SHORT).show();
+                                        } else {
+                                            final String pinCode = GeneratePin.generatePinCode();
+                                            sendEmail(userEmail, pinCode);
+                                            Intent intent = new Intent(RegActivityEmail.this, RegPinActivity.class);
+                                            intent.putExtra("userEmail", userEmail);
+                                            intent.putExtra("pinCode", pinCode);
+                                            startActivity(intent);
                                         }
                                     }
-                                    if (userExists) {
-                                        Toast.makeText(RegActivityEmail.this, "Пользователь уже существует", Toast.LENGTH_SHORT).show();
-                                    } else {
-                                        final String pinCode = GeneratePin.generatePinCode();
-                                        sendEmail(userEmail, pinCode);
-                                        Intent intent = new Intent(RegActivityEmail.this, RegPinActivity.class);
-                                        intent.putExtra("userEmail", userEmail);
-                                        intent.putExtra("pinCode", pinCode);
-                                        startActivity(intent);
-                                    }
-                                }
 
-                                @Override
-                                public void onCancelled(@NonNull DatabaseError databaseError) {
-                                    Toast.makeText(RegActivityEmail.this, "Ошибка при проверке пользователя", Toast.LENGTH_SHORT).show();
-                                }
-                            });
+                                    @Override
+                                    public void onCancelled(@NonNull DatabaseError databaseError) {
+                                        Toast.makeText(RegActivityEmail.this, "Ошибка при проверке пользователя", Toast.LENGTH_SHORT).show();
+                                    }
+                                });
+                            } else {
+                                CustomDialog dialogFragment = new CustomDialog("Пожалуйста, введите корректную почту!", false);
+                                dialogFragment.show(getSupportFragmentManager(), "custom_dialog");
+                            }
                         }
                     } catch (Exception e) {
                         CustomDialog dialogFragment = new CustomDialog(e.getMessage(), false);
@@ -130,22 +135,20 @@ public class RegActivityEmail extends AppCompatActivity {
                     }
                 }
             });
+        } catch (Exception e) {
+            CustomDialog dialogFragment = new CustomDialog(e.getMessage(), false);
+            dialogFragment.show(getSupportFragmentManager(), "custom_dialog");
         }
-         catch (Exception e) {
-                CustomDialog dialogFragment = new CustomDialog(e.getMessage(), false);
-                dialogFragment.show(getSupportFragmentManager(), "custom_dialog");
-            }
     }
-    public static void sendEmail(final String toEmail, final String pinCode) {
-        AsyncTask<Void, Void, Void> emailTask = new AsyncTask<Void, Void, Void>() {
-            @Override
-            protected Void doInBackground(Void... params) {
-                sendEmailInBackground(toEmail, pinCode);
-                return null;
-            }
-        };
 
-        emailTask.execute();
+    public static void sendEmail(final String toEmail, final String pinCode) {
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        executor.submit(new Runnable() {
+            @Override
+            public void run() {
+                sendEmailInBackground(toEmail, pinCode);
+            }
+        });
     }
 
     private static void sendEmailInBackground(String toEmail, String pinCode) {
@@ -185,13 +188,8 @@ public class RegActivityEmail extends AppCompatActivity {
             message.setContent(emailBody, "text/html; charset=utf-8");
 
             Transport.send(message);
-
-            System.out.println("Email sent successfully!");
-
         } catch (MessagingException e) {
             e.printStackTrace();
-            System.err.println("Error: " + e.getMessage());
-            throw new RuntimeException(e);
         }
     }
 }

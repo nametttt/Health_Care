@@ -52,7 +52,7 @@ public class PhysicalParametersFragment extends Fragment {
     Toolbar toolbar;
 
     Button exit, add;
-    TextView imt, height, weight, aboutImt, dateText, imtText;
+    TextView imt, height, weight, dateText;
     DatabaseReference ref;
     GetSplittedPathChild pC = new GetSplittedPathChild();
     FirebaseDatabase mDb;
@@ -119,7 +119,6 @@ public class PhysicalParametersFragment extends Fragment {
             imt = v.findViewById(R.id.imt);
             height = v.findViewById(R.id.height);
             weight = v.findViewById(R.id.weight);
-            aboutImt = v.findViewById(R.id.imtText);
             toolbar = v.findViewById(R.id.toolbar);
             ((AppCompatActivity) requireActivity()).setSupportActionBar(toolbar);
 
@@ -303,7 +302,6 @@ public class PhysicalParametersFragment extends Fragment {
 
     private void resetImtViews() {
         imt.setText("–");
-        aboutImt.setVisibility(View.GONE);
         weight.setText("–");
         height.setText("–");
     }
@@ -318,14 +316,8 @@ public class PhysicalParametersFragment extends Fragment {
         weight.setText(String.valueOf(currentWeight));
         height.setText(String.valueOf(currentHeight));
         if(currentImt < 18.5) {
-            // Если ИМТ меньше 18.5, то текст "Недостаточный вес"
-            aboutImt.setText("Недостаточный вес");
         } else if(currentImt >= 18.5 && currentImt < 24.9) {
-            // Если ИМТ от 18.5 до 24.9, то текст "В норме"
-            aboutImt.setText("В норме");
         } else {
-            // В противном случае, текст "Превышен"
-            aboutImt.setText("Превышен");
         }
     }
 

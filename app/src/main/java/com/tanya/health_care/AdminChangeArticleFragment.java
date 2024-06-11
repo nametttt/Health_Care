@@ -85,7 +85,6 @@ public class AdminChangeArticleFragment extends Fragment {
         return v;
     }
 
-
     private void init(View v) {
         try{
             image = v.findViewById(R.id.image);
@@ -102,34 +101,42 @@ public class AdminChangeArticleFragment extends Fragment {
 
             title.setText(titl);
             description.setText(desc);
-            if(finalResId != null)
-            {
+            if(finalResId != null) {
                 Picasso.get().load(finalResId).placeholder(R.drawable.notarticle).into(image);
             }
 
-            if ("Физическое здоровье".equals(category)) {
-                categories.setSelection(0);
-            } else if ("Психическое здоровье".equals(category)) {
-                categories.setSelection(1);
-            } else if ("Здоровое питание".equals(category)) {
-                categories.setSelection(2);
-            } else if ("Фитнес и тренировки".equals(category)) {
-                categories.setSelection(3);
-            } else {
-                categories.setSelection(4);
+            // Update categories based on the new string array
+            switch (category) {
+                case "Питание":
+                    categories.setSelection(0);
+                    break;
+                case "Водный режим":
+                    categories.setSelection(1);
+                    break;
+                case "Психическое здоровье":
+                    categories.setSelection(2);
+                    break;
+                case "Полезные советы":
+                    categories.setSelection(3);
+                    break;
+                case "Диеты":
+                    categories.setSelection(4);
+                    break;
+                case "Фитнес":
+                    categories.setSelection(5);
+                    break;
+                default:
+                    categories.setSelection(0);
+                    break;
             }
 
-
             String addCommon = getArguments().getString("Add");
-            if (addCommon != null)
-            {
+            if (addCommon != null) {
                 continu.setText("Добавить");
                 name.setText("Добавление статьи");
                 text.setText("Введите данные для добавления новой статьи");
                 delete.setVisibility(View.GONE);
             }
-
-
 
             image.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -152,13 +159,13 @@ public class AdminChangeArticleFragment extends Fragment {
                                 uploadArticleWithImage(titleText, descriptionText, categoryText, accessText);
                             } else {
                                 CustomDialog dialogFragment = new CustomDialog("Пожалуйста, выберите изображение!", false);
-                                dialogFragment.show(getParentFragmentManager(), "custom_dialog");                            }
+                                dialogFragment.show(getParentFragmentManager(), "custom_dialog");
+                            }
                         } else {
                             CustomDialog dialogFragment = new CustomDialog("Пожалуйста, заполните все поля!", false);
                             dialogFragment.show(getParentFragmentManager(), "custom_dialog");
                         }
-                    }
-                    else{
+                    } else {
                         String titleText = title.getText().toString().trim();
                         String descriptionText = description.getText().toString().trim();
                         String categoryText = categories.getSelectedItem().toString().trim();
@@ -169,11 +176,10 @@ public class AdminChangeArticleFragment extends Fragment {
                             updateArticle(titleText, descriptionText, categoryText, accessText);
 
                         } else {
-                            CustomDialog dialogFragment = new CustomDialog( "Пожалуйста, заполните все поля!", false);
+                            CustomDialog dialogFragment = new CustomDialog("Пожалуйста, заполните все поля!", false);
                             dialogFragment.show(getParentFragmentManager(), "custom_dialog");
                         }
                     }
-
                 }
             });
 
@@ -208,12 +214,10 @@ public class AdminChangeArticleFragment extends Fragment {
                     });
 
                     builder.create().show();
-
                 }
             });
-        }
-        catch (Exception e) {
-            CustomDialog dialogFragment = new CustomDialog( e.getMessage(), false);
+        } catch (Exception e) {
+            CustomDialog dialogFragment = new CustomDialog(e.getMessage(), false);
             dialogFragment.show(getParentFragmentManager(), "custom_dialog");
         }
     }
@@ -389,18 +393,18 @@ public class AdminChangeArticleFragment extends Fragment {
                 selectedImageUri = data.getData();
                 CropImage.activity(selectedImageUri)
                         .setGuidelines(CropImageView.Guidelines.ON)
-                        .setAspectRatio(16, 9)
+                        .setAspectRatio(1, 1)  // Changed to square aspect ratio
                         .start(getContext(), this);
             } else if (requestCode == REQUEST_IMAGE_CAPTURE) {
                 CropImage.activity(selectedImageUri)
                         .setGuidelines(CropImageView.Guidelines.ON)
-                        .setAspectRatio(16, 9)
+                        .setAspectRatio(1, 1)  // Changed to square aspect ratio
                         .start(getContext(), this);
-            } else if (requestCode == CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
+            } else if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
                 CropImage.ActivityResult result = CropImage.getActivityResult(data);
                 if (resultCode == Activity.RESULT_OK) {
                     selectedImageUri = result.getUri();
-                    image.setImageURI(selectedImageUri);
+                    image.setImageURI(selectedImageUri);  // Display the selected image
                 } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
                     CustomDialog dialogFragment = new CustomDialog(result.getError().getMessage(), false);
                     dialogFragment.show(getParentFragmentManager(), "custom_dialog");

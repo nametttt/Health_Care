@@ -15,18 +15,37 @@
             android:layout_height="match_parent"
             android:orientation="vertical">
 
-            <androidx.appcompat.widget.AppCompatButton
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/back"
-                android:textAlignment="textStart"
-                android:layout_marginVertical="10dp"
-                android:textSize="20dp"
-                android:textAllCaps="false"
-                android:drawableLeft="@drawable/left_arrow"
-                android:background="@color/transparent"
-                android:textColor="@color/gray"
-                android:text="Назад"/>
+                android:orientation="horizontal">
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/back"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.9"
+                    android:layout_marginVertical="10dp"
+                    android:textAlignment="textStart"
+                    android:textSize="20dp"
+                    android:textAllCaps="false"
+                    android:drawableLeft="@drawable/left_arrow"
+                    android:background="@color/transparent"
+                    android:textColor="@color/gray"
+                    android:text="Назад"/>
+
+                    <ImageView
+                        android:id="@+id/statsIcon"
+                        android:layout_width="0dp"
+                        android:layout_marginRight="20dp"
+                        android:layout_height="35dp"
+                        android:layout_weight="0.1"
+                        android:gravity="end"
+                        android:contentDescription="Статистика"
+                        android:layout_gravity="center"
+                        android:src="@drawable/idea"/>
+            </LinearLayout>
+
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -60,7 +79,7 @@
                         android:id="@+id/searchEditText"
                         android:textSize="18dp"
                         android:padding="12dp"
-                        android:backgroundTint="@color/lightgray"
+                        android:backgroundTint="@color/likegray"
                         />
 
                     <ImageButton
@@ -94,7 +113,7 @@
                         android:layout_weight="1"
                         android:background="@drawable/button_statistic_asset"
                         android:padding="10dp"
-                        android:text="Как мое питание"
+                        android:text="Как мое питание?"
                         android:textAllCaps="false"
                         android:textSize="20dp" />
 
@@ -106,7 +125,7 @@
                         android:layout_weight="1"
                         android:background="@drawable/button_statistic_asset"
                         android:padding="10dp"
-                        android:text="Советы по сну"
+                        android:text="Расскажи про мой сон"
                         android:textAllCaps="false"
                         android:textSize="20dp" />
 
@@ -139,11 +158,44 @@
                         android:layout_weight="1"
                         android:background="@drawable/button_statistic_asset"
                         android:padding="10dp"
-                        android:text="Моя гигиена"
+                        android:text="О гигиене"
                         android:textAllCaps="false"
                         android:textSize="20dp" />
 
                 </LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:paddingVertical="10dp"
+                    android:layout_marginBottom="10dp">
+
+                    <androidx.appcompat.widget.AppCompatButton
+                        android:layout_width="0dp"
+                        android:id="@+id/adviceSleep"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:background="@drawable/button_statistic_asset"
+                        android:padding="10dp"
+                        android:text="Советы по сну"
+                        android:textAllCaps="false"
+                        android:textSize="20dp" />
+
+                    <androidx.appcompat.widget.AppCompatButton
+                        android:layout_width="0dp"
+                        android:id="@+id/sport"
+                        android:layout_marginLeft="10dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:background="@drawable/button_statistic_asset"
+                        android:padding="10dp"
+                        android:text="Спорт и фитнес"
+                        android:textAllCaps="false"
+                        android:textSize="20dp" />
+
+                </LinearLayout>
+
                 <ProgressBar
                     android:id="@+id/progressBar"
                     android:layout_width="wrap_content"

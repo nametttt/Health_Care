@@ -37,8 +37,7 @@
                     <ImageView
                         android:id="@+id/statsIcon"
                         android:layout_width="0dp"
-                        android:layout_marginRight="5dp"
-                        android:layout_height="25dp"
+                        android:layout_height="30dp"
                         android:layout_weight="0.1"
                         android:gravity="end"
                         android:contentDescription="Статистика"
@@ -58,13 +57,14 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="0.9"
                     android:hint="Поиск"
+                    android:id="@+id/searchEditText"
                     android:textSize="18dp"
                     android:maxLines="1"
                     android:padding="12dp"
                     android:backgroundTint="@color/likegray" />
 
                 <ImageButton
-                    android:id="@+id/searchImage"
+                    android:id="@+id/searchButton"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="0.06"

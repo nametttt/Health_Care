@@ -44,7 +44,7 @@
                     android:layout_marginVertical="10dp"
                     android:textAlignment="textStart"
                     android:textStyle="bold"/>
-я
+
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

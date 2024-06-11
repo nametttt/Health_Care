@@ -8,8 +8,8 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginBottom="15dp"
-        >
+        android:layout_marginBottom="15dp">
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -59,6 +59,7 @@
                     android:layout_marginVertical="10dp"
                     android:orientation="vertical"
                     android:background="@drawable/calendar_asset">
+
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -77,9 +78,16 @@
                         android:id="@+id/np"
                         android:layout_marginHorizontal="10dp"
                         android:layout_marginBottom="10dp"
-                        android:theme="@style/DefaultNumberPickerTheme"
-                        />
+                        android:theme="@style/DefaultNumberPickerTheme" />
                 </LinearLayout>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/black"
+                    android:text="Помните: питьевая вода улучшает ваше здоровье и повышает уровень энергии!"
+                    android:textSize="20dp"
+                    android:layout_marginVertical="5dp"/>
 
                 <androidx.appcompat.widget.AppCompatButton
                     android:id="@+id/save"
@@ -92,6 +100,7 @@
                     android:textAllCaps="false"
                     android:textColor="@color/white"
                     android:textSize="20dp" />
+
 
             </LinearLayout>
         </LinearLayout>
