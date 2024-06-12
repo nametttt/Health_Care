@@ -24,9 +24,8 @@
             android:layout_height="wrap_content"
             android:text="Всё о вашем здоровье"
             android:textAlignment="center"
-            android:textColor="@color/black"
-            android:textSize="28dp"
-            android:textStyle="bold" />
+            style="@style/HeaderText"
+            android:textSize="28dp" />
 
         <TextView
             android:layout_width="match_parent"

@@ -46,7 +46,6 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="0.9"
                     android:hint="Поиск"
-                    android:layout_margin="0dp"
                     android:id="@+id/searchEditText"
                     style="@style/PasswordEditText"
                     />

@@ -54,7 +54,6 @@
                     android:layout_weight="0.9"
                     android:hint="Поиск"
                     style="@style/PasswordEditText"
-                    android:layout_margin="0dp"
                     android:id="@+id/searchEditText"/>
 
                 <ImageButton

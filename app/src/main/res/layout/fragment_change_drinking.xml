@@ -22,6 +22,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:layout_marginBottom="20dp"
                 android:layout_marginHorizontal="20dp"
                 android:orientation="vertical">
 
@@ -44,23 +45,14 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp"
-                    android:layout_marginBottom="5dp"
-                    android:text="Время питья"
-                    android:textAlignment="textStart"
-                    android:textColor="@color/darkgray"
-                    android:textSize="20dp" />
+                    style="@style/LabelText"
+                    android:text="Время питья"/>
 
                 <androidx.appcompat.widget.AppCompatButton
                     android:id="@+id/dateButton"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginVertical="5dp"
-                    android:padding="12dp"
-                    android:textSize="18dp"
-                    android:gravity="left"
-                    android:maxLines="1"
-                    android:background="@drawable/edit_text_asset"
+                    style="@style/DateButton"
                     android:hint="Время питья"/>
 
 
@@ -123,7 +115,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     style="@style/PrimaryButton"
-                    android:layout_marginVertical="20dp"
+                    android:layout_marginTop="20dp"
                     android:text="Сохранить"/>
 
                 <androidx.appcompat.widget.AppCompatButton
@@ -134,6 +126,7 @@
                     style="@style/PrimaryButton"
                     android:layout_marginBottom="20dp"
                     android:text="Удалить"
+                    android:layout_marginTop="15dp"
                     android:textColor="@color/black" />
             </LinearLayout>
         </LinearLayout>

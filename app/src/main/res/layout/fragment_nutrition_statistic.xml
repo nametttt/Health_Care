@@ -24,15 +24,9 @@
                 <androidx.appcompat.widget.AppCompatButton
                     android:id="@+id/back"
                     android:layout_width="0dp"
+                    style="@style/BackButton"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:layout_marginVertical="10dp"
-                    android:textAlignment="textStart"
-                    android:textSize="20dp"
-                    android:textAllCaps="false"
-                    android:drawableLeft="@drawable/left_arrow"
-                    android:background="@color/transparent"
-                    android:textColor="@color/gray"
                     android:text="Назад"/>
 
                 <androidx.appcompat.widget.Toolbar
@@ -50,18 +44,14 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginBottom="25dp"
+                android:layout_marginBottom="20dp"
                 android:layout_marginHorizontal="20dp"
                 android:orientation="vertical">
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/black"
                     android:text="Статистика питания"
-                    android:textSize="32dp"
-                    android:layout_marginVertical="10dp"
-                    android:textAlignment="textStart"
-                    android:textStyle="bold"/>
+                    style="@style/HeaderText"/>
 
                 <LinearLayout
                     android:layout_width="match_parent"

@@ -68,7 +68,6 @@
                         android:hint="Введите запрос"
                         android:id="@+id/searchEditText"
                         style="@style/PasswordEditText"
-                        android:layout_margin="0dp"
                         />
 
                     <ImageButton

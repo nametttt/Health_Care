@@ -26,14 +26,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:layout_marginVertical="10dp"
-                    android:textAlignment="textStart"
-                    android:textSize="20dp"
-                    android:textAllCaps="false"
-                    android:drawableLeft="@drawable/left_arrow"
-                    android:background="@color/transparent"
-                    android:textColor="@color/gray"
-                    android:text="Назад"/>
+                    style="@style/BackButton"/>
 
                 <LinearLayout
                     android:layout_width="0dp"
@@ -73,23 +66,17 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/black"
                     android:text="Мое питье"
-                    android:textSize="32dp"
-                    android:layout_marginVertical="10dp"
-                    android:textAlignment="textStart"
-                    android:textStyle="bold"/>
+                    style="@style/HeaderText"/>
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/black"
                     android:text="Выбранная дата"
+                    style="@style/HeaderText"
                     android:textSize="24dp"
-                    android:id="@+id/dateText"
                     android:layout_marginVertical="15dp"
-                    android:textAlignment="textStart"
-                    android:textStyle="bold"/>
+                    android:id="@+id/dateText"/>
 
 
                 <LinearLayout
@@ -101,7 +88,6 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:id="@+id/calendar"/>
-
 
                 </LinearLayout>
                 <LinearLayout
@@ -206,12 +192,10 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/black"
                     android:text="Последние записи"
+                    style="@style/HeaderText"
                     android:textSize="24dp"
-                    android:layout_marginVertical="15dp"
-                    android:textAlignment="textStart"
-                    android:textStyle="bold"/>
+                    android:layout_marginVertical="15dp"/>
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/recyclerView"

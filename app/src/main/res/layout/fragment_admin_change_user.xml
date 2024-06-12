@@ -25,7 +25,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginBottom="25dp"
+                android:layout_marginBottom="20dp"
                 android:layout_marginHorizontal="20dp"
                 android:orientation="vertical">
                 <TextView
@@ -139,7 +139,7 @@
                         style="@style/PrimaryButton"
                         android:text="Сохранить"
                         android:id="@+id/save"
-                        android:layout_marginVertical="20dp"/>
+                        android:layout_marginTop="20dp"/>
 
                     <androidx.appcompat.widget.AppCompatButton
                         android:layout_width="match_parent"
@@ -148,6 +148,7 @@
                         android:background="@drawable/cancel_asset"
                         android:id="@+id/delete"
                         android:text="Удалить"
+                        android:layout_marginTop="15dp"
                         android:layout_marginBottom="20dp"
                         android:textColor="@color/black"/>
 

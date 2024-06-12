@@ -25,15 +25,9 @@
                 <androidx.appcompat.widget.AppCompatButton
                     android:id="@+id/back"
                     android:layout_width="0dp"
+                    style="@style/BackButton"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:layout_marginVertical="10dp"
-                    android:textAlignment="textStart"
-                    android:textSize="20dp"
-                    android:textAllCaps="false"
-                    android:drawableLeft="@drawable/left_arrow"
-                    android:background="@color/transparent"
-                    android:textColor="@color/gray"
                     android:text="Назад"/>
 
                 <LinearLayout
@@ -70,29 +64,24 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginBottom="25dp"
+                android:layout_marginBottom="20dp"
                 android:layout_marginHorizontal="20dp"
                 android:orientation="vertical">
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/black"
                     android:text="Общее состояние"
-                    android:textSize="32dp"
-                    android:layout_marginVertical="10dp"
-                    android:textAlignment="textStart"
-                    android:textStyle="bold"/>
+                    style="@style/HeaderText"/>
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textColor="@color/black"
                     android:text="Выбранная дата"
+                    style="@style/HeaderText"
                     android:textSize="24dp"
                     android:id="@+id/dateText"
-                    android:layout_marginVertical="15dp"
-                    android:textAlignment="textStart"
-                    android:textStyle="bold"/>
+                    android:layout_marginVertical="15dp" />
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -288,9 +277,8 @@
                     android:textColor="@color/black"
                     android:text="Последние записи"
                     android:textSize="24dp"
-                    android:layout_marginVertical="10dp"
-                    android:textAlignment="textStart"
-                    android:textStyle="bold"/>
+                    style="@style/HeaderText"
+                    android:layout_marginVertical="15dp" />
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/recyclerViews"
@@ -304,13 +292,9 @@
                     android:id="@+id/continu"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/button_asset"
-                    android:padding="10dp"
-                    android:layout_marginTop="20dp"
-                    android:text="Добавить параметры"
-                    android:textAllCaps="false"
-                    android:textColor="@color/white"
-                    android:textSize="20dp" />
+                    style="@style/PrimaryButton"
+                    android:layout_marginVertical="20dp"
+                    android:text="Добавить параметры" />
             </LinearLayout>
 
         </LinearLayout>

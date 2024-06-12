@@ -24,7 +24,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginBottom="25dp"
+                android:layout_marginBottom="20dp"
                 android:layout_marginHorizontal="20dp"
                 android:orientation="vertical">
                 <TextView
@@ -134,26 +134,17 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp"
-                    android:layout_marginBottom="5dp"
                     android:text="Время питания"
+                    style="@style/LabelText"
                     android:id="@+id/AboutNutritionTime"
-                    android:textAlignment="textStart"
-                    android:textColor="@color/darkgray"
-                    android:visibility="gone"
-                    android:textSize="20dp" />
+                    android:visibility="gone" />
 
                 <androidx.appcompat.widget.AppCompatButton
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginVertical="5dp"
-                    android:padding="12dp"
-                    android:textSize="18dp"
+                    style="@style/DateButton"
                     android:id="@+id/nutritionTime"
-                    android:maxLines="1"
                     android:visibility="gone"
-                    android:textAlignment="textStart"
-                    android:background="@drawable/edit_text_asset"
                     android:hint="Время питания"/>
 
                 <TextView
