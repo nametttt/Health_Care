@@ -23,22 +23,15 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/text_home"
-        android:layout_marginVertical="10dp"
-        android:text="Пользователи"
-        android:textAlignment="textStart"
-        android:textColor="@color/black"
-        android:textSize="32dp"
-        android:textStyle="bold" />
+        style="@style/HeaderText"
+        android:text="Пользователи" />
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textColor="@color/black"
+        style="@style/SubHeaderText"
         android:text="Просмотрите пользователей и редактируйте их"
-        android:textSize="20dp"
-        android:layout_marginTop="15dp"
-        android:layout_marginBottom="5dp"
-        android:textAlignment="textStart"/>
+        />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -51,27 +44,18 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.9"
+                style="@style/PasswordEditText"
+                android:layout_margin="0dp"
                 android:hint="Поиск"
-                android:id="@+id/searchEditText"
-                android:textSize="18dp"
-                android:maxLines="1"
-                android:padding="12dp"
-                android:backgroundTint="@color/likegray"
-                />
+                android:id="@+id/searchEditText"/>
 
 
             <ImageButton
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.06"
-                android:adjustViewBounds="true"
-                android:scaleType="centerInside"
-                android:src="@drawable/search"
-                android:clickable="false"
-                android:background="@color/transparent"
+                style="@style/SearchButtonStyle"
                 android:id="@+id/search"
-                android:layout_gravity="center"
-                android:layout_marginRight="15dp"
                 />
 
         </LinearLayout>
@@ -79,24 +63,14 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:layout_marginBottom="5dp"
-            android:text="Сортировать по роли"
-            android:textAlignment="textStart"
-            android:textColor="@color/darkgray"
-            android:textSize="20dp" />
+            style="@style/LabelText"
+            android:text="Сортировать по роли"/>
 
         <Spinner
             android:id="@+id/userTypeSpinner"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:background="@drawable/edit_text_asset"
-            android:textSize="20dp"
-            android:layout_marginBottom="15dp"
-            android:paddingVertical="12dp"
-            android:paddingHorizontal="5dp"
-            android:textAlignment="textStart"
+            style="@style/SpinnerStyle"
             android:entries="@array/user_types1"
             />
 
@@ -104,27 +78,24 @@
             android:id="@+id/progressBar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
             android:layout_gravity="center"
             android:indeterminateDrawable="@drawable/spinner_ring"
             android:visibility="gone" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerView"
+            android:layout_marginTop="20dp"
             android:layout_width="match_parent"
             android:layout_height="match_parent"/>
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/addUser"
+            style="@style/PrimaryButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/button_asset"
-            android:padding="10dp"
-            android:layout_marginTop="20dp"
-            android:text="Добавить пользователя"
-            android:textAllCaps="false"
-            android:layout_marginBottom="35dp"
-            android:textColor="@color/white"
-            android:textSize="20dp" />
+            android:layout_marginVertical="20dp"
+            android:text="Добавить пользователя" />
     </LinearLayout>
 
 

@@ -8,7 +8,6 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginBottom="15dp"
         >
         <LinearLayout
             android:layout_width="match_parent"
@@ -19,86 +18,57 @@
                 android:id="@+id/back"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginVertical="10dp"
-                android:background="@color/transparent"
-                android:drawableLeft="@drawable/left_arrow"
-                android:text="Назад"
-                android:textAlignment="textStart"
-                android:textAllCaps="false"
-                android:textColor="@color/gray"
-                android:textSize="20dp" />
+                style="@style/BackButton" />
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginBottom="25dp"
                 android:layout_marginHorizontal="20dp"
                 android:orientation="vertical">
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/black"
-                    android:text="Изменение веса продукта"
-                    android:textSize="32dp"
-                    android:layout_marginVertical="10dp"
-                    android:textAlignment="textStart"
-                    android:textStyle="bold"/>
+                    style="@style/HeaderText"
+                    android:text="Изменение веса продукта" />
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/black"
                     android:text="Измените данные о весе продукта"
-                    android:textSize="20dp"
-                    android:layout_marginVertical="10dp"
-                    android:textAlignment="textStart"/>
+                    style="@style/SubHeaderText"/>
 
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp"
-                    android:layout_marginBottom="5dp"
                     android:text="Вес"
-                    android:textAlignment="textStart"
-                    android:textColor="@color/darkgray"
-                    android:textSize="20dp" />
+                    style="@style/LabelText" />
 
                 <EditText
                     android:id="@+id/countText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginVertical="5dp"
-                    android:padding="12dp"
-                    android:textSize="18dp"
+                    style="@style/EditTextStyle"
                     android:inputType="number"
-                    android:maxLines="1"
-                    android:background="@drawable/edit_text_asset"
                     android:hint="Вес"/>
 
                 <androidx.appcompat.widget.AppCompatButton
                     android:id="@+id/continu"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp"
-                    android:background="@drawable/button_asset"
-                    android:padding="10dp"
-                    android:text="Сохранить"
-                    android:textAllCaps="false"
-                    android:textColor="@color/white"
-                    android:textSize="20dp" />
+                    android:layout_marginVertical="20dp"
+                    style="@style/PrimaryButton"
+                    android:text="Сохранить" />
 
                 <androidx.appcompat.widget.AppCompatButton
                     android:id="@+id/delete"
+                    style="@style/PrimaryButton"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@drawable/cancel_asset"
-                    android:padding="10dp"
-                    android:layout_marginTop="15dp"
+                    android:layout_marginBottom="20dp"
                     android:text="Удалить"
-                    android:textAllCaps="false"
-                    android:textColor="@color/black"
-                    android:textSize="20dp" />
+                    android:textColor="@color/black"/>
             </LinearLayout>
         </LinearLayout>
 

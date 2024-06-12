@@ -8,7 +8,6 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginBottom="15dp"
         >
 
     <LinearLayout
@@ -22,22 +21,15 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/text_home"
-        android:layout_marginVertical="10dp"
-        android:text="Статьи"
-        android:textAlignment="textStart"
-        android:textColor="@color/black"
-        android:textSize="32dp"
-        android:textStyle="bold" />
+        style="@style/HeaderText"
+        android:text="Статьи" />
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textColor="@color/black"
+        style="@style/SubHeaderText"
         android:text="Просмотрите статьи и редактируйте их"
-        android:textSize="20dp"
-        android:layout_marginTop="15dp"
-        android:layout_marginBottom="5dp"
-        android:textAlignment="textStart"/>
+        />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -50,54 +42,37 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="0.9"
-            android:hint="Поиск"
-            android:textSize="18dp"
+            android:layout_margin="0dp"
             android:id="@+id/searchEditText"
-            android:maxLines="1"
-            android:padding="12dp"
-            android:backgroundTint="@color/likegray"
+            android:hint="Поиск"
+            style="@style/PasswordEditText"
             />
 
         <ImageButton
             android:layout_width="0dp"
+            android:id="@+id/search"
             android:layout_height="wrap_content"
             android:layout_weight="0.06"
-            android:adjustViewBounds="true"
-            android:scaleType="centerInside"
-            android:src="@drawable/search"
-            android:clickable="false"
-            android:background="@color/transparent"
-            android:id="@+id/search"
-            android:layout_gravity="center"
-            android:layout_marginRight="15dp"
+            style="@style/SearchButtonStyle"
             />
     </LinearLayout>
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:layout_marginBottom="5dp"
-            android:text="Сортировать по категориям"
-            android:textAlignment="textStart"
-            android:textColor="@color/darkgray"
-            android:textSize="20dp" />
+            style="@style/LabelText"
+            android:text="Сортировать по категориям"/>
 
         <Spinner
             android:id="@+id/categorySpinner"
+            style="@style/SpinnerStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:layout_marginBottom="15dp"
-            android:background="@drawable/edit_text_asset"
-            android:entries="@array/categories1"
-            android:paddingHorizontal="5dp"
-            android:paddingVertical="12dp"
-            android:textAlignment="textStart"
-            android:textSize="20dp" />
+            android:entries="@array/categories1" />
 
         <ProgressBar
             android:id="@+id/progressBar"
+            android:layout_marginTop="20dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -106,21 +81,17 @@
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerView"
+            android:layout_marginTop="20dp"
             android:layout_width="match_parent"
             android:layout_height="match_parent"/>
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/addArticle"
+            style="@style/PrimaryButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/button_asset"
-            android:padding="12dp"
-            android:layout_marginTop="20dp"
-            android:text="Добавить статью"
-            android:layout_marginBottom="30dp"
-            android:textAllCaps="false"
-            android:textColor="@color/white"
-            android:textSize="20dp" />
+            android:layout_marginVertical="20dp"
+            android:text="Добавить статью" />
     </LinearLayout>
     </ScrollView>
 

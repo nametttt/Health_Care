@@ -15,17 +15,10 @@
             android:orientation="vertical">
 
             <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/back"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/back"
-                android:textAlignment="textStart"
-                android:layout_marginVertical="10dp"
-                android:textSize="20dp"
-                android:textAllCaps="false"
-                android:drawableLeft="@drawable/left_arrow"
-                android:background="@color/transparent"
-                android:textColor="@color/gray"
-                android:text="Назад"/>
+                style="@style/BackButton" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -36,178 +29,116 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/black"
                     android:text="Изменение продукта"
-                    android:textSize="32dp"
-                    android:id="@+id/nameFragment"
-                    android:layout_marginVertical="10dp"
-                    android:textAlignment="textStart"
-                    android:textStyle="bold"/>
+                    style="@style/HeaderText"
+                    android:id="@+id/nameFragment"/>
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/black"
                     android:text="Измените данные о вашем продукте или удалите его"
-                    android:textSize="20dp"
-                    android:id="@+id/text"
-                    android:layout_marginVertical="10dp"
-                    android:textAlignment="textStart"/>
+                    style="@style/SubHeaderText"
+                    android:id="@+id/text"/>
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp"
-                    android:layout_marginBottom="5dp"
                     android:text="Название"
-                    android:textAlignment="textStart"
-                    android:textColor="@color/darkgray"
-                    android:textSize="20dp" />
+                    style="@style/LabelText"/>
 
                 <EditText
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginVertical="5dp"
-                    android:padding="12dp"
-                    android:textSize="18dp"
+                    style="@style/EditTextStyle"
                     android:id="@+id/name"
-                    android:maxLines="1"
-                    android:background="@drawable/edit_text_asset"
                     android:hint="Название"/>
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp"
-                    android:layout_marginBottom="5dp"
-                    android:text="Вес"
-                    android:textAlignment="textStart"
-                    android:textColor="@color/darkgray"
-                    android:textSize="20dp" />
+                    style="@style/LabelText"
+                    android:text="Вес" />
 
                 <EditText
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginVertical="5dp"
-                    android:padding="12dp"
-                    android:textSize="18dp"
+                    style="@style/EditTextStyle"
                     android:id="@+id/weight"
                     android:inputType="numberDecimal"
-                    android:maxLines="1"
-                    android:background="@drawable/edit_text_asset"
                     android:hint="Вес (в граммах)"/>
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp"
-                    android:layout_marginBottom="5dp"
-                    android:text="Килокалорий на 100 грамм"
-                    android:textAlignment="textStart"
-                    android:textColor="@color/darkgray"
-                    android:textSize="20dp" />
+                    style="@style/LabelText"
+                    android:text="Килокалорий на 100 грамм" />
 
                 <EditText
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginVertical="5dp"
-                    android:padding="12dp"
-                    android:textSize="18dp"
-                    android:maxLines="1"
+                    style="@style/EditTextStyle"
                     android:inputType="numberDecimal"
                     android:id="@+id/calories"
-                    android:background="@drawable/edit_text_asset"
                     android:hint="Килокалорий на 100 грамм"/>
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp"
-                    android:layout_marginBottom="5dp"
-                    android:text="Белки"
-                    android:textAlignment="textStart"
-                    android:textColor="@color/darkgray"
-                    android:textSize="20dp" />
+                    style="@style/LabelText"
+                    android:text="Белки" />
 
                 <EditText
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginVertical="5dp"
-                    android:padding="12dp"
-                    android:textSize="18dp"
-                    android:maxLines="1"
+                    style="@style/EditTextStyle"
                     android:inputType="numberDecimal"
                     android:id="@+id/protein"
-                    android:background="@drawable/edit_text_asset"
                     android:hint="Белки"/>
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp"
-                    android:layout_marginBottom="5dp"
-                    android:text="Жиры"
-                    android:textAlignment="textStart"
-                    android:textColor="@color/darkgray"
-                    android:textSize="20dp" />
+                    style="@style/LabelText"
+                    android:text="Жиры" />
 
                 <EditText
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginVertical="5dp"
-                    android:padding="12dp"
-                    android:textSize="18dp"
+                    style="@style/EditTextStyle"
                     android:id="@+id/fat"
                     android:inputType="numberDecimal"
-                    android:maxLines="1"
-                    android:background="@drawable/edit_text_asset"
                     android:hint="Жиры"/>
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp"
-                    android:layout_marginBottom="5dp"
-                    android:text="Углероды"
-                    android:textAlignment="textStart"
-                    android:textColor="@color/darkgray"
-                    android:textSize="20dp" />
+                    style="@style/LabelText"
+                    android:text="Углероды" />
 
                 <EditText
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginVertical="5dp"
-                    android:padding="12dp"
-                    android:textSize="18dp"
+                    style="@style/EditTextStyle"
                     android:inputType="numberDecimal"
                     android:id="@+id/carbohydrates"
-                    android:maxLines="1"
-                    android:background="@drawable/edit_text_asset"
                     android:hint="Углероды"/>
 
                 <androidx.appcompat.widget.AppCompatButton
                     android:id="@+id/continu"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/button_asset"
-                    android:padding="10dp"
-                    android:layout_marginTop="20dp"
-                    android:text="Сохранить"
-                    android:textAllCaps="false"
-                    android:textColor="@color/white"
-                    android:textSize="20dp" />
+                    style="@style/PrimaryButton"
+                    android:layout_marginVertical="20dp"
+                    android:text="Сохранить" />
 
                 <androidx.appcompat.widget.AppCompatButton
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@drawable/cancel_asset"
-                    android:padding="10dp"
-                    android:layout_marginTop="15dp"
+                    android:layout_marginBottom="20dp"
                     android:text="Удалить"
                     android:id="@+id/delete"
-                    android:textAllCaps="false"
-                    android:layout_marginBottom="15dp"
-                    android:textColor="@color/black"
-                    android:textSize="20dp" />
+                    style="@style/PrimaryButton"
+                    android:textColor="@color/black" />
             </LinearLayout>
         </LinearLayout>
 

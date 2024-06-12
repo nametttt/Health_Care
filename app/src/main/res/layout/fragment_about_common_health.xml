@@ -33,7 +33,6 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/black"
                     android:text="Общее состояние здоровья"
                     style="@style/HeaderText"/>
 
@@ -47,12 +46,9 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/black"
                     android:id="@+id/bloodPressureInfo"
                     android:text="Артериальное давление - это давление крови в артериях, которое необходимо для поддержания циркуляции крови. Нормальное давление для взрослого человека составляет около 120/80 мм рт. ст."
-                    android:textSize="20sp"
-                    android:layout_marginVertical="5dp"
-                    style="@style/BodyText"/>
+                    style="@style/SubHeaderText"/>
 
                 <TextView
                     android:layout_width="match_parent"

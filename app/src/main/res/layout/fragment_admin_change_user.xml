@@ -17,17 +17,10 @@
             android:orientation="vertical">
 
             <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/back"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/back"
-                android:textAlignment="textStart"
-                android:layout_marginVertical="10dp"
-                android:textSize="20dp"
-                android:textAllCaps="false"
-                android:drawableLeft="@drawable/left_arrow"
-                android:background="@color/transparent"
-                android:textColor="@color/gray"
-                android:text="Назад"/>
+                style="@style/BackButton" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -38,30 +31,20 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/black"
-                    android:text="Пользователи приложения"
-                    android:textSize="32dp"
-                    android:layout_marginVertical="10dp"
-                    android:textAlignment="textStart"
-                    android:textStyle="bold"/>
+                    style="@style/HeaderText"
+                    android:text="Пользователи приложения"/>
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/black"
-                    android:text="Редактируйте пользователя"
-                    android:textSize="20dp"
-                    android:layout_marginVertical="10dp"
-                    android:textAlignment="textStart"/>
+                    style="@style/SubHeaderText"
+                    android:text="Редактируйте пользователя"/>
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp"
-                    android:layout_marginBottom="10dp"
-                    android:text="Фотография профиля"
-                    android:textAlignment="textStart"
-                    android:textColor="@color/darkgray"
-                    android:textSize="20dp" />
+                    android:layout_marginBottom="20dp"
+                    style="@style/LabelText"
+                    android:text="Фотография профиля"/>
 
                 <androidx.cardview.widget.CardView
                     android:layout_width="wrap_content"
@@ -84,140 +67,89 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp"
-                    android:layout_marginBottom="5dp"
-                    android:text="Адрес электронной почты"
-                    android:textAlignment="textStart"
-                    android:textColor="@color/darkgray"
-                    android:textSize="20dp" />
+                    style="@style/LabelText"
+                    android:text="Адрес электронной почты" />
 
                 <EditText
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginVertical="5dp"
-                    android:padding="12dp"
-                    android:focusable="false"                    android:textSize="18dp"
-                    android:maxLines="1"
+                    style="@style/EditTextStyle"
                     android:id="@+id/email"
-                    android:background="@drawable/edit_text_asset"
                     android:hint="example@gmail.com"/>
 
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp"
-                    android:layout_marginBottom="5dp"
-                    android:text="Роль"
-                    android:textAlignment="textStart"
-                    android:textColor="@color/darkgray"
-                    android:textSize="20dp" />
+                    style="@style/LabelText"
+                    android:text="Роль" />
 
                 <Spinner
                     android:id="@+id/userTypeSpinner"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginVertical="5dp"
-                    android:background="@drawable/edit_text_asset"
-                    android:textSize="20dp"
-                    android:paddingVertical="12dp"
-                    android:paddingHorizontal="5dp"
-                    android:textAlignment="textStart"
+                    style="@style/SpinnerStyle"
                     android:entries="@array/user_types"
                     />
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp"
-                    android:layout_marginBottom="5dp"
-                    android:text="Пол"
-                    android:textAlignment="textStart"
-                    android:textColor="@color/darkgray"
-                    android:textSize="20dp" />
+                    style="@style/LabelText"
+                    android:text="Пол" />
 
                 <Spinner
                     android:id="@+id/userGenderSpinner"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginVertical="5dp"
-                    android:background="@drawable/edit_text_asset"
-                    android:textSize="20dp"
-                    android:paddingVertical="12dp"
-                    android:paddingHorizontal="5dp"
-                    android:textAlignment="textStart"
+                    style="@style/SpinnerStyle"
                     android:entries="@array/user_genders"
                     />
 
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="20dp"
-                        android:layout_marginBottom="5dp"
-                        android:text="Псевдоним"
-                        android:textAlignment="textStart"
-                        android:textColor="@color/darkgray"
-                        android:textSize="20dp" />
+                        style="@style/LabelText"
+                        android:text="Псевдоним" />
 
                     <EditText
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginVertical="5dp"
-                        android:padding="12dp"
+                        style="@style/EditTextStyle"
                         android:id="@+id/name"
-                        android:textSize="18dp"
-                        android:maxLines="1"
-                        android:background="@drawable/edit_text_asset"
                         android:hint="Псевдоним"/>
 
 
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="20dp"
-                        android:layout_marginBottom="5dp"
-                        android:text="Дата рождения"
-                        android:textAlignment="textStart"
-                        android:textColor="@color/darkgray"
-                        android:textSize="20dp" />
+                        style="@style/LabelText"
+                        android:text="Дата рождения" />
 
                     <androidx.appcompat.widget.AppCompatButton
                         android:id="@+id/pickDate"
+                        style="@style/DateButton"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginVertical="5dp"
-                        android:maxLines="1"
-                        android:padding="12dp"
-                        android:textSize="18dp"
-                        android:textStyle="normal"
-                        android:textAlignment="textStart"
-                        android:background="@drawable/edit_text_asset"
                         android:hint="ДД.ММ.ГГГГ"/>
 
                     <androidx.appcompat.widget.AppCompatButton
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:background="@drawable/button_asset"
-                        android:padding="10dp"
-                        android:layout_marginTop="20dp"
+                        style="@style/PrimaryButton"
                         android:text="Сохранить"
                         android:id="@+id/save"
-                        android:textAllCaps="false"
-                        android:textColor="@color/white"
-                        android:textSize="20dp" />
+                        android:layout_marginVertical="20dp"/>
 
                     <androidx.appcompat.widget.AppCompatButton
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        style="@style/PrimaryButton"
                         android:background="@drawable/cancel_asset"
-                        android:padding="10dp"
                         android:id="@+id/delete"
-                        android:layout_marginTop="15dp"
                         android:text="Удалить"
-                        android:layout_marginBottom="30dp"
-                        android:textAllCaps="false"
-                        android:textColor="@color/black"
-                        android:textSize="20dp" />
+                        android:layout_marginBottom="20dp"
+                        android:textColor="@color/black"/>
 
                 </LinearLayout>
             </LinearLayout>

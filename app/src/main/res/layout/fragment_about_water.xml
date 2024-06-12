@@ -114,11 +114,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_weight="0.4"
                                 android:text="1200 мл"
-                                android:textSize="18sp"
-                                android:textAlignment="center"
-                                android:gravity="center"
-                                android:textColor="@color/darkgray"
-                                android:padding="10dp"
+                                style="@style/TableCell"
                                 android:background="@drawable/table_rows" />
                         </TableRow>
 
@@ -130,12 +126,8 @@
                                 android:layout_width="0dp"
                                 android:layout_height="match_parent"
                                 android:layout_weight="0.3"
+                                style="@style/TableCell"
                                 android:text="9 - 13 лет"
-                                android:textColor="@color/darkgray"
-                                android:textSize="18sp"
-                                android:textAlignment="center"
-                                android:gravity="center"
-                                android:padding="10dp"
                                 android:background="@drawable/table_rows" />
 
                             <TextView

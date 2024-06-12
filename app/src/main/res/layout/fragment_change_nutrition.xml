@@ -16,17 +16,10 @@
             android:orientation="vertical">
 
             <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/back"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/back"
-                android:textAlignment="textStart"
-                android:layout_marginVertical="10dp"
-                android:textSize="20dp"
-                android:textAllCaps="false"
-                android:drawableLeft="@drawable/left_arrow"
-                android:background="@color/transparent"
-                android:textColor="@color/gray"
-                android:text="Назад"/>
+                style="@style/BackButton" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -37,21 +30,14 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/black"
                     android:text="Изменение питания"
-                    android:textSize="32dp"
-                    android:layout_marginVertical="10dp"
-                    android:textAlignment="textStart"
-                    android:textStyle="bold"/>
+                    style="@style/HeaderText"/>
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/black"
-                    android:text="Введите данные о вашем питании"
-                    android:textSize="20dp"
-                    android:layout_marginVertical="10dp"
-                    android:textAlignment="textStart"/>
+                    style="@style/SubHeaderText"
+                    android:text="Введите данные о вашем питании"/>
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -134,23 +120,14 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp"
-                    android:layout_marginBottom="5dp"
-                    android:text="Тип приема пищи"
-                    android:textAlignment="textStart"
-                    android:textColor="@color/darkgray"
-                    android:textSize="20dp" />
+                    style="@style/LabelText"
+                    android:text="Тип приема пищи"/>
 
                 <Spinner
                     android:id="@+id/typeFood"
+                    style="@style/SpinnerStyle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginVertical="5dp"
-                    android:background="@drawable/edit_text_asset"
-                    android:textSize="20dp"
-                    android:paddingVertical="12dp"
-                    android:paddingHorizontal="5dp"
-                    android:textAlignment="textStart"
                     android:entries="@array/type_food"
                     />
 
@@ -182,20 +159,15 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/black"
                     android:text="Продукты"
+                    style="@style/HeaderText"
                     android:textSize="24dp"
-                    android:layout_marginTop="15dp"
-                    android:layout_marginBottom="10dp"
-                    android:textAlignment="textStart"
-                    android:textStyle="bold"/>
-
-
+                    android:layout_marginVertical="15dp"/>
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/recyclerViews"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:scrollbars="vertical"
+                    android:layout_marginVertical="5dp"
                     />
 
                 <LinearLayout
@@ -205,7 +177,6 @@
                     android:id="@+id/addFood"
                     android:background="@drawable/health_asset"
                     android:padding="15dp">
-
 
                     <LinearLayout
                         android:layout_width="0dp"
@@ -259,27 +230,22 @@
 
                 <androidx.appcompat.widget.AppCompatButton
                     android:id="@+id/save"
+                    style="@style/PrimaryButton"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/button_asset"
-                    android:padding="10dp"
                     android:layout_marginTop="20dp"
-                    android:text="Сохранить"
-                    android:textAllCaps="false"
-                    android:textColor="@color/white"
-                    android:textSize="20dp" />
+                    android:text="Сохранить" />
 
                 <androidx.appcompat.widget.AppCompatButton
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@drawable/cancel_asset"
-                    android:padding="10dp"
+                    style="@style/PrimaryButton"
                     android:id="@+id/delete"
                     android:layout_marginTop="15dp"
+                    android:layout_marginBottom="20dp"
                     android:text="Удалить"
-                    android:textAllCaps="false"
-                    android:textColor="@color/black"
-                    android:textSize="20dp" />
+                    android:textColor="@color/black" />
             </LinearLayout>
         </LinearLayout>
 

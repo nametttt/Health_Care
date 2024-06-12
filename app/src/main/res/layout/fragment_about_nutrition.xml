@@ -16,17 +16,10 @@
             android:orientation="vertical">
 
             <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/back"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/back"
-                android:textAlignment="textStart"
-                android:layout_marginVertical="10dp"
-                android:textSize="20dp"
-                android:textAllCaps="false"
-                android:drawableLeft="@drawable/left_arrow"
-                android:background="@color/transparent"
-                android:textColor="@color/gray"
-                android:text="Назад"/>
+                style="@style/BackButton" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -38,21 +31,15 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/black"
-                    android:text="О питании"
-                    android:textSize="32dp"
-                    android:layout_marginVertical="10dp"
-                    android:textAlignment="textStart"
-                    android:textStyle="bold"/>
+                    style="@style/HeaderText"
+                    android:text="О питании"/>
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/black"
+                    style="@style/SubHeaderText"
                     android:id="@+id/textValue"
-                    android:text="Для поддержания здоровья важно правильно питаться и следить за калорийностью потребляемых продуктов."
-                    android:textSize="20dp"
-                    android:layout_marginVertical="5dp"/>
+                    android:text="Для поддержания здоровья важно правильно питаться и следить за калорийностью потребляемых продуктов." />
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -64,8 +51,6 @@
                     <TableLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content">
-
-                        <!-- Header Row -->
                         <TableRow
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content">
@@ -74,12 +59,9 @@
                                 android:layout_width="0dp"
                                 android:layout_height="match_parent"
                                 android:layout_weight="0.3"
+                                style="@style/TableCell"
                                 android:text="Возраст"
-                                android:textSize="18sp"
                                 android:textStyle="bold"
-                                android:textAlignment="center"
-                                android:gravity="center"
-                                android:padding="10dp"
                                 android:background="@drawable/table_cell_bg_left" />
 
                             <TextView
@@ -87,27 +69,20 @@
                                 android:layout_height="match_parent"
                                 android:layout_weight="0.3"
                                 android:text="Пол"
-                                android:textSize="18sp"
+                                style="@style/TableCell"
                                 android:textStyle="bold"
-                                android:textAlignment="center"
-                                android:gravity="center"
-                                android:padding="10dp"
                                 android:background="@drawable/table_rows" />
 
                             <TextView
                                 android:layout_width="0dp"
                                 android:layout_height="match_parent"
                                 android:layout_weight="0.4"
+                                style="@style/TableCell"
                                 android:text="Дневная норма калорий"
-                                android:textSize="18sp"
                                 android:textStyle="bold"
-                                android:textAlignment="center"
-                                android:gravity="center"
-                                android:padding="10dp"
                                 android:background="@drawable/table_cell_bg_right" />
                         </TableRow>
 
-                        <!-- Age Group 1-3 -->
                         <TableRow
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content">
@@ -117,39 +92,26 @@
                                 android:layout_height="match_parent"
                                 android:layout_weight="0.3"
                                 android:text="1 - 3 года"
-                                android:textColor="@color/darkgray"
-                                android:textSize="18sp"
-                                android:textAlignment="center"
-                                android:gravity="center"
-                                android:padding="10dp"
+                                style="@style/TableCell"
                                 android:background="@drawable/table_rows" />
 
                             <TextView
                                 android:layout_width="0dp"
                                 android:layout_height="match_parent"
                                 android:layout_weight="0.3"
+                                style="@style/TableCell"
                                 android:background="@drawable/table_rows"
-                                android:gravity="center"
-                                android:padding="10dp"
-                                android:text="Все"
-                                android:textAlignment="center"
-                                android:textColor="@color/darkgray"
-                                android:textSize="18sp" />
+                                android:text="Все" />
 
                             <TextView
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="0.4"
+                                style="@style/TableCell"
                                 android:text="1000 ккал"
-                                android:textSize="18sp"
-                                android:textAlignment="center"
-                                android:gravity="center"
-                                android:textColor="@color/darkgray"
-                                android:padding="10dp"
                                 android:background="@drawable/table_rows" />
                         </TableRow>
 
-                        <!-- Age Group 4-8 -->
                         <TableRow
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content">
@@ -159,40 +121,27 @@
                                 android:layout_height="match_parent"
                                 android:layout_weight="0.3"
                                 android:text="4 - 8 лет"
-                                android:textColor="@color/darkgray"
-                                android:textSize="18sp"
-                                android:textAlignment="center"
-                                android:gravity="center"
-                                android:padding="10dp"
+                                style="@style/TableCell"
                                 android:background="@drawable/table_rows" />
 
                             <TextView
                                 android:layout_width="0dp"
                                 android:layout_height="match_parent"
                                 android:layout_weight="0.3"
+                                style="@style/TableCell"
                                 android:background="@drawable/table_rows"
-                                android:gravity="center"
-                                android:padding="10dp"
-                                android:text="Все"
-                                android:textAlignment="center"
-                                android:textColor="@color/darkgray"
-                                android:textSize="18sp" />
+                                android:text="Все" />
 
                             <TextView
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="0.4"
                                 android:text="1400 ккал"
-                                android:textSize="18sp"
-                                android:textAlignment="center"
-                                android:gravity="center"
-                                android:textColor="@color/darkgray"
-                                android:padding="10dp"
+                                style="@style/TableCell"
                                 android:background="@drawable/table_rows" />
                         </TableRow>
 
 
-                        <!-- Age Group 9-13 Male -->
                         <TableRow
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content">
@@ -202,39 +151,26 @@
                                 android:layout_height="match_parent"
                                 android:layout_weight="0.3"
                                 android:text="9 - 13 лет"
-                                android:textColor="@color/darkgray"
-                                android:textSize="18sp"
-                                android:textAlignment="center"
-                                android:gravity="center"
-                                android:padding="10dp"
+                                style="@style/TableCell"
                                 android:background="@drawable/table_rows" />
 
                             <TextView
                                 android:layout_width="0dp"
                                 android:layout_height="match_parent"
                                 android:layout_weight="0.3"
+                                style="@style/TableCell"
                                 android:background="@drawable/table_rows"
-                                android:gravity="center"
-                                android:padding="10dp"
-                                android:text="Мужской"
-                                android:textAlignment="center"
-                                android:textColor="@color/darkgray"
-                                android:textSize="18sp" />
+                                android:text="Мужской" />
 
                             <TextView
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="0.4"
                                 android:text="1800 ккал"
-                                android:textSize="18sp"
-                                android:textAlignment="center"
-                                android:gravity="center"
-                                android:textColor="@color/darkgray"
-                                android:padding="10dp"
+                                style="@style/TableCell"
                                 android:background="@drawable/table_rows" />
                         </TableRow>
 
-                        <!-- Age Group 9-13 Female -->
                         <TableRow
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content">
@@ -244,11 +180,7 @@
                                 android:layout_height="match_parent"
                                 android:layout_weight="0.3"
                                 android:text="9 - 13 лет"
-                                android:textColor="@color/darkgray"
-                                android:textSize="18sp"
-                                android:textAlignment="center"
-                                android:gravity="center"
-                                android:padding="10dp"
+                                style="@style/TableCell"
                                 android:background="@drawable/table_rows" />
 
                             <TextView
@@ -256,27 +188,18 @@
                                 android:layout_height="match_parent"
                                 android:layout_weight="0.3"
                                 android:background="@drawable/table_rows"
-                                android:gravity="center"
-                                android:padding="10dp"
                                 android:text="Женский"
-                                android:textAlignment="center"
-                                android:textColor="@color/darkgray"
-                                android:textSize="18sp" />
+                                style="@style/TableCell"/>
 
                             <TextView
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="0.4"
                                 android:text="1600 ккал"
-                                android:textSize="18sp"
-                                android:textAlignment="center"
-                                android:gravity="center"
-                                android:textColor="@color/darkgray"
-                                android:padding="10dp"
+                                style="@style/TableCell"
                                 android:background="@drawable/table_rows" />
                         </TableRow>
 
-                        <!-- Age Group 14-18 Male -->
                         <TableRow
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content">
@@ -286,11 +209,7 @@
                                 android:layout_height="match_parent"
                                 android:layout_weight="0.3"
                                 android:text="14 - 18 лет"
-                                android:textColor="@color/darkgray"
-                                android:textSize="18sp"
-                                android:textAlignment="center"
-                                android:gravity="center"
-                                android:padding="10dp"
+                                style="@style/TableCell"
                                 android:background="@drawable/table_rows" />
 
                             <TextView
@@ -298,27 +217,18 @@
                                 android:layout_height="match_parent"
                                 android:layout_weight="0.3"
                                 android:background="@drawable/table_rows"
-                                android:gravity="center"
-                                android:padding="10dp"
-                                android:text="Мужской"
-                                android:textAlignment="center"
-                                android:textColor="@color/darkgray"
-                                android:textSize="18sp" />
+                                style="@style/TableCell"
+                                android:text="Мужской" />
 
                             <TextView
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="0.4"
                                 android:text="2400 ккал"
-                                android:textSize="18sp"
-                                android:textAlignment="center"
-                                android:gravity="center"
-                                android:textColor="@color/darkgray"
-                                android:padding="10dp"
+                                style="@style/TableCell"
                                 android:background="@drawable/table_rows" />
                         </TableRow>
 
-                        <!-- Age Group 14-18 Female -->
                         <TableRow
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content">
@@ -328,39 +238,26 @@
                                 android:layout_height="match_parent"
                                 android:layout_weight="0.3"
                                 android:text="14 - 18 лет"
-                                android:textColor="@color/darkgray"
-                                android:textSize="18sp"
-                                android:textAlignment="center"
-                                android:gravity="center"
-                                android:padding="10dp"
+                                style="@style/TableCell"
                                 android:background="@drawable/table_rows" />
 
                             <TextView
                                 android:layout_width="0dp"
                                 android:layout_height="match_parent"
                                 android:layout_weight="0.3"
+                                style="@style/TableCell"
                                 android:background="@drawable/table_rows"
-                                android:gravity="center"
-                                android:padding="10dp"
-                                android:text="Женский"
-                                android:textAlignment="center"
-                                android:textColor="@color/darkgray"
-                                android:textSize="18sp" />
+                                android:text="Женский"/>
 
                             <TextView
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="0.4"
                                 android:text="2000 ккал"
-                                android:textSize="18sp"
-                                android:textAlignment="center"
-                                android:gravity="center"
-                                android:textColor="@color/darkgray"
-                                android:padding="10dp"
+                                style="@style/TableCell"
                                 android:background="@drawable/table_rows" />
                         </TableRow>
 
-                        <!-- Age Group 19-30 Male -->
                         <TableRow
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content">
@@ -370,39 +267,27 @@
                                 android:layout_height="match_parent"
                                 android:layout_weight="0.3"
                                 android:text="19 - 30 лет"
+                                style="@style/TableCell"
                                 android:textColor="@color/darkgray"
-                                android:textSize="18sp"
-                                android:textAlignment="center"
-                                android:gravity="center"
-                                android:padding="10dp"
                                 android:background="@drawable/table_rows" />
 
                             <TextView
                                 android:layout_width="0dp"
                                 android:layout_height="match_parent"
                                 android:layout_weight="0.3"
+                                style="@style/TableCell"
                                 android:background="@drawable/table_rows"
-                                android:gravity="center"
-                                android:padding="10dp"
-                                android:text="Мужской"
-                                android:textAlignment="center"
-                                android:textColor="@color/darkgray"
-                                android:textSize="18sp" />
+                                android:text="Мужской"/>
 
                             <TextView
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="0.4"
                                 android:text="2600 ккал"
-                                android:textSize="18sp"
-                                android:textAlignment="center"
-                                android:gravity="center"
-                                android:textColor="@color/darkgray"
-                                android:padding="10dp"
+                                style="@style/TableCell"
                                 android:background="@drawable/table_rows" />
                         </TableRow>
 
-                        <!-- Age Group 19-30 Female -->
                         <TableRow
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content">
@@ -413,10 +298,7 @@
                                 android:layout_weight="0.3"
                                 android:text="19 - 30 лет"
                                 android:textColor="@color/darkgray"
-                                android:textSize="18sp"
-                                android:textAlignment="center"
-                                android:gravity="center"
-                                android:padding="10dp"
+                                style="@style/TableCell"
                                 android:background="@drawable/table_rows" />
 
                             <TextView
@@ -424,27 +306,18 @@
                                 android:layout_height="match_parent"
                                 android:layout_weight="0.3"
                                 android:background="@drawable/table_rows"
-                                android:gravity="center"
-                                android:padding="10dp"
                                 android:text="Женский"
-                                android:textAlignment="center"
-                                android:textColor="@color/darkgray"
-                                android:textSize="18sp" />
+                                style="@style/TableCell" />
 
                             <TextView
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="0.4"
                                 android:text="2000 ккал"
-                                android:textSize="18sp"
-                                android:textAlignment="center"
-                                android:gravity="center"
-                                android:textColor="@color/darkgray"
-                                android:padding="10dp"
+                                style="@style/TableCell"
                                 android:background="@drawable/table_rows" />
                         </TableRow>
 
-                        <!-- Age Group 31-50 Male -->
                         <TableRow
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content">
@@ -454,39 +327,26 @@
                                 android:layout_height="match_parent"
                                 android:layout_weight="0.3"
                                 android:text="31 - 50 лет"
-                                android:textColor="@color/darkgray"
-                                android:textSize="18sp"
-                                android:textAlignment="center"
-                                android:gravity="center"
-                                android:padding="10dp"
+                                style="@style/TableCell"
                                 android:background="@drawable/table_rows" />
 
                             <TextView
                                 android:layout_width="0dp"
                                 android:layout_height="match_parent"
                                 android:layout_weight="0.3"
+                                style="@style/TableCell"
                                 android:background="@drawable/table_rows"
-                                android:gravity="center"
-                                android:padding="10dp"
-                                android:text="Мужской"
-                                android:textAlignment="center"
-                                android:textColor="@color/darkgray"
-                                android:textSize="18sp" />
+                                android:text="Мужской" />
 
                             <TextView
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="0.4"
                                 android:text="2400 ккал"
-                                android:textSize="18sp"
-                                android:textAlignment="center"
-                                android:gravity="center"
-                                android:textColor="@color/darkgray"
-                                android:padding="10dp"
+                                style="@style/TableCell"
                                 android:background="@drawable/table_rows" />
                         </TableRow>
 
-                        <!-- Age Group 31-50 Female -->
                         <TableRow
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content">
@@ -496,38 +356,25 @@
                                 android:layout_height="match_parent"
                                 android:layout_weight="0.3"
                                 android:text="31 - 50 лет"
-                                android:textColor="@color/darkgray"
-                                android:textSize="18sp"
-                                android:textAlignment="center"
-                                android:gravity="center"
-                                android:padding="10dp"
+                                style="@style/TableCell"
                                 android:background="@drawable/table_rows" />
                             <TextView
                                 android:layout_width="0dp"
                                 android:layout_height="match_parent"
                                 android:layout_weight="0.3"
+                                style="@style/TableCell"
                                 android:background="@drawable/table_rows"
-                                android:gravity="center"
-                                android:padding="10dp"
-                                android:text="Женский"
-                                android:textAlignment="center"
-                                android:textColor="@color/darkgray"
-                                android:textSize="18sp" />
+                                android:text="Женский" />
 
                             <TextView
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="0.4"
                                 android:text="1800 ккал"
-                                android:textSize="18sp"
-                                android:textAlignment="center"
-                                android:gravity="center"
-                                android:textColor="@color/darkgray"
-                                android:padding="10dp"
+                                style="@style/TableCell"
                                 android:background="@drawable/table_rows" />
                         </TableRow>
 
-                        <!-- Age Group 51+ Male -->
                         <TableRow
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content">
@@ -537,39 +384,26 @@
                                 android:layout_height="match_parent"
                                 android:layout_weight="0.3"
                                 android:text="51+ лет"
-                                android:textColor="@color/darkgray"
-                                android:textSize="18sp"
-                                android:textAlignment="center"
-                                android:gravity="center"
-                                android:padding="10dp"
+                                style="@style/TableCell"
                                 android:background="@drawable/table_rows" />
 
                             <TextView
                                 android:layout_width="0dp"
                                 android:layout_height="match_parent"
                                 android:layout_weight="0.3"
+                                style="@style/TableCell"
                                 android:background="@drawable/table_rows"
-                                android:gravity="center"
-                                android:padding="10dp"
-                                android:text="Мужской"
-                                android:textAlignment="center"
-                                android:textColor="@color/darkgray"
-                                android:textSize="18sp" />
+                                android:text="Мужской" />
 
                             <TextView
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="0.4"
                                 android:text="2200 ккал"
-                                android:textSize="18sp"
-                                android:textAlignment="center"
-                                android:gravity="center"
-                                android:textColor="@color/darkgray"
-                                android:padding="10dp"
+                                style="@style/TableCell"
                                 android:background="@drawable/table_rows" />
                         </TableRow>
 
-                        <!-- Age Group 51+ Female -->
                         <TableRow
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content">
@@ -579,35 +413,23 @@
                                 android:layout_height="match_parent"
                                 android:layout_weight="0.3"
                                 android:text="51+ лет"
-                                android:textColor="@color/darkgray"
-                                android:textSize="18sp"
-                                android:textAlignment="center"
-                                android:gravity="center"
-                                android:padding="10dp"
+                                style="@style/TableCell"
                                 android:background="@drawable/table_cell_bg_bottom_left" />
 
                             <TextView
                                 android:layout_width="0dp"
                                 android:layout_height="match_parent"
                                 android:layout_weight="0.3"
+                                style="@style/TableCell"
                                 android:background="@drawable/table_rows"
-                                android:gravity="center"
-                                android:padding="10dp"
-                                android:text="Женский"
-                                android:textAlignment="center"
-                                android:textColor="@color/darkgray"
-                                android:textSize="18sp" />
+                                android:text="Женский" />
 
                             <TextView
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="0.4"
+                                style="@style/TableCell"
                                 android:text="1800 ккал"
-                                android:textSize="18sp"
-                                android:textAlignment="center"
-                                android:gravity="center"
-                                android:textColor="@color/darkgray"
-                                android:padding="10dp"
                                 android:background="@drawable/table_cell_bg_bottom_right" />
                         </TableRow>
 
@@ -618,10 +440,8 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/black"
-                    android:text="Выбирайте продукты с учетом их калорийности, чтобы поддерживать здоровый образ жизни!"
-                    android:textSize="20dp"
-                    android:layout_marginVertical="5dp"/>
+                    style="@style/SubHeaderText"
+                    android:text="Выбирайте продукты с учетом их калорийности, чтобы поддерживать здоровый образ жизни!" />
             </LinearLayout>
         </LinearLayout>
     </ScrollView>
