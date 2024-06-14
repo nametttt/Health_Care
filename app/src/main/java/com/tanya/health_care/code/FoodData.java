@@ -5,7 +5,7 @@ public class FoodData {
     public String uid;
     public String name;
     public int calories;
-    public float weight;
+    public int weight;
     public int protein;
     public int carbohydrates;
     public int fat;
@@ -15,7 +15,7 @@ public class FoodData {
     public FoodData() {
     }
 
-    public FoodData(String uid, String name, int calories, float weight, int protein, int carbohydrates, int fat, String UserUid) {
+    public FoodData(String uid, String name, int calories, int weight, int protein, int carbohydrates, int fat, String UserUid) {
         this.uid = uid;
         this.name = name;
         this.calories = calories;
@@ -54,7 +54,7 @@ public class FoodData {
         return weight;
     }
 
-    public void setWeight(float weight) {
+    public void setWeight(int weight) {
         this.weight = weight;
     }
 

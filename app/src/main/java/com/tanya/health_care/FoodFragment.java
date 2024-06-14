@@ -22,6 +22,7 @@ import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -30,6 +31,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.tanya.health_care.code.ArticleData;
 import com.tanya.health_care.code.Food;
 import com.tanya.health_care.code.FoodData;
+import com.tanya.health_care.code.GetSplittedPathChild;
 import com.tanya.health_care.code.SelectFoodRecyclerView;
 import com.tanya.health_care.code.SelectedFoodViewModel;
 import com.tanya.health_care.code.WaterData;
@@ -45,6 +47,8 @@ public class FoodFragment extends Fragment {
     private SelectedFoodViewModel viewModel;
     ImageButton searchImage;
     RecyclerView recyclerView;
+    GetSplittedPathChild pC = new GetSplittedPathChild();
+
     ArrayList<FoodData> foodDataArrayList;
     SelectFoodRecyclerView adapter;
     DatabaseReference ref;
@@ -102,6 +106,7 @@ public class FoodFragment extends Fragment {
                 @Override
                 public void onClick(View v) {
                     updateButtonAppearance(allFoods, myFoods);
+                    addDataOnRecyclerView();
                 }
             });
 
@@ -109,6 +114,7 @@ public class FoodFragment extends Fragment {
                 @Override
                 public void onClick(View v) {
                     updateButtonAppearance(myFoods, allFoods);
+                    addUserSpecificDataOnRecyclerView();
                 }
             });
             back.setOnClickListener(new View.OnClickListener() {
@@ -178,34 +184,71 @@ public class FoodFragment extends Fragment {
                         foodDataArrayList.clear();
                     }
                     for (DataSnapshot ds : snapshot.getChildren()) {
-                        ds.getValue();
                         FoodData ps = ds.getValue(FoodData.class);
-                        assert ps != null;
-
-                        foodDataArrayList.add(ps);
-
+                        if (ps != null && (ps.getUserUid() == null || ps.getUserUid().isEmpty())) {
+                            foodDataArrayList.add(ps);
+                        }
                     }
 
                     findAndRemoveDuplicates(selectedFoods, foodDataArrayList);
-
                     foodDataArrayList.sort(new SortByName());
                     adapter.notifyDataSetChanged();
                 }
 
                 @Override
                 public void onCancelled(@NonNull DatabaseError error) {
-
+                    // Обработка ошибок
                 }
             };
-            ref =  mDb.getReference().child("foods");
-
+            ref = mDb.getReference().child("foods");
             ref.addValueEventListener(valueEventListener);
-        }
-        catch (Exception exception) {
+        } catch (Exception exception) {
             CustomDialog dialogFragment = new CustomDialog("Произошла ошибка: " + exception.getMessage(), false);
             dialogFragment.show(getParentFragmentManager(), "custom_dialog");
         }
     }
+
+    private void addUserSpecificDataOnRecyclerView() {
+        try {
+            FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+            if (currentUser != null) {
+                String userEmail = currentUser.getEmail();
+                String uid = pC.getSplittedPathChild(userEmail);
+
+                ValueEventListener valueEventListener = new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        if (foodDataArrayList.size() > 0) {
+                            foodDataArrayList.clear();
+                        }
+                        for (DataSnapshot ds : snapshot.getChildren()) {
+                            FoodData ps = ds.getValue(FoodData.class);
+                            if (ps != null && uid.equals(ps.getUserUid())) {
+                                foodDataArrayList.add(ps);
+                            }
+                        }
+                        findAndRemoveDuplicates(selectedFoods, foodDataArrayList);
+                        foodDataArrayList.sort(new SortByName());
+                        adapter.notifyDataSetChanged();
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+                    }
+                };
+
+                ref = mDb.getReference().child("foods");
+                ref.addValueEventListener(valueEventListener);
+            } else {
+                CustomDialog dialogFragment = new CustomDialog("Ошибка: Пользователь не авторизован!", false);
+                dialogFragment.show(getParentFragmentManager(), "custom_dialog");
+            }
+        } catch (Exception exception) {
+            CustomDialog dialogFragment = new CustomDialog("Произошла ошибка: " + exception.getMessage(), false);
+            dialogFragment.show(getParentFragmentManager(), "custom_dialog");
+        }
+    }
+
 
     public void findAndRemoveDuplicates(ArrayList<FoodData> list1, ArrayList<FoodData> list2) {
         ArrayList<FoodData> elementsToRemove = new ArrayList<>();

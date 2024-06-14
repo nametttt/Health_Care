@@ -111,7 +111,7 @@ public class ChangeMyFoodFragment extends Fragment {
                     }
 
                     try {
-                        float weightValue = Float.parseFloat(weightText);
+                        int weightValue = Integer.parseInt(weightText);
                         int caloriesValue = Integer.parseInt(caloriesText);
                         int proteinValue = Integer.parseInt(proteinText);
                         int fatValue = Integer.parseInt(fatText);

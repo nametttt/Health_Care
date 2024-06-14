@@ -53,7 +53,7 @@ public class NutritionRecyclerView extends RecyclerView.Adapter<NutritionRecycle
                 if (foodData.getUid().equals(uid)) {
                     selectedFoods.add(foodData);
                     float oldWeight = foodData.getWeight();
-                    float newWeight = food.coef;
+                    int newWeight = (int) food.coef;
                     if (oldWeight != newWeight) {
                         float calorieDifference = (newWeight / oldWeight) * foodData.getCalories();
                         totalCalories += Math.round(calorieDifference);
