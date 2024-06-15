@@ -44,6 +44,25 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     style="@style/LabelText"
+                    android:id="@+id/userText"
+                    android:visibility="gone"
+                    android:text="Пользователь" />
+
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    style="@style/EditTextStyle"
+                    android:visibility="gone"
+                    android:id="@+id/userEmail"
+                    android:inputType="none"
+                    android:focusable="false"
+                    android:focusableInTouchMode="false"
+                    android:hint="Пользователь"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    style="@style/LabelText"
                     android:text="Название" />
 
                 <EditText
@@ -52,6 +71,7 @@
                     style="@style/EditTextStyle"
                     android:id="@+id/name"
                     android:hint="Название"/>
+
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

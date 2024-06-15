@@ -3,6 +3,7 @@ package com.tanya.health_care;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.text.InputFilter;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,18 +24,18 @@ import com.tanya.health_care.dialog.CustomDialog;
 
 public class AdminChangeFoodFragment extends Fragment {
 
-    TextView nameFragment, textFragment;
+    TextView nameFragment, textFragment, userText;
     Button save, back, delete;
-    String uid, name;
+    String uid, name, UserUid;
     float weight;
     private int calories, protein, fat, carbohydrates;
 
-    private EditText nameEditText, weightEditText, caloriesEditText, proteinEditText, fatEditText, carbohydratesEditText;
+    private EditText nameEditText, weightEditText, caloriesEditText, proteinEditText, fatEditText, carbohydratesEditText, userEmail;
 
     public AdminChangeFoodFragment() {
     }
 
-    public AdminChangeFoodFragment(String uid, String name, int calories, float weight, int protein, int fat, int carbohydrates) {
+    public AdminChangeFoodFragment(String uid, String name, int calories, float weight, int protein, int fat, int carbohydrates, String UserUid) {
         this.uid = uid;
         this.name = name;
         this.calories = calories;
@@ -42,6 +43,7 @@ public class AdminChangeFoodFragment extends Fragment {
         this.protein = protein;
         this.fat = fat;
         this.carbohydrates = carbohydrates;
+        this.UserUid = UserUid;
     }
 
     @Override
@@ -61,10 +63,17 @@ public class AdminChangeFoodFragment extends Fragment {
             fatEditText = v.findViewById(R.id.fat);
             carbohydratesEditText = v.findViewById(R.id.carbohydrates);
 
+            userText = v.findViewById(R.id.userText);
+            userEmail = v.findViewById(R.id.userEmail);
             save = v.findViewById(R.id.continu);
             back = v.findViewById(R.id.back);
             delete = v.findViewById(R.id.delete);
 
+            weightEditText.setFilters(new InputFilter[]{new InputFilter.LengthFilter(4)});
+            caloriesEditText.setFilters(new InputFilter[]{new InputFilter.LengthFilter(4)});
+            proteinEditText.setFilters(new InputFilter[]{new InputFilter.LengthFilter(4)});
+            fatEditText.setFilters(new InputFilter[]{new InputFilter.LengthFilter(4)});
+            carbohydratesEditText.setFilters(new InputFilter[]{new InputFilter.LengthFilter(4)});
 
             nameFragment = v.findViewById(R.id.nameFragment);
             textFragment = v.findViewById(R.id.text);
@@ -85,6 +94,11 @@ public class AdminChangeFoodFragment extends Fragment {
                     fatEditText.setText(String.valueOf(fat));
                     carbohydratesEditText.setText(String.valueOf(carbohydrates));
                 }
+            }
+            if(UserUid != null){
+                userEmail.setText(UserUid);
+                userEmail.setVisibility(View.VISIBLE);
+                userText.setVisibility(View.VISIBLE);
             }
 
 

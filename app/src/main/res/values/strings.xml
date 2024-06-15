@@ -18,6 +18,12 @@
         <item>Администраторы</item>
     </string-array>
 
+    <string-array name="food_types">
+        <item>Все</item>
+        <item>Общие</item>
+        <item>Пользовательские</item>
+    </string-array>
+
     <string-array name="type_food">
         <item>Завтрак</item>
         <item>Обед</item>

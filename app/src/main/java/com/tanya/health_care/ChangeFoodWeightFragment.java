@@ -4,6 +4,7 @@ import android.os.Bundle;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import android.text.Editable;
+import android.text.InputFilter;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -57,6 +58,8 @@ public class ChangeFoodWeightFragment extends Fragment {
             foodWeight.setText(initialWeight);
             updateNutritionDataUI(BigDecimal.valueOf((int) selectedFood.getWeight())); // Update nutrition data initially
 
+            countText.setFilters(new InputFilter[]{new InputFilter.LengthFilter(4)});
+
             countText.addTextChangedListener(new TextWatcher() {
                 private boolean ignoreChange = false;
 
@@ -83,18 +86,10 @@ public class ChangeFoodWeightFragment extends Fragment {
 
                     try {
                         BigDecimal newWeight = new BigDecimal(input);
-                        BigDecimal maxAllowed = new BigDecimal("1000");
-                        if (newWeight.compareTo(BigDecimal.ONE) < 0 || newWeight.compareTo(maxAllowed) > 0) {
-                            Toast.makeText(getContext(), "Вес должен быть в пределах от 1 до 1000", Toast.LENGTH_SHORT).show();
-                            countText.setText(String.valueOf((int) selectedFood.getWeight())); // Convert to int for display
-                            countText.setSelection(countText.getText().length());
-                            return;
-                        }
 
-                        updateNutritionDataUI(newWeight); // Update nutrition data based on new weight for UI only
+                        updateNutritionDataUI(newWeight);
 
                     } catch (NumberFormatException e) {
-                        // Show toast for invalid number format
                         Toast.makeText(getContext(), "Введите корректное значение веса", Toast.LENGTH_SHORT).show();
                     } finally {
                         ignoreChange = false;

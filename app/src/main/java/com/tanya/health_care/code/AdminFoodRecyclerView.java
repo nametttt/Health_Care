@@ -5,8 +5,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -14,17 +12,15 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.tanya.health_care.AboutArticleFragment;
-import com.tanya.health_care.AdminChangeArticleFragment;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.tanya.health_care.AdminChangeFoodFragment;
-import com.tanya.health_care.AdminChangeUserFragment;
 import com.tanya.health_care.AdminHomeActivity;
-import com.tanya.health_care.ChangeCommonHealthFragment;
-import com.tanya.health_care.ChangeDrinkingFragment;
-import com.tanya.health_care.HomeActivity;
 import com.tanya.health_care.R;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Locale;
 
@@ -49,20 +45,17 @@ public class AdminFoodRecyclerView extends RecyclerView.Adapter<AdminFoodRecycle
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         FoodData currentCommon = foods.get(position);
         holder.name.setText(currentCommon.name);
-
         holder.calory.setText(String.valueOf(currentCommon.calories));
         holder.weight.setText(String.valueOf(currentCommon.weight));
         holder.info.setText(String.format(Locale.getDefault(), "%dг белков, %dг жиров, %dг углеродов", currentCommon.protein, currentCommon.fat, currentCommon.carbohydrates));
 
-        holder.continu.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                AdminHomeActivity homeActivity = (AdminHomeActivity) v.getContext();
-                AdminChangeFoodFragment fragment = new AdminChangeFoodFragment(currentCommon.uid, currentCommon.name, currentCommon.calories, currentCommon.weight, currentCommon.protein, currentCommon.fat, currentCommon.carbohydrates);
-                Bundle args = new Bundle();
-                args.putString("Add", null);
-                fragment.setArguments(args);
-                homeActivity.replaceFragment(fragment);
+        holder.continu.setOnClickListener(v -> {
+            AdminHomeActivity homeActivity = (AdminHomeActivity) v.getContext();
+            String userUid = currentCommon.getUserUid();
+            if (userUid != null) {
+                retrieveUserEmail(userUid, email -> startAdminChangeFoodFragment(homeActivity, currentCommon, email));
+            } else {
+                startAdminChangeFoodFragment(homeActivity, currentCommon, null);
             }
         });
     }
@@ -70,6 +63,33 @@ public class AdminFoodRecyclerView extends RecyclerView.Adapter<AdminFoodRecycle
     @Override
     public int getItemCount() {
         return foods.size();
+    }
+
+    private void startAdminChangeFoodFragment(AdminHomeActivity homeActivity, FoodData currentCommon, String email) {
+        AdminChangeFoodFragment fragment = new AdminChangeFoodFragment(
+                currentCommon.uid, currentCommon.name, currentCommon.calories,
+                currentCommon.weight, currentCommon.protein,
+                currentCommon.fat, currentCommon.carbohydrates,
+                email);
+        Bundle args = new Bundle();
+        args.putString("Add", null);
+        fragment.setArguments(args);
+        homeActivity.replaceFragment(fragment);
+    }
+
+    private void retrieveUserEmail(String userUid, OnEmailRetrievedListener listener) {
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("users").child(userUid);
+        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                listener.onEmailRetrieved(snapshot.exists() ? snapshot.child("email").getValue(String.class) : null);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                listener.onEmailRetrieved(null);
+            }
+        });
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
@@ -86,5 +106,9 @@ public class AdminFoodRecyclerView extends RecyclerView.Adapter<AdminFoodRecycle
             continu = itemView.findViewById(R.id.continu);
             relativeLayout = itemView.findViewById(R.id.rl);
         }
+    }
+
+    interface OnEmailRetrievedListener {
+        void onEmailRetrieved(String email);
     }
 }

@@ -5,6 +5,7 @@ import android.os.Bundle;
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.fragment.app.Fragment;
 
+import android.text.InputFilter;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -101,6 +102,12 @@ public class ChangeMyFoodFragment extends Fragment {
                     String proteinText = proteinEditText.getText().toString().trim();
                     String fatText = fatEditText.getText().toString().trim();
                     String carbohydratesText = carbohydratesEditText.getText().toString().trim();
+
+                    weightEditText.setFilters(new InputFilter[]{new InputFilter.LengthFilter(4)});
+                    caloriesEditText.setFilters(new InputFilter[]{new InputFilter.LengthFilter(4)});
+                    proteinEditText.setFilters(new InputFilter[]{new InputFilter.LengthFilter(4)});
+                    fatEditText.setFilters(new InputFilter[]{new InputFilter.LengthFilter(4)});
+                    carbohydratesEditText.setFilters(new InputFilter[]{new InputFilter.LengthFilter(4)});
 
                     if (TextUtils.isEmpty(nameText) || TextUtils.isEmpty(weightText)
                             || TextUtils.isEmpty(caloriesText) || TextUtils.isEmpty(proteinText)

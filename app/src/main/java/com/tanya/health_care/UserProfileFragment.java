@@ -96,7 +96,6 @@ public class UserProfileFragment extends Fragment {
 
             viewData();
 
-
             imageView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -118,11 +117,11 @@ public class UserProfileFragment extends Fragment {
                             String userRole = user1.getRole();
 
                             if ("Администратор".equals(userRole)) {
-                                 adminHomeActivity = (AdminHomeActivity) getActivity();
+                                adminHomeActivity = (AdminHomeActivity) getActivity();
 
 
                             } else {
-                                 homeActivity = (HomeActivity) getActivity();
+                                homeActivity = (HomeActivity) getActivity();
 
                             }
 
@@ -139,8 +138,6 @@ public class UserProfileFragment extends Fragment {
                         public void onCancelled(@NonNull DatabaseError error) {
                         }
                     });
-
-
                 }
             });
         } catch (Exception e) {
@@ -165,7 +162,6 @@ public class UserProfileFragment extends Fragment {
                         } else {
                             gender.setSelection(1);
                         }
-
                     }
                 }
 
@@ -191,7 +187,7 @@ public class UserProfileFragment extends Fragment {
                 }
             });
         } catch (Exception e) {
-            CustomDialog dialogFragment = new CustomDialog( e.getMessage(), false);
+            CustomDialog dialogFragment = new CustomDialog(e.getMessage(), false);
             dialogFragment.show(getChildFragmentManager(), "custom_dialog");
         }
     }
@@ -205,7 +201,6 @@ public class UserProfileFragment extends Fragment {
             }
         }
     }
-
 
     public void ChangePhoto() {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
@@ -234,7 +229,6 @@ public class UserProfileFragment extends Fragment {
         takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, selectedImageUri);
         startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
     }
-
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
@@ -325,6 +319,7 @@ public class UserProfileFragment extends Fragment {
                     }
                 });
     }
+
     private void updateNorms(String email) {
         userRef.child(pC.getSplittedPathChild(email)).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -332,13 +327,16 @@ public class UserProfileFragment extends Fragment {
                 if (snapshot.exists()) {
                     UserData userData = snapshot.getValue(UserData.class);
                     if (userData != null) {
-                        UserValues userValues = new UserValues();
-                        userValues.calculateNorms(userData.getGender(), userData.getBirthday());
-                        DatabaseReference userValuesRef = FirebaseDatabase.getInstance().getReference("users")
-                                .child(pC.getSplittedPathChild(email)).child("values");
-                        userValuesRef.child("SleepValue").setValue(userValues.getSleepValue());
-                        userValuesRef.child("WaterValue").setValue(userValues.getWaterValue());
-                        userValuesRef.child("NutritionValue").setValue(userValues.getNutritionValue());
+                        String role = userData.getRole();
+                        if ("Пользователь".equals(role)) {
+                            UserValues userValues = new UserValues();
+                            userValues.calculateNorms(userData.getGender(), userData.getBirthday());
+                            DatabaseReference userValuesRef = FirebaseDatabase.getInstance().getReference("users")
+                                    .child(pC.getSplittedPathChild(email)).child("values");
+                            userValuesRef.child("SleepValue").setValue(userValues.getSleepValue());
+                            userValuesRef.child("WaterValue").setValue(userValues.getWaterValue());
+                            userValuesRef.child("NutritionValue").setValue(userValues.getNutritionValue());
+                        }
                     }
                 }
             }
@@ -349,5 +347,4 @@ public class UserProfileFragment extends Fragment {
             }
         });
     }
-
 }
