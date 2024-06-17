@@ -75,9 +75,13 @@ public class AddMenstrualDurationFragment extends Fragment {
                             .push();
 
                     int selectedValue = numberPicker.getValue();
-                    MenstrualData menstrualData = new MenstrualData(startDate, endDate, selectedValue);
-
+                    MenstrualData menstrualData = new MenstrualData(startDate, endDate);
                     menstrualRef.setValue(menstrualData);
+                    DatabaseReference durationRef = mDb.getReference("users")
+                            .child(pC.getSplittedPathChild(user.getEmail()))
+                            .child("characteristic")
+                            .child("menstrual").child("duration");
+                    durationRef.setValue(selectedValue);
                     CustomDialog dialogFragment = new CustomDialog( "Успешное добавление последнего цикла!", true);
                     dialogFragment.show(getParentFragmentManager(), "custom_dialog");
                     HomeActivity homeActivity = (HomeActivity) getActivity();

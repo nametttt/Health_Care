@@ -17,12 +17,14 @@
     <color name="green">#85A98E</color>
     <color name="menugreen">#1D251F</color>
     <color name="lightgreen">#EFF3ED</color>
-    <color name="blue">#0000FF</color>
     <color name="darkgreen">#57685B</color>
     <color name="menuwhite">#F6F9F7</color>
     <color name="lightergreen">#B9C6B9</color>
     <color name="purple">#422995</color>
-    <color name="pink">#FFC0CB</color>
+    <color name="pink">#ED83A9</color>
+    <color name="blue">#92A8C5</color>
+    <color name="overpink">#F1A7C1</color>
+    <color name="overblue">#C1D1E8</color>
     <color name="light_pink">#FFEBEE</color>
     <color name="ovulation_color">#FFFF00</color>
 </resources>

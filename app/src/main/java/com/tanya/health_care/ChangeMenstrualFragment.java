@@ -1,44 +1,87 @@
 package com.tanya.health_care;
 
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.Toast;
 
-import com.squareup.timessquare.CalendarPickerView;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+
+import com.archit.calendardaterangepicker.customviews.CalendarListener;
+import com.archit.calendardaterangepicker.customviews.DateRangeCalendarView;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.tanya.health_care.dialog.CustomDialog;
+import com.tanya.health_care.code.GetSplittedPathChild;
 
+import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 public class ChangeMenstrualFragment extends Fragment {
 
+    private DateRangeCalendarView calendar;
+    private Button back, save;
+    private List<Calendar[]> selectedRanges;
+    private FirebaseUser user;
+    private FirebaseDatabase mDb;
+    private DatabaseReference menstrualRef;
+    private GetSplittedPathChild pC = new GetSplittedPathChild();
 
-    Button back;
     public ChangeMenstrualFragment() {
+        selectedRanges = new ArrayList<>();
     }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-    View view = inflater.inflate(R.layout.fragment_change_menstrual, container, false);
-    init(view);
-    return view;
+        return inflater.inflate(R.layout.fragment_change_menstrual, container, false);
     }
 
-    private void init(View v){
-        try{
-            back = v.findViewById(R.id.back);
-            Calendar nextYear = Calendar.getInstance();
-            nextYear.add(Calendar.YEAR, 1);
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        init(view);
+        fetchMenstrualData();
+    }
 
-            CalendarPickerView calendar = (CalendarPickerView) v.findViewById(R.id.calendar_view);
-            Date today = new Date();
-            calendar.init(today, nextYear.getTime())
-                    .withSelectedDate(today);
+    private void init(View view) {
+        try {
+            calendar = view.findViewById(R.id.calendar);
+            back = view.findViewById(R.id.back);
+            save = view.findViewById(R.id.save);
+
+            Calendar startDateSelectable = Calendar.getInstance();
+            startDateSelectable.add(Calendar.MONTH, -3); // Three months ago
+            Calendar endDateSelectable = Calendar.getInstance(); // Today's date
+            calendar.setSelectableDateRange(startDateSelectable, endDateSelectable);
+
+            calendar.setCalendarListener(new CalendarListener() {
+                @Override
+                public void onFirstDateSelected(Calendar startDate) {
+                    // No action required, wait for second date selection
+                }
+
+                @Override
+                public void onDateRangeSelected(Calendar startDate, Calendar endDate) {
+                    selectedRanges.add(new Calendar[]{startDate, endDate});
+                    Toast.makeText(requireContext(), "Selected range: " + startDate.getTime() + " - " + endDate.getTime(), Toast.LENGTH_SHORT).show();
+
+                    // Update calendar to display selected ranges
+                    updateCalendarRanges();
+                }
+            });
 
             back.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -47,11 +90,104 @@ public class ChangeMenstrualFragment extends Fragment {
                     homeActivity.replaceFragment(new MenstrualFragment());
                 }
             });
+
+            save.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    saveSelectedRangesToDatabase();
+                }
+            });
+
+        } catch (Exception exception) {
+            CustomDialog dialogFragment = new CustomDialog("Error occurred: " + exception.getMessage(), false);
+            dialogFragment.show(getChildFragmentManager(), "custom_dialog");
         }
-        catch (Exception exception) {
-            CustomDialog dialogFragment = new CustomDialog("Произошла ошибка: " + exception.getMessage(), false);
-            dialogFragment.show(getParentFragmentManager(), "custom_dialog");
+    }
+
+    private void fetchMenstrualData() {
+        user = FirebaseAuth.getInstance().getCurrentUser();
+        mDb = FirebaseDatabase.getInstance();
+        menstrualRef = mDb.getReference("users")
+                .child(pC.getSplittedPathChild(user.getEmail()))
+                .child("characteristic")
+                .child("menstrual");
+
+        menstrualRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                Log.d("ChangeMenstrualFragment", "DataSnapshot: " + dataSnapshot);
+                selectedRanges.clear();
+
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    // Fetch start and end dates as Map
+                    Map<String, Object> startDateMap = (Map<String, Object>) snapshot.child("startDate").getValue();
+                    Map<String, Object> endDateMap = (Map<String, Object>) snapshot.child("endDate").getValue();
+
+                    Log.d("ChangeMenstrualFragment", "StartDateMap: " + startDateMap);
+                    Log.d("ChangeMenstrualFragment", "EndDateMap: " + endDateMap);
+
+                    if (startDateMap != null && endDateMap != null) {
+                        Long startDateMillis = (Long) startDateMap.get("timeInMillis");
+                        Long endDateMillis = (Long) endDateMap.get("timeInMillis");
+
+                        Calendar startCalendar = Calendar.getInstance();
+                        Calendar endCalendar = Calendar.getInstance();
+                        startCalendar.setTimeInMillis(startDateMillis);
+                        endCalendar.setTimeInMillis(endDateMillis);
+
+                        // Add to selectedRanges only if dates are within the selectable range
+                        if (isDateInRange(startCalendar) && isDateInRange(endCalendar)) {
+                            selectedRanges.add(new Calendar[]{startCalendar, endCalendar});
+                        }
+                    }
+                }
+                updateCalendarRanges();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                CustomDialog dialogFragment = new CustomDialog("Database error: " + databaseError.getMessage(), false);
+                dialogFragment.show(requireParentFragment().getChildFragmentManager(), "custom_dialog");
+            }
+        });
+    }
+
+    private void updateCalendarRanges() {
+        try {
+            for (Calendar[] range : selectedRanges) {
+                Log.d("ChangeMenstrualFragment", "Setting range: " + range[0].getTime() + " - " + range[1].getTime());
+                calendar.setSelectedDateRange(range[0], range[1]);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            CustomDialog dialogFragment = new CustomDialog("Error setting date range: " + e.getMessage(), false);
+            dialogFragment.show(requireParentFragment().getChildFragmentManager(), "custom_dialog");
+        }
+    }
+
+    private boolean isDateInRange(Calendar date) {
+        Calendar startDateSelectable = Calendar.getInstance();
+        startDateSelectable.add(Calendar.MONTH, -3); // Three months ago
+        Calendar endDateSelectable = Calendar.getInstance(); // Today's date
+        return !date.before(startDateSelectable) && !date.after(endDateSelectable);
+    }
+
+    private void saveSelectedRangesToDatabase() {
+        user = FirebaseAuth.getInstance().getCurrentUser();
+        mDb = FirebaseDatabase.getInstance();
+        menstrualRef = mDb.getReference("users")
+                .child(pC.getSplittedPathChild(user.getEmail()))
+                .child("characteristic")
+                .child("menstrual");
+
+        menstrualRef.setValue(null); // Clear previous data
+
+        for (Calendar[] range : selectedRanges) {
+            DatabaseReference newRangeRef = menstrualRef.push();
+            newRangeRef.child("startDate").child("timeInMillis").setValue(range[0].getTimeInMillis());
+            newRangeRef.child("endDate").child("timeInMillis").setValue(range[1].getTimeInMillis());
         }
 
+        Toast.makeText(requireContext(), "Data saved successfully!", Toast.LENGTH_SHORT).show();
     }
 }

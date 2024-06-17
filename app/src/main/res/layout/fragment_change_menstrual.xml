@@ -4,7 +4,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:custom="http://schemas.android.com/apk/res-auto"
     tools:context=".ChangeMenstrualFragment">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -43,15 +48,41 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Добавление записи"
+                android:text="Указание цикла"
                 style="@style/HeaderText"/>
 
-            <com.squareup.timessquare.CalendarPickerView
-                android:id="@+id/calendar_view"
+            <TextView
                 android:layout_width="match_parent"
-                android:scrollbars="none"
-                android:layout_marginVertical="10dp"
-                android:layout_height="match_parent"/>
+                android:layout_height="wrap_content"
+                android:textColor="@color/black"
+                style="@style/SubHeaderText"
+                android:text="Коснитесь, чтобы отметить в календаре даты начала и конца вашей  менструации"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:padding="10dp"
+                android:background="@drawable/calendar_asset">
+
+                <com.archit.calendardaterangepicker.customviews.DateRangeCalendarView
+                    android:id="@+id/calendar"
+                    android:layout_margin="10dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    custom:selected_date_circle_color="@color/green">
+                </com.archit.calendardaterangepicker.customviews.DateRangeCalendarView>
+            </LinearLayout>
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/save"
+                style="@style/PrimaryButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginVertical="20dp"
+                android:text="Сохранить" />
         </LinearLayout>
     </LinearLayout>
+
+</ScrollView>
+
 </FrameLayout>
