@@ -52,7 +52,161 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="Время записи"/>
-                
+
+                <LinearLayout
+                    android:id="@+id/linearCategory1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="15dp"
+                    android:orientation="vertical"
+                    android:padding="15dp"
+                    android:background="@drawable/health_asset">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+                        <TextView
+                            android:id="@+id/textCategory1"
+                            android:layout_width="0dp"
+                            android:layout_weight="0.9"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="10dp"
+                            android:text="Симптомы"
+                            android:textAlignment="textStart"
+                            android:textColor="@color/black"
+                            android:textSize="22dp"
+                            android:textStyle="bold" />
+
+                        <ImageView
+                            android:id="@+id/imageIcon1"
+                            android:layout_width="0dp"
+                            android:layout_weight="0.1"
+                            android:layout_height="22dp"
+                            android:layout_gravity="center_vertical"
+                            android:contentDescription="Стрелка"
+                            android:src="@drawable/down" />
+
+                    </LinearLayout>
+
+                    <ProgressBar
+                        android:id="@+id/progressBar1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:visibility="gone"
+                        android:indeterminateDrawable="@drawable/spinner_ring" />
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/recyclerView1"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/linearCategory2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="15dp"
+                    android:orientation="vertical"
+                    android:padding="15dp"
+                    android:background="@drawable/health_asset">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+                        <TextView
+                            android:id="@+id/textCategory2"
+                            android:layout_width="0dp"
+                            android:layout_weight="0.9"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="10dp"
+                            android:text="Настроения"
+                            android:textAlignment="textStart"
+                            android:textColor="@color/black"
+                            android:textSize="22dp"
+                            android:textStyle="bold" />
+
+                        <ImageView
+                            android:id="@+id/imageIcon2"
+                            android:layout_width="0dp"
+                            android:layout_weight="0.1"
+                            android:layout_height="22dp"
+                            android:layout_gravity="center_vertical"
+                            android:contentDescription="Стрелка"
+                            android:src="@drawable/down" />
+
+                    </LinearLayout>
+
+                    <ProgressBar
+                        android:id="@+id/progressBar2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:visibility="gone"
+                        android:indeterminateDrawable="@drawable/spinner_ring" />
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/recyclerView2"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/linearCategory3"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="15dp"
+                    android:orientation="vertical"
+                    android:padding="15dp"
+                    android:background="@drawable/health_asset">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+                        <TextView
+                            android:id="@+id/textCategory3"
+                            android:layout_width="0dp"
+                            android:layout_weight="0.9"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="10dp"
+                            android:text="Менструации"
+                            android:textAlignment="textStart"
+                            android:textColor="@color/black"
+                            android:textSize="22dp"
+                            android:textStyle="bold" />
+
+                        <ImageView
+                            android:id="@+id/imageIcon3"
+                            android:layout_width="0dp"
+                            android:layout_weight="0.1"
+                            android:layout_height="22dp"
+                            android:layout_gravity="center_vertical"
+                            android:contentDescription="Стрелка"
+                            android:src="@drawable/down" />
+
+                    </LinearLayout>
+
+                    <ProgressBar
+                        android:id="@+id/progressBar3"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:visibility="gone"
+                        android:indeterminateDrawable="@drawable/spinner_ring" />
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/recyclerView3"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+
+                </LinearLayout>
+
+
                 <androidx.appcompat.widget.AppCompatButton
                     android:id="@+id/continu"
                     style="@style/PrimaryButton"

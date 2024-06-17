@@ -86,8 +86,8 @@ public class MenstrualFragment extends Fragment {
 
                 @Override
                 public void onCancelled(DatabaseError databaseError) {
-                    // Обработка ошибок при чтении из базы данных
-                }
+                    CustomDialog dialogFragment = new CustomDialog("Произошла ошибка: " + databaseError.getMessage(), false);
+                    dialogFragment.show(getParentFragmentManager(), "custom_dialog");                }
             });
 
             fetchMenstrualData();

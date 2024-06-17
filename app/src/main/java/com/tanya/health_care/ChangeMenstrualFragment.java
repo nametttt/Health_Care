@@ -70,15 +70,11 @@ public class ChangeMenstrualFragment extends Fragment {
             calendar.setCalendarListener(new CalendarListener() {
                 @Override
                 public void onFirstDateSelected(Calendar startDate) {
-                    // No action required, wait for second date selection
                 }
 
                 @Override
                 public void onDateRangeSelected(Calendar startDate, Calendar endDate) {
                     selectedRanges.add(new Calendar[]{startDate, endDate});
-                    Toast.makeText(requireContext(), "Selected range: " + startDate.getTime() + " - " + endDate.getTime(), Toast.LENGTH_SHORT).show();
-
-                    // Update calendar to display selected ranges
                     updateCalendarRanges();
                 }
             });
@@ -99,7 +95,7 @@ public class ChangeMenstrualFragment extends Fragment {
             });
 
         } catch (Exception exception) {
-            CustomDialog dialogFragment = new CustomDialog("Error occurred: " + exception.getMessage(), false);
+            CustomDialog dialogFragment = new CustomDialog("Произошла ошибка: " + exception.getMessage(), false);
             dialogFragment.show(getChildFragmentManager(), "custom_dialog");
         }
     }
@@ -135,7 +131,6 @@ public class ChangeMenstrualFragment extends Fragment {
                         startCalendar.setTimeInMillis(startDateMillis);
                         endCalendar.setTimeInMillis(endDateMillis);
 
-                        // Add to selectedRanges only if dates are within the selectable range
                         if (isDateInRange(startCalendar) && isDateInRange(endCalendar)) {
                             selectedRanges.add(new Calendar[]{startCalendar, endCalendar});
                         }
@@ -146,7 +141,7 @@ public class ChangeMenstrualFragment extends Fragment {
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-                CustomDialog dialogFragment = new CustomDialog("Database error: " + databaseError.getMessage(), false);
+                CustomDialog dialogFragment = new CustomDialog("Произошла ошибка: " + databaseError.getMessage(), false);
                 dialogFragment.show(requireParentFragment().getChildFragmentManager(), "custom_dialog");
             }
         });
@@ -160,7 +155,7 @@ public class ChangeMenstrualFragment extends Fragment {
             }
         } catch (Exception e) {
             e.printStackTrace();
-            CustomDialog dialogFragment = new CustomDialog("Error setting date range: " + e.getMessage(), false);
+            CustomDialog dialogFragment = new CustomDialog("Произошла ошибка: " + e.getMessage(), false);
             dialogFragment.show(requireParentFragment().getChildFragmentManager(), "custom_dialog");
         }
     }
@@ -188,6 +183,7 @@ public class ChangeMenstrualFragment extends Fragment {
             newRangeRef.child("endDate").child("timeInMillis").setValue(range[1].getTimeInMillis());
         }
 
-        Toast.makeText(requireContext(), "Data saved successfully!", Toast.LENGTH_SHORT).show();
+        CustomDialog dialogFragment = new CustomDialog("Даты циклов успешно сохранены!", false);
+        dialogFragment.show(getParentFragmentManager(), "custom_dialog");
     }
 }

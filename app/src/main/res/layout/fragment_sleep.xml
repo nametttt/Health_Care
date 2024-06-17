@@ -39,12 +39,12 @@
 
                     <ImageView
                         android:id="@+id/statsIcon"
-                        android:layout_width="20dp"
-                        android:gravity="end"
-                        android:contentDescription="Статистика"
-                        android:layout_height="25dp"
+                        android:layout_width="14dp"
+                        android:layout_height="18dp"
                         android:layout_gravity="center"
-                        android:src="@drawable/chart"/>
+                        android:contentDescription="Статистика"
+                        android:gravity="end"
+                        android:src="@drawable/chart" />
 
 
                     <androidx.appcompat.widget.Toolbar
