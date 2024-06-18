@@ -20,8 +20,9 @@ public class RegPinActivity extends AppCompatActivity {
     private Button btn, bb;
     private TextView emailTextView, newPin;
     private PinView firstPinView;
-    private String expectedPinCode, userEmail, code;
-
+    private String expectedPinCode, userEmail, birthday, gender;
+    private String myCode;
+    private boolean allDone = false;
     private boolean newPinRequested = false;
 
     @Override
@@ -33,24 +34,43 @@ public class RegPinActivity extends AppCompatActivity {
             bb = findViewById(R.id.back);
             firstPinView = findViewById(R.id.firstPinView);
             newPin = findViewById(R.id.newpin);
+            birthday = getIntent().getStringExtra("Birthday");
+            gender = getIntent().getStringExtra("userGender");
 
-            code = getIntent().getStringExtra("UserCode");
-            if(code != null)
+            myCode = getIntent().getStringExtra("UserCode");
+            if(myCode != null)
             {
-                firstPinView.setText(code);
+                allDone = true;
+                firstPinView.setText(myCode);
             }
 
             expectedPinCode = getIntent().getStringExtra("pinCode");
             emailTextView = findViewById(R.id.aboutemail);
 
-            Intent intent = getIntent();
-            userEmail = intent.getStringExtra("userEmail");
+            userEmail = getIntent().getStringExtra("userEmail");
             emailTextView.setText("Код подтверждения отправлен на почту " + userEmail);
 
             btn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    handlePinVerification();
+                    if(allDone)
+                    {
+                        Intent intent = new Intent(RegPinActivity.this, RegGenderActivity.class);
+                        intent.putExtra("userEmail", userEmail);
+                        intent.putExtra("UserCode", expectedPinCode);
+                        intent.putExtra("userGender", gender);
+                        intent.putExtra("userBirthday", birthday);
+                        startActivity(intent);
+                    }
+                    else{
+                        //handlePinVerification();
+                        Intent intent = new Intent(RegPinActivity.this, RegGenderActivity.class);
+                        intent.putExtra("userEmail", userEmail);
+                        intent.putExtra("UserCode", expectedPinCode);
+                        intent.putExtra("userGender", gender);
+                        intent.putExtra("userBirthday", birthday);
+                        startActivity(intent);
+                    }
                 }
             });
 
@@ -59,6 +79,9 @@ public class RegPinActivity extends AppCompatActivity {
                 public void onClick(View view) {
                     Intent intent = new Intent(RegPinActivity.this, RegActivityEmail.class);
                     intent.putExtra("userEmail", userEmail);
+                    intent.putExtra("UserCode", myCode);
+                    intent.putExtra("userGender", gender);
+                    intent.putExtra("userBirthday", birthday);
                     startActivity(intent);
                 }
             });
@@ -84,9 +107,14 @@ public class RegPinActivity extends AppCompatActivity {
                 CustomDialog dialogFragment = new CustomDialog("Пожалуйста, введите пин-код!", false);
                 dialogFragment.show(getSupportFragmentManager(), "custom_dialog");
             } else if (enteredPin.equals(expectedPinCode)) {
+                if(myCode == null){
+                    myCode = expectedPinCode;
+                }
                 Intent intent = new Intent(RegPinActivity.this, RegGenderActivity.class);
                 intent.putExtra("userEmail", userEmail);
-                intent.putExtra("UserCode", expectedPinCode);
+                intent.putExtra("UserCode", myCode);
+                intent.putExtra("userGender", gender);
+                intent.putExtra("userBirthday", birthday);
                 startActivity(intent);
             } else {
                 CustomDialog dialogFragment = new CustomDialog( "Вы ввели неверный пин-код!", false);

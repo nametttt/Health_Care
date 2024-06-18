@@ -58,7 +58,6 @@ public class NutritionValueFragment extends Fragment {
             numberPicker.setWrapSelectorWheel(false);
             numberPicker.setValue(nutritionValue / 50);
             numberPicker.setOnValueChangedListener((picker, oldVal, newVal) -> {
-                // Handle value change
             });
 
             userValuesRef.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -72,6 +71,8 @@ public class NutritionValueFragment extends Fragment {
 
                 @Override
                 public void onCancelled(@NonNull DatabaseError databaseError) {
+                    CustomDialog dialogFragment = new CustomDialog("Произошла ошибка: " + databaseError.getMessage(), false);
+                    dialogFragment.show(getParentFragmentManager(), "custom_dialog");
                 }
             });
 
@@ -98,7 +99,5 @@ public class NutritionValueFragment extends Fragment {
             CustomDialog dialogFragment = new CustomDialog("Произошла ошибка: " + exception.getMessage(), false);
             dialogFragment.show(getParentFragmentManager(), "custom_dialog");
         }
-
     }
-
 }

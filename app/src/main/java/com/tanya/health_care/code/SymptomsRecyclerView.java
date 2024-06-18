@@ -7,17 +7,19 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 import androidx.annotation.NonNull;
-import androidx.core.content.res.ResourcesCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.tanya.health_care.R;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class SymptomsRecyclerView extends RecyclerView.Adapter<SymptomsRecyclerView.ViewHolder> {
 
     private ArrayList<SymptomsData> symptomsData;
     private Context context;
+    private boolean isExpanded = false;
+    private List<String> selectedSymptomsIds = new ArrayList<>();
 
     public SymptomsRecyclerView(Context context, ArrayList<SymptomsData> symptomsData) {
         this.context = context;
@@ -36,25 +38,62 @@ public class SymptomsRecyclerView extends RecyclerView.Adapter<SymptomsRecyclerV
         SymptomsData currentSymptom = symptomsData.get(position);
         holder.nameSymptom.setText(currentSymptom.name);
 
+        if (currentSymptom.isSelected) {
+            holder.nameSymptom.setBackgroundResource(R.drawable.selected_symptom);
+        } else {
+            holder.nameSymptom.setBackgroundResource(R.drawable.button_statistic_asset);
+        }
+
         holder.nameSymptom.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Check the current style and toggle it
-                int currentStyleId = (int) holder.nameSymptom.getTag();
-                if (currentStyleId == R.style.SymptomButtonStyle) {
-                    holder.nameSymptom.setTag(R.style.SelectedSymptomButtonStyle);
-                } else {
-                    holder.nameSymptom.setTag(R.style.SymptomButtonStyle);
+                int currentPosition = holder.getAdapterPosition();
+                if (currentPosition != RecyclerView.NO_POSITION) {
+                    SymptomsData symptom = symptomsData.get(currentPosition);
+                    symptom.isSelected = !symptom.isSelected;
+                    notifyItemChanged(currentPosition);
+
+                    if (symptom.isSelected) {
+                        selectedSymptomsIds.add(symptom.uid);
+                    } else {
+                        selectedSymptomsIds.remove(symptom.uid);
+                    }
                 }
             }
         });
-
-        holder.nameSymptom.setTag(R.style.SymptomButtonStyle);
     }
 
     @Override
     public int getItemCount() {
-        return symptomsData.size();
+        if (isExpanded) {
+            return symptomsData.size();
+        } else {
+            return Math.min(symptomsData.size(), 2);
+        }
+    }
+
+    public void toggleExpand() {
+        isExpanded = !isExpanded;
+        notifyDataSetChanged();
+    }
+
+    public void setSelectedSymptoms(List<String> selectedSymptomIds) {
+        for (SymptomsData symptom : symptomsData) {
+            if (selectedSymptomIds.contains(symptom.uid)) {
+                symptom.isSelected = true;
+            } else {
+                symptom.isSelected = false;
+            }
+        }
+        notifyDataSetChanged();
+    }
+
+    public boolean isExpanded() {
+        return isExpanded;
+    }
+
+    public List<String> getSelectedSymptomsIds() {
+        return selectedSymptomsIds;
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {

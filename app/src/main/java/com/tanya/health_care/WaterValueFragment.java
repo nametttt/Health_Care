@@ -59,7 +59,6 @@ public class WaterValueFragment extends Fragment {
             numberPicker.setWrapSelectorWheel(false);
             numberPicker.setValue(waterValue / 50);
             numberPicker.setOnValueChangedListener((picker, oldVal, newVal) -> {
-                // Handle value change
             });
             userValuesRef.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
@@ -72,7 +71,8 @@ public class WaterValueFragment extends Fragment {
 
                 @Override
                 public void onCancelled(@NonNull DatabaseError databaseError) {
-                    // Обработка ошибок при чтении из базы данных
+                    CustomDialog dialogFragment = new CustomDialog("Произошла ошибка: " + databaseError.getMessage(), false);
+                    dialogFragment.show(getParentFragmentManager(), "custom_dialog");
                 }
             });
 
@@ -87,7 +87,8 @@ public class WaterValueFragment extends Fragment {
 
                 @Override
                 public void onCancelled(@NonNull DatabaseError databaseError) {
-                    // Обработка ошибок при чтении из базы данных
+                    CustomDialog dialogFragment = new CustomDialog("Произошла ошибка: " + databaseError.getMessage(), false);
+                    dialogFragment.show(getParentFragmentManager(), "custom_dialog");
                 }
             });
 

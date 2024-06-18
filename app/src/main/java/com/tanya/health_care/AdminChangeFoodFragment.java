@@ -29,7 +29,6 @@ public class AdminChangeFoodFragment extends Fragment {
     String uid, name, UserUid;
     float weight;
     private int calories, protein, fat, carbohydrates;
-
     private EditText nameEditText, weightEditText, caloriesEditText, proteinEditText, fatEditText, carbohydratesEditText, userEmail;
 
     public AdminChangeFoodFragment() {
@@ -100,8 +99,6 @@ public class AdminChangeFoodFragment extends Fragment {
                 userEmail.setVisibility(View.VISIBLE);
                 userText.setVisibility(View.VISIBLE);
             }
-
-
 
         save.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -225,7 +222,5 @@ public class AdminChangeFoodFragment extends Fragment {
             CustomDialog dialogFragment = new CustomDialog( e.getMessage(), false);
             dialogFragment.show(getParentFragmentManager(), "custom_dialog");
         }
-
     }
-
 }

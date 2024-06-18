@@ -48,7 +48,6 @@ public class FoodFragment extends Fragment {
     ImageButton searchImage;
     RecyclerView recyclerView;
     GetSplittedPathChild pC = new GetSplittedPathChild();
-
     ArrayList<FoodData> foodDataArrayList;
     SelectFoodRecyclerView adapter;
     DatabaseReference ref;
@@ -197,7 +196,8 @@ public class FoodFragment extends Fragment {
 
                 @Override
                 public void onCancelled(@NonNull DatabaseError error) {
-                    // Обработка ошибок
+                    CustomDialog dialogFragment = new CustomDialog("Произошла ошибка: " + error.getMessage(), false);
+                    dialogFragment.show(getParentFragmentManager(), "custom_dialog");
                 }
             };
             ref = mDb.getReference().child("foods");
@@ -234,6 +234,8 @@ public class FoodFragment extends Fragment {
 
                     @Override
                     public void onCancelled(@NonNull DatabaseError error) {
+                        CustomDialog dialogFragment = new CustomDialog("Произошла ошибка: " + error.getMessage(), false);
+                        dialogFragment.show(getParentFragmentManager(), "custom_dialog");
                     }
                 };
 
@@ -249,7 +251,6 @@ public class FoodFragment extends Fragment {
         }
     }
 
-
     public void findAndRemoveDuplicates(ArrayList<FoodData> list1, ArrayList<FoodData> list2) {
         ArrayList<FoodData> elementsToRemove = new ArrayList<>();
         for (FoodData foodData1 : list1) {
@@ -258,7 +259,6 @@ public class FoodFragment extends Fragment {
                     elementsToRemove.add(foodData1);
                     elementsToRemove.add(foodData2);
                 }
-
             }
         }
         list2.removeAll(elementsToRemove);

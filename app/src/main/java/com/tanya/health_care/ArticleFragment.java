@@ -15,6 +15,9 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -99,12 +102,13 @@ public class ArticleFragment extends Fragment {
 
             searchEditText.addTextChangedListener(new TextWatcher() {
                 @Override
-                public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                }
 
                 @Override
                 public void onTextChanged(CharSequence s, int start, int before, int count) {
                     String searchText = searchEditText.getText().toString().trim();
-                    if (searchText.isEmpty()) {
+                    if (searchText.trim().isEmpty()) {
                         searchButton.setClickable(false);
                         searchButton.setImageResource(R.drawable.search);
                         reloadAllData();  // Reload all data when search text is empty
@@ -116,7 +120,8 @@ public class ArticleFragment extends Fragment {
                 }
 
                 @Override
-                public void afterTextChanged(Editable s) {}
+                public void afterTextChanged(Editable s) {
+                }
             });
 
             searchButton.setOnClickListener(new View.OnClickListener() {
@@ -126,6 +131,7 @@ public class ArticleFragment extends Fragment {
                     searchButton.setClickable(false);
                     searchButton.setImageResource(R.drawable.search);
                     reloadAllData();
+
                 }
             });
 
@@ -144,11 +150,17 @@ public class ArticleFragment extends Fragment {
 
     private void loadDataForCategory(String category, RecyclerView recyclerView, ProgressBar progressBar, ArrayList<ArticleData> articleDataList, ArticleRecyclerView adapter) {
         try {
+            articleDataList.clear();
             progressBar.setVisibility(View.VISIBLE);
+            articleDataList.clear();
 
-            ValueEventListener valueEventListener = new ValueEventListener() {
+            ref = mDb.getReference().child("articles");
+
+            ref.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
                 @Override
-                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                public void onComplete(@NonNull Task<DataSnapshot> task) {
+
+                    DataSnapshot snapshot = task.getResult();
                     articleDataList.clear();
                     for (DataSnapshot ds : snapshot.getChildren()) {
                         ArticleData articleData = ds.getValue(ArticleData.class);
@@ -156,22 +168,19 @@ public class ArticleFragment extends Fragment {
                             articleDataList.add(articleData);
                         }
                     }
+                    ArticleRecyclerView ad = new ArticleRecyclerView(getContext(), articleDataList);
+                    recyclerView.setAdapter(ad);
                     progressBar.setVisibility(View.GONE);
                     if (articleDataList.isEmpty()) {
                         recyclerView.setVisibility(View.GONE);
                     } else {
                         recyclerView.setVisibility(View.VISIBLE);
-                        adapter.notifyDataSetChanged();
                     }
-                }
 
-                @Override
-                public void onCancelled(@NonNull DatabaseError error) {
-                    progressBar.setVisibility(View.GONE);
                 }
-            };
-            ref = mDb.getReference().child("articles");
-            ref.addValueEventListener(valueEventListener);
+            });
+
+
         } catch (Exception exception) {
             CustomDialog dialogFragment = new CustomDialog("Произошла ошибка: " + exception.getMessage(), false);
             dialogFragment.show(getParentFragmentManager(), "custom_dialog");
@@ -202,9 +211,11 @@ public class ArticleFragment extends Fragment {
     private void filterArticles(String searchText) {
         try {
             ref = mDb.getReference().child("articles");
-            ref.addListenerForSingleValueEvent(new ValueEventListener() {
+            ref.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
                 @Override
-                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                public void onComplete(@NonNull Task<DataSnapshot> task) {
+                    DataSnapshot snapshot = task.getResult();
+
                     ArrayList<ArticleData> filteredList1 = new ArrayList<>();
                     ArrayList<ArticleData> filteredList2 = new ArrayList<>();
                     ArrayList<ArticleData> filteredList3 = new ArrayList<>();
@@ -245,16 +256,13 @@ public class ArticleFragment extends Fragment {
                     updateRecyclerViewVisibility(linearCategory5, recyclerView5, filteredList5);
                     updateRecyclerViewVisibility(linearCategory6, recyclerView6, filteredList6);
                 }
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError error) {}
             });
+
         } catch (Exception exception) {
             CustomDialog dialogFragment = new CustomDialog("Произошла ошибка: " + exception.getMessage(), false);
             dialogFragment.show(getParentFragmentManager(), "custom_dialog");
         }
     }
-
     private void updateRecyclerViewVisibility(LinearLayout linearLayout, RecyclerView recyclerView, ArrayList<ArticleData> filteredList) {
         if (filteredList.isEmpty()) {
             linearLayout.setVisibility(View.GONE);
@@ -267,3 +275,4 @@ public class ArticleFragment extends Fragment {
         }
     }
 }
+

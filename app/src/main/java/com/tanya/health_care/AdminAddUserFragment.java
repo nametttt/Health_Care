@@ -42,7 +42,6 @@ public class AdminAddUserFragment extends Fragment {
         init(v);
         return v;
     }
-
     void init(View v){
         try{
             addUser = v.findViewById(R.id.addUser);
@@ -53,16 +52,13 @@ public class AdminAddUserFragment extends Fragment {
             gender = v.findViewById(R.id.userGenderSpinner);
             email = v.findViewById(R.id.email);
             password = v.findViewById(R.id.password);
-
             password.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
-
             eye.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     EyeVisibility.toggleVisibility(password, eye);
                 }
             });
-
             pickDate.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -71,7 +67,6 @@ public class AdminAddUserFragment extends Fragment {
                     datePickerModal.show(getParentFragmentManager(), "datepicker");
                 }
             });
-
             addUser.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -79,7 +74,6 @@ public class AdminAddUserFragment extends Fragment {
                 }
             });
         }
-
         catch(Exception exception) {
             CustomDialog dialogFragment = new CustomDialog("Произошла ошибка: " + exception.getMessage(), false);
             dialogFragment.show(getParentFragmentManager(), "custom_dialog");
@@ -107,19 +101,12 @@ public class AdminAddUserFragment extends Fragment {
 
             FirebaseDatabase mDb = FirebaseDatabase.getInstance();
             DatabaseReference ref = mDb.getReference("users");
-
-            FirebaseUser firebaseUser = mAuth.getCurrentUser();
-
             GetSplittedPathChild pC = new GetSplittedPathChild();
             splittedPathChild = pC.getSplittedPathChild(userEmail);
-
             int atIndex = userEmail.indexOf('@');
             String name = atIndex != -1 ? userEmail.substring(0, atIndex) : userEmail;
-
             UserData user = new UserData(userEmail, name, userGender, userRole, userBirthday, "", "");
-
             DatabaseReference userRef = ref.child(splittedPathChild);
-
             userRef.setValue(user).addOnCompleteListener(new OnCompleteListener<Void>() {
                 @Override
                 public void onComplete(@NonNull Task<Void> databaseTask) {
@@ -141,7 +128,5 @@ public class AdminAddUserFragment extends Fragment {
             CustomDialog dialogFragment = new CustomDialog(e.getMessage(), false);
             dialogFragment.show(getParentFragmentManager(), "custom_dialog");
         }
-
     }
-
 }

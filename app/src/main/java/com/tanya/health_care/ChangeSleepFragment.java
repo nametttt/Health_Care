@@ -49,7 +49,7 @@ public class ChangeSleepFragment extends Fragment {
 
     TextView nameFragment, textFragment, dateText;
     FirebaseUser user;
-    Button save, back, delete, sleepStart, sleepFinish, dateButton;
+    Button save, back, delete, dateButton;
     DatabaseReference ref;
     GetSplittedPathChild pC = new GetSplittedPathChild();
     FirebaseDatabase mDb;
@@ -85,7 +85,6 @@ public class ChangeSleepFragment extends Fragment {
     void init(View v) {
         try {
             SimpleDateFormat fmt = new SimpleDateFormat("dd.MM HH:mm", new Locale("ru"));
-            SimpleDateFormat fmt1 = new SimpleDateFormat("HH:mm", new Locale("ru"));
 
             save = v.findViewById(R.id.continu);
             back = v.findViewById(R.id.back);
@@ -114,17 +113,14 @@ public class ChangeSleepFragment extends Fragment {
             timeRangePicker.setOnTouchListener(new View.OnTouchListener() {
                 @Override
                 public boolean onTouch(View v, MotionEvent event) {
-                    // Блокируем скроллинг ScrollView
                     scrollView.requestDisallowInterceptTouchEvent(true);
                     return false;
                 }
             });
 
-// Добавляем слушатель событий для ScrollView
             scrollView.setOnTouchListener(new View.OnTouchListener() {
                 @Override
                 public boolean onTouch(View v, MotionEvent event) {
-                    // Разблокируем скроллинг ScrollView после окончания взаимодействия пользователя с TimeRangePicker
                     scrollView.requestDisallowInterceptTouchEvent(false);
                     return false;
                 }
@@ -163,7 +159,6 @@ public class ChangeSleepFragment extends Fragment {
 
                 picker.setEndTimeMinutes(endTimeMinutes);
                 picker.setStartTime(startTime);
-
 
                 updateTimes();
                 updateDuration();
@@ -304,8 +299,8 @@ public class ChangeSleepFragment extends Fragment {
                             String[] timeParts = timeString.split(":");
 
                             int day = Integer.parseInt(dateParts[0]);
-                            int month = Integer.parseInt(dateParts[1]) - 1; // месяцы в Calendar начинаются с 0
-                            int year = Calendar.getInstance().get(Calendar.YEAR); // год не известен, поэтому используем текущий
+                            int month = Integer.parseInt(dateParts[1]) - 1;
+                            int year = Calendar.getInstance().get(Calendar.YEAR);
 
                             int hour = Integer.parseInt(timeParts[0]);
                             int minute = Integer.parseInt(timeParts[1]);
@@ -339,8 +334,6 @@ public class ChangeSleepFragment extends Fragment {
                             dialogFragment.show(getParentFragmentManager(), "custom_dialog");
                         }
                     }
-
-
                 }
             });
 
@@ -404,8 +397,9 @@ public class ChangeSleepFragment extends Fragment {
 
                 @Override
                 public void onCancelled(@NonNull DatabaseError databaseError) {
-                    // Обработка ошибки запроса
-                    listener.onOverlapChecked(false); // В случае ошибки предполагаем, что перекрытия нет
+                    listener.onOverlapChecked(false);
+                    CustomDialog dialogFragment = new CustomDialog("Произошла ошибка: " + databaseError.getMessage(), false);
+                    dialogFragment.show(getParentFragmentManager(), "custom_dialog");
                 }
             });
         }

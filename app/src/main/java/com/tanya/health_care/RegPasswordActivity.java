@@ -33,6 +33,8 @@ import com.tanya.health_care.code.UserValues;
 import com.tanya.health_care.code.WaterData;
 import com.tanya.health_care.dialog.CustomDialog;
 
+import java.util.Objects;
+
 public class RegPasswordActivity extends AppCompatActivity {
 
     private ImageButton imgBtn, imageBut;
@@ -53,10 +55,11 @@ public class RegPasswordActivity extends AppCompatActivity {
     private void init() {
         try {
             Intent intent = getIntent();
-            email = intent.getStringExtra("userEmail");
-            gender = intent.getStringExtra("userGender");
-            birthday = intent.getStringExtra("userBirthday");
 
+            String userEmail = getIntent().getStringExtra("userEmail");
+            String userGender = getIntent().getStringExtra("userGender");
+            String birthday = getIntent().getStringExtra("userBirthday");
+            String userCode = getIntent().getStringExtra("UserCode");
             imgBtn = findViewById(R.id.eye);
             imageBut = findViewById(R.id.firsteye);
             password = findViewById(R.id.password);
@@ -72,7 +75,10 @@ public class RegPasswordActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View view) {
                     Intent intent = new Intent(RegPasswordActivity.this, RegBirthdayActivity.class);
-                    intent.putExtra("Birthday", birthday);
+                    intent.putExtra("userBirthday", birthday);
+                    intent.putExtra("userGender", userGender);
+                    intent.putExtra("userEmail", userEmail);
+                    intent.putExtra("UserCode", userCode);
                     startActivity(intent);
                 }
             });
@@ -157,12 +163,9 @@ public class RegPasswordActivity extends AppCompatActivity {
                                 int atIndex = email.indexOf('@');
                                 String name = atIndex != -1 ? email.substring(0, atIndex) : email;
                                 if (firebaseUser != null) {
-                                    String userId = firebaseUser.getUid();
-
                                     UserData user = new UserData(email, name, gender, "Пользователь", birthday, "", "");
 
                                     DatabaseReference userRef = ref.child(splittedPathChild);
-
                                     DatabaseReference userValuesRef = mDb.getReference("users").child(splittedPathChild).child("values");
 
                                     UserValues userValues = new UserValues();
@@ -208,7 +211,8 @@ public class RegPasswordActivity extends AppCompatActivity {
 
     private void handleRegistrationError(Exception exception) {
 
-        Toast.makeText(RegPasswordActivity.this, exception.toString(), Toast.LENGTH_SHORT).show();
+        CustomDialog dialogFragment = new CustomDialog("Произошла ошибка: " + exception, false);
+        dialogFragment.show(getSupportFragmentManager(), "custom_dialog");
     }
 
 

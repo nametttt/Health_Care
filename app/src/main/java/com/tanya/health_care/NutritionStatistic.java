@@ -158,21 +158,19 @@ public class NutritionStatistic extends Fragment {
             barChart.getLegend().setEnabled(false);
 
             XAxis xAxis = barChart.getXAxis();
-            xAxis.setPosition(XAxis.XAxisPosition.BOTTOM); // X-axis on the bottom
-            xAxis.setGranularity(1f); // Step between labels on the X-axis
-            xAxis.setDrawAxisLine(false); // Disable X-axis line
+            xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+            xAxis.setGranularity(1f);
+            xAxis.setDrawAxisLine(false);
 
             YAxis rightAxis = barChart.getAxisRight();
-            rightAxis.setEnabled(true); // Enable right Y-axis
-            rightAxis.setDrawAxisLine(true); // Enable Y-axis line
-            rightAxis.setDrawLabels(true); // Enable labels on Y-axis
+            rightAxis.setEnabled(true);
+            rightAxis.setDrawAxisLine(true);
+            rightAxis.setDrawLabels(true);
 
             YAxis leftAxis = barChart.getAxisLeft();
             leftAxis.setEnabled(false);
-            // Enable horizontal scrolling
             barChart.setDragEnabled(true);
 
-            // Set up listener for horizontal scrolling to change period
             barChart.setOnChartGestureListener(new OnChartGestureListener() {
                 @Override
                 public void onChartGestureStart(MotionEvent me, ChartTouchListener.ChartGesture lastPerformedGesture) {}
@@ -180,7 +178,6 @@ public class NutritionStatistic extends Fragment {
                 @Override
                 public void onChartGestureEnd(MotionEvent me, ChartTouchListener.ChartGesture lastPerformedGesture) {
                     if (lastPerformedGesture == ChartTouchListener.ChartGesture.DRAG) {
-                        // Change period based on current selectedPeriod
                         if (selectedPeriod == 7) {
                             select30Days();
                             updateButtonAppearance(month, week, year);
@@ -213,7 +210,6 @@ public class NutritionStatistic extends Fragment {
                 public void onChartTranslate(MotionEvent me, float dX, float dY) {}
             });
 
-            // Render the chart
             barChart.invalidate();
         } catch (Exception exception) {
             CustomDialog dialogFragment = new CustomDialog("Произошла ошибка: " + exception.getMessage(), false);
@@ -230,14 +226,15 @@ public class NutritionStatistic extends Fragment {
                         Integer nutritionNorm = snapshot.getValue(Integer.class);
                         if (nutritionNorm != null) {
                             userNutritionNorm = nutritionNorm;
-                            select7Days(); // Initialize with 7 days data once the norm is fetched
+                            select7Days();
                         }
                     }
                 }
 
                 @Override
                 public void onCancelled(@NonNull DatabaseError error) {
-                    // Handle database error
+                    CustomDialog dialogFragment = new CustomDialog("Произошла ошибка: " + error.getMessage(), false);
+                    dialogFragment.show(getParentFragmentManager(), "custom_dialog");
                 }
             });
         }
@@ -284,18 +281,15 @@ public class NutritionStatistic extends Fragment {
                                 }
                             }
                         }
-
-                        // Update the chart with new data
                         updateChart(nutritionDataMap);
-
-                        // Update the textValue with user norm
                         textValue.setText(String.format(Locale.getDefault(), "%d ккал в день", (int) userNutritionNorm));
                     }
 
 
                     @Override
                     public void onCancelled(@NonNull DatabaseError error) {
-                        // Handle database error
+                        CustomDialog dialogFragment = new CustomDialog("Произошла ошибка: " + error.getMessage(), false);
+                        dialogFragment.show(getParentFragmentManager(), "custom_dialog");
                     }
                 });
             }
@@ -315,7 +309,7 @@ public class NutritionStatistic extends Fragment {
                 for (int i = 0; i < selectedPeriod; i++) {
                     int dailyIntake = nutritionDataMap.getOrDefault(currentDate, 0);
                     entries.add(new BarEntry(i, dailyIntake));
-                    dates.add(String.valueOf(i + 1)); // Use numbers instead of dates
+                    dates.add(String.valueOf(i + 1));
                     currentDate = currentDate.plusDays(1);
                 }
             } else if (selectedPeriod == 30) {
@@ -329,7 +323,7 @@ public class NutritionStatistic extends Fragment {
                     }
                     float averageIntake = totalIntake / count;
                     entries.add(new BarEntry(i / 5, averageIntake));
-                    dates.add(String.valueOf(i / 5 + 1)); // Use numbers instead of dates
+                    dates.add(String.valueOf(i / 5 + 1));
                 }
             } else if (selectedPeriod == 365) {
                 for (int i = 0; i < 12; i++) {
@@ -343,18 +337,18 @@ public class NutritionStatistic extends Fragment {
                     }
                     float averageIntake = totalIntake / count;
                     entries.add(new BarEntry(i, averageIntake));
-                    dates.add(String.valueOf(monthStart.getMonthValue())); // Use month numbers instead of names
+                    dates.add(String.valueOf(monthStart.getMonthValue()));
                 }
             }
 
             BarDataSet dataSet = new BarDataSet(entries, "Nutrition Intake");
-            dataSet.setColor(getResources().getColor(R.color.green)); // Change color to green
-            dataSet.setDrawValues(false); // Hide values
+            dataSet.setColor(getResources().getColor(R.color.green));
+            dataSet.setDrawValues(false);
 
             BarData barData = new BarData(dataSet);
 
             StraightBarChartRenderer customRenderer = new StraightBarChartRenderer(barChart, barChart.getAnimator(), barChart.getViewPortHandler());
-            customRenderer.setRadius(30); // Set your desired radius
+            customRenderer.setRadius(30);
             barChart.setRenderer(customRenderer);
 
             barChart.setData(barData);
@@ -362,31 +356,29 @@ public class NutritionStatistic extends Fragment {
             XAxis xAxis = barChart.getXAxis();
             xAxis.setValueFormatter(new IndexAxisValueFormatter(dates));
             xAxis.setLabelCount(dates.size());
-            xAxis.setGranularity(1f); // Step between labels on the X-axis
-            xAxis.setPosition(XAxis.XAxisPosition.BOTTOM); // X-axis on the bottom
-            xAxis.setDrawAxisLine(false); // Disable X-axis line
+            xAxis.setGranularity(1f);
+            xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+            xAxis.setDrawAxisLine(false);
 
-            // Ensure limit line is displayed on the right axis
             YAxis rightAxis = barChart.getAxisRight();
             rightAxis.removeAllLimitLines();
             rightAxis.setAxisMaximum(Math.max(userNutritionNorm * 1.2f, rightAxis.getAxisMaximum()));
             LimitLine limitLineRight = new LimitLine(userNutritionNorm);
-            limitLineRight.setLineColor(getResources().getColor(R.color.black)); // Line color
-            limitLineRight.setLineWidth(1f); // Line width
+            limitLineRight.setLineColor(getResources().getColor(R.color.black));
+            limitLineRight.setLineWidth(1f);
             rightAxis.addLimitLine(limitLineRight);
             rightAxis.setDrawLimitLinesBehindData(true);
 
-            // Ensure limit line is displayed on the left axis
             YAxis leftAxis = barChart.getAxisLeft();
             leftAxis.removeAllLimitLines();
             leftAxis.setAxisMaximum(Math.max(userNutritionNorm * 1.2f, leftAxis.getAxisMaximum()));
             LimitLine limitLineLeft = new LimitLine(userNutritionNorm);
-            limitLineLeft.setLineColor(getResources().getColor(R.color.black)); // Line color
-            limitLineLeft.setLineWidth(1f); // Line width
+            limitLineLeft.setLineColor(getResources().getColor(R.color.black));
+            limitLineLeft.setLineWidth(1f);
             leftAxis.addLimitLine(limitLineLeft);
             leftAxis.setDrawLimitLinesBehindData(true);
 
-            barChart.invalidate(); // Refresh the chart
+            barChart.invalidate();
         } catch (Exception exception) {
             CustomDialog dialogFragment = new CustomDialog("Произошла ошибка: " + exception.getMessage(), false);
             dialogFragment.show(getParentFragmentManager(), "custom_dialog");

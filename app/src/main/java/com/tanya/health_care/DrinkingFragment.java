@@ -56,7 +56,6 @@ public class DrinkingFragment extends Fragment {
     private Button addWater, save, back;
     RecyclerView recyclerView;
     int bottleValue = 250;
-
     Toolbar toolbar;
     ArrayList<WaterData> waterDataArrayList;
     WaterRecyclerView adapter;
@@ -106,7 +105,6 @@ public class DrinkingFragment extends Fragment {
     void init (View v){
         try{
             back = v.findViewById(R.id.back);
-
             user = FirebaseAuth.getInstance().getCurrentUser();
             mDb = FirebaseDatabase.getInstance();
             drunkCount = v.findViewById(R.id.drunkCount);

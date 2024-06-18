@@ -21,6 +21,8 @@ import com.tanya.health_care.code.GeneratePin;
 import com.tanya.health_care.code.GetEmail;
 import com.tanya.health_care.code.UserData;
 import com.tanya.health_care.dialog.CustomDialog;
+
+import java.util.Objects;
 import java.util.Properties;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -38,8 +40,8 @@ public class RegActivityEmail extends AppCompatActivity {
     private EditText email;
     private TextView userAgreement;
     private CheckBox userAgree;
-    private FirebaseAuth mAuth;
-    private String myEmail;
+    private String myEmail, myCode, birthday, gender, newEmail;
+    private boolean allDone = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,15 +53,21 @@ public class RegActivityEmail extends AppCompatActivity {
 
     private void init() {
         try {
-            mAuth = FirebaseAuth.getInstance();
             btn = findViewById(R.id.back);
             bb = findViewById(R.id.continu);
             email = findViewById(R.id.email);
             userAgree = findViewById(R.id.userargee);
             userAgreement = findViewById(R.id.userAgreement);
             myEmail = getIntent().getStringExtra("userEmail");
+            myCode = getIntent().getStringExtra("UserCode");
+            birthday = getIntent().getStringExtra("userBirthday");
+            gender = getIntent().getStringExtra("userGender");
             if (myEmail != null) {
                 email.setText(myEmail);
+                newEmail = myEmail;
+            }
+            if(myCode != null){
+                allDone = true;
             }
             btn.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -75,6 +83,9 @@ public class RegActivityEmail extends AppCompatActivity {
                     final String userEmail = email.getText().toString().trim();
                     Intent intent = new Intent(RegActivityEmail.this, UserAgreementActivity.class);
                     intent.putExtra("userEmail", userEmail);
+                    intent.putExtra("UserCode", myCode);
+                    intent.putExtra("userGender", gender);
+                    intent.putExtra("userBirthday", birthday);
                     startActivity(intent);
                 }
             });
@@ -108,20 +119,32 @@ public class RegActivityEmail extends AppCompatActivity {
                                             }
                                         }
                                         if (userExists) {
-                                            Toast.makeText(RegActivityEmail.this, "Пользователь уже существует", Toast.LENGTH_SHORT).show();
+                                            CustomDialog dialogFragment = new CustomDialog("Пользователь уже существует!", false);
+                                            dialogFragment.show(getSupportFragmentManager(), "custom_dialog");
                                         } else {
-                                            final String pinCode = GeneratePin.generatePinCode();
-                                            sendEmail(userEmail, pinCode);
+                                            String pinCode = myCode;
+                                            if(!allDone || !Objects.equals(newEmail, userEmail))
+                                            {
+                                                pinCode = GeneratePin.generatePinCode();
+                                                sendEmail(userEmail, pinCode);
+                                                gender = null;
+                                                birthday = null;
+                                                myCode = null;
+                                            }
                                             Intent intent = new Intent(RegActivityEmail.this, RegPinActivity.class);
                                             intent.putExtra("userEmail", userEmail);
                                             intent.putExtra("pinCode", pinCode);
+                                            intent.putExtra("UserCode", myCode);
+                                            intent.putExtra("userGender", gender);
+                                            intent.putExtra("userBirthday", birthday);
                                             startActivity(intent);
                                         }
                                     }
 
                                     @Override
                                     public void onCancelled(@NonNull DatabaseError databaseError) {
-                                        Toast.makeText(RegActivityEmail.this, "Ошибка при проверке пользователя", Toast.LENGTH_SHORT).show();
+                                        CustomDialog dialogFragment = new CustomDialog("Ошибка при проверке пользователя: " + databaseError, false);
+                                        dialogFragment.show(getSupportFragmentManager(), "custom_dialog");
                                     }
                                 });
                             } else {

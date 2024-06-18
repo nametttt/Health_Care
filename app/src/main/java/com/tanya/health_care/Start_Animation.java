@@ -21,6 +21,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.tanya.health_care.code.GetSplittedPathChild;
 import com.tanya.health_care.code.UserData;
+import com.tanya.health_care.dialog.CustomDialog;
 
 import java.util.Objects;
 
@@ -79,7 +80,8 @@ public class Start_Animation extends AppCompatActivity {
 
                                             @Override
                                             public void onCancelled(@NonNull DatabaseError error) {
-                                                // Handle errors
+                                                CustomDialog dialogFragment = new CustomDialog("Произошла ошибка: " + error, false);
+                                                dialogFragment.show(getSupportFragmentManager(), "custom_dialog");
                                             }
                                         });
                                     }
@@ -89,8 +91,6 @@ public class Start_Animation extends AppCompatActivity {
                                     finish();
                                     overridePendingTransition(R.anim.exiting, R.anim.entering);
                                 }
-                            } else {
-                                // Handle task failure
                             }
                         }
                     });

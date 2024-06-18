@@ -21,14 +21,22 @@ public class DateTimePickerDialog extends DialogFragment
 
     private Button targetButton;
     private Calendar selectedDateTime;
+    private OnDateTimeSetListener dateTimeSetListener;
+
+    public interface OnDateTimeSetListener {
+        void onDateTimeSet(Date date);
+    }
 
     public void setTargetButton(Button targetButton) {
         this.targetButton = targetButton;
     }
 
+    public void setDateTimeSetListener(OnDateTimeSetListener listener) {
+        this.dateTimeSetListener = listener;
+    }
+
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-
         selectedDateTime = Calendar.getInstance();
 
         int year = selectedDateTime.get(Calendar.YEAR);
@@ -54,7 +62,6 @@ public class DateTimePickerDialog extends DialogFragment
             }
         }
 
-
         return datePickerDialog;
     }
 
@@ -62,7 +69,6 @@ public class DateTimePickerDialog extends DialogFragment
     public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
         selectedDateTime.set(year, month, dayOfMonth);
 
-        // Extract the hour and minute from the selectedDateTime
         int hour = selectedDateTime.get(Calendar.HOUR_OF_DAY);
         int minute = selectedDateTime.get(Calendar.MINUTE);
 
@@ -78,6 +84,10 @@ public class DateTimePickerDialog extends DialogFragment
             SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM HH:mm", Locale.getDefault());
             String formattedDateTime = dateFormat.format(selectedDateTime.getTime());
             targetButton.setText(formattedDateTime);
+        }
+
+        if (dateTimeSetListener != null) {
+            dateTimeSetListener.onDateTimeSet(selectedDateTime.getTime());
         }
     }
 }

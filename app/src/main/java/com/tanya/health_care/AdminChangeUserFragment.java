@@ -51,10 +51,8 @@ public class AdminChangeUserFragment extends Fragment {
     Spinner roles, genders;
     ImageView imageView;
     AppCompatButton birthdays, save, delete, back;
-
     private static final int PICK_IMAGE_REQUEST = 1;
     private static final int REQUEST_IMAGE_CAPTURE = 2;
-    private static final int CROP_IMAGE_ACTIVITY_REQUEST_CODE = 3;
     private Uri selectedImageUri;
     private StorageReference storageReference;
     private DatabaseReference userRef;
@@ -293,7 +291,7 @@ public class AdminChangeUserFragment extends Fragment {
                 ProgressBarDialog progressDialogFragment = ProgressBarDialog.newInstance(timeoutMs);
                 progressDialogFragment.show(getParentFragmentManager(), "ProgressDialog");
 
-                String imageFileName = newEmail + ".jpg"; // or another unique name strategy
+                String imageFileName = newEmail + ".jpg";
                 StorageReference imageRef = storageReference.child(imageFileName);
                 imageRef.putFile(selectedImageUri)
                         .addOnSuccessListener(taskSnapshot -> {

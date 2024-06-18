@@ -59,15 +59,10 @@ public class AdminChangeArticleFragment extends Fragment {
     FirebaseDatabase mDb;
     private static final int PICK_IMAGE_REQUEST = 1;
     private static final int REQUEST_IMAGE_CAPTURE = 2;
-    private static final int CROP_IMAGE_ACTIVITY_REQUEST_CODE = 3;
     private Uri selectedImageUri;
-    private StorageReference storageReference;
-
     String uid, titl, desc, category, access;
     String finalResId;
-
     public AdminChangeArticleFragment(){}
-
     public AdminChangeArticleFragment(String uid, String titl, String desc, String category, String finalResId, String access){
         this.uid = uid;
         this.titl = titl;
@@ -76,7 +71,6 @@ public class AdminChangeArticleFragment extends Fragment {
         this.finalResId = finalResId;
         this.access = access;
     }
-
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
@@ -98,14 +92,11 @@ public class AdminChangeArticleFragment extends Fragment {
             delete = v.findViewById(R.id.delete);
             back = v.findViewById(R.id.back);
             mDb = FirebaseDatabase.getInstance();
-
             title.setText(titl);
             description.setText(desc);
             if(finalResId != null) {
                 Picasso.get().load(finalResId).placeholder(R.drawable.notarticle).into(image);
             }
-
-            // Update categories based on the new string array
             switch (category) {
                 case "Питание":
                     categories.setSelection(0);
@@ -393,18 +384,18 @@ public class AdminChangeArticleFragment extends Fragment {
                 selectedImageUri = data.getData();
                 CropImage.activity(selectedImageUri)
                         .setGuidelines(CropImageView.Guidelines.ON)
-                        .setAspectRatio(1, 1)  // Changed to square aspect ratio
+                        .setAspectRatio(1, 1)
                         .start(getContext(), this);
             } else if (requestCode == REQUEST_IMAGE_CAPTURE) {
                 CropImage.activity(selectedImageUri)
                         .setGuidelines(CropImageView.Guidelines.ON)
-                        .setAspectRatio(1, 1)  // Changed to square aspect ratio
+                        .setAspectRatio(1, 1)
                         .start(getContext(), this);
             } else if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
                 CropImage.ActivityResult result = CropImage.getActivityResult(data);
                 if (resultCode == Activity.RESULT_OK) {
                     selectedImageUri = result.getUri();
-                    image.setImageURI(selectedImageUri);  // Display the selected image
+                    image.setImageURI(selectedImageUri);
                 } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
                     CustomDialog dialogFragment = new CustomDialog(result.getError().getMessage(), false);
                     dialogFragment.show(getParentFragmentManager(), "custom_dialog");

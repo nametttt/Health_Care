@@ -53,7 +53,7 @@ public class MyBottleValueFragment extends Fragment {
                     .child("values").child("BottleValue");
 
             numberPicker.setMinValue(1);
-            numberPicker.setMaxValue(20); // Максимальное значение 1000 мл, учитывая шаг в 50 мл
+            numberPicker.setMaxValue(20);
             String[] displayValues = new String[20];
             for (int i = 0; i < displayValues.length; i++) {
                 displayValues[i] = String.valueOf((i * 50) + 50);
@@ -63,7 +63,6 @@ public class MyBottleValueFragment extends Fragment {
             numberPicker.setWrapSelectorWheel(false);
             numberPicker.setValue(waterValue / 50);
             numberPicker.setOnValueChangedListener((picker, oldVal, newVal) -> {
-                // Handle value change
             });
 
             userValuesRef.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -77,7 +76,8 @@ public class MyBottleValueFragment extends Fragment {
 
                 @Override
                 public void onCancelled(@NonNull DatabaseError databaseError) {
-                    // Обработка ошибок при чтении из базы данных
+                    CustomDialog dialogFragment = new CustomDialog("Произошла ошибка: " + databaseError.getMessage(), false);
+                    dialogFragment.show(getParentFragmentManager(), "custom_dialog");
                 }
             });
 

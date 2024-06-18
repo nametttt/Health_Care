@@ -32,6 +32,10 @@ public class ArticleRecyclerView extends RecyclerView.Adapter<ArticleRecyclerVie
         this.commonHealthData = commonHealthData;
     }
 
+    public void updateSource(ArrayList<ArticleData> commonHealthData){
+        this.commonHealthData = commonHealthData;
+    }
+
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -77,3 +81,4 @@ public class ArticleRecyclerView extends RecyclerView.Adapter<ArticleRecyclerVie
         }
     }
 }
+

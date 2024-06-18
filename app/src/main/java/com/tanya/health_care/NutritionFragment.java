@@ -151,6 +151,8 @@ public class NutritionFragment extends Fragment {
 
                 @Override
                 public void onCancelled(@NonNull DatabaseError error) {
+                    CustomDialog dialogFragment = new CustomDialog("Произошла ошибка: " + error.getMessage(), false);
+                    dialogFragment.show(getParentFragmentManager(), "custom_dialog");
                 }
             });
 
@@ -311,9 +313,7 @@ public class NutritionFragment extends Fragment {
                             try {
                                 Date newselectedDate = dateFormat.parse(date);
                                 updateDateText(newselectedDate);
-                                calendar.setTime(newselectedDate); // Устанавливаем выбранную дату
-
-                                // Устанавливаем текущее время
+                                calendar.setTime(newselectedDate);
                                 calendar.set(Calendar.HOUR_OF_DAY, hour);
                                 calendar.set(Calendar.MINUTE, minute);
                                 calendar.set(Calendar.SECOND, second);

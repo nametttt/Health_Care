@@ -43,8 +43,6 @@ public class HomeActivity extends AppCompatActivity {
         Configuration config = new Configuration();
         config.locale = locale;
         getResources().updateConfiguration(config, getResources().getDisplayMetrics());
-
-
         FirebaseMessaging.getInstance().getToken().addOnCompleteListener(new OnCompleteListener<String>() {
             @Override
             public void onComplete(@NonNull Task<String> task) {
@@ -52,11 +50,8 @@ public class HomeActivity extends AppCompatActivity {
                     Log.w(TAG, "Fetching FCM registration token failed", task.getException());
                     return;
                 }
-
                 String token = task.getResult();
-
                 String msg = getString(R.string.msg_token_fmt, token);
-                Log.d(TAG, msg);
                 saveTokenToDatabase(token);
             }
         });
@@ -115,11 +110,7 @@ public class HomeActivity extends AppCompatActivity {
 
     private final ActivityResultLauncher<String> requestPermissionLauncher =
             registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
-                if (isGranted) {
-                    // FCM SDK (and your app) can post notifications.
-                } else {
-                    // TODO: Inform user that that your app will not show notifications.
-                }
+
             });
 
     private void askNotificationPermission() {

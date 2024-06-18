@@ -298,8 +298,7 @@ public class SleepFragment extends Fragment {
                             try {
                                 Date newselectedDate = dateFormat.parse(date);
                                 updateDateText(newselectedDate);
-                                calendar.setTime(newselectedDate); // Устанавливаем выбранную дату
-
+                                calendar.setTime(newselectedDate);
                                 calendar.set(Calendar.HOUR_OF_DAY, hour);
                                 calendar.set(Calendar.MINUTE, minute);
                                 calendar.set(Calendar.SECOND, second);

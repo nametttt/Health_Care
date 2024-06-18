@@ -10,7 +10,7 @@ import android.widget.Button;
 public class UserAgreementActivity extends AppCompatActivity {
 
     Button back;
-    String userEmail;
+    String userEmail, myCode, birthday, gender;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -18,14 +18,19 @@ public class UserAgreementActivity extends AppCompatActivity {
         init();
     }
     private void init(){
-        Intent intent = getIntent();
-        userEmail = intent.getStringExtra("userEmail");
         back = findViewById(R.id.back);
+        userEmail = getIntent().getStringExtra("userEmail");
+        myCode = getIntent().getStringExtra("UserCode");
+        birthday = getIntent().getStringExtra("userBirthday");
+        gender = getIntent().getStringExtra("userGender");
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(UserAgreementActivity.this, RegActivityEmail.class);
                 intent.putExtra("userEmail", userEmail);
+                intent.putExtra("UserCode", myCode);
+                intent.putExtra("userGender", gender);
+                intent.putExtra("userBirthday", birthday);
                 startActivity(intent);
             }
         });

@@ -32,6 +32,7 @@ import com.tanya.health_care.code.CustomStripDrawable;
 import com.tanya.health_care.dialog.CustomDialog;
 import com.tanya.health_care.code.GetSplittedPathChild;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -41,11 +42,10 @@ public class MenstrualFragment extends Fragment {
     private FirebaseUser user;
     private FirebaseDatabase mDb;
     private GetSplittedPathChild pC = new GetSplittedPathChild();
-    private Button back, add;
+    private Button back, add, mySymptom;
     private TextView menstrualInfo;
-    LinearLayout myLinear;
+    private Date selectedDate = new Date();
     int duration = 28;
-
     public MenstrualFragment() {
     }
 
@@ -61,7 +61,7 @@ public class MenstrualFragment extends Fragment {
         try {
             back = view.findViewById(R.id.back);
             add = view.findViewById(R.id.add);
-            myLinear = view.findViewById(R.id.myLinear);
+            mySymptom = view.findViewById(R.id.mySymptom);
             menstrualInfo = view.findViewById(R.id.menstrualInfo);
             Toolbar toolbar = view.findViewById(R.id.toolbar);
             ((AppCompatActivity) requireActivity()).setSupportActionBar(toolbar);
@@ -106,11 +106,11 @@ public class MenstrualFragment extends Fragment {
                 }
             });
 
-            myLinear.setOnClickListener(new View.OnClickListener() {
+            mySymptom.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     HomeActivity homeActivity = (HomeActivity) getActivity();
-                    homeActivity.replaceFragment(new SymptomsFragment());
+                    homeActivity.replaceFragment(new SymptomsFragment(selectedDate));
                 }
             });
 
@@ -130,6 +130,7 @@ public class MenstrualFragment extends Fragment {
                 @Override
                 public void onCalendarSelect(Calendar calendar, boolean isClick) {
                     calculateAndDisplayInfo(calendar);
+                    selectedDate = calendarToDate(calendar);
                 }
             });
 
@@ -149,7 +150,7 @@ public class MenstrualFragment extends Fragment {
         DatabaseReference menstrualRef = mDb.getReference("users")
                 .child(pC.getSplittedPathChild(user.getEmail()))
                 .child("characteristic")
-                .child("menstrual");
+                .child("menstrual").child("dates");
 
         menstrualRef.addValueEventListener(new ValueEventListener() {
             @Override
@@ -192,7 +193,7 @@ public class MenstrualFragment extends Fragment {
                         calendar.setYear(startCalendar.get(java.util.Calendar.YEAR));
                         calendar.setMonth(startCalendar.get(java.util.Calendar.MONTH) + 1);
                         calendar.setDay(startCalendar.get(java.util.Calendar.DAY_OF_MONTH));
-                        calendar.setSchemeColor(colorMenstrual); // Red color for menstrual days
+                        calendar.setSchemeColor(colorMenstrual);
                         calendar.setScheme(" ");
                         map.put(calendar.toString(), calendar);
 
@@ -210,7 +211,7 @@ public class MenstrualFragment extends Fragment {
                         calendar.setYear(fertileStartCalendar.get(java.util.Calendar.YEAR));
                         calendar.setMonth(fertileStartCalendar.get(java.util.Calendar.MONTH) + 1);
                         calendar.setDay(fertileStartCalendar.get(java.util.Calendar.DAY_OF_MONTH));
-                        calendar.setSchemeColor(colorFertile); // Blue color for fertile days
+                        calendar.setSchemeColor(colorFertile);
                         calendar.setScheme(" ");
                         map.put(calendar.toString(), calendar);
 
@@ -218,13 +219,12 @@ public class MenstrualFragment extends Fragment {
                     }
                 }
 
-                // Predicting future menstrual and fertile days
                 if (cycleDuration > 0 && lastEndDateMillis > 0) {
                     java.util.Calendar predictionStartCalendar = java.util.Calendar.getInstance();
                     predictionStartCalendar.setTimeInMillis(lastEndDateMillis);
                     predictionStartCalendar.add(java.util.Calendar.DAY_OF_MONTH, cycleDuration);
 
-                    for (int i = 0; i < 12; i++) { // Predict for the next 12 cycles
+                    for (int i = 0; i < 12; i++) {
                         java.util.Calendar predictionEndCalendar = (java.util.Calendar) predictionStartCalendar.clone();
                         predictionEndCalendar.add(java.util.Calendar.DAY_OF_MONTH, 5); // Assuming menstrual period lasts 5 days
 
@@ -240,7 +240,6 @@ public class MenstrualFragment extends Fragment {
                             predictionStartCalendar.add(java.util.Calendar.DAY_OF_MONTH, 1);
                         }
 
-                        // Adding predicted fertile days (blue)
                         java.util.Calendar fertileStartCalendar = (java.util.Calendar) predictionEndCalendar.clone();
                         fertileStartCalendar.add(java.util.Calendar.DAY_OF_MONTH, 7);
                         java.util.Calendar fertileEndCalendar = (java.util.Calendar) fertileStartCalendar.clone();
@@ -268,6 +267,8 @@ public class MenstrualFragment extends Fragment {
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
+                CustomDialog dialogFragment = new CustomDialog("Произошла ошибка: " + databaseError.getMessage(), false);
+                dialogFragment.show(getParentFragmentManager(), "custom_dialog");
             }
         });
     }
@@ -276,7 +277,7 @@ public class MenstrualFragment extends Fragment {
         DatabaseReference menstrualRef = mDb.getReference("users")
                 .child(pC.getSplittedPathChild(user.getEmail()))
                 .child("characteristic")
-                .child("menstrual");
+                .child("menstrual").child("dates");
 
         menstrualRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -320,7 +321,6 @@ public class MenstrualFragment extends Fragment {
                         }
                     }
 
-                    // Checking fertile days
                     java.util.Calendar fertileStartCalendar = (java.util.Calendar) endCalendar.clone();
                     fertileStartCalendar.add(java.util.Calendar.DAY_OF_MONTH, 7);
                     java.util.Calendar fertileEndCalendar = (java.util.Calendar) fertileStartCalendar.clone();
@@ -371,5 +371,10 @@ public class MenstrualFragment extends Fragment {
             public void onCancelled(DatabaseError databaseError) {
             }
         });
+    }
+    private Date calendarToDate(Calendar calendar) {
+        java.util.Calendar cal = java.util.Calendar.getInstance();
+        cal.set(calendar.getYear(), calendar.getMonth() - 1, calendar.getDay());
+        return cal.getTime();
     }
 }

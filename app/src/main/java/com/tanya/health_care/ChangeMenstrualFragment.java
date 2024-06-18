@@ -106,21 +106,17 @@ public class ChangeMenstrualFragment extends Fragment {
         menstrualRef = mDb.getReference("users")
                 .child(pC.getSplittedPathChild(user.getEmail()))
                 .child("characteristic")
-                .child("menstrual");
+                .child("menstrual").child("dates");
 
         menstrualRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                Log.d("ChangeMenstrualFragment", "DataSnapshot: " + dataSnapshot);
                 selectedRanges.clear();
 
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                    // Fetch start and end dates as Map
                     Map<String, Object> startDateMap = (Map<String, Object>) snapshot.child("startDate").getValue();
                     Map<String, Object> endDateMap = (Map<String, Object>) snapshot.child("endDate").getValue();
 
-                    Log.d("ChangeMenstrualFragment", "StartDateMap: " + startDateMap);
-                    Log.d("ChangeMenstrualFragment", "EndDateMap: " + endDateMap);
 
                     if (startDateMap != null && endDateMap != null) {
                         Long startDateMillis = (Long) startDateMap.get("timeInMillis");
@@ -150,7 +146,6 @@ public class ChangeMenstrualFragment extends Fragment {
     private void updateCalendarRanges() {
         try {
             for (Calendar[] range : selectedRanges) {
-                Log.d("ChangeMenstrualFragment", "Setting range: " + range[0].getTime() + " - " + range[1].getTime());
                 calendar.setSelectedDateRange(range[0], range[1]);
             }
         } catch (Exception e) {
@@ -162,8 +157,8 @@ public class ChangeMenstrualFragment extends Fragment {
 
     private boolean isDateInRange(Calendar date) {
         Calendar startDateSelectable = Calendar.getInstance();
-        startDateSelectable.add(Calendar.MONTH, -3); // Three months ago
-        Calendar endDateSelectable = Calendar.getInstance(); // Today's date
+        startDateSelectable.add(Calendar.MONTH, -3);
+        Calendar endDateSelectable = Calendar.getInstance();
         return !date.before(startDateSelectable) && !date.after(endDateSelectable);
     }
 
@@ -173,9 +168,9 @@ public class ChangeMenstrualFragment extends Fragment {
         menstrualRef = mDb.getReference("users")
                 .child(pC.getSplittedPathChild(user.getEmail()))
                 .child("characteristic")
-                .child("menstrual");
+                .child("menstrual").child("dates");
 
-        menstrualRef.setValue(null); // Clear previous data
+        menstrualRef.setValue(null);
 
         for (Calendar[] range : selectedRanges) {
             DatabaseReference newRangeRef = menstrualRef.push();

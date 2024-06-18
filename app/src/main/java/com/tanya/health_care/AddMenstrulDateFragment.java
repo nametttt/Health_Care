@@ -90,7 +90,6 @@ import java.util.Calendar;public class AddMenstrulDateFragment extends Fragment 
                 @Override
                 public void onFirstDateSelected(Calendar startDate) {
                 }
-
                 @Override
                 public void onDateRangeSelected(Calendar startDate, Calendar endDate) {
                     long diff = endDate.getTimeInMillis() - startDate.getTimeInMillis();

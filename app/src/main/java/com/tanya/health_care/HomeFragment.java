@@ -61,8 +61,6 @@ public class HomeFragment extends Fragment {
         init(v);
         return v;
     }
-
-
     private  void init(View v) {
         try{
             pC = new GetSplittedPathChild();
@@ -90,7 +88,6 @@ public class HomeFragment extends Fragment {
                             }
                         }
                     }
-
                     @Override
                     public void onCancelled(DatabaseError databaseError) {
                         Log.e("FirebaseError", "Error while reading data", databaseError.toException());
@@ -101,16 +98,13 @@ public class HomeFragment extends Fragment {
             period.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    // Получаем текущего пользователя
                     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                     if (user != null) {
-                        // Получаем ссылку на узел в базе данных
                         DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("users")
                                 .child(pC.getSplittedPathChild(user.getEmail()))
                                 .child("characteristic")
                                 .child("menstrual");
 
-                        // Добавляем слушатель для получения данных из базы данных
                         userRef.addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -124,7 +118,8 @@ public class HomeFragment extends Fragment {
 
                             @Override
                             public void onCancelled(DatabaseError databaseError) {
-                                Log.e("FirebaseError", "Error while reading data", databaseError.toException());
+                                CustomDialog dialogFragment = new CustomDialog("Произошла ошибка: " + databaseError.getMessage(), false);
+                                dialogFragment.show(getParentFragmentManager(), "custom_dialog");
                             }
                         });
                     }

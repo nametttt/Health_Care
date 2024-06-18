@@ -53,7 +53,6 @@ public class AdminArticleFragment extends Fragment {
     public static AdminArticleFragment newInstance() {
         return new AdminArticleFragment();
     }
-
     Button addArticle;
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
@@ -62,25 +61,20 @@ public class AdminArticleFragment extends Fragment {
         init(v);
         return v;
     }
-
     void init(View v) {
         try {
             addArticle = v.findViewById(R.id.addArticle);
             user = FirebaseAuth.getInstance().getCurrentUser();
             mDb = FirebaseDatabase.getInstance();
-
             searchButton = v.findViewById(R.id.search);
             searchEditText = v.findViewById(R.id.searchEditText);
-
             articles = new ArrayList<ArticleData>();
             adapter = new AdminArticleRecyclerView(getContext(), articles);
             recyclerView = v.findViewById(R.id.recyclerView);
             recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
             recyclerView.setAdapter(adapter);
             progressBar = v.findViewById(R.id.progressBar);
-
             addDataOnRecyclerView();
-
             addArticle.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -92,11 +86,9 @@ public class AdminArticleFragment extends Fragment {
                     homeActivity.replaceFragment(fragment);
                 }
             });
-
             searchEditText.addTextChangedListener(new TextWatcher() {
                 @Override
                 public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-
                 @Override
                 public void onTextChanged(CharSequence s, int start, int before, int count) {
                     String searchText = searchEditText.getText().toString().trim();
@@ -110,7 +102,6 @@ public class AdminArticleFragment extends Fragment {
                         filterArticles(searchText);
                     }
                 }
-
                 @Override
                 public void afterTextChanged(Editable s) {}
             });
@@ -123,7 +114,6 @@ public class AdminArticleFragment extends Fragment {
                     searchButton.setImageResource(R.drawable.search);
                 }
             });
-
             categorySpinner = v.findViewById(R.id.categorySpinner);
             spinnerAdapter = ArrayAdapter.createFromResource(getContext(), R.array.categories1, android.R.layout.simple_spinner_item);
             spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -137,10 +127,8 @@ public class AdminArticleFragment extends Fragment {
                         filterArticlesByCategory("All");}
                     else{
                         filterArticlesByCategory(selectedCategory);
-
                     }
                 }
-
                 @Override
                 public void onNothingSelected(AdapterView<?> parent) {
                     addDataOnRecyclerView();
@@ -152,11 +140,9 @@ public class AdminArticleFragment extends Fragment {
             dialogFragment.show(getParentFragmentManager(), "custom_dialog");
         }
     }
-
     private void addDataOnRecyclerView() {
         try {
             progressBar.setVisibility(View.VISIBLE);
-
             ValueEventListener valueEventListener = new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -168,12 +154,10 @@ public class AdminArticleFragment extends Fragment {
                         ArticleData ps = ds.getValue(ArticleData.class);
                         assert ps != null;
                         articles.add(ps);
-
                     }
                     progressBar.setVisibility(View.GONE);
                     adapter.notifyDataSetChanged();
                 }
-
                 @Override
                 public void onCancelled(@NonNull DatabaseError error) {
                     progressBar.setVisibility(View.GONE);
@@ -186,7 +170,6 @@ public class AdminArticleFragment extends Fragment {
             dialogFragment.show(getParentFragmentManager(), "custom_dialog");
         }
     }
-
     private void filterArticles(String searchText) {
         try {
             ref = mDb.getReference().child("articles");
@@ -204,10 +187,10 @@ public class AdminArticleFragment extends Fragment {
                     }
                     adapter.notifyDataSetChanged();
                 }
-
                 @Override
                 public void onCancelled(@NonNull DatabaseError error) {
-
+                    CustomDialog dialogFragment = new CustomDialog("Произошла ошибка: " + error.getMessage(), false);
+                    dialogFragment.show(getParentFragmentManager(), "custom_dialog");
                 }
             });
         } catch (Exception exception) {
@@ -215,7 +198,6 @@ public class AdminArticleFragment extends Fragment {
             dialogFragment.show(getParentFragmentManager(), "custom_dialog");
         }
     }
-
     private void filterArticlesByCategory(String category) {
         try {
             progressBar.setVisibility(View.VISIBLE);
@@ -235,7 +217,6 @@ public class AdminArticleFragment extends Fragment {
                     progressBar.setVisibility(View.GONE);
                     adapter.notifyDataSetChanged();
                 }
-
                 @Override
                 public void onCancelled(@NonNull DatabaseError error) {
                     progressBar.setVisibility(View.GONE);

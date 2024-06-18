@@ -23,7 +23,7 @@ public class ChangeFoodWeightFragment extends Fragment {
     private FoodData selectedFood;
     private Button back, save;
     private EditText countText;
-    int oldWeight;
+    private int oldWeight;
     private TextView foodCalories, foodWeight, foodNutrients, foodName;
 
     public ChangeFoodWeightFragment() {
@@ -50,13 +50,12 @@ public class ChangeFoodWeightFragment extends Fragment {
             foodNutrients = v.findViewById(R.id.food_nutrients);
             foodName = v.findViewById(R.id.food_name);
             oldWeight = (int) selectedFood.getWeight();
-            // Display initial data
-            String initialWeight = String.valueOf((int) selectedFood.getWeight()); // Convert to int for initial display
+            String initialWeight = String.valueOf((int) selectedFood.getWeight());
             countText.setText(initialWeight);
             foodName.setText(selectedFood.getName());
-            foodCalories.setText(String.valueOf((int) selectedFood.getCalories())); // Convert to int for initial display
+            foodCalories.setText(String.valueOf((int) selectedFood.getCalories()));
             foodWeight.setText(initialWeight);
-            updateNutritionDataUI(BigDecimal.valueOf((int) selectedFood.getWeight())); // Update nutrition data initially
+            updateNutritionDataUI(BigDecimal.valueOf((int) selectedFood.getWeight()));
 
             countText.setFilters(new InputFilter[]{new InputFilter.LengthFilter(4)});
 
@@ -122,7 +121,7 @@ public class ChangeFoodWeightFragment extends Fragment {
                             return;
                         }
 
-                        updateNutritionData(newWeight); // Update nutrition data based on new weight and save it
+                        updateNutritionData(newWeight);
 
                     } catch (NumberFormatException e) {
                         Toast.makeText(getContext(), "Введите корректное значение веса", Toast.LENGTH_SHORT).show();
@@ -156,19 +155,16 @@ public class ChangeFoodWeightFragment extends Fragment {
         BigDecimal newFats = oldFats.multiply(coefficient).setScale(1, BigDecimal.ROUND_HALF_UP);
         BigDecimal newCarbs = oldCarbs.multiply(coefficient).setScale(1, BigDecimal.ROUND_HALF_UP);
 
-        // Update UI
-        foodCalories.setText(String.valueOf(newCalories)); // Display updated calories
-        foodWeight.setText(String.valueOf(newWeight.intValue())); // Display updated weight
+        foodCalories.setText(String.valueOf(newCalories));
+        foodWeight.setText(String.valueOf(newWeight.intValue()));
         foodNutrients.setText(newProteins + "г белков " +
                 newFats + "г жиров " +
                 newCarbs + "г углеводов");
     }
 
     private void updateNutritionData(BigDecimal newWeight) {
-        // This method updates the actual FoodData object and UI
         updateNutritionDataUI(newWeight);
 
-        // Update FoodData object
         selectedFood.setWeight(newWeight.intValue());
 
         BigDecimal oldCalories = BigDecimal.valueOf(selectedFood.getCalories());

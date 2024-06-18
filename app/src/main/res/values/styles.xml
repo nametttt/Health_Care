@@ -88,20 +88,12 @@
     </style>
 
     <style name="SymptomButtonStyle">
-        <item name="android:background">@drawable/selected_symptom</item>
         <item name="android:paddingVertical">10dp</item>
         <item name="android:paddingHorizontal">15dp</item>
         <item name="android:textAllCaps">false</item>
         <item name="android:textSize">20dp</item>
     </style>
 
-    <style name="SelectedSymptomButtonStyle">
-        <item name="android:background">@drawable/button_statistic_asset</item>
-        <item name="android:paddingVertical">10dp</item>
-        <item name="android:paddingHorizontal">15dp</item>
-        <item name="android:textAllCaps">false</item>
-        <item name="android:textSize">20dp</item>
-    </style>
 
     <style name="PrimaryButton">
         <item name="android:padding">12dp</item>

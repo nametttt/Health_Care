@@ -74,7 +74,7 @@ public class LoginActivity extends AppCompatActivity {
             auth.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    if (isLoading) return; // Проверка состояния загрузки
+                    if (isLoading) return;
 
                     if (loginEdit.getText().toString().isEmpty() ||
                             password.getText().toString().isEmpty()) {
@@ -90,7 +90,7 @@ public class LoginActivity extends AppCompatActivity {
                     InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                     imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
 
-                    isLoading = true; // Установка состояния загрузки
+                    isLoading = true;
 
                     ProgressBarDialog progressBarDialog = ProgressBarDialog.newInstance(60000); // Таймаут 60 секунд
                     showDialogFragment(progressBarDialog);
@@ -145,8 +145,8 @@ public class LoginActivity extends AppCompatActivity {
                     .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
-                            dismissDialogFragment(); // Скрытие прогресс-бара
-                            isLoading = false; // Сброс состояния загрузки
+                            dismissDialogFragment();
+                            isLoading = false;
                             if (task.isSuccessful()) {
                                 FirebaseUser user = mAuth.getCurrentUser();
                                 GetSplittedPathChild pC = new GetSplittedPathChild();

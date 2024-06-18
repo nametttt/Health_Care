@@ -14,7 +14,7 @@ public class RegGenderActivity extends AppCompatActivity {
 
     private Button btn, bb;
     private RadioButton woman, men;
-    private String gender = "женский", userEmail, code, ExistGender;
+    private String gender = "женский", userEmail, code, ExistGender, birthday;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -29,7 +29,8 @@ public class RegGenderActivity extends AppCompatActivity {
             Intent intent = getIntent();
             userEmail = intent.getStringExtra("userEmail");
             code = intent.getStringExtra("UserCode");
-            ExistGender = intent.getStringExtra("Gender");
+            birthday = getIntent().getStringExtra("Birthday");
+            ExistGender = intent.getStringExtra("userGender");
 
             if(ExistGender != null)
             {
@@ -43,8 +44,11 @@ public class RegGenderActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View view) {
                     Intent intent = new Intent(RegGenderActivity.this, RegPinActivity.class);
-                    startActivity(intent);
+                    intent.putExtra("userEmail", userEmail);
                     intent.putExtra("UserCode", code);
+                    intent.putExtra("userGender", gender);
+                    intent.putExtra("userBirthday", birthday);
+                    startActivity(intent);
                 }
             });
 
@@ -68,6 +72,8 @@ public class RegGenderActivity extends AppCompatActivity {
                             Intent intent = new Intent(RegGenderActivity.this, RegBirthdayActivity.class);
                             intent.putExtra("userGender", gender);
                             intent.putExtra("userEmail", userEmail);
+                            intent.putExtra("UserCode", code);
+                            intent.putExtra("userBirthday", birthday);
                             startActivity(intent);
                         }
                     }

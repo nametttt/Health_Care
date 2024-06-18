@@ -5,7 +5,6 @@ import java.util.Map;
 
 public class UserData {
     public String email, name, gender, role, birthday, image, deviceToken;
-
     public UserData() {
     }
 

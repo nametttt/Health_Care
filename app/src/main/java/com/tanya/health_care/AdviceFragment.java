@@ -21,7 +21,10 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.tanya.health_care.code.Food;
+import com.tanya.health_care.code.FoodData;
 import com.tanya.health_care.code.GetSplittedPathChild;
+import com.tanya.health_care.code.NutritionData;
 import com.tanya.health_care.code.SleepData;
 import com.tanya.health_care.code.WaterData;
 import com.tanya.health_care.code.YaGPTAPI;
@@ -32,6 +35,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.Objects;
 
 public class AdviceFragment extends Fragment {
 
@@ -106,16 +112,79 @@ public class AdviceFragment extends Fragment {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                adviceLayout.setVisibility(View.GONE);
-                String text = requestText + " Сформулируй короче";
-                try {
-                    sendRequest(text, ((Button) v).getText().toString());
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
+
+                FirebaseDatabase db = FirebaseDatabase.getInstance();
+                DatabaseReference ref = db.getReference("foods");
+                GetSplittedPathChild pC = new GetSplittedPathChild();
+                ref.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        ArrayList<FoodData> foods = new ArrayList();
+
+                        if (snapshot.exists()) {
+
+                            for(DataSnapshot dataSnapshot : snapshot.getChildren()){
+
+                                FoodData foodData = dataSnapshot.getValue(FoodData.class);
+                                foods.add(foodData);
+                            }
+                        }
+
+                        db.getReference("users").child(pC.getSplittedPathChild(FirebaseAuth.getInstance().getCurrentUser().getEmail()))
+                                .child("characteristic").child("nutrition").addListenerForSingleValueEvent(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                        ArrayList<Food> allFoodUser = new ArrayList();
+                                        ArrayList<String> tex = new ArrayList();
+                                        for (DataSnapshot ds : snapshot.getChildren()){
+                                            NutritionData nt = ds.getValue(NutritionData.class);
+                                            allFoodUser.addAll(nt.foods);
+                                        }
+
+                                        for (int i = 0 ; i< allFoodUser.size(); i++){
+                                            for(int v = 0; v< foods.size(); v++){
+                                                if(allFoodUser.get(i).Uid.equals(foods.get(v).uid)){
+                                                    tex.add(foods.get(v).name);
+                                                }
+                                            }
+
+
+                                        }
+
+                                        String text = "Расскажи про мое питание учитывая мои параметры питания (Указано название еды:";
+
+                                        for (int d = 0; d < (Math.min(allFoodUser.size(), 15)); d++ ){
+                                            text += tex.get(d);
+                                        }
+                                        text += ") Сформулируй короче";
+                                        adviceLayout.setVisibility(View.GONE);
+
+                                        try {
+                                            sendRequest(text, "Советы по сну");
+                                        } catch (IOException e) {
+                                            throw new RuntimeException(e);
+                                        }
+                                    }
+
+                                    @Override
+                                    public void onCancelled(@NonNull DatabaseError error) {
+
+                                    }
+                                });
+                    }
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+                        CustomDialog dialogFragment = new CustomDialog("Произошла ошибка: " + error.getMessage(), false);
+                        dialogFragment.show(getParentFragmentManager(), "custom_dialog");
+                    }
+                });
+
+
             }
         };
     }
+
+
 
     private View.OnClickListener createWaterRequestOnClickListener() {
         return new View.OnClickListener() {
@@ -145,9 +214,30 @@ public class AdviceFragment extends Fragment {
                 .child("characteristic").child("water").addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
+
                         if (snapshot.exists()) {
-                            WaterData waterData = snapshot.getValue(WaterData.class);
-                            String text = "Напиши про питьевой режим учитывая мои параметры потребления воды (" + waterData.addedValue + ") Сформулируй короче";
+                            int i =0;
+                            ArrayList<Date> start = new ArrayList();
+                            ArrayList<Integer> added = new ArrayList();
+
+                            for(DataSnapshot dataSnapshot : snapshot.getChildren()){
+                                if(i<5) {
+
+                                    WaterData waterData = dataSnapshot.getValue(WaterData.class);
+                                    start.add(waterData.lastAdded);
+                                    added.add(waterData.addedValue);
+
+                                }
+                                i++;
+                            }
+
+                            String text = "Напиши про питьевой режим учитывая мои параметры потребления воды (Дата питья и количество выпитой воды в мл ";
+
+                            for (int d = 0; d < start.size(); d++ ){
+                                text += start.get(d);
+                                text += " - "+ added.get(d) + " ";
+                            }
+                            text += ") Сформулируй короче";
                             try {
                                 sendRequest(text, "Водные советы");
                             } catch (IOException e) {
@@ -158,7 +248,8 @@ public class AdviceFragment extends Fragment {
 
                     @Override
                     public void onCancelled(@NonNull DatabaseError error) {
-                        // Handle errors
+                        CustomDialog dialogFragment = new CustomDialog("Произошла ошибка: " + error.getMessage(), false);
+                        dialogFragment.show(getParentFragmentManager(), "custom_dialog");
                     }
                 });
     }
@@ -171,20 +262,45 @@ public class AdviceFragment extends Fragment {
                 .child("characteristic").child("sleep").addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
+
+
                         if (snapshot.exists()) {
-                            SleepData sleepData = snapshot.getValue(SleepData.class);
-                            String text = "Расскажи про мой сон учитывая мои параметры сна (" + sleepData.addTime + ") Сформулируй короче";
+                            int i =0;
+                            ArrayList<Date> start = new ArrayList();
+                            ArrayList<Date> end = new ArrayList();
+
+                            for(DataSnapshot dataSnapshot : snapshot.getChildren()){
+                                if(i<5) {
+
+                                    SleepData sleepData = dataSnapshot.getValue(SleepData.class);
+                                    start.add(sleepData.sleepStart);
+                                    end.add(sleepData.sleepFinish);
+
+                                }
+                                i++;
+                            }
+
+                            String text = "Расскажи про мой сон учитывая мои параметры сна за последние 5 дней (Начало и конец сна соответсвено";
+
+                            for (int d = 0; d < start.size(); d++ ){
+                                text += start.get(d);
+                                text += " - "+ end.get(d);
+                            }
+                            text += ") Сформулируй короче";
                             try {
                                 sendRequest(text, "Советы по сну");
                             } catch (IOException e) {
                                 throw new RuntimeException(e);
                             }
+
+
                         }
                     }
 
                     @Override
                     public void onCancelled(@NonNull DatabaseError error) {
-                        // Handle errors
+                        CustomDialog dialogFragment = new CustomDialog("Произошла ошибка: " + error.getMessage(), false);
+                        dialogFragment.show(getParentFragmentManager(), "custom_dialog");
                     }
                 });
     }
@@ -234,3 +350,4 @@ public class AdviceFragment extends Fragment {
         }
     }
 }
+

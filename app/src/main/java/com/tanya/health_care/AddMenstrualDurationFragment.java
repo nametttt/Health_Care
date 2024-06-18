@@ -71,7 +71,7 @@ public class AddMenstrualDurationFragment extends Fragment {
                     DatabaseReference menstrualRef = mDb.getReference("users")
                             .child(pC.getSplittedPathChild(user.getEmail()))
                             .child("characteristic")
-                            .child("menstrual")
+                            .child("menstrual").child("dates")
                             .push();
 
                     int selectedValue = numberPicker.getValue();

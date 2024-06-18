@@ -88,8 +88,6 @@ public class ChangePasswordFragment extends Fragment {
                     DatabaseReference ref = db.getReference("users");
                     GetSplittedPathChild pC = new GetSplittedPathChild();
 
-
-
                     ref.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -117,6 +115,8 @@ public class ChangePasswordFragment extends Fragment {
 
                         @Override
                         public void onCancelled(@NonNull DatabaseError error) {
+                            CustomDialog dialogFragment = new CustomDialog("Произошла ошибка: " + error.getMessage(), false);
+                            dialogFragment.show(getParentFragmentManager(), "custom_dialog");
                         }
                     });
                 }
@@ -182,7 +182,7 @@ public class ChangePasswordFragment extends Fragment {
                                     });
                         }
                     } catch (Exception e) {
-                        CustomDialog dialog = new CustomDialog("Ошибка " + e.getMessage(), false);
+                        CustomDialog dialog = new CustomDialog("Произошла ошибка " + e.getMessage(), false);
                         dialog.show(getParentFragmentManager(), "customDialog");
                     }
                 }

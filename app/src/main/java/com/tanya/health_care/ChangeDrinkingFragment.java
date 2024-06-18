@@ -130,8 +130,8 @@ public class ChangeDrinkingFragment extends Fragment {
                         String[] timeParts = timeString.split(":");
 
                         int day = Integer.parseInt(dateParts[0]);
-                        int month = Integer.parseInt(dateParts[1]) - 1; // месяцы в Calendar начинаются с 0
-                        int year = Calendar.getInstance().get(Calendar.YEAR); // год не известен, поэтому используем текущий
+                        int month = Integer.parseInt(dateParts[1]) - 1;
+                        int year = Calendar.getInstance().get(Calendar.YEAR);
 
                         int hour = Integer.parseInt(timeParts[0]);
                         int minute = Integer.parseInt(timeParts[1]);
@@ -141,7 +141,7 @@ public class ChangeDrinkingFragment extends Fragment {
 
                         Date date = cal.getTime();
 
-                        int selectedValue = (numberPickerWater.getValue() * 50) + 50;  // Adjusting to the displayed values
+                        int selectedValue = (numberPickerWater.getValue() * 50) + 50;
                         WaterData newWater = new WaterData(path, selectedValue, date);
                         ref.setValue(newWater);
 

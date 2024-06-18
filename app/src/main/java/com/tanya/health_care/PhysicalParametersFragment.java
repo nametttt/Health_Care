@@ -50,7 +50,6 @@ import in.akshit.horizontalcalendar.Tools;
 
 public class PhysicalParametersFragment extends Fragment {
     Toolbar toolbar;
-
     Button exit, add;
     TextView imt, height, weight, dateText;
     DatabaseReference ref;
@@ -77,7 +76,6 @@ public class PhysicalParametersFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_physical_parameters, container, false);
-
         initViews(v);
         return v;
     }
@@ -199,9 +197,7 @@ public class PhysicalParametersFragment extends Fragment {
                             try {
                                 Date newselectedDate = dateFormat.parse(date);
                                 updateDateText(newselectedDate);
-                                calendar.setTime(newselectedDate); // Устанавливаем выбранную дату
-
-                                // Устанавливаем текущее время
+                                calendar.setTime(newselectedDate);
                                 calendar.set(Calendar.HOUR_OF_DAY, hour);
                                 calendar.set(Calendar.MINUTE, minute);
                                 calendar.set(Calendar.SECOND, second);
@@ -248,9 +244,8 @@ public class PhysicalParametersFragment extends Fragment {
 
                 @Override
                 public void onCancelled(@NonNull DatabaseError error) {
-//                CustomDialog dialogFragment = new CustomDialog("Ошибка", error.getMessage());
-//                dialogFragment.show(getChildFragmentManager(), "custom_dialog");
-
+                    CustomDialog dialogFragment = new CustomDialog("Произошла ошибка: " + error.getMessage(), false);
+                    dialogFragment.show(getChildFragmentManager(), "custom_dialog");
                 }
             };
             ref = mDb.getReference("users").child(pC.getSplittedPathChild(user.getEmail())).child("characteristic").child("physicalParameters");

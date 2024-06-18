@@ -43,7 +43,6 @@ public class AdminFoodFragment extends Fragment {
     Spinner foodTypeSpinner;
     ArrayAdapter<CharSequence> spinnerAdapter;
     DatabaseReference ref;
-    GetSplittedPathChild pC = new GetSplittedPathChild();
     FirebaseDatabase mDb;
 
     @Override

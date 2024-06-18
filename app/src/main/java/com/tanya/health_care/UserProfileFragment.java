@@ -7,17 +7,13 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.storage.UploadTask;
 import com.tanya.health_care.code.UserValues;
 import com.tanya.health_care.dialog.ProgressBarDialog;
-import com.theartofdev.edmodo.cropper.CropImage; // Добавляем библиотеку для обрезки изображений
+import com.theartofdev.edmodo.cropper.CropImage;
 
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ContentValues;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.Matrix;
-import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -27,7 +23,6 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -68,7 +63,6 @@ public class UserProfileFragment extends Fragment {
     HomeActivity homeActivity = null;
     private static final int PICK_IMAGE_REQUEST = 1;
     private static final int REQUEST_IMAGE_CAPTURE = 2;
-    private static final int CROP_IMAGE_ACTIVITY_REQUEST_CODE = 3;
     private Uri selectedImageUri;
     private StorageReference storageReference;
 
@@ -91,7 +85,6 @@ public class UserProfileFragment extends Fragment {
             userRef = FirebaseDatabase.getInstance().getReference().child("users");
             pC = new GetSplittedPathChild();
             imageView = v.findViewById(R.id.imageView);
-
             storageReference = FirebaseStorage.getInstance().getReference().child("profilePhotos");
 
             viewData();
@@ -136,6 +129,9 @@ public class UserProfileFragment extends Fragment {
 
                         @Override
                         public void onCancelled(@NonNull DatabaseError error) {
+                            CustomDialog dialogFragment = new CustomDialog("Произошла ошибка: " + error.getMessage(), false);
+                            dialogFragment.show(getParentFragmentManager(), "custom_dialog");
+
                         }
                     });
                 }
@@ -167,7 +163,8 @@ public class UserProfileFragment extends Fragment {
 
                 @Override
                 public void onCancelled(@NonNull DatabaseError error) {
-                    // Обработка ошибок
+                    CustomDialog dialogFragment = new CustomDialog("Произошла ошибка: " + error.getMessage(), false);
+                    dialogFragment.show(getParentFragmentManager(), "custom_dialog");
                 }
             });
 
@@ -235,7 +232,6 @@ public class UserProfileFragment extends Fragment {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK) {
             if (requestCode == PICK_IMAGE_REQUEST && data != null) {
-                // Обработка изображения из галереи
                 Uri selectedImage = data.getData();
                 CropImage.activity(selectedImage)
                         .setAspectRatio(1, 1)
@@ -243,21 +239,20 @@ public class UserProfileFragment extends Fragment {
                         .setCropShape(CropImageView.CropShape.OVAL)
                         .start(getContext(), this);
             } else if (requestCode == REQUEST_IMAGE_CAPTURE && selectedImageUri != null) {
-                // Обработка изображения с камеры
                 CropImage.activity(selectedImageUri)
                         .setAspectRatio(1, 1)
                         .setRequestedSize(600, 600)
                         .setCropShape(CropImageView.CropShape.OVAL)
                         .start(getContext(), this);
             } else if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE && data != null) {
-                // Обработка обрезанного изображения
                 CropImage.ActivityResult result = CropImage.getActivityResult(data);
                 if (resultCode == RESULT_OK) {
                     selectedImageUri = result.getUri();
                     imageView.setImageURI(selectedImageUri);
                 } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
                     Exception error = result.getError();
-                    Toast.makeText(getContext(), "Ошибка при обрезке изображения: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+                    CustomDialog dialogFragment = new CustomDialog("Ошибка при обрезке изображения!", false);
+                    dialogFragment.show(getParentFragmentManager(), "custom_dialog");
                 }
             }
         }
@@ -283,22 +278,19 @@ public class UserProfileFragment extends Fragment {
                     StorageReference imageRef = storageReference.child(email + ".jpg");
                     imageRef.putFile(selectedImageUri)
                             .addOnSuccessListener(taskSnapshot -> {
-                                // Загрузка изображения успешна, получаем ссылку на загруженное изображение
                                 imageRef.getDownloadUrl().addOnSuccessListener(uri -> {
-                                    // Сохраняем ссылку на изображение в базу данных
                                     updateMap.put("image", uri.toString());
                                     updateUserProfile(email, updateMap);
                                 }).addOnFailureListener(e -> {
-                                    // Ошибка при получении ссылки на изображение
-                                    Toast.makeText(getContext(), "Ошибка при получении ссылки на загруженное изображение", Toast.LENGTH_SHORT).show();
+                                    CustomDialog dialogFragment = new CustomDialog("Ошибка при получении ссылки на загруженное изображение!", false);
+                                    dialogFragment.show(getParentFragmentManager(), "custom_dialog");
                                 });
                             })
                             .addOnFailureListener(e -> {
-                                // Ошибка при загрузке изображения в Storage
-                                Toast.makeText(getContext(), "Ошибка при загрузке изображения в Storage", Toast.LENGTH_SHORT).show();
+                                CustomDialog dialogFragment = new CustomDialog("Ошибка при загрузке изображения в Storage!", false);
+                                dialogFragment.show(getParentFragmentManager(), "custom_dialog");
                             });
                 } else {
-                    // Если изображение не изменено, сохраняем только данные пользователя
                     updateUserProfile(email, updateMap);
                 }
             }
@@ -309,13 +301,12 @@ public class UserProfileFragment extends Fragment {
         userRef.child(pC.getSplittedPathChild(email)).updateChildren(updateMap)
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
-                        // Обновление успешно
                         updateNorms(email);
-
-                        Toast.makeText(getContext(), "Данные успешно обновлены", Toast.LENGTH_SHORT).show();
+                        CustomDialog dialogFragment = new CustomDialog("Данные успешно обновлены!", true);
+                        dialogFragment.show(getParentFragmentManager(), "custom_dialog");
                     } else {
-                        // Ошибка при обновлении данных
-                        Toast.makeText(getContext(), "Ошибка при обновлении данных", Toast.LENGTH_SHORT).show();
+                        CustomDialog dialogFragment = new CustomDialog("Произошла ошибка при обновлении данных!", false);
+                        dialogFragment.show(getParentFragmentManager(), "custom_dialog");
                     }
                 });
     }
@@ -343,7 +334,8 @@ public class UserProfileFragment extends Fragment {
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                // Обработка ошибок
+                CustomDialog dialogFragment = new CustomDialog("Произошла ошибка: " + error.getMessage(), false);
+                dialogFragment.show(getParentFragmentManager(), "custom_dialog");
             }
         });
     }

@@ -115,8 +115,6 @@ public class ProfileFragment extends Fragment {
 
     }
 
-
-
     private void viewData() {
         try{
             FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
@@ -139,7 +137,8 @@ public class ProfileFragment extends Fragment {
 
                     @Override
                     public void onCancelled(@NonNull DatabaseError error) {
-                        // Handle errors
+                        CustomDialog dialogFragment = new CustomDialog("Произошла ошибка: " + error.getMessage(), false);
+                        dialogFragment.show(getParentFragmentManager(), "custom_dialog");
                     }
                 });
             }

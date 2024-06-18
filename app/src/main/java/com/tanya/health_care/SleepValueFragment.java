@@ -66,7 +66,8 @@ public class SleepValueFragment extends Fragment {
 
                 @Override
                 public void onCancelled(@NonNull DatabaseError databaseError) {
-                    // Обработка ошибок при чтении из базы данных
+                    CustomDialog dialogFragment = new CustomDialog("Произошла ошибка: " + databaseError, false);
+                    dialogFragment.show(getParentFragmentManager(), "custom_dialog");
                 }
             });
 
@@ -81,7 +82,8 @@ public class SleepValueFragment extends Fragment {
 
                 @Override
                 public void onCancelled(@NonNull DatabaseError databaseError) {
-                    // Обработка ошибок при чтении из базы данных
+                    CustomDialog dialogFragment = new CustomDialog("Произошла ошибка: " + databaseError, false);
+                    dialogFragment.show(getParentFragmentManager(), "custom_dialog");
                 }
             });
 
@@ -108,9 +110,5 @@ public class SleepValueFragment extends Fragment {
             CustomDialog dialogFragment = new CustomDialog("Произошла ошибка: " + exception.getMessage(), false);
             dialogFragment.show(getParentFragmentManager(), "custom_dialog");
         }
-
-
     }
-
-
 }

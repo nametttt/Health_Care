@@ -14,6 +14,8 @@ import com.tanya.health_care.dialog.DatePickerModal;
 public class RegBirthdayActivity extends AppCompatActivity {
 
     private Button back, cont;
+    String birthday;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -26,7 +28,8 @@ public class RegBirthdayActivity extends AppCompatActivity {
 
             String userEmail = getIntent().getStringExtra("userEmail");
             String userGender = getIntent().getStringExtra("userGender");
-            String birthday = getIntent().getStringExtra("Birthday");
+            birthday = getIntent().getStringExtra("userBirthday");
+            String userCode = getIntent().getStringExtra("UserCode");
 
             if(birthday != null)
             {
@@ -47,7 +50,10 @@ public class RegBirthdayActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View view) {
                     Intent intent = new Intent(RegBirthdayActivity.this, RegGenderActivity.class);
-                    intent.putExtra("Gender", userGender);
+                    intent.putExtra("userGender", userGender);
+                    intent.putExtra("userBirthday", birthday);
+                    intent.putExtra("userEmail", userEmail);
+                    intent.putExtra("UserCode", userCode);
                     startActivity(intent);
                 }
             });
@@ -60,10 +66,12 @@ public class RegBirthdayActivity extends AppCompatActivity {
                             CustomDialog dialogFragment = new CustomDialog( "Пожалуйста, выберите дату рождения!", false);
                             dialogFragment.show(getSupportFragmentManager(), "custom_dialog");
                         } else {
+                            birthday = (String) btn.getText();
                             Intent intent = new Intent(RegBirthdayActivity.this, RegPasswordActivity.class);
                             intent.putExtra("userGender", userGender);
                             intent.putExtra("userEmail", userEmail);
-                            intent.putExtra("userBirthday", btn.getText());
+                            intent.putExtra("userBirthday", birthday);
+                            intent.putExtra("UserCode", userCode);
                             startActivity(intent);
                         }
                     }
