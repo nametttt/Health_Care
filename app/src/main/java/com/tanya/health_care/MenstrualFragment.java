@@ -5,6 +5,9 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -40,12 +43,14 @@ import java.util.Map;
 public class MenstrualFragment extends Fragment {
     private CalendarView calendarView;
     private FirebaseUser user;
+    ImageView statsIcon;
     private FirebaseDatabase mDb;
     private GetSplittedPathChild pC = new GetSplittedPathChild();
     private Button back, add, mySymptom;
     private TextView menstrualInfo;
     private Date selectedDate = new Date();
     int duration = 28;
+    Toolbar toolbar;
     public MenstrualFragment() {
     }
 
@@ -57,10 +62,38 @@ public class MenstrualFragment extends Fragment {
         return view;
     }
 
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.common_menu, menu);
+        MenuItem normalItem = menu.findItem(R.id.normal);
+        MenuItem aboutCharacteristicItem = menu.findItem(R.id.aboutCharacteristic);
+
+        normalItem.setTitle("Настройки циклов");
+        aboutCharacteristicItem.setTitle("О цикле");
+
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        HomeActivity homeActivity = (HomeActivity) getActivity();
+        switch (item.getItemId()) {
+            case R.id.normal:
+                homeActivity.replaceFragment(new MenstrualSettingsFragment());
+                return true;
+            case R.id.aboutCharacteristic:
+                homeActivity.replaceFragment(new AboutMenstrualFragment());
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
     private void init(View view) {
         try {
             back = view.findViewById(R.id.back);
             add = view.findViewById(R.id.add);
+            statsIcon = view.findViewById(R.id.statsIcon);
             mySymptom = view.findViewById(R.id.mySymptom);
             menstrualInfo = view.findViewById(R.id.menstrualInfo);
             Toolbar toolbar = view.findViewById(R.id.toolbar);
@@ -76,6 +109,14 @@ public class MenstrualFragment extends Fragment {
                     .child(pC.getSplittedPathChild(user.getEmail()))
                     .child("characteristic")
                     .child("menstrual").child("duration");
+            statsIcon.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    HomeActivity homeActivity = (HomeActivity) getActivity();
+                    homeActivity.replaceFragment(new MenstrualStatisticFragment());
+                }
+            });
+
             durationRef.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
@@ -369,6 +410,8 @@ public class MenstrualFragment extends Fragment {
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
+                CustomDialog dialogFragment = new CustomDialog("Произошла ошибка: " + databaseError.getMessage(), false);
+                dialogFragment.show(getParentFragmentManager(), "custom_dialog");
             }
         });
     }

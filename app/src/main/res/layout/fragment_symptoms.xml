@@ -174,7 +174,7 @@
                             android:layout_weight="0.9"
                             android:layout_height="wrap_content"
                             android:layout_marginBottom="10dp"
-                            android:text="Симптомы"
+                            android:text="Менструации"
                             android:textAlignment="textStart"
                             android:textColor="@color/black"
                             android:textSize="22dp"
@@ -206,6 +206,47 @@
 
                 </LinearLayout>
 
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Заметки"
+                    style="@style/LabelText"/>
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/edit_text_asset"
+                    android:layout_marginVertical="10dp"
+                    >
+                    <ImageButton
+                        android:layout_width="0dp"
+                        android:layout_height="30dp"
+                        android:layout_weight="0.07"
+                        android:adjustViewBounds="true"
+                        android:scaleType="centerInside"
+                        android:src="@drawable/notes"
+                        android:clickable="false"
+                        android:background="@color/transparent"
+                        android:id="@+id/search"
+                        android:layout_gravity="center"
+                        android:layout_marginLeft="15dp"
+                        />
+
+                    <EditText
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0.9"
+                        android:hint="Заметки"
+                        android:id="@+id/zametki"
+                        android:textSize="18dp"
+                        android:maxLines="1"
+                        android:padding="12dp"
+                        android:backgroundTint="@color/likegray"
+                        />
+
+                </LinearLayout>
+
 
                 <androidx.appcompat.widget.AppCompatButton
                     android:id="@+id/continu"
@@ -220,6 +261,7 @@
                     android:layout_height="wrap_content"
                     android:background="@drawable/cancel_asset"
                     android:id="@+id/delete"
+                    android:visibility="gone"
                     style="@style/PrimaryButton"
                     android:layout_marginTop="15dp"
                     android:text="Удалить"

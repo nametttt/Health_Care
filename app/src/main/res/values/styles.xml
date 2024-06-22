@@ -57,6 +57,13 @@
         <item name="android:background">@drawable/edit_text_asset</item>
     </style>
 
+    <style name="EditTextStyle1">
+        <item name="android:padding">12dp</item>
+        <item name="android:textSize">18dp</item>
+        <item name="android:layout_marginVertical">5dp</item>
+        <item name="android:background">@drawable/edit_text_asset</item>
+    </style>
+
     <style name="SpinnerStyle">
         <item name="android:layout_marginVertical">5dp</item>
         <item name="android:background">@drawable/edit_text_asset</item>

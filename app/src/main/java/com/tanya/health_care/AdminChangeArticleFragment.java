@@ -97,29 +97,7 @@ public class AdminChangeArticleFragment extends Fragment {
             if(finalResId != null) {
                 Picasso.get().load(finalResId).placeholder(R.drawable.notarticle).into(image);
             }
-            switch (category) {
-                case "Питание":
-                    categories.setSelection(0);
-                    break;
-                case "Водный режим":
-                    categories.setSelection(1);
-                    break;
-                case "Психическое здоровье":
-                    categories.setSelection(2);
-                    break;
-                case "Полезные советы":
-                    categories.setSelection(3);
-                    break;
-                case "Диеты":
-                    categories.setSelection(4);
-                    break;
-                case "Фитнес":
-                    categories.setSelection(5);
-                    break;
-                default:
-                    categories.setSelection(0);
-                    break;
-            }
+
 
             String addCommon = getArguments().getString("Add");
             if (addCommon != null) {
@@ -128,6 +106,48 @@ public class AdminChangeArticleFragment extends Fragment {
                 text.setText("Введите данные для добавления новой статьи");
                 delete.setVisibility(View.GONE);
             }
+            else{
+                title.setText(titl);
+                description.setText(desc);
+                switch (category) {
+                    case "Питание":
+                        categories.setSelection(0);
+                        break;
+                    case "Водный режим":
+                        categories.setSelection(1);
+                        break;
+                    case "Психическое здоровье":
+                        categories.setSelection(2);
+                        break;
+                    case "Полезные советы":
+                        categories.setSelection(3);
+                        break;
+                    case "Диеты":
+                        categories.setSelection(4);
+                        break;
+                    case "Фитнес":
+                        categories.setSelection(5);
+                        break;
+                    default:
+                        categories.setSelection(0);
+                        break;
+                }
+                switch (access) {
+                    case "Публичный":
+                        accesses.setSelection(0);
+                        break;
+                    case "Приватный":
+                        accesses.setSelection(1);
+                        break;
+                    case "Ограниченный":
+                        accesses.setSelection(2);
+                        break;
+                    default:
+                        accesses.setSelection(0);
+                        break;
+                }
+            }
+
 
             image.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -249,7 +269,7 @@ public class AdminChangeArticleFragment extends Fragment {
                                     try {
                                         FirebaseMessaging messaging = new FirebaseMessaging();
                                         String tex = descriptionText.length() > 20 ? descriptionText.substring(0, 20) + "..." : descriptionText;
-                                        messaging.send("Новая статья" + titleText, "Была добавлена новая статья " + tex, list, getContext());
+                                        messaging.send("Новая статья " + titleText, "Была добавлена новая статья " + tex, list, getContext());
                                     } catch (IOException e) {
                                         throw new RuntimeException(e);
                                     }

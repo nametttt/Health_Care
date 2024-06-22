@@ -32,7 +32,6 @@ import java.util.ArrayList;
 
 public class AdminUsersFragment extends Fragment {
 
-    Button addUser;
     RecyclerView recyclerView;
     ArrayList<UserData> users;
     AdminUsersRecyclerView adapter;
@@ -55,8 +54,6 @@ public class AdminUsersFragment extends Fragment {
 
     void init(View v){
         try {
-            addUser = v.findViewById(R.id.addUser);
-
             user = FirebaseAuth.getInstance().getCurrentUser();
             mDb = FirebaseDatabase.getInstance();
             progressBar = v.findViewById(R.id.progressBar);
@@ -90,15 +87,6 @@ public class AdminUsersFragment extends Fragment {
 
                 @Override
                 public void afterTextChanged(Editable s) {}
-            });
-
-            addUser.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    AdminHomeActivity homeActivity = (AdminHomeActivity) getActivity();
-                    AdminAddUserFragment fragment = new AdminAddUserFragment();
-                    homeActivity.replaceFragment(fragment);
-                }
             });
 
             searchButton.setOnClickListener(new View.OnClickListener() {

@@ -1,7 +1,6 @@
 package com.tanya.health_care.code;
 
 import java.util.Calendar;
-import java.util.Date;
 
 public class MenstrualData {
     public Calendar startDate, endDate;
@@ -13,4 +12,5 @@ public class MenstrualData {
         this.startDate = startDate;
         this.endDate = endDate;
     }
+
 }

@@ -338,7 +338,7 @@
                     <ImageButton
                         android:layout_width="0dp"
                         android:layout_height="30dp"
-                        android:layout_weight="0.06"
+                        android:layout_weight="0.07"
                         android:adjustViewBounds="true"
                         android:scaleType="centerInside"
                         android:src="@drawable/notes"

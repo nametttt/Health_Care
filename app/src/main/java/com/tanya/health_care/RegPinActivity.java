@@ -63,7 +63,7 @@ public class RegPinActivity extends AppCompatActivity {
                         startActivity(intent);
                     }
                     else{
-                        //handlePinVerification();
+                        handlePinVerification();
                         Intent intent = new Intent(RegPinActivity.this, RegGenderActivity.class);
                         intent.putExtra("userEmail", userEmail);
                         intent.putExtra("UserCode", expectedPinCode);

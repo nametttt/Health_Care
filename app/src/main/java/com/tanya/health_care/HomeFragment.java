@@ -103,7 +103,8 @@ public class HomeFragment extends Fragment {
                         DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("users")
                                 .child(pC.getSplittedPathChild(user.getEmail()))
                                 .child("characteristic")
-                                .child("menstrual");
+                                .child("menstrual")
+                                .child("dates");
 
                         userRef.addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override

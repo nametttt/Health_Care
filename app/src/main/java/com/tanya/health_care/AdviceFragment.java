@@ -1,5 +1,8 @@
 package com.tanya.health_care;
 
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -8,11 +11,13 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -28,6 +33,7 @@ import com.tanya.health_care.code.NutritionData;
 import com.tanya.health_care.code.SleepData;
 import com.tanya.health_care.code.WaterData;
 import com.tanya.health_care.code.YaGPTAPI;
+import com.tanya.health_care.dialog.AdviceDialog;
 import com.tanya.health_care.dialog.CustomDialog;
 
 import org.json.JSONArray;
@@ -43,10 +49,12 @@ public class AdviceFragment extends Fragment {
 
     Button back;
     ImageButton search;
+    LinearLayout Linear2, Linear3;
     EditText searchEditText;
     LinearLayout adviceLayout;
     TextView header, body;
     ProgressBar progressBar;
+    ImageView imageIcon, statsIcon;
 
     public AdviceFragment() {
     }
@@ -67,13 +75,39 @@ public class AdviceFragment extends Fragment {
             adviceLayout = view.findViewById(R.id.advice);
             header = view.findViewById(R.id.header);
             body = view.findViewById(R.id.body);
+            statsIcon = view.findViewById(R.id.statsIcon);
             progressBar = view.findViewById(R.id.progressBar);
-
+            imageIcon = view.findViewById(R.id.imageIcon);
+            Linear2 = view.findViewById(R.id.Linear2);
+            Linear3 = view.findViewById(R.id.Linear3);
             back.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     HomeActivity homeActivity = (HomeActivity) getActivity();
                     homeActivity.replaceFragment(new MyCommonHealthFragment());
+                }
+            });
+
+            statsIcon.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    AdviceDialog dialogFragment = new AdviceDialog();
+                    dialogFragment.show(getParentFragmentManager(), "custom_dialog");
+                }
+            });
+
+            imageIcon.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (isImageEqualTo(imageIcon, R.drawable.up)) {
+                        Linear2.setVisibility(View.GONE);
+                        Linear3.setVisibility(View.GONE);
+                        imageIcon.setImageResource(R.drawable.down);
+                    } else {
+                        Linear2.setVisibility(View.VISIBLE);
+                        Linear3.setVisibility(View.VISIBLE);
+                        imageIcon.setImageResource(R.drawable.up);
+                    }
                 }
             });
 
@@ -97,10 +131,9 @@ public class AdviceFragment extends Fragment {
                 }
             });
 
-            view.findViewById(R.id.nutrition).setOnClickListener(createRequestOnClickListener("Как мое питание?"));
-            view.findViewById(R.id.water).setOnClickListener(createWaterRequestOnClickListener());
-            view.findViewById(R.id.gigiena).setOnClickListener(createRequestOnClickListener("Расскажи правила личной гигиены"));
-            view.findViewById(R.id.sleep).setOnClickListener(createSleepRequestOnClickListener());
+            view.findViewById(R.id.nutritionAdvice).setOnClickListener(createRequestOnClickListener("Как мое питание?"));
+            view.findViewById(R.id.waterAdvice).setOnClickListener(createWaterRequestOnClickListener());
+            view.findViewById(R.id.sleepAdvice).setOnClickListener(createSleepRequestOnClickListener());
 
         } catch (Exception exception) {
             CustomDialog dialogFragment = new CustomDialog("Произошла ошибка: " + exception.getMessage(), false);
@@ -348,6 +381,17 @@ public class AdviceFragment extends Fragment {
             CustomDialog dialogFragment = new CustomDialog("Произошла ошибка: " + exception.getMessage(), false);
             dialogFragment.show(getParentFragmentManager(), "custom_dialog");
         }
+    }
+    private boolean isImageEqualTo(ImageView imageView, int resId) {
+        Drawable drawable = imageView.getDrawable();
+        Drawable otherDrawable = ContextCompat.getDrawable(requireContext(), resId);
+
+        if (drawable instanceof BitmapDrawable && otherDrawable instanceof BitmapDrawable) {
+            Bitmap bitmap = ((BitmapDrawable) drawable).getBitmap();
+            Bitmap otherBitmap = ((BitmapDrawable) otherDrawable).getBitmap();
+            return bitmap.sameAs(otherBitmap);
+        }
+        return false;
     }
 }
 

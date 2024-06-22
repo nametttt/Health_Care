@@ -32,7 +32,7 @@
                         android:id="@+id/statsIcon"
                         android:layout_width="0dp"
                         android:layout_marginRight="20dp"
-                        android:layout_height="35dp"
+                        android:layout_height="30dp"
                         android:layout_weight="0.1"
                         android:gravity="end"
                         android:contentDescription="Статистика"
@@ -84,82 +84,119 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
                     android:layout_marginTop="15dp"
-                    android:gravity="center_vertical"
-                    android:paddingVertical="10dp"
-                    android:layout_marginBottom="10dp">
+                    android:orientation="vertical">
 
-                    <androidx.appcompat.widget.AppCompatButton
-                        android:layout_width="0dp"
-                        android:id="@+id/nutrition"
-                        style="@style/AdviceButtonStyle"
+                    <LinearLayout
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="Как мое питание?"
-                         />
+                        android:layout_marginBottom="5dp"
+                        android:orientation="horizontal">
+                        <TextView
+                            android:id="@+id/textCategory3"
+                            android:layout_width="0dp"
+                            android:layout_weight="0.9"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="10dp"
+                            android:text="Личные советы"
+                            android:textAlignment="textStart"
+                            android:textColor="@color/black"
+                            android:textSize="22dp"
+                            android:textStyle="bold" />
 
-                    <androidx.appcompat.widget.AppCompatButton
-                        android:layout_width="0dp"
-                        android:id="@+id/sleep"
-                        android:layout_marginLeft="10dp"
+                        <ImageView
+                            android:id="@+id/imageIcon"
+                            android:layout_width="0dp"
+                            android:layout_weight="0.1"
+                            android:layout_height="22dp"
+                            android:layout_gravity="center_vertical"
+                            android:contentDescription="Стрелка"
+                            android:src="@drawable/down" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        style="@style/AdviceButtonStyle"
-                        android:text="Расскажи про мой сон" />
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:paddingVertical="10dp">
 
-                </LinearLayout>
+                        <androidx.appcompat.widget.AppCompatButton
+                            android:layout_width="0dp"
+                            android:id="@+id/nutritionAdvice"
+                            style="@style/AdviceButtonStyle"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Советы по питанию"
+                            />
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical"
-                    android:paddingVertical="10dp"
-                    android:layout_marginBottom="10dp">
+                        <androidx.appcompat.widget.AppCompatButton
+                            android:layout_width="0dp"
+                            android:id="@+id/commonHealthAdvice"
+                            android:layout_marginLeft="10dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            style="@style/AdviceButtonStyle"
+                            android:text="Об общем состоянии" />
 
-                    <androidx.appcompat.widget.AppCompatButton
-                        android:layout_width="0dp"
-                        android:id="@+id/water"
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        style="@style/AdviceButtonStyle"
-                        android:text="Водные советы" />
+                        android:orientation="horizontal"
+                        android:id="@+id/Linear2"
+                        android:visibility="gone"
+                        android:gravity="center_vertical"
+                        android:paddingVertical="10dp">
 
-                    <androidx.appcompat.widget.AppCompatButton
-                        android:layout_width="0dp"
-                        android:id="@+id/gigiena"
-                        style="@style/AdviceButtonStyle"
-                        android:layout_marginLeft="10dp"
+                        <androidx.appcompat.widget.AppCompatButton
+                            android:layout_width="0dp"
+                            android:id="@+id/waterAdvice"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            style="@style/AdviceButtonStyle"
+                            android:text="Как мой водный режим?" />
+
+                        <androidx.appcompat.widget.AppCompatButton
+                            android:layout_width="0dp"
+                            android:id="@+id/pressureAdvice"
+                            style="@style/AdviceButtonStyle"
+                            android:layout_marginLeft="10dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Расскажи о моем давлении"/>
+
+                    </LinearLayout>
+                    <LinearLayout
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="О гигиене"/>
+                        android:orientation="horizontal"
+                        android:id="@+id/Linear3"
+                        android:visibility="gone"
+                        android:gravity="center_vertical"
+                        android:paddingVertical="10dp">
 
-                </LinearLayout>
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical"
-                    android:paddingVertical="10dp"
-                    android:layout_marginBottom="10dp">
+                        <androidx.appcompat.widget.AppCompatButton
+                            android:layout_width="0dp"
+                            android:id="@+id/sleepAdvice"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            style="@style/AdviceButtonStyle"
+                            android:text="Советы по сну" />
 
-                    <androidx.appcompat.widget.AppCompatButton
-                        android:layout_width="0dp"
-                        android:id="@+id/adviceSleep"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        style="@style/AdviceButtonStyle"
-                        android:text="Советы по сну" />
+                        <androidx.appcompat.widget.AppCompatButton
+                            android:layout_width="0dp"
+                            android:id="@+id/IMTAdvice"
+                            android:layout_marginLeft="10dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            style="@style/AdviceButtonStyle"
+                            android:text="Как мой ИМТ?" />
 
-                    <androidx.appcompat.widget.AppCompatButton
-                        android:layout_width="0dp"
-                        android:id="@+id/sport"
-                        android:layout_marginLeft="10dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        style="@style/AdviceButtonStyle"
-                        android:text="Спорт и фитнес" />
+                    </LinearLayout>
+
 
                 </LinearLayout>
 

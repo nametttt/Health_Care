@@ -56,14 +56,41 @@
                         android:justificationMode="inter_word"
                         android:textStyle="bold" />
 
-                    <NumberPicker
-                        android:id="@+id/np"
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginHorizontal="10dp"
-                        android:layout_marginBottom="10dp"
-                        android:theme="@style/DefaultNumberPickerTheme"
-                        />
+                        android:orientation="horizontal"
+                        android:padding="10dp">
+
+                        <NumberPicker
+                            android:id="@+id/number_picker_weight_whole"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:theme="@style/DefaultNumberPickerTheme"
+                            android:layout_marginEnd="5dp"
+                            />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="."
+                            android:textColor="@color/black"
+                            android:textStyle="bold"
+                            android:textSize="30sp"
+                            android:layout_gravity="center"
+                            android:layout_marginEnd="5dp"
+                            />
+
+                        <NumberPicker
+                            android:id="@+id/number_picker_weight_fraction"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:theme="@style/DefaultNumberPickerTheme"
+                            />
+                    </LinearLayout>
+
                 </LinearLayout>
 
                 <androidx.appcompat.widget.AppCompatButton

@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:id="@+id/relative"
+    android:layout_height="wrap_content">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -11,29 +12,53 @@
         android:padding="15dp"
         android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/foodName"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_width="wrap_content"
-            android:layout_marginHorizontal="7dp"
-            android:text="28 дней"
-            android:textColor="@color/black"
-            android:textSize="18sp"
-            android:textStyle="bold" />
+            android:layout_marginBottom="5dp"
+            android:orientation="horizontal">
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_weight="0.9"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+                <TextView
+                    android:id="@+id/durationMenstrual"
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"
+                    android:layout_marginHorizontal="7dp"
+                    android:text="28 дней"
+                    android:textColor="@color/black"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
 
-        <TextView
-            android:id="@+id/foodInfo"
-            android:layout_height="wrap_content"
-            android:layout_width="wrap_content"
-            android:layout_marginHorizontal="7dp"
-            android:text="14 июня - 18 июня"
-            android:textColor="@color/black"
-            android:textSize="18sp" />
+                <TextView
+                    android:id="@+id/menstrualDays"
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"
+                    android:layout_marginHorizontal="7dp"
+                    android:text="14 июня - 18 июня"
+                    android:textColor="@color/black"
+                    android:textSize="18sp" />
+            </LinearLayout>
+            <ImageView
+                android:layout_width="0dp"
+                android:id="@+id/deleteImage"
+                android:layout_height="22dp"
+                android:layout_weight="0.1"
+                android:layout_gravity="end"
+                android:adjustViewBounds="true"
+                android:scaleType="centerInside"
+                android:src="@drawable/delete_period" />
+
+        </LinearLayout>
+
         <ImageView
             android:id="@+id/imageView"
             android:layout_width="match_parent"
             android:layout_height="30dp"
-            android:layout_margin="16dp"
+            android:layout_marginTop="7dp"
+            android:layout_marginHorizontal="7dp"
             android:scaleType="fitXY" />
 
     </LinearLayout>

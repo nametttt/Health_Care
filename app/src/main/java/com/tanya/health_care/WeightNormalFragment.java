@@ -1,16 +1,13 @@
 package com.tanya.health_care;
 
 import android.os.Bundle;
-
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.NumberPicker;
-
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -27,8 +24,7 @@ public class WeightNormalFragment extends Fragment {
     DatabaseReference userValuesRef;
     GetSplittedPathChild pC = new GetSplittedPathChild();
     FirebaseDatabase mDb;
-    int weight = 50;
-    NumberPicker numberPicker;
+    NumberPicker numberPickerWhole, numberPickerFraction;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -43,47 +39,35 @@ public class WeightNormalFragment extends Fragment {
             back = v.findViewById(R.id.back);
             save = v.findViewById(R.id.save);
             mDb = FirebaseDatabase.getInstance();
-            numberPicker = v.findViewById(R.id.np);
+            numberPickerWhole = v.findViewById(R.id.number_picker_weight_whole);
+            numberPickerFraction = v.findViewById(R.id.number_picker_weight_fraction);
             FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
             userValuesRef = mDb.getReference("users").child(pC.getSplittedPathChild(user.getEmail()))
                     .child("values").child("WeightValue");
 
-            numberPicker.setMinValue(25);
-            numberPicker.setMaxValue(150);
+            numberPickerWhole.setMinValue(25);
+            numberPickerWhole.setMaxValue(150);
 
-            numberPicker.setWrapSelectorWheel(false);
-            numberPicker.setValue(weight);
-            numberPicker.setOnValueChangedListener((picker, oldVal, newVal) -> {
-            });
-            userValuesRef.addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    if (dataSnapshot.exists()) {
-                        weight = dataSnapshot.getValue(Integer.class);
-                        numberPicker.setValue(weight);
-                    }
-                }
+            numberPickerFraction.setMinValue(0);
+            numberPickerFraction.setMaxValue(9);
 
-                @Override
-                public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                    CustomDialog dialogFragment = new CustomDialog("Произошла ошибка: " + databaseError.getMessage(), false);
-                    dialogFragment.show(getParentFragmentManager(), "custom_dialog");
-                }
-            });
+            numberPickerWhole.setWrapSelectorWheel(false);
+            numberPickerFraction.setWrapSelectorWheel(false);
 
             userValuesRef.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     if (dataSnapshot.exists()) {
-                        weight = dataSnapshot.getValue(Integer.class);
-                        numberPicker.setValue(weight);
+                        float weight = dataSnapshot.getValue(Float.class);
+                        int wholePart = (int) weight;
+                        int fractionPart = (int) ((weight - wholePart) * 10);
+                        numberPickerWhole.setValue(wholePart);
+                        numberPickerFraction.setValue(fractionPart);
                     }
                 }
 
                 @Override
                 public void onCancelled(@NonNull DatabaseError databaseError) {
-
                     CustomDialog dialogFragment = new CustomDialog("Произошла ошибка: " + databaseError.getMessage(), false);
                     dialogFragment.show(getParentFragmentManager(), "custom_dialog");
                 }
@@ -100,21 +84,18 @@ public class WeightNormalFragment extends Fragment {
             save.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    int selectedValue = numberPicker.getValue();
+                    int wholePart = numberPickerWhole.getValue();
+                    int fractionPart = numberPickerFraction.getValue();
+                    float selectedValue = wholePart + fractionPart / 10.0f;
                     userValuesRef.setValue(selectedValue);
 
-                    CustomDialog dialogFragment = new CustomDialog( "Успешное установление нормы!", true);
+                    CustomDialog dialogFragment = new CustomDialog("Успешное установление нормы!", true);
                     dialogFragment.show(getParentFragmentManager(), "custom_dialog");
                 }
             });
-        }
-        catch (Exception exception) {
+        } catch (Exception exception) {
             CustomDialog dialogFragment = new CustomDialog("Произошла ошибка: " + exception.getMessage(), false);
             dialogFragment.show(getParentFragmentManager(), "custom_dialog");
         }
-
-
     }
-
-
 }

@@ -21,9 +21,13 @@ public class SymptomsRecyclerView extends RecyclerView.Adapter<SymptomsRecyclerV
     private boolean isExpanded = false;
     private List<String> selectedSymptomsIds = new ArrayList<>();
 
-    public SymptomsRecyclerView(Context context, ArrayList<SymptomsData> symptomsData) {
+    private  Symptoms allSelectedS;
+
+    public SymptomsRecyclerView(Context context, ArrayList<SymptomsData> symptomsData, Symptoms allSelectedS) {
         this.context = context;
         this.symptomsData = symptomsData;
+        this.allSelectedS = allSelectedS;
+        selectedSymptomsIds = allSelectedS.symptoms;
     }
 
     @NonNull
@@ -105,3 +109,4 @@ public class SymptomsRecyclerView extends RecyclerView.Adapter<SymptomsRecyclerV
         }
     }
 }
+

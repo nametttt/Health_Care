@@ -88,13 +88,6 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"/>
 
-        <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/addUser"
-            style="@style/PrimaryButton"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginVertical="20dp"
-            android:text="Добавить пользователя" />
     </LinearLayout>
 
 

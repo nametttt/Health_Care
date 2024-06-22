@@ -163,6 +163,11 @@ public class ChangeMenstrualFragment extends Fragment {
     }
 
     private void saveSelectedRangesToDatabase() {
+        if (selectedRanges.isEmpty()) {
+            CustomDialog dialogFragment = new CustomDialog("ыберите хотя бы один промежуток дат для сохранения!", false);
+            dialogFragment.show(getParentFragmentManager(), "custom_dialog");
+            return;
+        }
         user = FirebaseAuth.getInstance().getCurrentUser();
         mDb = FirebaseDatabase.getInstance();
         menstrualRef = mDb.getReference("users")
@@ -178,7 +183,7 @@ public class ChangeMenstrualFragment extends Fragment {
             newRangeRef.child("endDate").child("timeInMillis").setValue(range[1].getTimeInMillis());
         }
 
-        CustomDialog dialogFragment = new CustomDialog("Даты циклов успешно сохранены!", false);
+        CustomDialog dialogFragment = new CustomDialog("Даты циклов успешно сохранены!", true);
         dialogFragment.show(getParentFragmentManager(), "custom_dialog");
     }
 }
