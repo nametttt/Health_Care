@@ -24,8 +24,11 @@ import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.tanya.health_care.code.CommonHealthData;
 import com.tanya.health_care.code.GetSplittedPathChild;
 import com.tanya.health_care.code.PhysicalParametersData;
@@ -106,11 +109,48 @@ public class ChangePhysicalParametersFragment extends Fragment {
             user = FirebaseAuth.getInstance().getCurrentUser();
             mDb = FirebaseDatabase.getInstance();
 
-            if (Add != null)
-            {
+            if (Add != null) {
                 add.setText("Добавить");
                 delete.setVisibility(View.INVISIBLE);
+
+                ref = mDb.getReference("users").child(pC.getSplittedPathChild(user.getEmail())).child("characteristic").child("physicalParameters");
+
+                ref.limitToLast(1).addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        if (dataSnapshot.exists()) {
+                            for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                                physicalParametersData = snapshot.getValue(PhysicalParametersData.class);
+                                if (physicalParametersData != null) {
+                                    height = physicalParametersData.height;
+                                    weight = physicalParametersData.weight;
+
+                                    int wholeHeight = (int) height;
+                                    int fractionHeight = (int) ((height - wholeHeight) * 10); // Вычисление дробной части роста
+                                    int wholeWeight = (int) weight;
+                                    int fractionWeight = (int) ((weight - wholeWeight) * 10); // Вычисление дробной части веса
+
+                                    heightValue.setText(String.format(Locale.getDefault(), "%d.%d", wholeHeight, fractionHeight));
+                                    weightValue.setText(String.format(Locale.getDefault(), "%d.%d", wholeWeight, fractionWeight));
+                                    numberPickerHeightWhole.setValue(wholeHeight);
+                                    numberPickerHeightFraction.setValue(fractionHeight);
+                                    numberPickerWeightWhole.setValue(wholeWeight);
+                                    numberPickerWeightFraction.setValue(fractionWeight);
+
+                                    break; // Выход из цикла, так как нужен только последний элемент
+                                }
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+                        CustomDialog dialogFragment = new CustomDialog("Ошибка при загрузке данных: " + databaseError.getMessage(), false);
+                        dialogFragment.show(getParentFragmentManager(), "custom_dialog");
+                    }
+                });
             }
+
             else
             {
                 dateButton.setVisibility(View.VISIBLE);

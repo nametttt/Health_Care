@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 
@@ -26,9 +27,13 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.tanya.health_care.code.ArticleData;
+import com.tanya.health_care.code.ArticleHistoryData;
 import com.tanya.health_care.code.ArticleRecyclerView;
+import com.tanya.health_care.code.GetSplittedPathChild;
+import com.tanya.health_care.code.WaterData;
 import com.tanya.health_care.dialog.CustomDialog;
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class ArticleFragment extends Fragment {
 
@@ -36,11 +41,13 @@ public class ArticleFragment extends Fragment {
     ArrayList<ArticleData> articleDataList1, articleDataList2, articleDataList3, articleDataList4, articleDataList5, articleDataList6;
     ArticleRecyclerView adapter1, adapter2, adapter3, adapter4, adapter5, adapter6;
     FirebaseUser user;
+    FirebaseDatabase mDb;
     DatabaseReference ref;
     LinearLayout linearCategory1, linearCategory2, linearCategory3, linearCategory4, linearCategory5, linearCategory6;
     ProgressBar progressBar1, progressBar2, progressBar3, progressBar4, progressBar5, progressBar6;
-    FirebaseDatabase mDb;
+
     EditText searchEditText;
+    ImageView statsIcon;
     ImageButton searchButton;
 
     @Override
@@ -53,6 +60,7 @@ public class ArticleFragment extends Fragment {
 
     void init(View v) {
         try {
+            statsIcon = v.findViewById(R.id.statsIcon);
             user = FirebaseAuth.getInstance().getCurrentUser();
             mDb = FirebaseDatabase.getInstance();
 
@@ -135,6 +143,15 @@ public class ArticleFragment extends Fragment {
                 }
             });
 
+            statsIcon.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    HomeActivity homeActivity = (HomeActivity) getActivity();
+                    homeActivity.replaceFragment(new ArticleHistoryFragment());
+                }
+            });
+
+
         } catch (Exception exception) {
             CustomDialog dialogFragment = new CustomDialog("Произошла ошибка: " + exception.getMessage(), false);
             dialogFragment.show(getParentFragmentManager(), "custom_dialog");
@@ -164,7 +181,7 @@ public class ArticleFragment extends Fragment {
                     articleDataList.clear();
                     for (DataSnapshot ds : snapshot.getChildren()) {
                         ArticleData articleData = ds.getValue(ArticleData.class);
-                        if (articleData != null && articleData.getCategory().equals(category)) {
+                        if (articleData != null && articleData.getCategory().equals(category) && Objects.equals(articleData.access, "Публичный")) {
                             articleDataList.add(articleData);
                         }
                     }

@@ -21,7 +21,7 @@ public class SymptomsRecyclerView extends RecyclerView.Adapter<SymptomsRecyclerV
     private boolean isExpanded = false;
     private List<String> selectedSymptomsIds = new ArrayList<>();
 
-    private  Symptoms allSelectedS;
+    private Symptoms allSelectedS = null;
 
     public SymptomsRecyclerView(Context context, ArrayList<SymptomsData> symptomsData, Symptoms allSelectedS) {
         this.context = context;
@@ -56,7 +56,6 @@ public class SymptomsRecyclerView extends RecyclerView.Adapter<SymptomsRecyclerV
                     SymptomsData symptom = symptomsData.get(currentPosition);
                     symptom.isSelected = !symptom.isSelected;
                     notifyItemChanged(currentPosition);
-
                     if (symptom.isSelected) {
                         selectedSymptomsIds.add(symptom.uid);
                     } else {

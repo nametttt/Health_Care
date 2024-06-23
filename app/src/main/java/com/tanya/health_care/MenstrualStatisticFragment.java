@@ -36,6 +36,7 @@ public class MenstrualStatisticFragment extends Fragment {
     RecyclerView recyclerView;
     private boolean isOne = true;
     private int averageDurations = 0;
+    private int averageDays = 0;
     ArrayList<MenstrualData> menstrualDataArrayList;
     MenstrualHistoryRecyclerView adapter;
     private GetSplittedPathChild pC = new GetSplittedPathChild();
@@ -62,7 +63,6 @@ public class MenstrualStatisticFragment extends Fragment {
             recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
             recyclerView.setAdapter(adapter);
             addDataOnRecyclerView();
-            calculateAverageDuration();
 
         } catch (Exception exception) {
             CustomDialog dialogFragment = new CustomDialog("Произошла ошибка: " + exception.getMessage(), false);
@@ -77,7 +77,6 @@ public class MenstrualStatisticFragment extends Fragment {
                 if (menstrualDataArrayList.size() != 1) {
                     isOne = false;
                 }
-                menstrualDataArrayList.clear();
                 for (DataSnapshot ds : snapshot.getChildren()) {
                     GenericTypeIndicator<HashMap<String, Object>> genericTypeIndicator = new GenericTypeIndicator<HashMap<String, Object>>() {};
                     HashMap<String, Object> startDateMap = ds.child("startDate").getValue(genericTypeIndicator);
@@ -104,6 +103,7 @@ public class MenstrualStatisticFragment extends Fragment {
                 }
                 menstrualDataArrayList.sort(new SortMenstrual());
                 adapter.notifyDataSetChanged();
+                calculateAverageDuration();
             }
 
             @Override
@@ -146,6 +146,10 @@ public class MenstrualStatisticFragment extends Fragment {
                         int cycleLength = snapshot.child("duration").getValue(Integer.class);
                         averageDurations = cycleLength;
                     }
+                    if (snapshot.hasChild("days")) {
+                        int cycleDays = snapshot.child("days").getValue(Integer.class);
+                        averageDays = cycleDays;
+                    }
                 }
             }
 
@@ -157,13 +161,18 @@ public class MenstrualStatisticFragment extends Fragment {
         });
         if (!menstrualDataArrayList.isEmpty()) {
             int averageDuration = (int) (totalDuration / menstrualDataArrayList.size());
-            int averageDays = totalDays / menstrualDataArrayList.size();
+            int averageDay = totalDays / menstrualDataArrayList.size();
 
             if(isOne){
                 averageDuration = averageDurations;
+                averageDay = averageDays;
             }
             overDuration.setText(String.valueOf(averageDuration));
-            overDays.setText(String.valueOf(averageDays));
+            overDays.setText(String.valueOf(averageDay));
+        }
+        else {
+            overDuration.setText("-");
+            overDays.setText("-");
         }
     }
 

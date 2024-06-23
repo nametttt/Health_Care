@@ -77,7 +77,16 @@ public class AdminFoodFragment extends Fragment {
                     if (searchText.isEmpty()) {
                         searchButton.setClickable(false);
                         searchButton.setImageResource(R.drawable.search);
-                        addDataOnRecyclerView();
+                        if(foodTypeSpinner.getSelectedItem().toString().equals("Все")) {
+                            addDataOnRecyclerView();
+                        } else {
+                            if (foodTypeSpinner.getSelectedItem().equals("Общие")) {
+                                addGeneralDataOnRecyclerView();
+                            } else if (foodTypeSpinner.getSelectedItem().equals("Пользовательские")) {
+                                addUserSpecificDataOnRecyclerView();
+                            }
+                        }
+
                     } else {
                         searchButton.setClickable(true);
                         searchButton.setImageResource(R.drawable.close);
@@ -174,7 +183,14 @@ public class AdminFoodFragment extends Fragment {
                     for (DataSnapshot ds : snapshot.getChildren()) {
                         FoodData ps = ds.getValue(FoodData.class);
                         if (ps != null && (ps.getUserUid() == null || ps.getUserUid().isEmpty())) {
-                            foods.add(ps);
+                            if(searchEditText.getText().toString().isEmpty()) {
+                                foods.add(ps);
+                            }
+                            else {
+                                if(ps.getName().toLowerCase().contains(searchEditText.getText().toString().toLowerCase())){
+                                    foods.add(ps);
+                                }
+                            }
                         }
                     }
                     foods.sort(new SortByName());
@@ -204,7 +220,14 @@ public class AdminFoodFragment extends Fragment {
                     for (DataSnapshot ds : snapshot.getChildren()) {
                         FoodData ps = ds.getValue(FoodData.class);
                         if (ps != null && (ps.getUserUid() != null)) {
-                            foods.add(ps);
+                            if(searchEditText.getText().toString().isEmpty()) {
+                                foods.add(ps);
+                            }
+                            else {
+                                if(ps.getName().toLowerCase().contains(searchEditText.getText().toString().toLowerCase())){
+                                    foods.add(ps);
+                                }
+                            }
                         }
                     }
                     foods.sort(new SortByName());

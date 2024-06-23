@@ -154,7 +154,7 @@ public class SymptomsFragment extends Fragment {
                             Set<String> set = new HashSet<>(selectedSymptomIds);
                             selectedSymptomIds.clear();
                             selectedSymptomIds.addAll(set);
-                            if (selectedSymptomIds.isEmpty() || zametki.getText().toString().isEmpty()) {
+                            if (selectedSymptomIds.size() == 0 && zametki.getText().toString().isEmpty()) {
                                 CustomDialog dialogFragment = new CustomDialog("Выберите хотя бы один симптом или введите текст!", false);
                                 dialogFragment.show(getParentFragmentManager(), "custom_dialog");
                                 return;
@@ -316,10 +316,12 @@ public class SymptomsFragment extends Fragment {
 
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
+                zametki.setText("");
                 for (DataSnapshot symptomSnapshot : snapshot.getChildren()) {
                     Symptoms symptoms = symptomSnapshot.getValue(Symptoms.class);
                     if (symptoms != null && isSameDay(symptoms.SymptomsTime, selectedDate)) {
                         selectedSymptomIds = new ArrayList<>(symptoms.symptoms);
+                        zametki.setText(symptoms.record);
                         recordExist = true;
                         break;
                     }

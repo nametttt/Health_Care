@@ -95,10 +95,19 @@ public class AdminArticleFragment extends Fragment {
                     if (searchText.isEmpty()) {
                         searchButton.setClickable(false);
                         searchButton.setImageResource(R.drawable.search);
-                        addDataOnRecyclerView();
+                        if(categorySpinner.getSelectedItem().toString().equals("Все")) {
+                            addDataOnRecyclerView();
+                        }
+                        else {
+                            filterArticlesByCategory(categorySpinner.getSelectedItem().toString());
+                        }
                     } else {
                         searchButton.setClickable(true);
                         searchButton.setImageResource(R.drawable.close);
+
+                        if(!categorySpinner.getSelectedItem().toString().equals("Все")){
+                            filterArticlesByCategory(categorySpinner.getSelectedItem().toString());
+                        }
                         filterArticles(searchText);
                     }
                 }
@@ -180,7 +189,7 @@ public class AdminArticleFragment extends Fragment {
                     for (DataSnapshot ds : snapshot.getChildren()) {
                         ArticleData articleData = ds.getValue(ArticleData.class);
                         if (articleData != null) {
-                            if (articleData.getTitle().toLowerCase().contains(searchText.toLowerCase())) {
+                            if(articleData.getTitle().toLowerCase().contains(searchEditText.getText().toString().toLowerCase())) {
                                 articles.add(articleData);
                             }
                         }
@@ -210,8 +219,18 @@ public class AdminArticleFragment extends Fragment {
                         ArticleData articleData = ds.getValue(ArticleData.class);
                         if (articleData != null) {
                             if (category.equalsIgnoreCase("All") || articleData.getCategory().equalsIgnoreCase(category)) {
-                                articles.add(articleData);
+
+
+                                if(searchEditText.getText().toString().isEmpty()) {
+                                    articles.add(articleData);
+                                }
+                                else {
+                                    if(articleData.getTitle().toLowerCase().contains(searchEditText.getText().toString().toLowerCase())){
+                                        articles.add(articleData);
+                                    }
+                                }
                             }
+
                         }
                     }
                     progressBar.setVisibility(View.GONE);
@@ -228,3 +247,4 @@ public class AdminArticleFragment extends Fragment {
         }
     }
 }
+

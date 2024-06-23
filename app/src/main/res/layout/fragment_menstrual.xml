@@ -96,7 +96,7 @@
                         app:other_month_text_color="@color/dark_gray"
                         app:scheme_lunar_text_color="@color/transparent"
                         app:current_day_lunar_text_color="@color/transparent"
-                        app:selected_theme_color="@color/colorPrimary"
+                        app:selected_theme_color="@color/green"
                         app:other_month_lunar_text_color="@color/transparent"
                         app:current_month_lunar_text_color="@color/transparent"
                         app:selected_lunar_text_color="@color/transparent"/>

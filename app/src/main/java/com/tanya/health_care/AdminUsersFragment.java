@@ -77,10 +77,21 @@ public class AdminUsersFragment extends Fragment {
                     if (searchText.isEmpty()) {
                         searchButton.setClickable(false);
                         searchButton.setImageResource(R.drawable.search);
-                        addDataOnRecyclerView();
+                        if(userTypeSpinner.getSelectedItem().toString().equals("Все")) {
+                            addDataOnRecyclerView();
+                        } else {
+                            if (userTypeSpinner.getSelectedItem().equals("Пользователи")) {
+                                filterUsersByRole("Пользователь");
+                            } else if (userTypeSpinner.getSelectedItem().equals("Администраторы")) {
+                                filterUsersByRole("Администратор");
+                            }
+                        }
                     } else {
                         searchButton.setClickable(true);
                         searchButton.setImageResource(R.drawable.close);
+                        if(!userTypeSpinner.getSelectedItem().toString().equals("Все")){
+                            filterUsersByRole(userTypeSpinner.getSelectedItem().toString());
+                        }
                         filterUsers(searchText);
                     }
                 }
@@ -169,7 +180,13 @@ public class AdminUsersFragment extends Fragment {
                         if (userData != null && userData.getEmail() != null && !userData.getEmail().equals(user.getEmail())) {
                             if (userData.getName().toLowerCase().contains(searchText.toLowerCase()) ||
                                     userData.getEmail().toLowerCase().contains(searchText.toLowerCase())) {
-                                users.add(userData);
+                                if(userTypeSpinner.getSelectedItem().toString().equals("Все")){
+                                    users.add(userData);
+                                } else if(userTypeSpinner.getSelectedItem().toString().equals("Пользователи")){
+                                    if (userData.role.equals("Пользователь")) users.add(userData);
+                                } else if(userTypeSpinner.getSelectedItem().toString().equals("Администраторы")){
+                                    if (userData.role.equals("Администратор")) users.add(userData);
+                                }
                             }
                         }
                     }
@@ -178,7 +195,8 @@ public class AdminUsersFragment extends Fragment {
 
                 @Override
                 public void onCancelled(@NonNull DatabaseError error) {
-
+                    CustomDialog dialogFragment = new CustomDialog("Произошла ошибка: " + error.getMessage(), false);
+                    dialogFragment.show(getParentFragmentManager(), "custom_dialog");
                 }
             });
         } catch (Exception exception) {
@@ -198,8 +216,14 @@ public class AdminUsersFragment extends Fragment {
                     for (DataSnapshot ds : snapshot.getChildren()) {
                         UserData userData = ds.getValue(UserData.class);
                         if (userData != null && userData.getEmail() != null && !userData.getEmail().equals(user.getEmail())) {
-                            if (role.equals("All") || role.isEmpty() || userData.getRole().equalsIgnoreCase(role)) {
-                                users.add(userData);
+                            if (role.equalsIgnoreCase("All") || userData.getRole().equalsIgnoreCase(role)) {
+                                if (searchEditText.getText().toString().isEmpty()) {
+                                    users.add(userData);
+                                } else {
+                                    if (userData.getEmail().toLowerCase().contains(searchEditText.getText().toString().toLowerCase())) {
+                                        users.add(userData);
+                                    }
+                                }
                             }
                         }
                     }

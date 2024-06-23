@@ -21,12 +21,12 @@ import com.tanya.health_care.R;
 
 import java.util.ArrayList;
 
-public class ArticleRecyclerView extends RecyclerView.Adapter<ArticleRecyclerView.ViewHolder> {
+public class ArticleHistoryRecyclerView extends RecyclerView.Adapter<ArticleHistoryRecyclerView.ViewHolder> {
 
     private ArrayList<ArticleData> commonHealthData;
     private Context context;
 
-    public ArticleRecyclerView(Context context, ArrayList<ArticleData> commonHealthData) {
+    public ArticleHistoryRecyclerView(Context context, ArrayList<ArticleData> commonHealthData) {
         this.context = context;
         this.commonHealthData = commonHealthData;
     }
@@ -38,7 +38,7 @@ public class ArticleRecyclerView extends RecyclerView.Adapter<ArticleRecyclerVie
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.r_article_asset, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.r_history_asset, parent, false);
         return new ViewHolder(view);
     }
 
@@ -58,7 +58,7 @@ public class ArticleRecyclerView extends RecyclerView.Adapter<ArticleRecyclerVie
             @Override
             public void onClick(View v) {
                 HomeActivity homeActivity = (HomeActivity) v.getContext();
-                homeActivity.replaceFragment(new AboutArticleFragment(currentCommon.uid, currentCommon.title, currentCommon.description, imageUrl, null));
+                homeActivity.replaceFragment(new AboutArticleFragment(currentCommon.uid,currentCommon.title, currentCommon.description, imageUrl, "history"));
             }
         });
     }

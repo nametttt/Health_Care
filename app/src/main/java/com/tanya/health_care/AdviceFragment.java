@@ -26,10 +26,13 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.tanya.health_care.code.CommonHealthData;
 import com.tanya.health_care.code.Food;
 import com.tanya.health_care.code.FoodData;
 import com.tanya.health_care.code.GetSplittedPathChild;
 import com.tanya.health_care.code.NutritionData;
+import com.tanya.health_care.code.PhysicalParameters;
+import com.tanya.health_care.code.PhysicalParametersData;
 import com.tanya.health_care.code.SleepData;
 import com.tanya.health_care.code.WaterData;
 import com.tanya.health_care.code.YaGPTAPI;
@@ -134,6 +137,157 @@ public class AdviceFragment extends Fragment {
             view.findViewById(R.id.nutritionAdvice).setOnClickListener(createRequestOnClickListener("Как мое питание?"));
             view.findViewById(R.id.waterAdvice).setOnClickListener(createWaterRequestOnClickListener());
             view.findViewById(R.id.sleepAdvice).setOnClickListener(createSleepRequestOnClickListener());
+
+            view.findViewById(R.id.commonHealthAdvice).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    FirebaseDatabase db = FirebaseDatabase.getInstance();
+                    DatabaseReference ref = db.getReference("users");
+                    GetSplittedPathChild pC = new GetSplittedPathChild();
+                    ref.child(pC.getSplittedPathChild(FirebaseAuth.getInstance().getCurrentUser().getEmail()))
+                            .child("characteristic").child("commonHealth").addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot snapshot) {
+
+                                    if (snapshot.exists()) {
+                                        int i =0;
+                                        ArrayList<CommonHealthData> healthData = new ArrayList();
+
+                                        for(DataSnapshot dataSnapshot : snapshot.getChildren()){
+                                            if(i<5) {
+
+                                                CommonHealthData commonHealthData = dataSnapshot.getValue(CommonHealthData.class);
+                                                healthData.add(commonHealthData);
+                                            }
+                                            i++;
+                                        }
+
+                                        String text = "Напиши про мое общее состояние и дай советы учитывая мои параметры давления, пульса и температуры за разные дни соответсвенно(";
+
+                                        for (int d = 0; d < healthData.size(); d++ ){
+                                            text += "Давление - " + healthData.get(d).pressure;
+                                            text += "Пульс - " + healthData.get(d).pulse;
+                                            text += "Температура - " + healthData.get(d).temperature;
+
+                                        }
+                                        text += ") Сформулируй короче";
+                                        try {
+                                            sendRequest(text, "Общее состояние советы");
+                                        } catch (IOException e) {
+                                            throw new RuntimeException(e);
+                                        }
+                                    }
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError error) {
+                                    CustomDialog dialogFragment = new CustomDialog("Произошла ошибка: " + error.getMessage(), false);
+                                    dialogFragment.show(getParentFragmentManager(), "custom_dialog");
+                                }
+                            });
+                }
+            });
+
+            view.findViewById(R.id.pressureAdvice).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    FirebaseDatabase db = FirebaseDatabase.getInstance();
+                    DatabaseReference ref = db.getReference("users");
+                    GetSplittedPathChild pC = new GetSplittedPathChild();
+                    ref.child(pC.getSplittedPathChild(FirebaseAuth.getInstance().getCurrentUser().getEmail()))
+                            .child("characteristic").child("commonHealth").addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot snapshot) {
+
+                                    if (snapshot.exists()) {
+                                        int i =0;
+                                        ArrayList<String> pressure = new ArrayList();
+
+                                        for(DataSnapshot dataSnapshot : snapshot.getChildren()){
+                                            if(i<5) {
+
+                                                CommonHealthData commonHealthData = dataSnapshot.getValue(CommonHealthData.class);
+                                                pressure.add(commonHealthData.pressure);
+                                            }
+                                            i++;
+                                        }
+
+                                        String text = "Напиши про мое давление и дай советы учитывая мои параметры  за разные дни соответсвенно(";
+
+                                        for (int d = 0; d < pressure.size(); d++ ){
+                                            text += "Давление - " + pressure.get(d);
+
+
+                                        }
+                                        text += ") Сформулируй короче";
+                                        try {
+                                            sendRequest(text, "Советы по давлению");
+                                        } catch (IOException e) {
+                                            throw new RuntimeException(e);
+                                        }
+                                    }
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError error) {
+                                    CustomDialog dialogFragment = new CustomDialog("Произошла ошибка: " + error.getMessage(), false);
+                                    dialogFragment.show(getParentFragmentManager(), "custom_dialog");
+                                }
+                            });
+                }
+
+            });
+
+            view.findViewById(R.id.IMTAdvice).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    FirebaseDatabase db = FirebaseDatabase.getInstance();
+                    DatabaseReference ref = db.getReference("users");
+                    GetSplittedPathChild pC = new GetSplittedPathChild();
+                    ref.child(pC.getSplittedPathChild(FirebaseAuth.getInstance().getCurrentUser().getEmail()))
+                            .child("characteristic").child("physicalParameters").addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot snapshot) {
+
+                                    if (snapshot.exists()) {
+                                        int i =0;
+                                        ArrayList<PhysicalParametersData> healthData = new ArrayList();
+
+
+                                        for(DataSnapshot dataSnapshot : snapshot.getChildren()){
+                                            if(i<5) {
+
+                                                PhysicalParametersData physicalParameters = dataSnapshot.getValue(PhysicalParametersData.class);
+                                                healthData.add(physicalParameters);
+                                            }
+                                            i++;
+                                        }
+
+                                        String text = "Напиши про мое ИМТ и дай советы учитывая мои параметры роста и веса за разные дни соответсвенно(";
+
+                                        for (int d = 0; d < healthData.size(); d++ ){
+                                            text += "Рост - " + healthData.get(d).height;
+                                            text += "Вес - " + healthData.get(d).weight;
+
+                                        }
+                                        text += ") Сформулируй короче";
+                                        try {
+                                            sendRequest(text, "Индекс ИМТ");
+                                        } catch (IOException e) {
+                                            throw new RuntimeException(e);
+                                        }
+                                    }
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError error) {
+                                    CustomDialog dialogFragment = new CustomDialog("Произошла ошибка: " + error.getMessage(), false);
+                                    dialogFragment.show(getParentFragmentManager(), "custom_dialog");
+                                }
+                            });
+                }
+
+            });
 
         } catch (Exception exception) {
             CustomDialog dialogFragment = new CustomDialog("Произошла ошибка: " + exception.getMessage(), false);
@@ -264,7 +418,7 @@ public class AdviceFragment extends Fragment {
                                 i++;
                             }
 
-                            String text = "Напиши про питьевой режим учитывая мои параметры потребления воды (Дата питья и количество выпитой воды в мл ";
+                            String text = "Напиши про питьевой режим и дай советы учитывая мои параметры потребления воды (Дата питья и количество выпитой воды в мл ";
 
                             for (int d = 0; d < start.size(); d++ ){
                                 text += start.get(d);
@@ -313,7 +467,7 @@ public class AdviceFragment extends Fragment {
                                 i++;
                             }
 
-                            String text = "Расскажи про мой сон учитывая мои параметры сна за последние 5 дней (Начало и конец сна соответсвено";
+                            String text = "Расскажи про мой сон и дай советы учитывая мои параметры сна за последние 5 дней (Начало и конец сна соответсвено";
 
                             for (int d = 0; d < start.size(); d++ ){
                                 text += start.get(d);

@@ -7,8 +7,7 @@ import java.util.List;
 public class Symptoms {
     public String SymptomsId, record;
     public Date SymptomsTime;
-    public List<String> symptoms;
-
+    public List<String> symptoms = new ArrayList<>();
     public Symptoms() {
     }
 
