@@ -126,9 +126,9 @@ public class ChangePhysicalParametersFragment extends Fragment {
                                     weight = physicalParametersData.weight;
 
                                     int wholeHeight = (int) height;
-                                    int fractionHeight = (int) ((height - wholeHeight) * 10); // Вычисление дробной части роста
+                                    int fractionHeight = (int) ((height - wholeHeight) * 10);
                                     int wholeWeight = (int) weight;
-                                    int fractionWeight = (int) ((weight - wholeWeight) * 10); // Вычисление дробной части веса
+                                    int fractionWeight = (int) ((weight - wholeWeight) * 10);
 
                                     heightValue.setText(String.format(Locale.getDefault(), "%d.%d", wholeHeight, fractionHeight));
                                     weightValue.setText(String.format(Locale.getDefault(), "%d.%d", wholeWeight, fractionWeight));
@@ -137,7 +137,7 @@ public class ChangePhysicalParametersFragment extends Fragment {
                                     numberPickerWeightWhole.setValue(wholeWeight);
                                     numberPickerWeightFraction.setValue(fractionWeight);
 
-                                    break; // Выход из цикла, так как нужен только последний элемент
+                                    break;
                                 }
                             }
                         }

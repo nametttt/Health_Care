@@ -308,12 +308,8 @@ public class PhysicalParametersFragment extends Fragment {
 
     private void updateImtViews() {
         imt.setText(String.valueOf(currentImt));
-        weight.setText(String.valueOf(currentWeight));
-        height.setText(String.valueOf(currentHeight));
-        if(currentImt < 18.5) {
-        } else if(currentImt >= 18.5 && currentImt < 24.9) {
-        } else {
-        }
+        weight.setText(String.format(Locale.getDefault(), "%.1f", currentWeight));
+        height.setText(String.format(Locale.getDefault(), "%.1f", currentHeight));
     }
 
 }

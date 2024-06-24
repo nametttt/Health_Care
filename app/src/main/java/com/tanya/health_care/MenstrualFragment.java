@@ -14,6 +14,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -32,9 +33,11 @@ import com.haibin.calendarview.Calendar;
 import com.haibin.calendarview.CalendarView;
 import com.haibin.calendarview.CalendarView.OnCalendarSelectListener;
 import com.tanya.health_care.code.CustomStripDrawable;
+import com.tanya.health_care.code.MenstrualData;
 import com.tanya.health_care.dialog.CustomDialog;
 import com.tanya.health_care.code.GetSplittedPathChild;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
@@ -43,6 +46,8 @@ import java.util.Map;
 public class MenstrualFragment extends Fragment {
     private CalendarView calendarView;
     private FirebaseUser user;
+    ArrayList<MenstrualData> menstrualDataArrayList;
+
     ImageView statsIcon;
     private FirebaseDatabase mDb;
     private GetSplittedPathChild pC = new GetSplittedPathChild();
@@ -150,10 +155,22 @@ public class MenstrualFragment extends Fragment {
             mySymptom.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    HomeActivity homeActivity = (HomeActivity) getActivity();
-                    homeActivity.replaceFragment(new SymptomsFragment(selectedDate));
+                    java.util.Calendar selectedCalendar = java.util.Calendar.getInstance();
+                    selectedCalendar.setTime(selectedDate);
+
+                    java.util.Calendar todayCalendar = java.util.Calendar.getInstance();
+                    todayCalendar.setTime(new Date());
+
+                    if (selectedCalendar.after(todayCalendar)) {
+                        CustomDialog dialogFragment = new CustomDialog("Нельзя добавить симптомы на будущую дату!", false);
+                        dialogFragment.show(getParentFragmentManager(), "custom_dialog");
+                    } else {
+                        HomeActivity homeActivity = (HomeActivity) getActivity();
+                        homeActivity.replaceFragment(new SymptomsFragment(selectedDate));
+                    }
                 }
             });
+
 
             add.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -241,7 +258,6 @@ public class MenstrualFragment extends Fragment {
                         startCalendar.add(java.util.Calendar.DAY_OF_MONTH, 1);
                     }
 
-                    // Adding fertile days (blue)
                     java.util.Calendar fertileStartCalendar = (java.util.Calendar) endCalendar.clone();
                     fertileStartCalendar.add(java.util.Calendar.DAY_OF_MONTH, 7);
                     java.util.Calendar fertileEndCalendar = (java.util.Calendar) fertileStartCalendar.clone();

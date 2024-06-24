@@ -115,7 +115,7 @@ public class ChangeNutritionFragment extends Fragment {
             SimpleDateFormat fmt = new SimpleDateFormat("dd.MM HH:mm", new Locale("ru"));
 
             foodDataArrayList = new ArrayList<>();
-            adapter = new FoodRecyclerView(getContext(), foodDataArrayList);
+            adapter = new FoodRecyclerView(getContext(), foodDataArrayList, selectedFoods);
             recyclerView = v.findViewById(R.id.recyclerViews);
             mDb = FirebaseDatabase.getInstance();
 
@@ -291,7 +291,6 @@ public class ChangeNutritionFragment extends Fragment {
                     builder.show();
                 }
             });
-
 
             addFood.setOnClickListener(new View.OnClickListener() {
                 @Override

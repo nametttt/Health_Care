@@ -21,10 +21,12 @@ public class FoodRecyclerView extends RecyclerView.Adapter<FoodRecyclerView.View
 
     private ArrayList<FoodData> foodData;
     private Context context;
+    private ArrayList<FoodData> selectedFoods;
 
-    public FoodRecyclerView(Context context, ArrayList<FoodData> foodData) {
+    public FoodRecyclerView(Context context, ArrayList<FoodData> foodData, ArrayList<FoodData> selectedFoods) {
         this.context = context;
         this.foodData = foodData;
+        this.selectedFoods = selectedFoods;
     }
 
     @NonNull
@@ -46,7 +48,7 @@ public class FoodRecyclerView extends RecyclerView.Adapter<FoodRecyclerView.View
             @Override
             public void onClick(View v) {
                 HomeActivity homeActivity = (HomeActivity) v.getContext();
-                homeActivity.replaceFragment(new ChangeFoodWeightFragment(currentFood));
+                homeActivity.replaceFragment(new ChangeFoodWeightFragment(currentFood, selectedFoods));
             }
         });
     }

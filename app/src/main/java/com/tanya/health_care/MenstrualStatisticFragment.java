@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -27,6 +28,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.concurrent.CompletableFuture;
 
 public class MenstrualStatisticFragment extends Fragment {
 
@@ -39,6 +41,7 @@ public class MenstrualStatisticFragment extends Fragment {
     private int averageDays = 0;
     ArrayList<MenstrualData> menstrualDataArrayList;
     MenstrualHistoryRecyclerView adapter;
+    Button back;
     private GetSplittedPathChild pC = new GetSplittedPathChild();
     TextView overDays, overDuration;
     public MenstrualStatisticFragment() {
@@ -53,6 +56,7 @@ public class MenstrualStatisticFragment extends Fragment {
 
     void init(View v) {
         try {
+            back = v.findViewById(R.id.back);
             overDays = v.findViewById(R.id.overDays);
             overDuration = v.findViewById(R.id.overDuration);
             user = FirebaseAuth.getInstance().getCurrentUser();
@@ -62,7 +66,22 @@ public class MenstrualStatisticFragment extends Fragment {
             adapter = new MenstrualHistoryRecyclerView(getContext(), menstrualDataArrayList);
             recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
             recyclerView.setAdapter(adapter);
-            addDataOnRecyclerView();
+            fetchAverageDurationsAsync().thenAccept(average -> {
+                averageDurations = average;
+                addDataOnRecyclerView();
+            }).exceptionally(e -> {
+                CustomDialog dialogFragment = new CustomDialog("Произошла ошибка при загрузке данных: " + e.getMessage(), false);
+                dialogFragment.show(getParentFragmentManager(), "custom_dialog");
+                return null;
+            });
+
+            back.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    HomeActivity homeActivity = (HomeActivity) getActivity();
+                    homeActivity.replaceFragment(new MenstrualFragment());
+                }
+            });
 
         } catch (Exception exception) {
             CustomDialog dialogFragment = new CustomDialog("Произошла ошибка: " + exception.getMessage(), false);
@@ -74,6 +93,7 @@ public class MenstrualStatisticFragment extends Fragment {
         ValueEventListener valueEventListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
+                menstrualDataArrayList.clear();
                 if (menstrualDataArrayList.size() != 1) {
                     isOne = false;
                 }
@@ -103,7 +123,9 @@ public class MenstrualStatisticFragment extends Fragment {
                 }
                 menstrualDataArrayList.sort(new SortMenstrual());
                 adapter.notifyDataSetChanged();
-                calculateAverageDuration();
+                if (menstrualDataArrayList.size() > 0){
+                    calculateAverageDuration();
+                }
             }
 
             @Override
@@ -120,55 +142,75 @@ public class MenstrualStatisticFragment extends Fragment {
                 .child("dates");
         ref.addValueEventListener(valueEventListener);
     }
-    private void calculateAverageDuration() {
-        long totalDuration = 0;
-        int totalDays = 0;
-
-        for (MenstrualData data : menstrualDataArrayList) {
-            if (data.endDate != null && data.startDate != null) {
-                long duration = data.endDate.getTimeInMillis() - data.startDate.getTimeInMillis();
-                totalDuration += duration;
-                totalDays += duration / (1000 * 60 * 60 * 24);
-            }
-        }
+    private CompletableFuture<Integer> fetchAverageDurationsAsync() {
+        CompletableFuture<Integer> future = new CompletableFuture<>();
 
         DatabaseReference userRef = mDb.getReference("users")
                 .child(pC.getSplittedPathChild(user.getEmail()))
                 .child("characteristic")
-                .child("menstrual");
-
+                .child("menstrual")
+                .child("duration");
 
         userRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (snapshot.exists()) {
-                    if (snapshot.hasChild("duration")) {
-                        int cycleLength = snapshot.child("duration").getValue(Integer.class);
-                        averageDurations = cycleLength;
-                    }
-                    if (snapshot.hasChild("days")) {
-                        int cycleDays = snapshot.child("days").getValue(Integer.class);
-                        averageDays = cycleDays;
-                    }
+                    Integer cycleLength = snapshot.getValue(Integer.class);
+                    future.complete(cycleLength);
+                } else {
+                    future.completeExceptionally(new IllegalStateException("Data for averageDurations not found"));
                 }
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                CustomDialog dialogFragment = new CustomDialog("Произошла ошибка: " + error.getMessage(), false);
-                dialogFragment.show(getParentFragmentManager(), "custom_dialog");
+                future.completeExceptionally(error.toException());
             }
         });
+
+        return future;
+    }
+
+    private void calculateAverageDuration() {
+        long totalDuration = 0;
+        int totalDays = 0;
+        MenstrualData prevData = new MenstrualData();
+        if(menstrualDataArrayList.size() > 1) {
+            menstrualDataArrayList.sort(new SortMenstrual());
+            for (MenstrualData data : menstrualDataArrayList) {
+                if(data != null) {
+                    if (data.endDate != null && data.startDate != null) {
+                        long duration = data.endDate.getTimeInMillis() - data.startDate.getTimeInMillis();
+                        totalDays += duration / (1000 * 60 * 60 * 24);
+                    }
+                    if(prevData.startDate != null) {
+                        totalDuration += data.endDate.getTimeInMillis() - prevData.startDate.getTimeInMillis();
+
+                    }
+                }
+                prevData = data;
+            }
+        }
+        else if (menstrualDataArrayList.size() == 1){
+            totalDuration = 0;
+            long ts = menstrualDataArrayList.get(0).endDate.getTimeInMillis() - menstrualDataArrayList.get(0).startDate.getTimeInMillis();
+            totalDays = (int) ts / (1000 * 60 * 60 * 24);
+        }
+
         if (!menstrualDataArrayList.isEmpty()) {
-            int averageDuration = (int) (totalDuration / menstrualDataArrayList.size());
+            int sz = menstrualDataArrayList.size() == 1 ? 1 : menstrualDataArrayList.size() - 1;
+            int averageDuration = 0;
+            if (menstrualDataArrayList.size() > 1){
+                averageDuration = (int) (totalDuration + averageDurations / sz  ) / (1000 * 60 * 60 * 24);
+            }
+            else if (menstrualDataArrayList.size() == 1){
+                averageDuration = averageDurations;
+            }
+            if(averageDuration<1) averageDuration *= -1;
             int averageDay = totalDays / menstrualDataArrayList.size();
 
-            if(isOne){
-                averageDuration = averageDurations;
-                averageDay = averageDays;
-            }
-            overDuration.setText(String.valueOf(averageDuration));
-            overDays.setText(String.valueOf(averageDay));
+            overDuration.setText(String.valueOf(averageDuration + 1) + " дн.");
+            overDays.setText(String.valueOf(averageDay + 1) + " дн.");
         }
         else {
             overDuration.setText("-");
@@ -183,3 +225,4 @@ class SortMenstrual implements Comparator<MenstrualData> {
         return b.startDate.compareTo(a.startDate);
     }
 }
+

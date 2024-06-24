@@ -74,6 +74,7 @@ public class ChangeMenstrualFragment extends Fragment {
 
                 @Override
                 public void onDateRangeSelected(Calendar startDate, Calendar endDate) {
+                    selectedRanges.clear();
                     selectedRanges.add(new Calendar[]{startDate, endDate});
                     updateCalendarRanges();
                 }
@@ -164,7 +165,7 @@ public class ChangeMenstrualFragment extends Fragment {
 
     private void saveSelectedRangesToDatabase() {
         if (selectedRanges.isEmpty()) {
-            CustomDialog dialogFragment = new CustomDialog("ыберите хотя бы один промежуток дат для сохранения!", false);
+            CustomDialog dialogFragment = new CustomDialog("Выберите хотя бы один промежуток дат для сохранения!", false);
             dialogFragment.show(getParentFragmentManager(), "custom_dialog");
             return;
         }
@@ -173,12 +174,11 @@ public class ChangeMenstrualFragment extends Fragment {
         menstrualRef = mDb.getReference("users")
                 .child(pC.getSplittedPathChild(user.getEmail()))
                 .child("characteristic")
-                .child("menstrual").child("dates");
+                .child("menstrual").child("dates").push();
 
-        menstrualRef.setValue(null);
 
         for (Calendar[] range : selectedRanges) {
-            DatabaseReference newRangeRef = menstrualRef.push();
+            DatabaseReference newRangeRef = menstrualRef;
             newRangeRef.child("startDate").child("timeInMillis").setValue(range[0].getTimeInMillis());
             newRangeRef.child("endDate").child("timeInMillis").setValue(range[1].getTimeInMillis());
         }

@@ -17,17 +17,22 @@ public class CustomStripDrawable extends Drawable {
     private ShapeDrawable smallStrip1Drawable;
     private ShapeDrawable smallStrip2Drawable;
 
-    private int bigStripColor = Color.parseColor("#E0E0E0");  // Светло серая для большой полосы
-    private int smallStrip1Color = Color.parseColor("#FF4081"); // Розовая для первой маленькой полосы
-    private int smallStrip2Color = Color.parseColor("#3F51B5"); // Голубая для второй маленькой полосы
+    private int bigStripColor = Color.parseColor("#E0E0E0");  // Light grey for big strip
+    private int smallStrip1Color = Color.parseColor("#FF4081"); // Pink for first small strip
+    private int smallStrip2Color = Color.parseColor("#3F51B5"); // Blue for second small strip
 
-    private int bigStripHeight = 20;  // Высота большой полосы
-    private int smallStrip1Height = 15; // Высота первой маленькой полосы
-    private int smallStrip2Height = 10; // Высота второй маленькой полосы
+    private int bigStripHeight = 20;  // Height of big strip
+    private int smallStrip1Height = 15; // Height of first small strip
+    private int smallStrip2Height = 15; // Height of second small strip
 
-    private int cornerRadius = 10; // Радиус закругления углов
+    private int cornerRadius = 10; // Corner radius
+    private int duration; // Duration in days
+    private int position; // Position of the item
 
-    public CustomStripDrawable() {
+    public CustomStripDrawable(int duration, int position) {
+        this.duration = duration;
+        this.position = position;
+
         Paint bigPaint = new Paint();
         bigPaint.setColor(bigStripColor);
         bigPaint.setAntiAlias(true);
@@ -56,21 +61,26 @@ public class CustomStripDrawable extends Drawable {
     @Override
     public void draw(@NonNull Canvas canvas) {
         Rect bounds = getBounds();
-
-        // Рисуем большую округлую полосу
         RectF bigRect = new RectF(bounds.left, bounds.top, bounds.right, bounds.top + bigStripHeight);
         bigStripDrawable.setBounds((int) bigRect.left, (int) bigRect.top, (int) bigRect.right, (int) bigRect.bottom);
         bigStripDrawable.draw(canvas);
 
-        // Рисуем первую маленькую полосу (розовая)
-        RectF smallRect1 = new RectF(bounds.left + 20, bounds.top + bigStripHeight / 2 - smallStrip1Height / 2,
-                bounds.left + 120, bounds.top + bigStripHeight / 2 + smallStrip1Height / 2);
+        // Calculate the length of the small pink strip based on the duration
+        int smallStrip1Length = 20 + duration * 30; // Adjust this value as needed
+        int gapBetweenStrips = 10; // Define the gap between the pink and blue strips
+
+        // Calculate the left margin for the pink strip based on the position
+        int leftMargin = position * 20; // Adjust the multiplier as needed
+
+        RectF smallRect1 = new RectF(bounds.left + leftMargin, bounds.top + bigStripHeight / 2 - smallStrip1Height / 2,
+                bounds.left + leftMargin + smallStrip1Length, bounds.top + bigStripHeight / 2 + smallStrip1Height / 2);
         smallStrip1Drawable.setBounds((int) smallRect1.left, (int) smallRect1.top, (int) smallRect1.right, (int) smallRect1.bottom);
         smallStrip1Drawable.draw(canvas);
 
-        // Рисуем вторую маленькую полосу (голубая)
-        RectF smallRect2 = new RectF(bounds.left + 130, bounds.top + bigStripHeight / 2 - smallStrip2Height / 2,
-                bounds.left + 230, bounds.top + bigStripHeight / 2 + smallStrip2Height / 2);
+        // Fixed length for the blue strip
+        int smallStrip2Length = 200; // Fixed length, adjust as needed
+        RectF smallRect2 = new RectF(smallRect1.right + gapBetweenStrips, bounds.top + bigStripHeight / 2 - smallStrip2Height / 2,
+                smallRect1.right + gapBetweenStrips + smallStrip2Length, bounds.top + bigStripHeight / 2 + smallStrip2Height / 2);
         smallStrip2Drawable.setBounds((int) smallRect2.left, (int) smallRect2.top, (int) smallRect2.right, (int) smallRect2.bottom);
         smallStrip2Drawable.draw(canvas);
     }

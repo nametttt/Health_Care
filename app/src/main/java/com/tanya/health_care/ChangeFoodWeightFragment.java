@@ -1,5 +1,6 @@
 package com.tanya.health_care;
 
+import android.app.AlertDialog;
 import android.os.Bundle;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -17,20 +18,23 @@ import com.tanya.health_care.code.FoodData;
 import com.tanya.health_care.dialog.CustomDialog;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 
 public class ChangeFoodWeightFragment extends Fragment {
 
     private FoodData selectedFood;
-    private Button back, save;
+    private Button back, save, delete;
     private EditText countText;
     private int oldWeight;
+    ArrayList<FoodData> selectedFoods;
     private TextView foodCalories, foodWeight, foodNutrients, foodName;
 
     public ChangeFoodWeightFragment() {
     }
 
-    public ChangeFoodWeightFragment(FoodData selectedFood) {
+    public ChangeFoodWeightFragment(FoodData selectedFood, ArrayList<FoodData> selectedFoods) {
         this.selectedFood = selectedFood;
+        this.selectedFoods = selectedFoods;
     }
 
     @Override
@@ -42,6 +46,7 @@ public class ChangeFoodWeightFragment extends Fragment {
 
     private void init(View v) {
         try {
+            delete = v.findViewById(R.id.delete);
             back = v.findViewById(R.id.back);
             save = v.findViewById(R.id.continu);
             countText = v.findViewById(R.id.countText);
@@ -109,7 +114,8 @@ public class ChangeFoodWeightFragment extends Fragment {
                 public void onClick(View v) {
                     String weightInput = countText.getText().toString().trim();
                     if (weightInput.isEmpty()) {
-                        Toast.makeText(getContext(), "Введите значение веса", Toast.LENGTH_SHORT).show();
+                        CustomDialog dialogFragment = new CustomDialog( "Введите значение веса!", false);
+                        dialogFragment.show(getParentFragmentManager(), "custom_dialog");
                         return;
                     }
 
@@ -124,7 +130,8 @@ public class ChangeFoodWeightFragment extends Fragment {
                         updateNutritionData(newWeight);
 
                     } catch (NumberFormatException e) {
-                        Toast.makeText(getContext(), "Введите корректное значение веса", Toast.LENGTH_SHORT).show();
+                        CustomDialog dialogFragment = new CustomDialog( "Введите корректное значение веса!", false);
+                        dialogFragment.show(getParentFragmentManager(), "custom_dialog");
                     }
                 }
             });
@@ -134,6 +141,22 @@ public class ChangeFoodWeightFragment extends Fragment {
                 public void onClick(View v) {
                     fragmentManager.popBackStack();
                 }
+            });
+            delete.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                        new AlertDialog.Builder(v.getContext())
+                                .setTitle("Удаление продукта")
+                                .setMessage("Вы уверены, что хотите удалить этот продукт?")
+                                .setPositiveButton(android.R.string.yes, (dialog, which) -> {
+                                    selectedFoods.remove(selectedFood);
+                                    CustomDialog dialogFragment = new CustomDialog( "Удалении продукта прошло успешно!", true);
+                                    dialogFragment.show(getParentFragmentManager(), "custom_dialog");
+                                    fragmentManager.popBackStack();
+                                })
+                                .setNegativeButton(android.R.string.no, null)
+                                .show();
+                    }
             });
 
         } catch (Exception exception) {
@@ -183,5 +206,8 @@ public class ChangeFoodWeightFragment extends Fragment {
         selectedFood.setProtein(newProteins.intValue());
         selectedFood.setFat(newFats.intValue());
         selectedFood.setCarbohydrates(newCarbs.intValue());
+        CustomDialog dialogFragment = new CustomDialog( "Изменение данных продукта прошло успешно!", true);
+        dialogFragment.show(getParentFragmentManager(), "custom_dialog");
+
     }
 }
