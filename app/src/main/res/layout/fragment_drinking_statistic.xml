@@ -27,16 +27,6 @@
                     android:layout_height="wrap_content"
                     style="@style/BackButton" />
 
-                <androidx.appcompat.widget.Toolbar
-                    android:id="@+id/toolbar"
-                    android:layout_width="0dp"
-                    android:title=""
-                    app:titleTextColor="@color/white"
-                    android:layout_marginVertical="5dp"
-                    android:layout_marginRight="5dp"
-                    android:layout_height="?attr/actionBarSize"
-                    android:layout_weight="1"
-                    android:titleTextColor="@color/white"/>
             </LinearLayout>
 
             <LinearLayout

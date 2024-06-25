@@ -25,6 +25,7 @@ import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
+import com.github.mikephil.charting.formatter.ValueFormatter;
 import com.github.mikephil.charting.listener.ChartTouchListener;
 import com.github.mikephil.charting.listener.OnChartGestureListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -37,13 +38,15 @@ import com.google.firebase.database.ValueEventListener;
 import com.tanya.health_care.code.GetSplittedPathChild;
 import com.tanya.health_care.code.SleepData;
 import com.tanya.health_care.code.StraightBarChartRenderer;
-import com.tanya.health_care.code.WaterData;
 import com.tanya.health_care.dialog.CustomDialog;
 
+import java.time.Duration;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -52,7 +55,7 @@ import java.util.Map;
 public class SleepStatisticFragment extends Fragment {
 
     private BarChart barChart;
-    private TextView daysTextView, textValue;
+    private TextView daysTextView, textValue, averageSleepDurationTextView, averageSleepStartTextView, averageSleepFinishTextView;
     private AppCompatButton back, week, month, year;
     private int selectedPeriod = 7;
     private LocalDate startDate = LocalDate.now().minusDays(selectedPeriod - 1);
@@ -67,29 +70,8 @@ public class SleepStatisticFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_sleep_statistic, container, false);
         init(v);
-        fetchUserWaterNorm();
+        fetchUserSleepNorm();
         return v;
-    }
-
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.water_menu, menu);
-        super.onCreateOptionsMenu(menu, inflater);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        HomeActivity homeActivity = (HomeActivity) getActivity();
-        switch (item.getItemId()) {
-            case R.id.normal:
-                homeActivity.replaceFragment(new SleepFragment());
-                return true;
-            case R.id.aboutCharacteristic:
-                homeActivity.replaceFragment(new AboutSleepFragment());
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
     }
 
     private void init(View v) {
@@ -100,8 +82,10 @@ public class SleepStatisticFragment extends Fragment {
             month = v.findViewById(R.id.month);
             year = v.findViewById(R.id.year);
             daysTextView = v.findViewById(R.id.days);
+            averageSleepDurationTextView = v.findViewById(R.id.textValue);
+            averageSleepStartTextView = v.findViewById(R.id.overStartSleep);
+            averageSleepFinishTextView = v.findViewById(R.id.overFinishSleep);
 
-            textValue = v.findViewById(R.id.textValue);
             user = FirebaseAuth.getInstance().getCurrentUser();
             if (user != null) {
                 sleepRef = FirebaseDatabase.getInstance().getReference("users")
@@ -142,7 +126,7 @@ public class SleepStatisticFragment extends Fragment {
                 @Override
                 public void onClick(View v) {
                     HomeActivity homeActivity = (HomeActivity) getActivity();
-                    homeActivity.replaceFragment(new DrinkingFragment());
+                    homeActivity.replaceFragment(new SleepFragment());
                 }
             });
 
@@ -216,15 +200,15 @@ public class SleepStatisticFragment extends Fragment {
         }
     }
 
-    private void fetchUserWaterNorm() {
+    private void fetchUserSleepNorm() {
         if (userValuesRef != null) {
             userValuesRef.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     if (snapshot.exists()) {
-                        Integer waterNorm = snapshot.getValue(Integer.class);
-                        if (waterNorm != null) {
-                            userSleepNorm = waterNorm;
+                        Integer sleepNorm = snapshot.getValue(Integer.class);
+                        if (sleepNorm != null) {
+                            userSleepNorm = sleepNorm;
                             select7Days();
                         }
                     }
@@ -253,7 +237,7 @@ public class SleepStatisticFragment extends Fragment {
 
     private void select12Months() {
         selectedPeriod = 365;
-        startDate = LocalDate.now().minusDays(selectedPeriod - 1);
+        startDate = LocalDate.now().withMonth(7).withDayOfMonth(1).minusYears(1);
         fetchAndDisplayData();
     }
 
@@ -261,7 +245,12 @@ public class SleepStatisticFragment extends Fragment {
         try {
             LocalDate endDate = LocalDate.now();
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d MMMM", new Locale("ru"));
-            String startDateFormatted = startDate.format(formatter);
+            String startDateFormatted;
+            if (selectedPeriod == 365) {
+                startDateFormatted = startDate.format(DateTimeFormatter.ofPattern("MMMM yyyy", new Locale("ru")));
+            } else {
+                startDateFormatted = startDate.format(formatter);
+            }
             String endDateFormatted = endDate.format(formatter);
             String dateRange = startDateFormatted + " - " + endDateFormatted;
             daysTextView.setText(dateRange);
@@ -270,20 +259,44 @@ public class SleepStatisticFragment extends Fragment {
                 sleepRef.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        Map<LocalDate, Integer> waterDataMap = new HashMap<>();
+                        Map<LocalDate, Integer> sleepDataMap = new HashMap<>();
+                        List<SleepData> sleepDataList = new ArrayList<>();
+                        long totalSleepDuration = 0;
+                        long totalSleepStart = 0;
+                        long totalSleepFinish = 0;
+
                         for (DataSnapshot ds : snapshot.getChildren()) {
-                            SleepData waterData = ds.getValue(SleepData.class);
-                            if (waterData != null) {
-                                LocalDate date = waterData.addTime.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+                            SleepData sleepData = ds.getValue(SleepData.class);
+                            if (sleepData != null) {
+                                LocalDate date = sleepData.addTime.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
                                 if (date.isAfter(startDate.minusDays(1)) && date.isBefore(endDate.plusDays(1))) {
-                                    waterDataMap.put(date, waterDataMap.getOrDefault(date, 0) + 10);
+                                    sleepDataList.add(sleepData);
+                                    sleepDataMap.put(date, sleepDataMap.getOrDefault(date, 0) + 1);
+
+                                    Duration duration = Duration.between(sleepData.sleepStart.toInstant(), sleepData.sleepFinish.toInstant());
+                                    totalSleepDuration += duration.toMinutes();
+                                    totalSleepStart += sleepData.sleepStart.getTime();
+                                    totalSleepFinish += sleepData.sleepFinish.getTime();
                                 }
                             }
                         }
 
-                        updateChart(waterDataMap);
+                        updateChart(sleepDataMap);
 
-                        textValue.setText(String.format(Locale.getDefault(), "%d часов в день", (int) userSleepNorm));
+                        if (sleepDataList.isEmpty()) {
+                            averageSleepDurationTextView.setText("Нет данных");
+                            averageSleepStartTextView.setText("Нет данных");
+                            averageSleepFinishTextView.setText("Нет данных");
+                        } else {
+                            long averageSleepDuration = totalSleepDuration / selectedPeriod;
+                            long averageSleepStart = totalSleepStart / selectedPeriod;
+                            long averageSleepFinish = totalSleepFinish / selectedPeriod;
+
+                            averageSleepDurationTextView.setText(String.format(Locale.getDefault(), "%d ч %d мин в день", averageSleepDuration / 60, averageSleepDuration % 60));
+                            averageSleepStartTextView.setText(String.format(Locale.getDefault(), "%tR", new Date(averageSleepStart)));
+                            averageSleepFinishTextView.setText(String.format(Locale.getDefault(), "%tR", new Date(averageSleepFinish)));
+                        }
+
                     }
 
                     @Override
@@ -299,7 +312,8 @@ public class SleepStatisticFragment extends Fragment {
         }
     }
 
-    private void updateChart(Map<LocalDate, Integer> waterDataMap) {
+
+    private void updateChart(Map<LocalDate, Integer> sleepDataMap) {
         try {
             ArrayList<BarEntry> entries = new ArrayList<>();
             List<String> dates = new ArrayList<>();
@@ -307,23 +321,22 @@ public class SleepStatisticFragment extends Fragment {
             if (selectedPeriod == 7) {
                 LocalDate currentDate = startDate;
                 for (int i = 0; i < selectedPeriod; i++) {
-                    int dailyIntake = waterDataMap.getOrDefault(currentDate, 0);
+                    int dailyIntake = sleepDataMap.getOrDefault(currentDate, 0);
                     entries.add(new BarEntry(i, dailyIntake));
                     dates.add(String.valueOf(i + 1));
                     currentDate = currentDate.plusDays(1);
                 }
             } else if (selectedPeriod == 30) {
                 LocalDate currentDate = startDate;
-                for (int i = 0; i < selectedPeriod; i += 5) {
-                    float totalIntake = 0;
-                    int count = 0;
-                    for (int j = 0; j < 5 && (i + j) < selectedPeriod; j++) {
-                        totalIntake += waterDataMap.getOrDefault(currentDate.plusDays(i + j), 0);
-                        count++;
+                for (int i = 0; i < selectedPeriod; i++) {
+                    int dailyIntake = sleepDataMap.getOrDefault(currentDate, 0);
+                    entries.add(new BarEntry(i, dailyIntake)); // Всегда добавляем значения, включая нули
+                    if (i % 5 == 0) {
+                        dates.add(String.valueOf(i + 1));
+                    } else {
+                        dates.add("");
                     }
-                    float averageIntake = totalIntake / count;
-                    entries.add(new BarEntry(i / 5, averageIntake));
-                    dates.add(String.valueOf(i / 5 + 1));
+                    currentDate = currentDate.plusDays(1);
                 }
             } else if (selectedPeriod == 365) {
                 for (int i = 0; i < 12; i++) {
@@ -332,18 +345,29 @@ public class SleepStatisticFragment extends Fragment {
                     float totalIntake = 0;
                     int count = 0;
                     for (LocalDate date = monthStart; !date.isAfter(monthEnd); date = date.plusDays(1)) {
-                        totalIntake += waterDataMap.getOrDefault(date, 0);
+                        totalIntake += sleepDataMap.getOrDefault(date, 0);
                         count++;
                     }
-                    float averageIntake = totalIntake / count;
+                    float averageIntake = count == 0 ? 0 : Math.round((totalIntake / count) * 10.0f) / 10.0f;
                     entries.add(new BarEntry(i, averageIntake));
                     dates.add(String.valueOf(monthStart.getMonthValue()));
                 }
             }
 
-            BarDataSet dataSet = new BarDataSet(entries, "Water Intake");
+            BarDataSet dataSet = new BarDataSet(entries, "Sleep Data");
             dataSet.setColor(getResources().getColor(R.color.green));
-            dataSet.setDrawValues(false);
+
+            dataSet.setDrawValues(true);
+            dataSet.setValueFormatter(new ValueFormatter() {
+                @Override
+                public String getFormattedValue(float value) {
+                    if (value == 0) {
+                        return "";
+                    } else {
+                        return super.getFormattedValue(value);
+                    }
+                }
+            });
 
             BarData barData = new BarData(dataSet);
 
@@ -377,6 +401,7 @@ public class SleepStatisticFragment extends Fragment {
             limitLineLeft.setLineWidth(1f);
             leftAxis.addLimitLine(limitLineLeft);
             leftAxis.setDrawLimitLinesBehindData(true);
+            barChart.animateY(1000);
 
             barChart.invalidate();
         } catch (Exception exception) {

@@ -39,8 +39,8 @@
 
                     <ImageView
                         android:id="@+id/statsIcon"
-                        android:layout_width="14dp"
-                        android:layout_height="18dp"
+                        android:layout_width="20dp"
+                        android:layout_height="25dp"
                         android:layout_gravity="center"
                         android:contentDescription="Статистика"
                         android:gravity="end"

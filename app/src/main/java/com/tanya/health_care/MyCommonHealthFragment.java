@@ -22,6 +22,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -58,6 +59,7 @@ public class MyCommonHealthFragment extends Fragment {
     private Date selectedDate = new Date();
     private TextView stateDescription, nutritionDescription, waterDescription;
     private TextView sleepDescription, bmiDescription, generalStateDescription;
+    ImageView statsIcon;
 
     public MyCommonHealthFragment() {
     }
@@ -79,47 +81,37 @@ public class MyCommonHealthFragment extends Fragment {
         return view;
     }
 
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.common_menu, menu);
-
-        MenuItem normalItem = menu.findItem(R.id.normal);
-        MenuItem aboutCharacteristicItem = menu.findItem(R.id.aboutCharacteristic);
-
-        normalItem.setTitle("Получить совет");
-        aboutCharacteristicItem.setTitle("О здоровье");
-
-        super.onCreateOptionsMenu(menu, inflater);
-    }
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        HomeActivity homeActivity = (HomeActivity) getActivity();
-        switch (item.getItemId()) {
-            case R.id.normal:
-                homeActivity.replaceFragment(new AdviceFragment());
-                return true;
-            case R.id.aboutCharacteristic:
-                homeActivity.replaceFragment(new AboutIMTFragment());
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }
 
     private void init(View view){
 
-        toolbar = view.findViewById(R.id.toolbar);
-        ((AppCompatActivity) requireActivity()).setSupportActionBar(toolbar);
-        setHasOptionsMenu(true);
-        stateDescription = view.findViewById(R.id.state_description);
-        nutritionDescription = view.findViewById(R.id.nutrition_description);
-        waterDescription = view.findViewById(R.id.water_description);
-        sleepDescription = view.findViewById(R.id.sleep_description);
-        bmiDescription = view.findViewById(R.id.bmi_description);
-        generalStateDescription = view.findViewById(R.id.general_state_description);
+        try {
+            toolbar = view.findViewById(R.id.toolbar);
+            ((AppCompatActivity) requireActivity()).setSupportActionBar(toolbar);
+            setHasOptionsMenu(true);
+            stateDescription = view.findViewById(R.id.state_description);
+            nutritionDescription = view.findViewById(R.id.nutrition_description);
+            waterDescription = view.findViewById(R.id.water_description);
+            sleepDescription = view.findViewById(R.id.sleep_description);
+            bmiDescription = view.findViewById(R.id.bmi_description);
+            generalStateDescription = view.findViewById(R.id.general_state_description);
 
+            statsIcon = view.findViewById(R.id.statsIcon);
 
-        GetData();
+            statsIcon.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    HomeActivity homeActivity = (HomeActivity) getActivity();
+                    homeActivity.replaceFragment(new AdviceFragment());
+                }
+            });
+
+            GetData();
+        }
+        catch (Exception exception) {
+            CustomDialog dialogFragment = new CustomDialog("Произошла ошибка: " + exception.getMessage(), false);
+            dialogFragment.show(getParentFragmentManager(), "custom_dialog");
+        }
+
 
     }
     private void loadTexts() {

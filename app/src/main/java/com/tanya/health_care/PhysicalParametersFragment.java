@@ -18,6 +18,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CalendarView;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -66,6 +67,8 @@ public class PhysicalParametersFragment extends Fragment {
     private Date newDate;
     HorizontalCalendarView calendarView;
     String Add;
+    ImageView statsIcon;
+
     public PhysicalParametersFragment() {
     }
 
@@ -114,6 +117,7 @@ public class PhysicalParametersFragment extends Fragment {
             mDb = FirebaseDatabase.getInstance();
             exit = v.findViewById(R.id.back);
             add = v.findViewById(R.id.continu);
+            statsIcon = v.findViewById(R.id.statsIcon);
             imt = v.findViewById(R.id.imt);
             height = v.findViewById(R.id.height);
             weight = v.findViewById(R.id.weight);
@@ -141,6 +145,13 @@ public class PhysicalParametersFragment extends Fragment {
                 updateDateText(selectedDate);
             }
 
+            statsIcon.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    HomeActivity homeActivity = (HomeActivity) getActivity();
+                    homeActivity.replaceFragment(new PhysicalStatisticFragment());
+                }
+            });
             exit.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

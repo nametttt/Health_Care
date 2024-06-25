@@ -30,7 +30,7 @@ public class YaGPTAPI {
     private GoogleCredentials googleCredentials;
     private InputStream jasonfile;
     private String beaerertoken;
-    private String token = "t1.9euelZqSxsbIzcaLmY6XzpvJmozPx-3rnpWay4yXm52Rk5rNjo3Pz5TIlovl8_c8AyFM-e8MZkpI_t3z93wxHkz57wxmSkj-zef1656VmpyayYyXl43NzI-NyMeKkJPI7_zF656VmpyayYyXl43NzI-NyMeKkJPI.fUsz0zSE71wH5BG34x8XaR1I-rVKMbpVEGRK4VDZHNZgHccwRA_Pkk6XEo4Hw3E5GW8RTKA-k-LVab5iFm7LCw";
+    private String token = "t1.9euelZrPj52RkJvLz8jJzpTMzMuMke3rnpWay4yXm52Rk5rNjo3Pz5TIlovl8_c_VxNM-e9FV0AD_d3z938FEUz570VXQAP9zef1656VmsuVx8yVipKJmZ7Lj5iPyJqK7_zF656VmsuVx8yVipKJmZ7Lj5iPyJqK._zIv2LV57Ivn1r22hTHiInAeYt9hy7krfttQjI6-a1TVGodrqcpoulX5pM5bbPtZW7GXcXhRza1TN-ZemYWLDA";
     private String BEARERTOKEN;
 
     public void send(String text, Context context, ResponseCallback callback) throws IOException {

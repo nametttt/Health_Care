@@ -25,6 +25,7 @@ import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
+import com.github.mikephil.charting.formatter.ValueFormatter;
 import com.github.mikephil.charting.listener.ChartTouchListener;
 import com.github.mikephil.charting.listener.OnChartGestureListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -42,6 +43,7 @@ import com.tanya.health_care.dialog.CustomDialog;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.time.format.TextStyle;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -68,27 +70,6 @@ public class DrinkingStatisticFragment extends Fragment {
         init(v);
         fetchUserWaterNorm();
         return v;
-    }
-
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.water_menu, menu);
-        super.onCreateOptionsMenu(menu, inflater);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        HomeActivity homeActivity = (HomeActivity) getActivity();
-        switch (item.getItemId()) {
-            case R.id.normal:
-                homeActivity.replaceFragment(new WaterValueFragment());
-                return true;
-            case R.id.aboutCharacteristic:
-                homeActivity.replaceFragment(new AboutWaterFragment());
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
     }
 
     private void init(View v) {
@@ -250,7 +231,7 @@ public class DrinkingStatisticFragment extends Fragment {
 
     private void select12Months() {
         selectedPeriod = 365;
-        startDate = LocalDate.now().minusDays(selectedPeriod - 1);
+        startDate = LocalDate.now().withMonth(7).withDayOfMonth(1).minusYears(1);
         fetchAndDisplayData();
     }
 
@@ -258,7 +239,12 @@ public class DrinkingStatisticFragment extends Fragment {
         try {
             LocalDate endDate = LocalDate.now();
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d MMMM", new Locale("ru"));
-            String startDateFormatted = startDate.format(formatter);
+            String startDateFormatted;
+            if (selectedPeriod == 365) {
+                startDateFormatted = startDate.format(DateTimeFormatter.ofPattern("MMMM yyyy", new Locale("ru")));
+            } else {
+                startDateFormatted = startDate.format(formatter);
+            }
             String endDateFormatted = endDate.format(formatter);
             String dateRange = startDateFormatted + " - " + endDateFormatted;
             daysTextView.setText(dateRange);
@@ -277,15 +263,19 @@ public class DrinkingStatisticFragment extends Fragment {
                                 }
                             }
                         }
-
                         updateChart(waterDataMap);
+                        if (!waterDataMap.isEmpty()) {
+                            float totalIntake = 0;
+                            for (int intake : waterDataMap.values()) {
+                                totalIntake += intake;
+                            }
+                            float averageIntake = totalIntake / selectedPeriod;
+                            textValue.setText(String.format(Locale.getDefault(), "%.0f мл в день", averageIntake));
 
-                        float totalIntake = 0;
-                        for (int intake : waterDataMap.values()) {
-                            totalIntake += intake;
+                        } else {
+                            textValue.setText(String.format(Locale.getDefault(), "Нет данных за этот период!"));
                         }
-                        float averageIntake = totalIntake / selectedPeriod;
-                        textValue.setText(String.format(Locale.getDefault(), "%.0f мл в день", averageIntake));                 }
+                        }
 
                     @Override
                     public void onCancelled(@NonNull DatabaseError error) {
@@ -309,42 +299,50 @@ public class DrinkingStatisticFragment extends Fragment {
                 LocalDate currentDate = startDate;
                 for (int i = 0; i < selectedPeriod; i++) {
                     int dailyIntake = waterDataMap.getOrDefault(currentDate, 0);
-                    entries.add(new BarEntry(i, dailyIntake));
+                    entries.add(new BarEntry(i, dailyIntake)); // Всегда добавляем значения, включая нули
                     dates.add(String.valueOf(i + 1));
                     currentDate = currentDate.plusDays(1);
                 }
             } else if (selectedPeriod == 30) {
                 LocalDate currentDate = startDate;
-                for (int i = 0; i < selectedPeriod; i += 5) {
-                    float totalIntake = 0;
-                    int count = 0;
-                    for (int j = 0; j < 5 && (i + j) < selectedPeriod; j++) {
-                        totalIntake += waterDataMap.getOrDefault(currentDate.plusDays(i + j), 0);
-                        count++;
+                for (int i = 0; i < selectedPeriod; i++) {
+                    int dailyIntake = waterDataMap.getOrDefault(currentDate, 0);
+                    entries.add(new BarEntry(i, dailyIntake)); // Всегда добавляем значения, включая нули
+                    if (i % 5 == 0) {
+                        dates.add(String.valueOf(i + 1));
+                    } else {
+                        dates.add("");
                     }
-                    float averageIntake = totalIntake / count;
-                    entries.add(new BarEntry(i / 5, averageIntake));
-                    dates.add(String.valueOf(i / 5 + 1));
+                    currentDate = currentDate.plusDays(1);
                 }
             } else if (selectedPeriod == 365) {
-                for (int i = 0; i < 12; i++) {
-                    LocalDate monthStart = startDate.plusMonths(i).withDayOfMonth(1);
-                    LocalDate monthEnd = monthStart.plusMonths(1).minusDays(1);
-                    float totalIntake = 0;
-                    int count = 0;
-                    for (LocalDate date = monthStart; !date.isAfter(monthEnd); date = date.plusDays(1)) {
-                        totalIntake += waterDataMap.getOrDefault(date, 0);
-                        count++;
+                int i = 0;
+                for (LocalDate date = startDate; !date.isAfter(startDate.plusYears(1).minusDays(1)); date = date.plusMonths(1)) {
+                    int monthTotal = 0;
+                    int daysInMonth = date.lengthOfMonth();
+                    for (LocalDate d = date; !d.isAfter(date.plusDays(daysInMonth - 1)); d = d.plusDays(1)) {
+                        monthTotal += waterDataMap.getOrDefault(d, 0);
                     }
-                    float averageIntake = totalIntake / count;
-                    entries.add(new BarEntry(i, averageIntake));
-                    dates.add(String.valueOf(monthStart.getMonthValue()));
+                    int averageIntake = monthTotal / daysInMonth;
+                    entries.add(new BarEntry(i++, averageIntake));
+                    dates.add(String.valueOf(date.getMonthValue()));
                 }
             }
 
             BarDataSet dataSet = new BarDataSet(entries, "Water Intake");
             dataSet.setColor(getResources().getColor(R.color.green));
-            dataSet.setDrawValues(false);
+
+            dataSet.setDrawValues(true);
+            dataSet.setValueFormatter(new ValueFormatter() {
+                @Override
+                public String getFormattedValue(float value) {
+                    if (value == 0) {
+                        return "";
+                    } else {
+                        return super.getFormattedValue(value);
+                    }
+                }
+            });
 
             BarData barData = new BarData(dataSet);
 
@@ -378,7 +376,7 @@ public class DrinkingStatisticFragment extends Fragment {
             limitLineLeft.setLineWidth(1f);
             leftAxis.addLimitLine(limitLineLeft);
             leftAxis.setDrawLimitLinesBehindData(true);
-
+            barChart.animateY(1000);
             barChart.invalidate();
         } catch (Exception exception) {
             CustomDialog dialogFragment = new CustomDialog("Произошла ошибка: " + exception.getMessage(), false);

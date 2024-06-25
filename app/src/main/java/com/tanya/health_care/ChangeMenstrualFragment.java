@@ -1,12 +1,12 @@
 package com.tanya.health_care;
 
+import android.app.ProgressDialog;
 import android.os.Bundle;
-import android.util.Log;
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -23,6 +23,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.tanya.health_care.dialog.CustomDialog;
 import com.tanya.health_care.code.GetSplittedPathChild;
+import com.tanya.health_care.dialog.ProgressBarDialog;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -38,6 +39,7 @@ public class ChangeMenstrualFragment extends Fragment {
     private FirebaseDatabase mDb;
     private DatabaseReference menstrualRef;
     private GetSplittedPathChild pC = new GetSplittedPathChild();
+    private ProgressBarDialog progressDialog;
 
     public ChangeMenstrualFragment() {
         selectedRanges = new ArrayList<>();
@@ -83,7 +85,7 @@ public class ChangeMenstrualFragment extends Fragment {
             back.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    HomeActivity homeActivity = (HomeActivity) getActivity();
+                    HomeActivity homeActivity = (HomeActivity) requireActivity();
                     homeActivity.replaceFragment(new MenstrualFragment());
                 }
             });
@@ -94,10 +96,10 @@ public class ChangeMenstrualFragment extends Fragment {
                     saveSelectedRangesToDatabase();
                 }
             });
-
-        } catch (Exception exception) {
+        }
+        catch (Exception exception) {
             CustomDialog dialogFragment = new CustomDialog("Произошла ошибка: " + exception.getMessage(), false);
-            dialogFragment.show(getChildFragmentManager(), "custom_dialog");
+            dialogFragment.show(getParentFragmentManager(), "custom_dialog");
         }
     }
 
@@ -117,7 +119,6 @@ public class ChangeMenstrualFragment extends Fragment {
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     Map<String, Object> startDateMap = (Map<String, Object>) snapshot.child("startDate").getValue();
                     Map<String, Object> endDateMap = (Map<String, Object>) snapshot.child("endDate").getValue();
-
 
                     if (startDateMap != null && endDateMap != null) {
                         Long startDateMillis = (Long) startDateMap.get("timeInMillis");
@@ -169,21 +170,39 @@ public class ChangeMenstrualFragment extends Fragment {
             dialogFragment.show(getParentFragmentManager(), "custom_dialog");
             return;
         }
+
+        ProgressBarDialog progressDialog = ProgressBarDialog.newInstance(3000);
+        progressDialog.show(getParentFragmentManager(), "ProgressDialog");
+        progressDialog.setCancelable(false);
+
         user = FirebaseAuth.getInstance().getCurrentUser();
         mDb = FirebaseDatabase.getInstance();
         menstrualRef = mDb.getReference("users")
                 .child(pC.getSplittedPathChild(user.getEmail()))
                 .child("characteristic")
-                .child("menstrual").child("dates").push();
-
+                .child("menstrual").child("dates");
 
         for (Calendar[] range : selectedRanges) {
-            DatabaseReference newRangeRef = menstrualRef;
+            DatabaseReference newRangeRef = menstrualRef.push();
             newRangeRef.child("startDate").child("timeInMillis").setValue(range[0].getTimeInMillis());
             newRangeRef.child("endDate").child("timeInMillis").setValue(range[1].getTimeInMillis());
         }
 
-        CustomDialog dialogFragment = new CustomDialog("Даты циклов успешно сохранены!", true);
-        dialogFragment.show(getParentFragmentManager(), "custom_dialog");
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                progressDialog.dismiss();
+                CustomDialog successDialog = new CustomDialog("Даты циклов успешно сохранены!", true);
+                successDialog.show(getParentFragmentManager(), "custom_dialog");
+            }
+        }, 2000); // Change the delay time as per your requirement
+    }
+
+    @Override
+    public void onDestroyView() {
+        if (progressDialog != null && progressDialog.getDialog() != null && progressDialog.getDialog().isShowing()) {
+            progressDialog.dismiss();
+        }
+        super.onDestroyView();
     }
 }

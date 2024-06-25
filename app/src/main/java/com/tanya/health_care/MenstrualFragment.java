@@ -42,20 +42,26 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 
 public class MenstrualFragment extends Fragment {
     private CalendarView calendarView;
     private FirebaseUser user;
-    ArrayList<MenstrualData> menstrualDataArrayList;
-
+    LinearLayout newMenstrual;
+    ArrayList<MenstrualData> menstrualDataArrayList = new ArrayList<>();;
     ImageView statsIcon;
     private FirebaseDatabase mDb;
     private GetSplittedPathChild pC = new GetSplittedPathChild();
     private Button back, add, mySymptom;
-    private TextView menstrualInfo;
+    private TextView menstrualInfo, days;
+    boolean menstrulDaysEnabled;
+    boolean fertileDaysEnabled;
     private Date selectedDate = new Date();
     int duration = 28;
+    long lastMenstrual;
     Toolbar toolbar;
+    TextView fertileDaysTextView, nextCycleTextView, currentCycleTextView, ovulationTextView;
+
     public MenstrualFragment() {
     }
 
@@ -96,10 +102,16 @@ public class MenstrualFragment extends Fragment {
 
     private void init(View view) {
         try {
+            newMenstrual = view.findViewById(R.id.newMenstrual);
             back = view.findViewById(R.id.back);
             add = view.findViewById(R.id.add);
             statsIcon = view.findViewById(R.id.statsIcon);
             mySymptom = view.findViewById(R.id.mySymptom);
+            days = view.findViewById(R.id.days);
+            ovulationTextView = view.findViewById(R.id.ovulation);
+            fertileDaysTextView = view.findViewById(R.id.fertiles);
+            nextCycleTextView = view.findViewById(R.id.nextMenstrual);
+            currentCycleTextView = view.findViewById(R.id.menstrual);
             menstrualInfo = view.findViewById(R.id.menstrualInfo);
             Toolbar toolbar = view.findViewById(R.id.toolbar);
             ((AppCompatActivity) requireActivity()).setSupportActionBar(toolbar);
@@ -110,10 +122,6 @@ public class MenstrualFragment extends Fragment {
             calendarView.setWeekStarWithMon();
             calendarView.setSelectMultiMode();
 
-            DatabaseReference durationRef = mDb.getReference("users")
-                    .child(pC.getSplittedPathChild(user.getEmail()))
-                    .child("characteristic")
-                    .child("menstrual").child("duration");
             statsIcon.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -122,21 +130,28 @@ public class MenstrualFragment extends Fragment {
                 }
             });
 
-            durationRef.addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    if (dataSnapshot.exists()) {
-                        duration = dataSnapshot.getValue(Integer.class);
-                    }
-                }
 
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-                    CustomDialog dialogFragment = new CustomDialog("Произошла ошибка: " + databaseError.getMessage(), false);
-                    dialogFragment.show(getParentFragmentManager(), "custom_dialog");                }
+            fetchDurationAndPermissionsAsync().thenAcceptAsync(data -> {
+                if (data != null && !data.isEmpty()) {
+                    duration = (int) data.get("duration");
+                    boolean[] permissions = (boolean[]) data.get("permissions");
+
+                    menstrulDaysEnabled = permissions[0];
+                    fertileDaysEnabled = permissions[1];
+
+                    fetchMenstrualData();
+                } else {
+                    // Handle case where data is null or empty
+                    CustomDialog dialogFragment = new CustomDialog("Ошибка при загрузке данных", false);
+                    dialogFragment.show(getParentFragmentManager(), "custom_dialog");
+                }
+            }).exceptionally(e -> {
+                // Handle exceptions
+                CustomDialog dialogFragment = new CustomDialog("Произошла ошибка: " + e.getMessage(), false);
+                dialogFragment.show(getParentFragmentManager(), "custom_dialog");
+                return null;
             });
 
-            fetchMenstrualData();
             java.util.Calendar today = java.util.Calendar.getInstance();
             Calendar todayCalendar = new Calendar();
             todayCalendar.setYear(today.get(java.util.Calendar.YEAR));
@@ -198,6 +213,55 @@ public class MenstrualFragment extends Fragment {
         }
     }
 
+    private CompletableFuture<Map<String, Object>> fetchDurationAndPermissionsAsync() {
+        CompletableFuture<Map<String, Object>> future = new CompletableFuture<>();
+
+        DatabaseReference userRef = mDb.getReference("users")
+                .child(pC.getSplittedPathChild(user.getEmail()))
+                .child("characteristic")
+                .child("menstrual");
+
+        userRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                Map<String, Object> data = new HashMap<>();
+                if (snapshot.exists()) {
+                    if (snapshot.hasChild("duration")) {
+                        data.put("duration", snapshot.child("duration").getValue(Integer.class));
+                    } else {
+                        data.put("duration", 0); // Default value if duration is not found
+                    }
+
+                    boolean[] permissions = new boolean[2];
+                    permissions[0] = true; // Default value for forecastMenstrual
+                    permissions[1] = true; // Default value for forecastFertile
+
+                    if (snapshot.hasChild("forecastMenstrual")) {
+                        permissions[0] = snapshot.child("forecastMenstrual").getValue(Boolean.class);
+                    }
+                    if (snapshot.hasChild("forecastFertule")) {
+                        permissions[1] = snapshot.child("forecastFertule").getValue(Boolean.class);
+                    }
+
+                    data.put("permissions", permissions);
+                } else {
+                    data.put("duration", 0); // Default value if data snapshot does not exist
+                    boolean[] defaultPermissions = {true, true};
+                    data.put("permissions", defaultPermissions); // Default permissions if data snapshot does not exist
+                }
+
+                future.complete(data);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                future.completeExceptionally(error.toException());
+            }
+        });
+
+        return future;
+    }
+
     private void fetchMenstrualData() {
         int colorMenstrual = getResources().getColor(R.color.pink);
         int colorFertile = getResources().getColor(R.color.blue);
@@ -213,6 +277,7 @@ public class MenstrualFragment extends Fragment {
         menstrualRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+                menstrualDataArrayList.clear();
                 Map<String, com.haibin.calendarview.Calendar> map = new HashMap<>();
                 Log.d("MenstrualFragment", "DataSnapshot: " + dataSnapshot);
 
@@ -220,7 +285,8 @@ public class MenstrualFragment extends Fragment {
                 int cycleDuration = 0;
 
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                    GenericTypeIndicator<HashMap<String, Object>> genericTypeIndicator = new GenericTypeIndicator<HashMap<String, Object>>() {};
+                    GenericTypeIndicator<HashMap<String, Object>> genericTypeIndicator = new GenericTypeIndicator<HashMap<String, Object>>() {
+                    };
                     HashMap<String, Object> startDateMap = snapshot.child("startDate").getValue(genericTypeIndicator);
                     HashMap<String, Object> endDateMap = snapshot.child("endDate").getValue(genericTypeIndicator);
 
@@ -237,9 +303,16 @@ public class MenstrualFragment extends Fragment {
 
                     cycleDuration = duration;
 
-                    Log.d("MenstrualFragment", "StartDateMillis: " + startDateMillis);
-                    Log.d("MenstrualFragment", "EndDateMillis: " + endDateMillis);
-                    Log.d("MenstrualFragment", "Duration: " + duration);
+                    java.util.Calendar startDate = java.util.Calendar.getInstance();
+                    startDate.setTimeInMillis(startDateMillis);
+
+                    java.util.Calendar endDate = java.util.Calendar.getInstance();
+                    endDate.setTimeInMillis(endDateMillis);
+
+                    MenstrualData menstrualData = new MenstrualData();
+                    menstrualData.startDate = startDate;
+                    menstrualData.endDate = endDate;
+                    menstrualDataArrayList.add(menstrualData);
 
                     java.util.Calendar startCalendar = java.util.Calendar.getInstance();
                     startCalendar.setTimeInMillis(startDateMillis);
@@ -276,49 +349,107 @@ public class MenstrualFragment extends Fragment {
                     }
                 }
 
-                if (cycleDuration > 0 && lastEndDateMillis > 0) {
-                    java.util.Calendar predictionStartCalendar = java.util.Calendar.getInstance();
-                    predictionStartCalendar.setTimeInMillis(lastEndDateMillis);
-                    predictionStartCalendar.add(java.util.Calendar.DAY_OF_MONTH, cycleDuration);
+                // Сортировка списка и получение первого элемента
+                menstrualDataArrayList.sort(new SortMenstrual());
+                MenstrualData firstElement = menstrualDataArrayList.get(0);
+                lastMenstrual = firstElement.endDate.getTimeInMillis();
+                if(menstrulDaysEnabled || fertileDaysEnabled)
+                {
+                    newMenstrual.setVisibility(View.VISIBLE);
+                    if (firstElement != null && firstElement.endDate.getTimeInMillis() > 0 && duration > 0) {
+                        java.util.Calendar predictionStartCalendar = java.util.Calendar.getInstance();
+                        predictionStartCalendar.setTimeInMillis(firstElement.endDate.getTimeInMillis());
+                        predictionStartCalendar.add(java.util.Calendar.DAY_OF_MONTH, duration);
 
-                    for (int i = 0; i < 12; i++) {
-                        java.util.Calendar predictionEndCalendar = (java.util.Calendar) predictionStartCalendar.clone();
-                        predictionEndCalendar.add(java.util.Calendar.DAY_OF_MONTH, 5); // Assuming menstrual period lasts 5 days
+                        for (int i = 0; i < 12; i++) {
+                            java.util.Calendar predictionEndCalendar = (java.util.Calendar) predictionStartCalendar.clone();
+                            predictionEndCalendar.add(java.util.Calendar.DAY_OF_MONTH, 5); // Assuming menstrual period lasts 5 days
 
-                        while (!predictionStartCalendar.after(predictionEndCalendar)) {
-                            com.haibin.calendarview.Calendar calendar = new com.haibin.calendarview.Calendar();
-                            calendar.setYear(predictionStartCalendar.get(java.util.Calendar.YEAR));
-                            calendar.setMonth(predictionStartCalendar.get(java.util.Calendar.MONTH) + 1);
-                            calendar.setDay(predictionStartCalendar.get(java.util.Calendar.DAY_OF_MONTH));
-                            calendar.setSchemeColor(overcolorMenstrual);
-                            calendar.setScheme(" ");
-                            map.put(calendar.toString(), calendar);
+                            if(menstrulDaysEnabled){
+                                while (!predictionStartCalendar.after(predictionEndCalendar)) {
+                                    com.haibin.calendarview.Calendar calendar = new com.haibin.calendarview.Calendar();
+                                    calendar.setYear(predictionStartCalendar.get(java.util.Calendar.YEAR));
+                                    calendar.setMonth(predictionStartCalendar.get(java.util.Calendar.MONTH) + 1);
+                                    calendar.setDay(predictionStartCalendar.get(java.util.Calendar.DAY_OF_MONTH));
+                                    calendar.setSchemeColor(overcolorMenstrual);
+                                    calendar.setScheme(" ");
+                                    map.put(calendar.toString(), calendar);
 
-                            predictionStartCalendar.add(java.util.Calendar.DAY_OF_MONTH, 1);
+                                    predictionStartCalendar.add(java.util.Calendar.DAY_OF_MONTH, 1);
+                                }
+                            }
+                            java.util.Calendar fertileStartCalendar = (java.util.Calendar) predictionEndCalendar.clone();
+                            fertileStartCalendar.add(java.util.Calendar.DAY_OF_MONTH, 7);
+                            java.util.Calendar fertileEndCalendar = (java.util.Calendar) fertileStartCalendar.clone();
+                            fertileEndCalendar.add(java.util.Calendar.DAY_OF_MONTH, 6);
+
+                            if(fertileDaysEnabled) {
+                                while (!fertileStartCalendar.after(fertileEndCalendar)) {
+                                    com.haibin.calendarview.Calendar calendar = new com.haibin.calendarview.Calendar();
+                                    calendar.setYear(fertileStartCalendar.get(java.util.Calendar.YEAR));
+                                    calendar.setMonth(fertileStartCalendar.get(java.util.Calendar.MONTH) + 1);
+                                    calendar.setDay(fertileStartCalendar.get(java.util.Calendar.DAY_OF_MONTH));
+                                    calendar.setSchemeColor(overcolorFertile);
+                                    calendar.setScheme(" ");
+                                    map.put(calendar.toString(), calendar);
+
+                                    fertileStartCalendar.add(java.util.Calendar.DAY_OF_MONTH, 1);
+                                }
+                            }
+
+                            predictionStartCalendar = (java.util.Calendar) predictionEndCalendar.clone();
+                            predictionStartCalendar.add(java.util.Calendar.DAY_OF_MONTH, duration);
                         }
+                        java.util.Calendar currentCycleStart = (java.util.Calendar) firstElement.startDate.clone();
+                        java.util.Calendar currentCycleEnd = (java.util.Calendar) firstElement.endDate.clone();
 
-                        java.util.Calendar fertileStartCalendar = (java.util.Calendar) predictionEndCalendar.clone();
-                        fertileStartCalendar.add(java.util.Calendar.DAY_OF_MONTH, 7);
-                        java.util.Calendar fertileEndCalendar = (java.util.Calendar) fertileStartCalendar.clone();
-                        fertileEndCalendar.add(java.util.Calendar.DAY_OF_MONTH, 6);
+                        java.util.Calendar nextCycleStart = (java.util.Calendar) currentCycleEnd.clone();
+                        nextCycleStart.add(java.util.Calendar.DAY_OF_MONTH, cycleDuration);
 
-                        while (!fertileStartCalendar.after(fertileEndCalendar)) {
-                            com.haibin.calendarview.Calendar calendar = new com.haibin.calendarview.Calendar();
-                            calendar.setYear(fertileStartCalendar.get(java.util.Calendar.YEAR));
-                            calendar.setMonth(fertileStartCalendar.get(java.util.Calendar.MONTH) + 1);
-                            calendar.setDay(fertileStartCalendar.get(java.util.Calendar.DAY_OF_MONTH));
-                            calendar.setSchemeColor(overcolorFertile);
-                            calendar.setScheme(" ");
-                            map.put(calendar.toString(), calendar);
+                        java.util.Calendar fertileStart = (java.util.Calendar) currentCycleEnd.clone();
+                        fertileStart.add(java.util.Calendar.DAY_OF_MONTH, 7);
+                        java.util.Calendar fertileEnd = (java.util.Calendar) fertileStart.clone();
+                        fertileEnd.add(java.util.Calendar.DAY_OF_MONTH, 6);
 
-                            fertileStartCalendar.add(java.util.Calendar.DAY_OF_MONTH, 1);
-                        }
+                        java.util.Calendar ovulationDay = (java.util.Calendar) fertileStart.clone();
+                        ovulationDay.add(java.util.Calendar.DAY_OF_MONTH, 3);
 
-                        predictionStartCalendar = (java.util.Calendar) predictionEndCalendar.clone();
-                        predictionStartCalendar.add(java.util.Calendar.DAY_OF_MONTH, cycleDuration);
+                        currentCycleTextView.setText(
+                                String.format("%d-%d %s",
+                                        currentCycleStart.get(java.util.Calendar.DAY_OF_MONTH),
+                                        currentCycleEnd.get(java.util.Calendar.DAY_OF_MONTH),
+                                        getMonthName(currentCycleStart.get(java.util.Calendar.MONTH))
+                                )
+                        );
+
+                        nextCycleTextView.setText(
+                                String.format("%d %s",
+                                        nextCycleStart.get(java.util.Calendar.DAY_OF_MONTH),
+                                        getMonthName(nextCycleStart.get(java.util.Calendar.MONTH))
+                                )
+                        );
+
+                        fertileDaysTextView.setText(
+                                String.format("%d-%d %s",
+                                        fertileStart.get(java.util.Calendar.DAY_OF_MONTH),
+                                        fertileEnd.get(java.util.Calendar.DAY_OF_MONTH),
+                                        getMonthName(fertileStart.get(java.util.Calendar.MONTH))
+                                )
+                        );
+
+                        ovulationTextView.setText(
+                                String.format("%d %s",
+                                        ovulationDay.get(java.util.Calendar.DAY_OF_MONTH),
+                                        getMonthName(ovulationDay.get(java.util.Calendar.MONTH))
+                                )
+                        );
                     }
+
                 }
 
+                else{
+                    newMenstrual.setVisibility(View.GONE);
+                }
                 calendarView.setSchemeDate(map);
             }
 
@@ -329,7 +460,6 @@ public class MenstrualFragment extends Fragment {
             }
         });
     }
-
     private void calculateAndDisplayInfo(Calendar calendar) {
         DatabaseReference menstrualRef = mDb.getReference("users")
                 .child(pC.getSplittedPathChild(user.getEmail()))
@@ -341,21 +471,22 @@ public class MenstrualFragment extends Fragment {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 boolean isMenstrualDay = false;
                 boolean isFertileDay = false;
+                boolean isCycleDay = false;
                 int dayInCycle = 0;
                 int nextMenstrualDays = Integer.MAX_VALUE;
                 int nextFertileDays = Integer.MAX_VALUE;
+                long startDateMillis = 0;
+                long endDateMillis = 0;
 
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     GenericTypeIndicator<HashMap<String, Object>> genericTypeIndicator = new GenericTypeIndicator<HashMap<String, Object>>() {};
                     HashMap<String, Object> startDateMap = snapshot.child("startDate").getValue(genericTypeIndicator);
                     HashMap<String, Object> endDateMap = snapshot.child("endDate").getValue(genericTypeIndicator);
 
-                    long startDateMillis = 0;
                     if (startDateMap != null && startDateMap.containsKey("timeInMillis")) {
                         startDateMillis = (long) startDateMap.get("timeInMillis");
                     }
 
-                    long endDateMillis = 0;
                     if (endDateMap != null && endDateMap.containsKey("timeInMillis")) {
                         endDateMillis = (long) endDateMap.get("timeInMillis");
                     }
@@ -390,7 +521,7 @@ public class MenstrualFragment extends Fragment {
                                     fertileStartCalendar.get(java.util.Calendar.DAY_OF_MONTH) == calendar.getDay()) {
                                 isFertileDay = true;
                                 dayInCycle = (int) ((fertileStartCalendar.getTimeInMillis() - endDateMillis - 7 * (1000 * 60 * 60 * 24)) / (1000 * 60 * 60 * 24)) + 1;
-                                break;
+                            break;
                             }
                             fertileStartCalendar.add(java.util.Calendar.DAY_OF_MONTH, 1);
                         }
@@ -399,8 +530,7 @@ public class MenstrualFragment extends Fragment {
                     if (isMenstrualDay || isFertileDay) {
                         break;
                     }
-                    java.util.Calendar today = java.util.Calendar.getInstance();
-                    long todayMillis = today.getTimeInMillis();
+                    long todayMillis = calendar.getTimeInMillis();
 
                     if (startDateMillis > todayMillis) {
                         nextMenstrualDays = Math.min(nextMenstrualDays, (int) ((startDateMillis - todayMillis) / (1000 * 60 * 60 * 24)));
@@ -409,19 +539,38 @@ public class MenstrualFragment extends Fragment {
                     }
                 }
 
+                String info = "";
+                String dayText = "";
+
                 if (isMenstrualDay) {
-                    menstrualInfo.setText("Менструальный день: день " + dayInCycle + ".");
+                    dayText = dayInCycle + " день";
+                    info = "Менструации";
                 } else if (isFertileDay) {
-                    menstrualInfo.setText("Фертильный день: день " + dayInCycle + ".");
+                    dayText = dayInCycle + " день";
+                    info = "Фертильный день";
                 } else {
-                    String info = "";
                     if (nextMenstrualDays < Integer.MAX_VALUE) {
-                        info += " Менструация через " + nextMenstrualDays + " дней.";
+                        info = "Менструация";
+                        dayText = "через " + nextMenstrualDays +1 + " дней";
                     } else if (nextFertileDays < Integer.MAX_VALUE) {
-                        info += " Фертильные дни через " + nextFertileDays + " дней.";
+                        info = "Фертильные дни";
+                        nextFertileDays -= 6;
+                        dayText = "через " + nextFertileDays + " дней";
+                    } else {
+                        long todayMillis = calendar.getTimeInMillis();
+                        long cycleStartDateMillis = startDateMillis;
+                        long cycleEndDateMillis = endDateMillis;
+
+                        if (todayMillis > cycleStartDateMillis) {
+                            int daysPassed = (int) ((todayMillis - lastMenstrual) / (1000 * 60 * 60 * 24)) + 1;
+                            dayText = daysPassed +1 + " день";
+                            info = "Цикла";
+                        }
                     }
-                    menstrualInfo.setText(info);
                 }
+
+                days.setText(dayText);
+                menstrualInfo.setText(info);
             }
 
             @Override
@@ -435,5 +584,9 @@ public class MenstrualFragment extends Fragment {
         java.util.Calendar cal = java.util.Calendar.getInstance();
         cal.set(calendar.getYear(), calendar.getMonth() - 1, calendar.getDay());
         return cal.getTime();
+    }
+    private String getMonthName(int month) {
+        String[] monthNames = {"янв.", "февр.", "март", "апр.", "май", "июн.", "июл.", "авг.", "сент.", "окт.", "нояб.", "дек."};
+        return monthNames[month];
     }
 }

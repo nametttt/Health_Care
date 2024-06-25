@@ -59,6 +59,7 @@ public class FoodFragment extends Fragment {
     EditText searchEditText;
     String searchText;
     String Add;
+    boolean allFood, myFood;
     public String nutritionId;
     public Date nutritionDate;
     public String nutritionType;
@@ -98,12 +99,15 @@ public class FoodFragment extends Fragment {
             searchImage = v.findViewById(R.id.searchImage);
             recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
             recyclerView.setAdapter(adapter);
-
+            myFood = false;
+            allFood = true;
             addDataOnRecyclerView();
 
             allFoods.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    myFood = false;
+                    allFood = true;
                     updateButtonAppearance(allFoods, myFoods);
                     addDataOnRecyclerView();
                 }
@@ -112,6 +116,8 @@ public class FoodFragment extends Fragment {
             myFoods.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    myFood = true;
+                    allFood = false;
                     updateButtonAppearance(myFoods, allFoods);
                     addUserSpecificDataOnRecyclerView();
                 }
@@ -144,11 +150,16 @@ public class FoodFragment extends Fragment {
 
                 @Override
                 public void onTextChanged(CharSequence s, int start, int before, int count) {
-                    searchText = searchEditText.getText().toString().trim();
+                    String searchText = searchEditText.getText().toString().trim();
                     if (searchText.isEmpty()) {
                         searchImage.setClickable(false);
                         searchImage.setImageResource(R.drawable.search);
-                        addDataOnRecyclerView();
+                        if (allFood) {
+                            addDataOnRecyclerView();
+                        } else if (myFood) {
+                            addUserSpecificDataOnRecyclerView();
+                        }
+
                     } else {
                         searchImage.setClickable(true);
                         searchImage.setImageResource(R.drawable.close);
@@ -176,19 +187,24 @@ public class FoodFragment extends Fragment {
 
     private void addDataOnRecyclerView() {
         try {
-            ValueEventListener valueEventListener = new ValueEventListener() {
+            ref = mDb.getReference().child("foods");
+            ref.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    if (foodDataArrayList.size() > 0) {
-                        foodDataArrayList.clear();
-                    }
+                    foodDataArrayList.clear();
                     for (DataSnapshot ds : snapshot.getChildren()) {
                         FoodData ps = ds.getValue(FoodData.class);
                         if (ps != null && (ps.getUserUid() == null || ps.getUserUid().isEmpty())) {
-                            foodDataArrayList.add(ps);
+                            if(searchEditText.getText().toString().isEmpty()) {
+                                foodDataArrayList.add(ps);
+                            }
+                            else {
+                                if(ps.getName().toLowerCase().contains(searchEditText.getText().toString().toLowerCase())){
+                                    foodDataArrayList.add(ps);
+                                }
+                            }
                         }
                     }
-
                     findAndRemoveDuplicates(selectedFoods, foodDataArrayList);
                     foodDataArrayList.sort(new SortByName());
                     adapter.notifyDataSetChanged();
@@ -196,12 +212,8 @@ public class FoodFragment extends Fragment {
 
                 @Override
                 public void onCancelled(@NonNull DatabaseError error) {
-                    CustomDialog dialogFragment = new CustomDialog("Произошла ошибка: " + error.getMessage(), false);
-                    dialogFragment.show(getParentFragmentManager(), "custom_dialog");
                 }
-            };
-            ref = mDb.getReference().child("foods");
-            ref.addValueEventListener(valueEventListener);
+            });
         } catch (Exception exception) {
             CustomDialog dialogFragment = new CustomDialog("Произошла ошибка: " + exception.getMessage(), false);
             dialogFragment.show(getParentFragmentManager(), "custom_dialog");
@@ -210,41 +222,34 @@ public class FoodFragment extends Fragment {
 
     private void addUserSpecificDataOnRecyclerView() {
         try {
-            FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
-            if (currentUser != null) {
-                String userEmail = currentUser.getEmail();
-                String uid = pC.getSplittedPathChild(userEmail);
-
-                ValueEventListener valueEventListener = new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        if (foodDataArrayList.size() > 0) {
-                            foodDataArrayList.clear();
-                        }
-                        for (DataSnapshot ds : snapshot.getChildren()) {
-                            FoodData ps = ds.getValue(FoodData.class);
-                            if (ps != null && uid.equals(ps.getUserUid())) {
+            ref = mDb.getReference().child("foods");
+            ref.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    foodDataArrayList.clear();
+                    for (DataSnapshot ds : snapshot.getChildren()) {
+                        FoodData ps = ds.getValue(FoodData.class);
+                        if (ps != null && (ps.getUserUid() != null)) {
+                            if(searchEditText.getText().toString().isEmpty()) {
                                 foodDataArrayList.add(ps);
                             }
+                            else {
+                                if(ps.getName().toLowerCase().contains(searchEditText.getText().toString().toLowerCase())){
+                                    foodDataArrayList.add(ps);
+                                }
+                            }
                         }
-                        findAndRemoveDuplicates(selectedFoods, foodDataArrayList);
-                        foodDataArrayList.sort(new SortByName());
-                        adapter.notifyDataSetChanged();
                     }
+                    findAndRemoveDuplicates(selectedFoods, foodDataArrayList);
 
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
-                        CustomDialog dialogFragment = new CustomDialog("Произошла ошибка: " + error.getMessage(), false);
-                        dialogFragment.show(getParentFragmentManager(), "custom_dialog");
-                    }
-                };
+                    foodDataArrayList.sort(new SortByName());
+                    adapter.notifyDataSetChanged();
+                }
 
-                ref = mDb.getReference().child("foods");
-                ref.addValueEventListener(valueEventListener);
-            } else {
-                CustomDialog dialogFragment = new CustomDialog("Ошибка: Пользователь не авторизован!", false);
-                dialogFragment.show(getParentFragmentManager(), "custom_dialog");
-            }
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+                }
+            });
         } catch (Exception exception) {
             CustomDialog dialogFragment = new CustomDialog("Произошла ошибка: " + exception.getMessage(), false);
             dialogFragment.show(getParentFragmentManager(), "custom_dialog");
@@ -274,22 +279,20 @@ public class FoodFragment extends Fragment {
                     foodDataArrayList.clear();
                     for (DataSnapshot ds : snapshot.getChildren()) {
                         FoodData foodData = ds.getValue(FoodData.class);
-                        if (foodData != null ) {
-                            if (foodData.getName().toLowerCase().contains(searchText.toLowerCase())) {
-                                foodDataArrayList.add(foodData);
-                            }
+                        if (foodData != null && foodData.getName().toLowerCase().contains(searchText.toLowerCase())) {
+                            foodDataArrayList.add(foodData);
                         }
                     }
+                    findAndRemoveDuplicates(selectedFoods, foodDataArrayList);
+
+                    foodDataArrayList.sort(new SortByName());
                     adapter.notifyDataSetChanged();
                 }
 
                 @Override
-                public void onCancelled(@NonNull DatabaseError error) {
-
-                }
+                public void onCancelled(@NonNull DatabaseError error) {}
             });
-        }
-        catch (Exception exception) {
+        } catch (Exception exception) {
             CustomDialog dialogFragment = new CustomDialog("Произошла ошибка: " + exception.getMessage(), false);
             dialogFragment.show(getParentFragmentManager(), "custom_dialog");
         }

@@ -26,6 +26,7 @@ import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
+import com.github.mikephil.charting.formatter.ValueFormatter;
 import com.github.mikephil.charting.listener.ChartTouchListener;
 import com.github.mikephil.charting.listener.OnChartGestureListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -35,6 +36,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.tanya.health_care.code.Food;
+import com.tanya.health_care.code.FoodData;
 import com.tanya.health_care.code.GetSplittedPathChild;
 import com.tanya.health_care.code.StraightBarChartRenderer;
 import com.tanya.health_care.code.NutritionData;
@@ -52,9 +55,12 @@ import java.util.Map;
 public class NutritionStatistic extends Fragment {
 
     private BarChart barChart;
+    ArrayList<FoodData> foods = new ArrayList<>();
     private TextView daysTextView, textValue;
     private AppCompatButton back, week, month, year;
     private int selectedPeriod = 7;
+    FirebaseDatabase mDb;
+
     private LocalDate startDate = LocalDate.now().minusDays(selectedPeriod - 1);
     private FirebaseUser user;
     private DatabaseReference nutritionRef, userValuesRef;
@@ -71,27 +77,6 @@ public class NutritionStatistic extends Fragment {
         return v;
     }
 
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.nutrition_menu, menu);
-        super.onCreateOptionsMenu(menu, inflater);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        HomeActivity homeActivity = (HomeActivity) getActivity();
-        switch (item.getItemId()) {
-            case R.id.normal:
-                homeActivity.replaceFragment(new NutritionValueFragment());
-                return true;
-            case R.id.aboutCharacteristic:
-                homeActivity.replaceFragment(new AboutNutritionFragment());
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }
-
     private void init(View v) {
         try {
             barChart = v.findViewById(R.id.barChart);
@@ -100,9 +85,25 @@ public class NutritionStatistic extends Fragment {
             month = v.findViewById(R.id.month);
             year = v.findViewById(R.id.year);
             daysTextView = v.findViewById(R.id.days);
-
+            mDb = FirebaseDatabase.getInstance();
             textValue = v.findViewById(R.id.textValue);
             user = FirebaseAuth.getInstance().getCurrentUser();
+            ValueEventListener valueEventListener = new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                        FoodData foodData = ds.getValue(FoodData.class);
+                        foods.add(foodData);
+                    }
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                }
+            };
+            DatabaseReference Newref = mDb.getReference().child("foods");
+            Newref.addValueEventListener(valueEventListener);
+
             if (user != null) {
                 nutritionRef = FirebaseDatabase.getInstance().getReference("users")
                         .child(new GetSplittedPathChild().getSplittedPathChild(user.getEmail()))
@@ -142,10 +143,9 @@ public class NutritionStatistic extends Fragment {
                 @Override
                 public void onClick(View v) {
                     HomeActivity homeActivity = (HomeActivity) getActivity();
-                    homeActivity.replaceFragment(new HomeFragment());
+                    homeActivity.replaceFragment(new NutritionFragment());
                 }
             });
-
 
             Description description = new Description();
             description.setEnabled(false);
@@ -254,7 +254,7 @@ public class NutritionStatistic extends Fragment {
 
     private void select12Months() {
         selectedPeriod = 365;
-        startDate = LocalDate.now().minusDays(selectedPeriod - 1);
+        startDate = LocalDate.now().withMonth(7).withDayOfMonth(1).minusYears(1);
         fetchAndDisplayData();
     }
 
@@ -262,7 +262,12 @@ public class NutritionStatistic extends Fragment {
         try {
             LocalDate endDate = LocalDate.now();
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d MMMM", new Locale("ru"));
-            String startDateFormatted = startDate.format(formatter);
+            String startDateFormatted;
+            if (selectedPeriod == 365) {
+                startDateFormatted = startDate.format(DateTimeFormatter.ofPattern("MMMM yyyy", new Locale("ru")));
+            } else {
+                startDateFormatted = startDate.format(formatter);
+            }
             String endDateFormatted = endDate.format(formatter);
             String dateRange = startDateFormatted + " - " + endDateFormatted;
             daysTextView.setText(dateRange);
@@ -277,14 +282,19 @@ public class NutritionStatistic extends Fragment {
                             if (nutritionData != null) {
                                 LocalDate date = nutritionData.nutritionTime.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
                                 if (date.isAfter(startDate.minusDays(1)) && date.isBefore(endDate.plusDays(1))) {
-                                    nutritionDataMap.put(date, nutritionDataMap.getOrDefault(date, 0) + 100);
+                                    nutritionDataMap.put(date, calculateDailyCalories(nutritionData));
                                 }
                             }
                         }
                         updateChart(nutritionDataMap);
-                        textValue.setText(String.format(Locale.getDefault(), "%d ккал в день", (int) userNutritionNorm));
+                        if (!nutritionDataMap.isEmpty()) {
+                            int totalCalories = nutritionDataMap.values().stream().mapToInt(Integer::intValue).sum();
+                            int averageCalories = totalCalories / selectedPeriod;
+                            textValue.setText(String.format(Locale.getDefault(), "%d ккал в день", averageCalories));
+                        } else {
+                            textValue.setText(String.format(Locale.getDefault(), "Нет данных за этот период!"));
+                        }
                     }
-
 
                     @Override
                     public void onCancelled(@NonNull DatabaseError error) {
@@ -297,6 +307,26 @@ public class NutritionStatistic extends Fragment {
             CustomDialog dialogFragment = new CustomDialog("Произошла ошибка: " + exception.getMessage(), false);
             dialogFragment.show(getParentFragmentManager(), "custom_dialog");
         }
+    }
+
+    private int calculateDailyCalories(NutritionData nutritionData) {
+        int dailyCalories = 0;
+        for (Food food : nutritionData.foods) {
+            String uid = food.Uid;
+            for (FoodData foodData : foods) {
+                if (foodData.getUid().equals(uid)) {
+                    float oldWeight = foodData.getWeight();
+                    float newWeight = food.coef;
+                    if (oldWeight != newWeight && oldWeight > 0) {
+                        float calorieDifference = (newWeight / oldWeight) * foodData.getCalories();
+                        dailyCalories += Math.round(calorieDifference);
+                    } else {
+                        dailyCalories += foodData.getCalories();
+                    }
+                }
+            }
+        }
+        return dailyCalories;
     }
 
     private void updateChart(Map<LocalDate, Integer> nutritionDataMap) {
@@ -314,30 +344,27 @@ public class NutritionStatistic extends Fragment {
                 }
             } else if (selectedPeriod == 30) {
                 LocalDate currentDate = startDate;
-                for (int i = 0; i < selectedPeriod; i += 5) {
-                    float totalIntake = 0;
-                    int count = 0;
-                    for (int j = 0; j < 5 && (i + j) < selectedPeriod; j++) {
-                        totalIntake += nutritionDataMap.getOrDefault(currentDate.plusDays(i + j), 0);
-                        count++;
+                for (int i = 0; i < selectedPeriod; i++) {
+                    int dailyIntake = nutritionDataMap.getOrDefault(currentDate, 0);
+                    entries.add(new BarEntry(i, dailyIntake)); // Всегда добавляем значения, включая нули
+                    if (i % 5 == 0) {
+                        dates.add(String.valueOf(i + 1));
+                    } else {
+                        dates.add("");
                     }
-                    float averageIntake = totalIntake / count;
-                    entries.add(new BarEntry(i / 5, averageIntake));
-                    dates.add(String.valueOf(i / 5 + 1));
+                    currentDate = currentDate.plusDays(1);
                 }
             } else if (selectedPeriod == 365) {
-                for (int i = 0; i < 12; i++) {
-                    LocalDate monthStart = startDate.plusMonths(i).withDayOfMonth(1);
-                    LocalDate monthEnd = monthStart.plusMonths(1).minusDays(1);
-                    float totalIntake = 0;
-                    int count = 0;
-                    for (LocalDate date = monthStart; !date.isAfter(monthEnd); date = date.plusDays(1)) {
-                        totalIntake += nutritionDataMap.getOrDefault(date, 0);
-                        count++;
+                int i = 0;
+                for (LocalDate date = startDate; !date.isAfter(startDate.plusYears(1).minusDays(1)); date = date.plusMonths(1)) {
+                    int monthTotal = 0;
+                    int daysInMonth = date.lengthOfMonth();
+                    for (LocalDate d = date; !d.isAfter(date.plusDays(daysInMonth - 1)); d = d.plusDays(1)) {
+                        monthTotal += nutritionDataMap.getOrDefault(d, 0);
                     }
-                    float averageIntake = totalIntake / count;
-                    entries.add(new BarEntry(i, averageIntake));
-                    dates.add(String.valueOf(monthStart.getMonthValue()));
+                    float averageIntake = monthTotal / daysInMonth;
+                    entries.add(new BarEntry(i++, averageIntake));
+                    dates.add(String.valueOf(date.getMonthValue()));
                 }
             }
 
@@ -346,6 +373,20 @@ public class NutritionStatistic extends Fragment {
             dataSet.setDrawValues(false);
 
             BarData barData = new BarData(dataSet);
+
+            dataSet.setColor(getResources().getColor(R.color.green));
+
+            dataSet.setDrawValues(true);
+            dataSet.setValueFormatter(new ValueFormatter() {
+                @Override
+                public String getFormattedValue(float value) {
+                    if (value == 0) {
+                        return "";
+                    } else {
+                        return super.getFormattedValue(value);
+                    }
+                }
+            });
 
             StraightBarChartRenderer customRenderer = new StraightBarChartRenderer(barChart, barChart.getAnimator(), barChart.getViewPortHandler());
             customRenderer.setRadius(30);
@@ -377,6 +418,7 @@ public class NutritionStatistic extends Fragment {
             limitLineLeft.setLineWidth(1f);
             leftAxis.addLimitLine(limitLineLeft);
             leftAxis.setDrawLimitLinesBehindData(true);
+            barChart.animateY(1000);
 
             barChart.invalidate();
         } catch (Exception exception) {

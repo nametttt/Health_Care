@@ -96,11 +96,18 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="грамм"
+                                android:text="г"
                                 android:layout_marginLeft="5dp"
                                 android:textColor="@color/black"
                                 android:textSize="18dp" />
                         </LinearLayout>
+                        <TextView
+                            android:id="@+id/food_nutrients"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="0г белков, 0г жиров, 0г углеродов"
+                            android:textColor="@color/black"
+                            android:textSize="20dp" />
                     </LinearLayout>
                     <LinearLayout
                         android:layout_width="0dp"

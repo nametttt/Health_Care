@@ -172,50 +172,57 @@ public class MenstrualStatisticFragment extends Fragment {
     }
 
     private void calculateAverageDuration() {
-        long totalDuration = 0;
-        int totalDays = 0;
-        MenstrualData prevData = new MenstrualData();
-        if(menstrualDataArrayList.size() > 1) {
-            menstrualDataArrayList.sort(new SortMenstrual());
-            for (MenstrualData data : menstrualDataArrayList) {
-                if(data != null) {
-                    if (data.endDate != null && data.startDate != null) {
-                        long duration = data.endDate.getTimeInMillis() - data.startDate.getTimeInMillis();
-                        totalDays += duration / (1000 * 60 * 60 * 24);
-                    }
-                    if(prevData.startDate != null) {
-                        totalDuration += data.endDate.getTimeInMillis() - prevData.startDate.getTimeInMillis();
+        try {
+            long totalDuration = 0;
+            int totalDays = 0;
+            MenstrualData prevData = new MenstrualData();
+            if(menstrualDataArrayList.size() > 1) {
+                menstrualDataArrayList.sort(new SortMenstrual());
+                for (MenstrualData data : menstrualDataArrayList) {
+                    if(data != null) {
+                        if (data.endDate != null && data.startDate != null) {
+                            long duration = data.endDate.getTimeInMillis() - data.startDate.getTimeInMillis();
+                            totalDays += duration / (1000 * 60 * 60 * 24);
+                        }
+                        if(prevData.startDate != null) {
+                            totalDuration += data.endDate.getTimeInMillis() - prevData.startDate.getTimeInMillis();
 
+                        }
                     }
+                    prevData = data;
                 }
-                prevData = data;
-            }
-        }
-        else if (menstrualDataArrayList.size() == 1){
-            totalDuration = 0;
-            long ts = menstrualDataArrayList.get(0).endDate.getTimeInMillis() - menstrualDataArrayList.get(0).startDate.getTimeInMillis();
-            totalDays = (int) ts / (1000 * 60 * 60 * 24);
-        }
-
-        if (!menstrualDataArrayList.isEmpty()) {
-            int sz = menstrualDataArrayList.size() == 1 ? 1 : menstrualDataArrayList.size() - 1;
-            int averageDuration = 0;
-            if (menstrualDataArrayList.size() > 1){
-                averageDuration = (int) (totalDuration + averageDurations / sz  ) / (1000 * 60 * 60 * 24);
             }
             else if (menstrualDataArrayList.size() == 1){
-                averageDuration = averageDurations;
+                totalDuration = 0;
+                long ts = menstrualDataArrayList.get(0).endDate.getTimeInMillis() - menstrualDataArrayList.get(0).startDate.getTimeInMillis();
+                totalDays = (int) ts / (1000 * 60 * 60 * 24);
             }
-            if(averageDuration<1) averageDuration *= -1;
-            int averageDay = totalDays / menstrualDataArrayList.size();
 
-            overDuration.setText(String.valueOf(averageDuration + 1) + " дн.");
-            overDays.setText(String.valueOf(averageDay + 1) + " дн.");
+            if (!menstrualDataArrayList.isEmpty()) {
+                int sz = menstrualDataArrayList.size() == 1 ? 1 : menstrualDataArrayList.size() - 1;
+                int averageDuration = 0;
+                if (menstrualDataArrayList.size() > 1){
+                    averageDuration = (int) (totalDuration + averageDurations / sz  ) / (1000 * 60 * 60 * 24);
+                }
+                else if (menstrualDataArrayList.size() == 1){
+                    averageDuration = averageDurations;
+                }
+                if(averageDuration<1) averageDuration *= -1;
+                int averageDay = totalDays / menstrualDataArrayList.size();
+
+                overDuration.setText(String.valueOf(averageDuration + 1) + " дн.");
+                overDays.setText(String.valueOf(averageDay + 1) + " дн.");
+            }
+            else {
+                overDuration.setText("-");
+                overDays.setText("-");
+            }
         }
-        else {
-            overDuration.setText("-");
-            overDays.setText("-");
+        catch (Exception exception) {
+            CustomDialog dialogFragment = new CustomDialog("Произошла ошибка: " + exception.getMessage(), false);
+            dialogFragment.show(getParentFragmentManager(), "custom_dialog");
         }
+
     }
 
 }

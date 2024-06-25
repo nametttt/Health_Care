@@ -63,7 +63,7 @@ public class ChangeNutritionFragment extends Fragment {
     FirebaseDatabase mDb;
     FirebaseUser user;
     Button nutritionTime;
-    TextView AboutNutritionTime;
+    TextView AboutNutritionTime, food_nutrients;
     Spinner typeFood;
     TextView kkal, weight;
     GetSplittedPathChild pC = new GetSplittedPathChild();
@@ -101,7 +101,7 @@ public class ChangeNutritionFragment extends Fragment {
         try{
             exit = v.findViewById(R.id.back);
             save = v.findViewById(R.id.save);
-
+            food_nutrients = v.findViewById(R.id.food_nutrients);
             nutritionTime = v.findViewById(R.id.nutritionTime);
             AboutNutritionTime = v.findViewById(R.id.AboutNutritionTime);
             delete = v.findViewById(R.id.delete);
@@ -157,14 +157,22 @@ public class ChangeNutritionFragment extends Fragment {
 
             if (selectedFoods != null && !selectedFoods.isEmpty()) {
                 foodDataArrayList.addAll(selectedFoods);
-                float calories = 0, weightFood = 0;
+                int calories = 0, weightFood = 0;
+                float newProteins = 0.0f;
+                float newFats = 0.0f;
+                float newCarbs = 0.0f;
                 for(FoodData f : selectedFoods)
                 {
                     calories += f.calories;
                     weightFood += f.weight;
+                    newProteins += f.protein;
+                    newFats += f.fat;
+                    newCarbs += f.carbohydrates;
                 }
-                kkal.setText(String.valueOf(calories));
-                weight.setText(String.valueOf(weightFood));
+
+                kkal.setText(String.format(String.valueOf(calories)));
+                weight.setText(String.format(String.valueOf(weightFood)));
+                food_nutrients.setText(String.format("%.1f г белков %.1f г жиров %.1f г углеводов", newProteins, newFats, newCarbs));
                 adapter.notifyDataSetChanged();
             }
 

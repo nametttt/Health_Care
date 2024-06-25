@@ -40,67 +40,74 @@ public class Start_Animation extends AppCompatActivity {
         Animation tablego = AnimationUtils.loadAnimation(this, R.anim.exiting);
         ll.startAnimation(tablego);
 
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                if (firebaseUser != null) {
-                    firebaseUser.reload().addOnCompleteListener(new OnCompleteListener<Void>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Void> task) {
-                            if (task.isSuccessful()) {
-                                firebaseUser = auth.getCurrentUser();
-                                if (firebaseUser != null) {
-                                    if (Objects.equals(firebaseUser.getEmail(), "ya@gmail.com")) {
-                                        Intent mainIntent = new Intent(Start_Animation.this, AdminHomeActivity.class);
-                                        startActivity(mainIntent);
-                                    } else {
-                                        FirebaseDatabase db = FirebaseDatabase.getInstance();
-                                        DatabaseReference ref = db.getReference("users");
-                                        GetSplittedPathChild pC = new GetSplittedPathChild();
-                                        ref.child(pC.getSplittedPathChild(firebaseUser.getEmail())).addListenerForSingleValueEvent(new ValueEventListener() {
-                                            @Override
-                                            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                                if (snapshot.exists()) {
-                                                    UserData user1 = snapshot.getValue(UserData.class);
-                                                    Intent mainIntent;
-                                                    if (user1 != null) {
-                                                        mainIntent = new Intent(Start_Animation.this, HomeActivity.class);
+        try {
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    if (firebaseUser != null) {
+                        firebaseUser.reload().addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                if (task.isSuccessful()) {
+                                    firebaseUser = auth.getCurrentUser();
+                                    if (firebaseUser != null) {
+                                        if (Objects.equals(firebaseUser.getEmail(), "ya@gmail.com")) {
+                                            Intent mainIntent = new Intent(Start_Animation.this, AdminHomeActivity.class);
+                                            startActivity(mainIntent);
+                                        } else {
+                                            FirebaseDatabase db = FirebaseDatabase.getInstance();
+                                            DatabaseReference ref = db.getReference("users");
+                                            GetSplittedPathChild pC = new GetSplittedPathChild();
+                                            ref.child(pC.getSplittedPathChild(firebaseUser.getEmail())).addListenerForSingleValueEvent(new ValueEventListener() {
+                                                @Override
+                                                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                                    if (snapshot.exists()) {
+                                                        UserData user1 = snapshot.getValue(UserData.class);
+                                                        Intent mainIntent;
+                                                        if (user1 != null) {
+                                                            mainIntent = new Intent(Start_Animation.this, HomeActivity.class);
+                                                        } else {
+                                                            mainIntent = new Intent(Start_Animation.this, MainActivity.class);
+                                                        }
+                                                        startActivity(mainIntent);
                                                     } else {
-                                                        mainIntent = new Intent(Start_Animation.this, MainActivity.class);
+                                                        FirebaseAuth.getInstance().getCurrentUser().delete();
+                                                        Intent mainIntent = new Intent(Start_Animation.this, MainActivity.class);
+                                                        startActivity(mainIntent);
                                                     }
-                                                    startActivity(mainIntent);
-                                                } else {
-                                                    FirebaseAuth.getInstance().getCurrentUser().delete();
-                                                    Intent mainIntent = new Intent(Start_Animation.this, MainActivity.class);
-                                                    startActivity(mainIntent);
+                                                    finish();
+                                                    overridePendingTransition(R.anim.exiting, R.anim.entering);
                                                 }
-                                                finish();
-                                                overridePendingTransition(R.anim.exiting, R.anim.entering);
-                                            }
 
-                                            @Override
-                                            public void onCancelled(@NonNull DatabaseError error) {
-                                                CustomDialog dialogFragment = new CustomDialog("Произошла ошибка: " + error, false);
-                                                dialogFragment.show(getSupportFragmentManager(), "custom_dialog");
-                                            }
-                                        });
+                                                @Override
+                                                public void onCancelled(@NonNull DatabaseError error) {
+                                                    CustomDialog dialogFragment = new CustomDialog("Произошла ошибка: " + error, false);
+                                                    dialogFragment.show(getSupportFragmentManager(), "custom_dialog");
+                                                }
+                                            });
+                                        }
+                                    } else {
+                                        Intent mainIntent = new Intent(Start_Animation.this, MainActivity.class);
+                                        startActivity(mainIntent);
+                                        finish();
+                                        overridePendingTransition(R.anim.exiting, R.anim.entering);
                                     }
-                                } else {
-                                    Intent mainIntent = new Intent(Start_Animation.this, MainActivity.class);
-                                    startActivity(mainIntent);
-                                    finish();
-                                    overridePendingTransition(R.anim.exiting, R.anim.entering);
                                 }
                             }
-                        }
-                    });
-                } else {
-                    Intent mainIntent = new Intent(Start_Animation.this, MainActivity.class);
-                    startActivity(mainIntent);
-                    finish();
-                    overridePendingTransition(R.anim.exiting, R.anim.entering);
+                        });
+                    } else {
+                        Intent mainIntent = new Intent(Start_Animation.this, MainActivity.class);
+                        startActivity(mainIntent);
+                        finish();
+                        overridePendingTransition(R.anim.exiting, R.anim.entering);
+                    }
                 }
-            }
-        }, splash_screen_delay);
+            }, splash_screen_delay);
+
+        }
+        catch (Exception exception) {
+            CustomDialog dialogFragment = new CustomDialog("Произошла ошибка: " + exception.getMessage(), false);
+            dialogFragment.show(getSupportFragmentManager(), "custom_dialog");
+        }
     }
 }

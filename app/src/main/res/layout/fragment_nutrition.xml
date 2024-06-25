@@ -145,7 +145,7 @@
                                 android:text="загрузка"
                                 android:id="@+id/myNormal"
                                 android:textColor="@color/black"
-                                android:textSize="28dp"
+                                android:textSize="26dp"
                                 android:textStyle="bold" />
 
                             <TextView

@@ -47,54 +47,61 @@ public class MenstrualSettingsFragment extends Fragment {
     }
 
     private void init(View view) {
-        cycleLengthLayout = view.findViewById(R.id.cycle_length_layout);
-        menstruationLengthLayout = view.findViewById(R.id.menstruation_length_layout);
+        try {
+            cycleLengthLayout = view.findViewById(R.id.cycle_length_layout);
+            menstruationLengthLayout = view.findViewById(R.id.menstruation_length_layout);
 
-        cycleLengthLabel = view.findViewById(R.id.cycle_length_label);
-        cycleLengthValue = view.findViewById(R.id.cycle_length_value);
-        menstruationLengthLabel = view.findViewById(R.id.menstruation_length_label);
-        menstruationLengthValue = view.findViewById(R.id.menstruation_length_value);
+            cycleLengthLabel = view.findViewById(R.id.cycle_length_label);
+            cycleLengthValue = view.findViewById(R.id.cycle_length_value);
+            menstruationLengthLabel = view.findViewById(R.id.menstruation_length_label);
+            menstruationLengthValue = view.findViewById(R.id.menstruation_length_value);
 
-        numberPickerCycleLength = view.findViewById(R.id.number_picker_cycle_length);
-        numberPickerMenstruationLength = view.findViewById(R.id.number_picker_menstruation_length);
+            numberPickerCycleLength = view.findViewById(R.id.number_picker_cycle_length);
+            numberPickerMenstruationLength = view.findViewById(R.id.number_picker_menstruation_length);
 
-        menstrulDaysSwitch = view.findViewById(R.id.menstrulDays);
-        fertileDaysSwitch = view.findViewById(R.id.fertileDays);
+            menstrulDaysSwitch = view.findViewById(R.id.menstrulDays);
+            fertileDaysSwitch = view.findViewById(R.id.fertileDays);
 
-        setupNumberPicker(numberPickerCycleLength, 20, 50, 28);
-        setupNumberPicker(numberPickerMenstruationLength, 2, 15, 8);
+            setupNumberPicker(numberPickerCycleLength, 20, 50, 28);
+            setupNumberPicker(numberPickerMenstruationLength, 2, 15, 8);
 
-        cycleLengthLabel.setOnClickListener(v -> toggleLinearLayout(numberPickerCycleLength, cycleLengthValue));
-        cycleLengthValue.setOnClickListener(v -> toggleLinearLayout(numberPickerCycleLength, cycleLengthValue));
-        menstruationLengthLabel.setOnClickListener(v -> toggleLinearLayout(numberPickerMenstruationLength, menstruationLengthValue));
-        menstruationLengthValue.setOnClickListener(v -> toggleLinearLayout(numberPickerMenstruationLength, menstruationLengthValue));
+            cycleLengthLabel.setOnClickListener(v -> toggleLinearLayout(numberPickerCycleLength, cycleLengthValue));
+            cycleLengthValue.setOnClickListener(v -> toggleLinearLayout(numberPickerCycleLength, cycleLengthValue));
+            menstruationLengthLabel.setOnClickListener(v -> toggleLinearLayout(numberPickerMenstruationLength, menstruationLengthValue));
+            menstruationLengthValue.setOnClickListener(v -> toggleLinearLayout(numberPickerMenstruationLength, menstruationLengthValue));
 
-        numberPickerCycleLength.setOnValueChangedListener((picker, oldVal, newVal) -> cycleLengthValue.setText(String.valueOf(newVal)));
-        numberPickerMenstruationLength.setOnValueChangedListener((picker, oldVal, newVal) -> menstruationLengthValue.setText(String.valueOf(newVal)));
+            numberPickerCycleLength.setOnValueChangedListener((picker, oldVal, newVal) -> cycleLengthValue.setText(String.valueOf(newVal)));
+            numberPickerMenstruationLength.setOnValueChangedListener((picker, oldVal, newVal) -> menstruationLengthValue.setText(String.valueOf(newVal)));
 
-        menstrulDaysSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            fertileDaysSwitch.setEnabled(isChecked);
-            if (!isChecked) {
-                fertileDaysSwitch.setChecked(false);
-            }
-        });
+            menstrulDaysSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                fertileDaysSwitch.setEnabled(isChecked);
+                if (!isChecked) {
+                    fertileDaysSwitch.setChecked(false);
+                }
+            });
 
-        AppCompatButton saveButton = view.findViewById(R.id.save);
-        saveButton.setOnClickListener(v -> saveData());
+            AppCompatButton saveButton = view.findViewById(R.id.save);
+            saveButton.setOnClickListener(v -> saveData());
 
-        AppCompatButton deleteButton = view.findViewById(R.id.delete_button);
-        deleteButton.setOnClickListener(v -> {
-            confirmAndDeleteData();
-        });
+            AppCompatButton deleteButton = view.findViewById(R.id.delete_button);
+            deleteButton.setOnClickListener(v -> {
+                confirmAndDeleteData();
+            });
 
-        AppCompatButton back = view.findViewById(R.id.back);
-        back.setOnClickListener(v -> {
-            HomeActivity homeActivity = (HomeActivity) getActivity();
-            homeActivity.replaceFragment(new MenstrualFragment());
-        });
+            AppCompatButton back = view.findViewById(R.id.back);
+            back.setOnClickListener(v -> {
+                HomeActivity homeActivity = (HomeActivity) getActivity();
+                homeActivity.replaceFragment(new MenstrualFragment());
+            });
 
-        user = FirebaseAuth.getInstance().getCurrentUser();
-        mDb = FirebaseDatabase.getInstance();
+            user = FirebaseAuth.getInstance().getCurrentUser();
+            mDb = FirebaseDatabase.getInstance();
+        }
+        catch (Exception exception) {
+            CustomDialog dialogFragment = new CustomDialog("Произошла ошибка: " + exception.getMessage(), false);
+            dialogFragment.show(getParentFragmentManager(), "custom_dialog");
+        }
+
     }
 
     private void toggleLinearLayout(View layout, TextView valueTextView) {
@@ -118,43 +125,50 @@ public class MenstrualSettingsFragment extends Fragment {
     }
 
     private void loadData() {
-        DatabaseReference userRef = mDb.getReference("users")
-                .child(pC.getSplittedPathChild(user.getEmail()))
-                .child("characteristic")
-                .child("menstrual");
+        try{
+            DatabaseReference userRef = mDb.getReference("users")
+                    .child(pC.getSplittedPathChild(user.getEmail()))
+                    .child("characteristic")
+                    .child("menstrual");
 
-        userRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if (snapshot.exists()) {
-                    if (snapshot.hasChild("duration")) {
-                        int cycleLength = snapshot.child("duration").getValue(Integer.class);
-                        numberPickerCycleLength.setValue(cycleLength);
-                        cycleLengthValue.setText(String.valueOf(cycleLength));
-                    }
-                    if (snapshot.hasChild("days")) {
-                        int menstruationLength = snapshot.child("days").getValue(Integer.class);
-                        numberPickerMenstruationLength.setValue(menstruationLength);
-                        menstruationLengthValue.setText(String.valueOf(menstruationLength));
-                    }
-                    if (snapshot.hasChild("forecastMenstrual")) {
-                        boolean menstrulDaysEnabled = snapshot.child("forecastMenstrual").getValue(Boolean.class);
-                        menstrulDaysSwitch.setChecked(menstrulDaysEnabled);
-                        fertileDaysSwitch.setEnabled(menstrulDaysEnabled);
-                    }
-                    if (snapshot.hasChild("forecastFertule")) {
-                        boolean fertileDaysEnabled = snapshot.child("forecastFertule").getValue(Boolean.class);
-                        fertileDaysSwitch.setChecked(fertileDaysEnabled);
+            userRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    if (snapshot.exists()) {
+                        if (snapshot.hasChild("duration")) {
+                            int cycleLength = snapshot.child("duration").getValue(Integer.class);
+                            numberPickerCycleLength.setValue(cycleLength);
+                            cycleLengthValue.setText(String.valueOf(cycleLength));
+                        }
+                        if (snapshot.hasChild("days")) {
+                            int menstruationLength = snapshot.child("days").getValue(Integer.class);
+                            numberPickerMenstruationLength.setValue(menstruationLength);
+                            menstruationLengthValue.setText(String.valueOf(menstruationLength));
+                        }
+                        if (snapshot.hasChild("forecastMenstrual")) {
+                            boolean menstrulDaysEnabled = snapshot.child("forecastMenstrual").getValue(Boolean.class);
+                            menstrulDaysSwitch.setChecked(menstrulDaysEnabled);
+                            fertileDaysSwitch.setEnabled(menstrulDaysEnabled);
+                        }
+                        if (snapshot.hasChild("forecastFertule")) {
+                            boolean fertileDaysEnabled = snapshot.child("forecastFertule").getValue(Boolean.class);
+                            fertileDaysSwitch.setChecked(fertileDaysEnabled);
+                        }
                     }
                 }
-            }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                CustomDialog dialogFragment = new CustomDialog("Произошла ошибка: " + error.getMessage(), false);
-                dialogFragment.show(getParentFragmentManager(), "custom_dialog");
-            }
-        });
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+                    CustomDialog dialogFragment = new CustomDialog("Произошла ошибка: " + error.getMessage(), false);
+                    dialogFragment.show(getParentFragmentManager(), "custom_dialog");
+                }
+            });
+        }
+        catch (Exception exception) {
+            CustomDialog dialogFragment = new CustomDialog("Произошла ошибка: " + exception.getMessage(), false);
+            dialogFragment.show(getParentFragmentManager(), "custom_dialog");
+        }
+
     }
 
     private void saveData() {

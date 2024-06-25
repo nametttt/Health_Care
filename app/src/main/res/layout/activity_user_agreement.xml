@@ -13,6 +13,7 @@
 
         <LinearLayout
             android:layout_width="match_parent"
+            android:layout_marginBottom="15dp"
             android:layout_height="match_parent"
             android:orientation="vertical">
 
@@ -33,143 +34,141 @@
                     style="@style/HeaderText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Пользовательское Соглашение"/>
+                    android:text="Пользовательское Соглашение" />
 
                 <TextView
                     style="@style/SubHeaderText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="1. Общие положения"/>
+                    android:text="1. Общие положения" />
 
                 <TextView
                     style="@style/BodyText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="1.1. Настоящее Пользовательское Соглашение (далее – 'Соглашение') регулирует отношения между пользователем (далее – 'Пользователь') и владельцем приложения (далее – 'Компания') по поводу использования приложения по заботе о здоровье (далее – 'Приложение')."/>
+                    android:text="1.1. Настоящее Пользовательское Соглашение (далее – 'Соглашение') регулирует отношения между пользователем (далее – 'Пользователь') и владельцем приложения (далее – 'Компания') по поводу использования приложения по заботе о здоровье (далее – 'Приложение')." />
 
                 <TextView
                     style="@style/BodyText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="1.2. Пользователь обязан ознакомиться с Соглашением до начала использования Приложения. Использование Приложения означает полное согласие Пользователя с условиями данного Соглашения."/>
+                    android:text="1.2. Пользователь обязан ознакомиться с Соглашением до начала использования Приложения. Использование Приложения означает полное согласие Пользователя с условиями данного Соглашения." />
 
                 <TextView
                     style="@style/SubHeaderText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="2. Услуги Приложения"/>
+                    android:text="2. Услуги Приложения" />
 
                 <TextView
                     style="@style/BodyText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="2.1. Приложение предоставляет Пользователю следующие услуги:"/>
+                    android:text="2.1. Приложение предоставляет Пользователю следующие услуги:" />
 
                 <TextView
                     style="@style/BulletItem"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text=" - Отслеживание состояния здоровья;"/>
+                    android:text=" - Управление питанием, сном, водным режимом и физическими параметрами." />
 
                 <TextView
                     style="@style/BulletItem"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text=" - Напоминания о приеме лекарств;"/>
+                    android:text=" - Отслеживание общего состояния здоровья и циклов." />
 
                 <TextView
                     style="@style/BulletItem"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text=" - Ведение дневника здоровья;"/>
+                    android:text=" - Получение персонализированных советов от нейронной сети." />
 
                 <TextView
                     style="@style/BulletItem"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text=" - Доступ к информации о здоровье и здоровом образе жизни."/>
+                    android:text=" - Доступ к полезным статьям по здоровью." />
 
                 <TextView
                     style="@style/BodyText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="2.2. Компания имеет право изменять содержание Приложения без предварительного уведомления Пользователя."/>
+                    android:text="2.2. Компания имеет право изменять содержание Приложения без предварительного уведомления Пользователя." />
 
                 <TextView
                     style="@style/SubHeaderText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="3. Регистрация и учетная запись"/>
+                    android:text="3. Регистрация и учетная запись" />
 
                 <TextView
                     style="@style/BodyText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="3.1. Для использования Приложения Пользователь должен пройти процедуру регистрации и создать учетную запись."/>
+                    android:text="3.1. Для использования Приложения Пользователь должен пройти процедуру регистрации и создать учетную запись." />
 
                 <TextView
                     style="@style/BodyText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="3.2. Пользователь обязуется предоставить достоверную и актуальную информацию при регистрации и поддерживать эту информацию в актуальном состоянии."/>
+                    android:text="3.2. Пользователь обязуется предоставить достоверную и актуальную информацию при регистрации и поддерживать эту информацию в актуальном состоянии." />
 
                 <TextView
                     style="@style/SubHeaderText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="4. Конфиденциальность и защита данных"/>
+                    android:text="4. Конфиденциальность и защита данных" />
 
                 <TextView
                     style="@style/BodyText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="4.1. Компания обязуется обеспечивать конфиденциальность и безопасность персональных данных Пользователя в соответствии с действующим законодательством."/>
+                    android:text="4.1. Компания обязуется обеспечивать конфиденциальность и безопасность персональных данных Пользователя в соответствии с действующим законодательством." />
 
                 <TextView
                     style="@style/BodyText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="4.2. Пользователь соглашается на обработку своих персональных данных в целях использования Приложения."/>
+                    android:text="4.2. Пользователь соглашается на обработку своих персональных данных в целях использования Приложения." />
 
                 <TextView
                     style="@style/SubHeaderText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="5. Обязанности Пользователя"/>
+                    android:text="5. Обязанности Пользователя" />
 
                 <TextView
                     style="@style/BodyText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="5.1. Пользователь обязуется использовать Приложение только в законных целях и в соответствии с условиями данного Соглашения."
-                    />
-            <TextView
-                style="@style/BodyText"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="5.2. Пользователь не имеет права:"/>
+                    android:text="5.1. Пользователь обязуется использовать Приложение только в законных целях и в соответствии с условиями данного Соглашения." />
+
+                <TextView
+                    style="@style/BodyText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="5.2. Пользователь не имеет права:" />
 
                 <TextView
                     style="@style/BulletItem"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text=" - Использовать Приложение для распространения вредоносного программного обеспечения;"/>
+                    android:text=" - Использовать Приложение для распространения вредоносного программного обеспечения;" />
 
                 <TextView
                     style="@style/BulletItem"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text=" - Осуществлять действия, направленные на нарушение работы Приложения;"/>
+                    android:text=" - Осуществлять действия, направленные на нарушение работы Приложения;" />
 
                 <TextView
                     style="@style/BulletItem"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text=" - Использовать учетную запись другого пользователя без разрешения."/>
-
+                    android:text=" - Использовать учетную запись другого пользователя без разрешения." />
 
             </LinearLayout>
         </LinearLayout>
-
     </ScrollView>
 </RelativeLayout>

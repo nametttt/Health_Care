@@ -19,6 +19,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CalendarView;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -61,6 +62,8 @@ public class HealthCommonFragment extends Fragment {
     CommonHealthRecyclerView adapter;
     private Date newDate;
     String Add;
+    ImageView statsIcon;
+
     HorizontalCalendarView calendarView;
 
     public HealthCommonFragment(Date newDate) {
@@ -100,6 +103,8 @@ public class HealthCommonFragment extends Fragment {
     }
     void init(View v){
         try {
+            statsIcon = v.findViewById(R.id.statsIcon);
+
             user = FirebaseAuth.getInstance().getCurrentUser();
             mDb = FirebaseDatabase.getInstance();
             exit = v.findViewById(R.id.back);
@@ -120,6 +125,15 @@ public class HealthCommonFragment extends Fragment {
             setHasOptionsMenu(true);
 
             MyCalendar();
+
+            statsIcon.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    HomeActivity homeActivity = (HomeActivity) getActivity();
+                    homeActivity.replaceFragment(new PressureStatisticFragment());
+                }
+            });
+
 
             if(newDate != null){
                 updateCommonDataForSelectedDate(newDate);

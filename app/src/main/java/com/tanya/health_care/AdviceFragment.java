@@ -300,73 +300,77 @@ public class AdviceFragment extends Fragment {
             @Override
             public void onClick(View v) {
 
-                FirebaseDatabase db = FirebaseDatabase.getInstance();
-                DatabaseReference ref = db.getReference("foods");
-                GetSplittedPathChild pC = new GetSplittedPathChild();
-                ref.addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        ArrayList<FoodData> foods = new ArrayList();
+                try{
+                    FirebaseDatabase db = FirebaseDatabase.getInstance();
+                    DatabaseReference ref = db.getReference("foods");
+                    GetSplittedPathChild pC = new GetSplittedPathChild();
+                    ref.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            ArrayList<FoodData> foods = new ArrayList();
 
-                        if (snapshot.exists()) {
+                            if (snapshot.exists()) {
 
-                            for(DataSnapshot dataSnapshot : snapshot.getChildren()){
+                                for(DataSnapshot dataSnapshot : snapshot.getChildren()){
 
-                                FoodData foodData = dataSnapshot.getValue(FoodData.class);
-                                foods.add(foodData);
+                                    FoodData foodData = dataSnapshot.getValue(FoodData.class);
+                                    foods.add(foodData);
+                                }
                             }
-                        }
 
-                        db.getReference("users").child(pC.getSplittedPathChild(FirebaseAuth.getInstance().getCurrentUser().getEmail()))
-                                .child("characteristic").child("nutrition").addListenerForSingleValueEvent(new ValueEventListener() {
-                                    @Override
-                                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                        ArrayList<Food> allFoodUser = new ArrayList();
-                                        ArrayList<String> tex = new ArrayList();
-                                        for (DataSnapshot ds : snapshot.getChildren()){
-                                            NutritionData nt = ds.getValue(NutritionData.class);
-                                            allFoodUser.addAll(nt.foods);
-                                        }
-
-                                        for (int i = 0 ; i< allFoodUser.size(); i++){
-                                            for(int v = 0; v< foods.size(); v++){
-                                                if(allFoodUser.get(i).Uid.equals(foods.get(v).uid)){
-                                                    tex.add(foods.get(v).name);
-                                                }
+                            db.getReference("users").child(pC.getSplittedPathChild(FirebaseAuth.getInstance().getCurrentUser().getEmail()))
+                                    .child("characteristic").child("nutrition").addListenerForSingleValueEvent(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                            ArrayList<Food> allFoodUser = new ArrayList();
+                                            ArrayList<String> tex = new ArrayList();
+                                            for (DataSnapshot ds : snapshot.getChildren()){
+                                                NutritionData nt = ds.getValue(NutritionData.class);
+                                                allFoodUser.addAll(nt.foods);
                                             }
 
+                                            for (int i = 0 ; i< allFoodUser.size(); i++){
+                                                for(int v = 0; v< foods.size(); v++){
+                                                    if(allFoodUser.get(i).Uid.equals(foods.get(v).uid)){
+                                                        tex.add(foods.get(v).name);
+                                                    }
+                                                }
 
+
+                                            }
+
+                                            String text = "Расскажи про мое питание учитывая мои параметры питания (Указано название еды:";
+
+                                            for (int d = 0; d < (Math.min(allFoodUser.size(), 15)); d++ ){
+                                                text += tex.get(d);
+                                            }
+                                            text += ") Сформулируй короче";
+                                            adviceLayout.setVisibility(View.GONE);
+
+                                            try {
+                                                sendRequest(text, "Советы по сну");
+                                            } catch (IOException e) {
+                                                throw new RuntimeException(e);
+                                            }
                                         }
 
-                                        String text = "Расскажи про мое питание учитывая мои параметры питания (Указано название еды:";
+                                        @Override
+                                        public void onCancelled(@NonNull DatabaseError error) {
 
-                                        for (int d = 0; d < (Math.min(allFoodUser.size(), 15)); d++ ){
-                                            text += tex.get(d);
                                         }
-                                        text += ") Сформулируй короче";
-                                        adviceLayout.setVisibility(View.GONE);
-
-                                        try {
-                                            sendRequest(text, "Советы по сну");
-                                        } catch (IOException e) {
-                                            throw new RuntimeException(e);
-                                        }
-                                    }
-
-                                    @Override
-                                    public void onCancelled(@NonNull DatabaseError error) {
-
-                                    }
-                                });
-                    }
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
-                        CustomDialog dialogFragment = new CustomDialog("Произошла ошибка: " + error.getMessage(), false);
-                        dialogFragment.show(getParentFragmentManager(), "custom_dialog");
-                    }
-                });
-
-
+                                    });
+                        }
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+                            CustomDialog dialogFragment = new CustomDialog("Произошла ошибка: " + error.getMessage(), false);
+                            dialogFragment.show(getParentFragmentManager(), "custom_dialog");
+                        }
+                    });
+                }
+                catch (Exception exception) {
+                    CustomDialog dialogFragment = new CustomDialog("Произошла ошибка: " + exception.getMessage(), false);
+                    dialogFragment.show(getParentFragmentManager(), "custom_dialog");
+                }
             }
         };
     }
