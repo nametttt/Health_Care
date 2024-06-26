@@ -351,106 +351,109 @@ public class MenstrualFragment extends Fragment {
 
                 // Сортировка списка и получение первого элемента
                 menstrualDataArrayList.sort(new SortMenstrual());
-                MenstrualData firstElement = menstrualDataArrayList.get(0);
-                lastMenstrual = firstElement.endDate.getTimeInMillis();
-                if(menstrulDaysEnabled || fertileDaysEnabled)
-                {
-                    newMenstrual.setVisibility(View.VISIBLE);
-                    if (firstElement != null && firstElement.endDate.getTimeInMillis() > 0 && duration > 0) {
-                        java.util.Calendar predictionStartCalendar = java.util.Calendar.getInstance();
-                        predictionStartCalendar.setTimeInMillis(firstElement.endDate.getTimeInMillis());
-                        predictionStartCalendar.add(java.util.Calendar.DAY_OF_MONTH, duration);
-
-                        for (int i = 0; i < 12; i++) {
-                            java.util.Calendar predictionEndCalendar = (java.util.Calendar) predictionStartCalendar.clone();
-                            predictionEndCalendar.add(java.util.Calendar.DAY_OF_MONTH, 5); // Assuming menstrual period lasts 5 days
-
-                            if(menstrulDaysEnabled){
-                                while (!predictionStartCalendar.after(predictionEndCalendar)) {
-                                    com.haibin.calendarview.Calendar calendar = new com.haibin.calendarview.Calendar();
-                                    calendar.setYear(predictionStartCalendar.get(java.util.Calendar.YEAR));
-                                    calendar.setMonth(predictionStartCalendar.get(java.util.Calendar.MONTH) + 1);
-                                    calendar.setDay(predictionStartCalendar.get(java.util.Calendar.DAY_OF_MONTH));
-                                    calendar.setSchemeColor(overcolorMenstrual);
-                                    calendar.setScheme(" ");
-                                    map.put(calendar.toString(), calendar);
-
-                                    predictionStartCalendar.add(java.util.Calendar.DAY_OF_MONTH, 1);
-                                }
-                            }
-                            java.util.Calendar fertileStartCalendar = (java.util.Calendar) predictionEndCalendar.clone();
-                            fertileStartCalendar.add(java.util.Calendar.DAY_OF_MONTH, 7);
-                            java.util.Calendar fertileEndCalendar = (java.util.Calendar) fertileStartCalendar.clone();
-                            fertileEndCalendar.add(java.util.Calendar.DAY_OF_MONTH, 6);
-
-                            if(fertileDaysEnabled) {
-                                while (!fertileStartCalendar.after(fertileEndCalendar)) {
-                                    com.haibin.calendarview.Calendar calendar = new com.haibin.calendarview.Calendar();
-                                    calendar.setYear(fertileStartCalendar.get(java.util.Calendar.YEAR));
-                                    calendar.setMonth(fertileStartCalendar.get(java.util.Calendar.MONTH) + 1);
-                                    calendar.setDay(fertileStartCalendar.get(java.util.Calendar.DAY_OF_MONTH));
-                                    calendar.setSchemeColor(overcolorFertile);
-                                    calendar.setScheme(" ");
-                                    map.put(calendar.toString(), calendar);
-
-                                    fertileStartCalendar.add(java.util.Calendar.DAY_OF_MONTH, 1);
-                                }
-                            }
-
-                            predictionStartCalendar = (java.util.Calendar) predictionEndCalendar.clone();
+                if(menstrualDataArrayList.size() > 0){
+                    MenstrualData firstElement = menstrualDataArrayList.get(0);
+                    lastMenstrual = firstElement.endDate.getTimeInMillis();
+                    if(menstrulDaysEnabled || fertileDaysEnabled)
+                    {
+                        newMenstrual.setVisibility(View.VISIBLE);
+                        if (firstElement != null && firstElement.endDate.getTimeInMillis() > 0 && duration > 0) {
+                            java.util.Calendar predictionStartCalendar = java.util.Calendar.getInstance();
+                            predictionStartCalendar.setTimeInMillis(firstElement.endDate.getTimeInMillis());
                             predictionStartCalendar.add(java.util.Calendar.DAY_OF_MONTH, duration);
+
+                            for (int i = 0; i < 12; i++) {
+                                java.util.Calendar predictionEndCalendar = (java.util.Calendar) predictionStartCalendar.clone();
+                                predictionEndCalendar.add(java.util.Calendar.DAY_OF_MONTH, 5); // Assuming menstrual period lasts 5 days
+
+                                if(menstrulDaysEnabled){
+                                    while (!predictionStartCalendar.after(predictionEndCalendar)) {
+                                        com.haibin.calendarview.Calendar calendar = new com.haibin.calendarview.Calendar();
+                                        calendar.setYear(predictionStartCalendar.get(java.util.Calendar.YEAR));
+                                        calendar.setMonth(predictionStartCalendar.get(java.util.Calendar.MONTH) + 1);
+                                        calendar.setDay(predictionStartCalendar.get(java.util.Calendar.DAY_OF_MONTH));
+                                        calendar.setSchemeColor(overcolorMenstrual);
+                                        calendar.setScheme(" ");
+                                        map.put(calendar.toString(), calendar);
+
+                                        predictionStartCalendar.add(java.util.Calendar.DAY_OF_MONTH, 1);
+                                    }
+                                }
+                                java.util.Calendar fertileStartCalendar = (java.util.Calendar) predictionEndCalendar.clone();
+                                fertileStartCalendar.add(java.util.Calendar.DAY_OF_MONTH, 7);
+                                java.util.Calendar fertileEndCalendar = (java.util.Calendar) fertileStartCalendar.clone();
+                                fertileEndCalendar.add(java.util.Calendar.DAY_OF_MONTH, 6);
+
+                                if(fertileDaysEnabled) {
+                                    while (!fertileStartCalendar.after(fertileEndCalendar)) {
+                                        com.haibin.calendarview.Calendar calendar = new com.haibin.calendarview.Calendar();
+                                        calendar.setYear(fertileStartCalendar.get(java.util.Calendar.YEAR));
+                                        calendar.setMonth(fertileStartCalendar.get(java.util.Calendar.MONTH) + 1);
+                                        calendar.setDay(fertileStartCalendar.get(java.util.Calendar.DAY_OF_MONTH));
+                                        calendar.setSchemeColor(overcolorFertile);
+                                        calendar.setScheme(" ");
+                                        map.put(calendar.toString(), calendar);
+
+                                        fertileStartCalendar.add(java.util.Calendar.DAY_OF_MONTH, 1);
+                                    }
+                                }
+
+                                predictionStartCalendar = (java.util.Calendar) predictionEndCalendar.clone();
+                                predictionStartCalendar.add(java.util.Calendar.DAY_OF_MONTH, duration);
+                            }
+                            java.util.Calendar currentCycleStart = (java.util.Calendar) firstElement.startDate.clone();
+                            java.util.Calendar currentCycleEnd = (java.util.Calendar) firstElement.endDate.clone();
+
+                            java.util.Calendar nextCycleStart = (java.util.Calendar) currentCycleEnd.clone();
+                            nextCycleStart.add(java.util.Calendar.DAY_OF_MONTH, cycleDuration);
+
+                            java.util.Calendar fertileStart = (java.util.Calendar) currentCycleEnd.clone();
+                            fertileStart.add(java.util.Calendar.DAY_OF_MONTH, 7);
+                            java.util.Calendar fertileEnd = (java.util.Calendar) fertileStart.clone();
+                            fertileEnd.add(java.util.Calendar.DAY_OF_MONTH, 6);
+
+                            java.util.Calendar ovulationDay = (java.util.Calendar) fertileStart.clone();
+                            ovulationDay.add(java.util.Calendar.DAY_OF_MONTH, 3);
+
+                            currentCycleTextView.setText(
+                                    String.format("%d-%d %s",
+                                            currentCycleStart.get(java.util.Calendar.DAY_OF_MONTH),
+                                            currentCycleEnd.get(java.util.Calendar.DAY_OF_MONTH),
+                                            getMonthName(currentCycleStart.get(java.util.Calendar.MONTH))
+                                    )
+                            );
+
+                            nextCycleTextView.setText(
+                                    String.format("%d %s",
+                                            nextCycleStart.get(java.util.Calendar.DAY_OF_MONTH),
+                                            getMonthName(nextCycleStart.get(java.util.Calendar.MONTH))
+                                    )
+                            );
+
+                            fertileDaysTextView.setText(
+                                    String.format("%d-%d %s",
+                                            fertileStart.get(java.util.Calendar.DAY_OF_MONTH),
+                                            fertileEnd.get(java.util.Calendar.DAY_OF_MONTH),
+                                            getMonthName(fertileStart.get(java.util.Calendar.MONTH))
+                                    )
+                            );
+
+                            ovulationTextView.setText(
+                                    String.format("%d %s",
+                                            ovulationDay.get(java.util.Calendar.DAY_OF_MONTH),
+                                            getMonthName(ovulationDay.get(java.util.Calendar.MONTH))
+                                    )
+                            );
                         }
-                        java.util.Calendar currentCycleStart = (java.util.Calendar) firstElement.startDate.clone();
-                        java.util.Calendar currentCycleEnd = (java.util.Calendar) firstElement.endDate.clone();
 
-                        java.util.Calendar nextCycleStart = (java.util.Calendar) currentCycleEnd.clone();
-                        nextCycleStart.add(java.util.Calendar.DAY_OF_MONTH, cycleDuration);
-
-                        java.util.Calendar fertileStart = (java.util.Calendar) currentCycleEnd.clone();
-                        fertileStart.add(java.util.Calendar.DAY_OF_MONTH, 7);
-                        java.util.Calendar fertileEnd = (java.util.Calendar) fertileStart.clone();
-                        fertileEnd.add(java.util.Calendar.DAY_OF_MONTH, 6);
-
-                        java.util.Calendar ovulationDay = (java.util.Calendar) fertileStart.clone();
-                        ovulationDay.add(java.util.Calendar.DAY_OF_MONTH, 3);
-
-                        currentCycleTextView.setText(
-                                String.format("%d-%d %s",
-                                        currentCycleStart.get(java.util.Calendar.DAY_OF_MONTH),
-                                        currentCycleEnd.get(java.util.Calendar.DAY_OF_MONTH),
-                                        getMonthName(currentCycleStart.get(java.util.Calendar.MONTH))
-                                )
-                        );
-
-                        nextCycleTextView.setText(
-                                String.format("%d %s",
-                                        nextCycleStart.get(java.util.Calendar.DAY_OF_MONTH),
-                                        getMonthName(nextCycleStart.get(java.util.Calendar.MONTH))
-                                )
-                        );
-
-                        fertileDaysTextView.setText(
-                                String.format("%d-%d %s",
-                                        fertileStart.get(java.util.Calendar.DAY_OF_MONTH),
-                                        fertileEnd.get(java.util.Calendar.DAY_OF_MONTH),
-                                        getMonthName(fertileStart.get(java.util.Calendar.MONTH))
-                                )
-                        );
-
-                        ovulationTextView.setText(
-                                String.format("%d %s",
-                                        ovulationDay.get(java.util.Calendar.DAY_OF_MONTH),
-                                        getMonthName(ovulationDay.get(java.util.Calendar.MONTH))
-                                )
-                        );
                     }
 
+                    else{
+                        newMenstrual.setVisibility(View.GONE);
+                    }
+                    calendarView.setSchemeDate(map);
                 }
 
-                else{
-                    newMenstrual.setVisibility(View.GONE);
-                }
-                calendarView.setSchemeDate(map);
             }
 
             @Override

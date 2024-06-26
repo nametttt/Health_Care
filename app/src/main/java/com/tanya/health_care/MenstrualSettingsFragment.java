@@ -208,7 +208,7 @@ public class MenstrualSettingsFragment extends Fragment {
         userRef.removeValue().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 HomeActivity homeActivity = (HomeActivity) getActivity();
-                homeActivity.replaceFragment(new MenstrualFragment());
+                homeActivity.replaceFragment(new HomeFragment());
                 CustomDialog dialogFragment = new CustomDialog("Данные успешно удалены", true);
                 dialogFragment.show(getParentFragmentManager(), "custom_dialog");
             } else {

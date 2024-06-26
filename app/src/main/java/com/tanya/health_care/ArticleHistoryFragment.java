@@ -37,6 +37,7 @@ import java.util.Date;
 import java.util.List;
 
 public class ArticleHistoryFragment extends Fragment {
+
     Button back;
     RecyclerView recyclerView;
     ArrayList<ArticleData> articleDataArrayList;

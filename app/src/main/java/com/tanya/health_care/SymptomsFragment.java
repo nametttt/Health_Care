@@ -123,9 +123,14 @@ public class SymptomsFragment extends Fragment {
                     List<SymptomsData> moods = filterDataByCategory(allSymptomsData, "настроения");
                     List<SymptomsData> menstruationDetails = filterDataByCategory(allSymptomsData, "менструации");
 
-                    Set<String> set = new HashSet<>(symptomssss.symptoms);
-                    symptomssss.symptoms.clear();
-                    symptomssss.symptoms.addAll(set);
+                    if(symptomssss != null){
+                        Set<String> set = new HashSet<>(symptomssss.symptoms);
+                        symptomssss.symptoms.clear();
+                        symptomssss.symptoms.addAll(set);
+                    }
+                    else {
+                        symptomssss = new Symptoms();
+                    }
 
                     adapter1 = new SymptomsRecyclerView(getContext(), (ArrayList<SymptomsData>) symptoms, symptomssss);
                     adapter2 = new SymptomsRecyclerView(getContext(), (ArrayList<SymptomsData>) moods, symptomssss);
