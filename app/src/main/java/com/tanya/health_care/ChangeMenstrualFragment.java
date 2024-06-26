@@ -65,8 +65,9 @@ public class ChangeMenstrualFragment extends Fragment {
             save = view.findViewById(R.id.save);
 
             Calendar startDateSelectable = Calendar.getInstance();
-            startDateSelectable.add(Calendar.MONTH, -3); // Three months ago
-            Calendar endDateSelectable = Calendar.getInstance(); // Today's date
+            startDateSelectable.add(Calendar.MONTH, -3);
+            Calendar endDateSelectable = Calendar.getInstance();
+            endDateSelectable.add(Calendar.DAY_OF_MONTH, 15);
             calendar.setSelectableDateRange(startDateSelectable, endDateSelectable);
 
             calendar.setCalendarListener(new CalendarListener() {

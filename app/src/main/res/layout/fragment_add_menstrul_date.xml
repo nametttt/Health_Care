@@ -65,7 +65,7 @@
                     android:id="@+id/continu"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_margin="20dp"
+                    android:layout_marginVertical="20dp"
                     android:text="Продолжить"
                     style="@style/PrimaryButton"/>
             </LinearLayout>

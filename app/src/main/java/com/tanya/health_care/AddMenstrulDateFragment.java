@@ -43,6 +43,7 @@ import java.util.Calendar;public class AddMenstrulDateFragment extends Fragment 
             Calendar startDateSelectable = Calendar.getInstance();
             startDateSelectable.add(Calendar.YEAR, -1);
             Calendar endDateSelectable = Calendar.getInstance();
+            endDateSelectable.add(Calendar.DAY_OF_MONTH, 15);
             calendar.setSelectableDateRange(startDateSelectable, endDateSelectable);
 
             if (startDate1 != null && endDate1 != null) {

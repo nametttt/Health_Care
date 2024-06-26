@@ -160,7 +160,7 @@
                                 android:layout_weight="0.3"
                                 style="@style/TableCell"
                                 android:background="@drawable/table_rows"
-                                android:text="Мужской" />
+                                android:text="М" />
 
                             <TextView
                                 android:layout_width="0dp"
@@ -188,7 +188,7 @@
                                 android:layout_height="match_parent"
                                 android:layout_weight="0.3"
                                 android:background="@drawable/table_rows"
-                                android:text="Женский"
+                                android:text="Ж"
                                 style="@style/TableCell"/>
 
                             <TextView
@@ -218,7 +218,7 @@
                                 android:layout_weight="0.3"
                                 android:background="@drawable/table_rows"
                                 style="@style/TableCell"
-                                android:text="Мужской" />
+                                android:text="М" />
 
                             <TextView
                                 android:layout_width="0dp"
@@ -247,7 +247,7 @@
                                 android:layout_weight="0.3"
                                 style="@style/TableCell"
                                 android:background="@drawable/table_rows"
-                                android:text="Женский"/>
+                                android:text="Ж"/>
 
                             <TextView
                                 android:layout_width="0dp"
@@ -277,7 +277,7 @@
                                 android:layout_weight="0.3"
                                 style="@style/TableCell"
                                 android:background="@drawable/table_rows"
-                                android:text="Мужской"/>
+                                android:text="М"/>
 
                             <TextView
                                 android:layout_width="0dp"
@@ -306,7 +306,7 @@
                                 android:layout_height="match_parent"
                                 android:layout_weight="0.3"
                                 android:background="@drawable/table_rows"
-                                android:text="Женский"
+                                android:text="Ж"
                                 style="@style/TableCell" />
 
                             <TextView
@@ -336,7 +336,7 @@
                                 android:layout_weight="0.3"
                                 style="@style/TableCell"
                                 android:background="@drawable/table_rows"
-                                android:text="Мужской" />
+                                android:text="М" />
 
                             <TextView
                                 android:layout_width="0dp"
@@ -364,7 +364,7 @@
                                 android:layout_weight="0.3"
                                 style="@style/TableCell"
                                 android:background="@drawable/table_rows"
-                                android:text="Женский" />
+                                android:text="Ж" />
 
                             <TextView
                                 android:layout_width="0dp"
@@ -393,7 +393,7 @@
                                 android:layout_weight="0.3"
                                 style="@style/TableCell"
                                 android:background="@drawable/table_rows"
-                                android:text="Мужской" />
+                                android:text="М" />
 
                             <TextView
                                 android:layout_width="0dp"
@@ -422,7 +422,7 @@
                                 android:layout_weight="0.3"
                                 style="@style/TableCell"
                                 android:background="@drawable/table_rows"
-                                android:text="Женский" />
+                                android:text="Ж" />
 
                             <TextView
                                 android:layout_width="0dp"
